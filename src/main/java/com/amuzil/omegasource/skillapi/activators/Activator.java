@@ -10,7 +10,7 @@ public class Activator {
      * 4 main types of activation. Each of these have sub-types. Again, I'll define them as an enum for now and
      * consolidate for good code practice later.
      */
-    public enum ActivatorType {
+    public enum ActivationType {
         RADIAL,
         HOTKEY,
         MULTIKEY,
@@ -41,6 +41,15 @@ public class Activator {
      * who are quite adept in their range of motion.
      */
     public enum GestureType {
+        SIMPLE,
+        COMPLEX
+    }
+
+    /**
+     * Simple activators take direct events/information to pass to a listener (radial menu and such).
+     * Complex take other activators and simple events.
+     */
+    public enum ActivatorType {
         SIMPLE,
         COMPLEX
     }
