@@ -1,4 +1,4 @@
-package com.amuzil.omegasource.skillapi.activators;
+package com.amuzil.omegasource.skillapi.activateable;
 
 import java.util.ArrayList;
 import java.util.List;

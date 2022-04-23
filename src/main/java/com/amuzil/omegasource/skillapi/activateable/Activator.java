@@ -1,4 +1,7 @@
-package com.amuzil.omegasource.skillapi.activators;
+package com.amuzil.omegasource.skillapi.activateable;
+
+import com.amuzil.omegasource.skillapi.data.Condition;
+import com.amuzil.omegasource.skillapi.data.conditions.EventConditions;
 
 /**
  * Covers all the different ways to activate an ability.
@@ -6,6 +9,9 @@ package com.amuzil.omegasource.skillapi.activators;
  */
 public class Activator {
 
+    //Will fix this later
+    public Activator() {
+    }
     /**
      * 4 main types of activation. Each of these have sub-types. Again, I'll define them as an enum for now and
      * consolidate for good code practice later.
