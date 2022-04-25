@@ -1,8 +1,5 @@
 package com.amuzil.omegasource.skillapi.activateable;
 
-import com.amuzil.omegasource.skillapi.data.Condition;
-import com.amuzil.omegasource.skillapi.data.conditions.EventConditions;
-
 /**
  * Covers all the different ways to activate an ability.
  * Gonna use an enum to describe for now. Will update that later; think of it as a placeholder.
