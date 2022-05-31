@@ -1,5 +1,6 @@
 package com.amuzil.omegasource.skillapi.activateable;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -7,6 +8,19 @@ import java.util.LinkedList;
  */
 public class KeyCombination {
 
-    private LinkedList<KeyInfo> keys;
+    private LinkedList<KeyPermutation> keys;
+
+    public KeyCombination() {
+        this.keys = new LinkedList<>();
+    }
+
+    public KeyCombination(KeyPermutation keyP) {
+        this.keys = new LinkedList<>();
+        this.keys.add(keyP);
+    }
+
+    public KeyCombination (LinkedList<KeyPermutation> keys) {
+        this.keys = keys;
+    }
 
 }

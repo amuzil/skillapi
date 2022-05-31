@@ -1,6 +1,11 @@
 package com.amuzil.omegasource.skillapi.activateable;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.sun.jna.platform.KeyboardUtils;
+import net.minecraft.client.KeyboardHandler;
+import net.minecraft.client.player.KeyboardInput;
+
+import java.awt.event.KeyEvent;
 
 //Takes a key, delay, and held length.
 public class KeyInfo {
@@ -13,6 +18,7 @@ public class KeyInfo {
     //Also in ticks. -1 to 1 all are effectively just pressed. Remember, this class doesn't check
     //the logic, only provides the values for which to apply it with.
     private int held;
+
 
     public KeyInfo() {
         this.key = InputConstants.UNKNOWN;
@@ -35,7 +41,7 @@ public class KeyInfo {
     public KeyInfo(InputConstants.Key key, int delay, int held) {
         this.key = key;
         this.minDelay = delay;
-        this.held = -1;
+        this.held = held;
     }
 
     public InputConstants.Key getKey() {
