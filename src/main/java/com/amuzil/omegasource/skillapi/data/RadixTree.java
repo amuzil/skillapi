@@ -1,21 +1,24 @@
 package com.amuzil.omegasource.skillapi.data;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class RadixTree {
-    final RadixNode root;
+    RadixNode root;
 
     RadixBranch branch;
     RadixNode active;
     List<Condition> activeConditions;
 
     void init() {
-        root = nonnull;
+        //Nonnull
+        root = null;
         branch = new RadixBranch();
         active = null;
-        activeConditions = new HashMap<>();
+        //TODO: Make a map, should be a map not a list. Conditions should map to their respective nodes.
+        //e.g. HashMap<Condition, RadixNode>
+        activeConditions = new ArrayList<>();//HashMap<Condition>();
     }
 
     <T> boolean registerLeaf(Class<RadixLeaf<T>> type, RadixLeaf<T> leaf) {
@@ -40,7 +43,7 @@ public class RadixTree {
         setActive(root);
     }
 
-    void setActive(Node node) {
+    void setActive(RadixNode node) {
         active = node;
 
         if (active.onEnter != null) {
@@ -54,14 +57,14 @@ public class RadixTree {
         active.children.forEach((condition, child) -> {
             activeConditions.add(condition);
             condition.register(() -> {
-                branch.addStep(condition, child)
+                branch.addStep(condition, child);
                 moveDown(child);
             }, () -> expire(condition));
         });
     }
 
     // Called when either the node's terminate condition is fulfilled or all active child conditions have expired
-    void terminate(Node node) {
+    void terminate(RadixNode node) {
         activeConditions.forEach(Condition::unregister);
 
         if (active.onTerminate != null) {
@@ -77,7 +80,7 @@ public class RadixTree {
         start();
     }
 
-    void moveDown(Node child) {
+    void moveDown(RadixNode child) {
         if (active.onLeave != null) {
             active.onLeave.accept(branch);
         }
@@ -99,7 +102,7 @@ public class RadixTree {
     void expire(Condition condition) {
         condition.unregister();
         activeConditions.remove(condition);
-        if (activeConditions.empty()) {
+        if (activeConditions.isEmpty()) {
             terminate(active);
         }
     }

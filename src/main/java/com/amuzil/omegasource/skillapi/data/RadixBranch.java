@@ -53,7 +53,7 @@ public class RadixBranch {
         //TODO: Constructor
         void init() {
             activator = null;
-            //Nonull
+            //Nonnull
             node = null;
         }
     }
