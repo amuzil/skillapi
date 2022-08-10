@@ -3,11 +3,26 @@ package com.amuzil.omegasource.skillapi.data.conditions;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
 
-public abstract class ForgeEventCondition<E extends Event> extends EventCondition<E> {
+import java.util.function.Function;
+
+public class ForgeEventCondition<E extends Event> extends EventCondition<E> {
+
+    public ForgeEventCondition() {
+        this.condition = null;
+    }
+
+    public ForgeEventCondition(Function<E, Boolean> condition) {
+        this.condition = condition;
+    }
 
     @Override
     public void register(Runnable success, Runnable expire) {
         super.register(success, expire);
-        MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.addListener(this::listen);
+    }
+
+    @Override
+    public void unregister() {
+        //MinecraftForge.EVENT_BUS.removeListener(this::listen);
     }
 }

@@ -2,7 +2,6 @@ package com.amuzil.omegasource.skillapi.activateable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Essentially a wrapper class for a part of combination/sequential list of keys.

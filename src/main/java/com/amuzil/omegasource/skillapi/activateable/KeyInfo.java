@@ -1,11 +1,6 @@
 package com.amuzil.omegasource.skillapi.activateable;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.sun.jna.platform.KeyboardUtils;
-import net.minecraft.client.KeyboardHandler;
-import net.minecraft.client.player.KeyboardInput;
-
-import java.awt.event.KeyEvent;
 
 //Takes a key, delay, and held length.
 public class KeyInfo {

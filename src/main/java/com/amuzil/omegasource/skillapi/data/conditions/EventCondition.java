@@ -3,19 +3,18 @@ package com.amuzil.omegasource.skillapi.data.conditions;
 import com.amuzil.omegasource.skillapi.data.Condition;
 import net.minecraftforge.eventbus.api.Event;
 
-public abstract class EventCondition<E extends Event> implements Condition {
+import java.util.function.Function;
 
-    //These are only public for package organisation. DO NOT TOUCH OUTSIDE YOUR CONDITIONS.
-    //Success moves to the next node down in the tree.
-    public Runnable success;
-    //Expires the tree, making the listener disregard further nodes and reset back to the top.
-    public Runnable expire;
+public abstract class EventCondition<E extends Event> extends Condition {
 
-    public abstract void listen(E event);
+    //Make sure to instantiate this to something in inherited classes.
+    public Function<E, Boolean> condition = null;
 
-    @Override
-    public void register(Runnable success, Runnable expire) {
-        this.success = success;
-        this.expire = expire;
+    public void listen(E event) {
+        if (condition.apply(event)) {
+            onSuccess.run();
+        } else {
+            onExpire.run();
+        }
     }
 }

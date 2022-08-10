@@ -8,11 +8,10 @@ import java.util.LinkedList;
 public class RadixBranch {
     LinkedList<Step> path;
 
-    //TODO: Fix this
     //Class<T> and Consumer<T>
     HashMap<Class<?>, RadixLeaf<?>> leaves;
 
-    void init() {
+    public RadixBranch() {
         path = new LinkedList<>();
         leaves = new HashMap<>();
     }

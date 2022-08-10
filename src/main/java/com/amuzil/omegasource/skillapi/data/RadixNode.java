@@ -42,6 +42,15 @@ class RootNode extends RadixNode {
 
 class EndNode extends RadixNode {
 
+    public EndNode() {
+        super();
+    }
+
+    public EndNode(Consumer<RadixBranch> onEnter) {
+        this.init();
+        this.onEnter = onEnter;
+    }
+
     @Override
     void init() {
         children = null;

@@ -1,8 +1,15 @@
 package com.amuzil.omegasource.skillapi.data;
 
-public interface Condition {
+public abstract class Condition {
 
-    void register(Runnable success, Runnable expire);
+    protected Runnable onSuccess;
+    protected Runnable onExpire;
 
-    void unregister();
+    public void register(Runnable onSuccess, Runnable onExpire) {
+        this.onSuccess = onSuccess;
+        this.onExpire = onExpire;
+    }
+
+    // This should not cause any errors when called if the condition is already unregistered or was never registered in the first place
+    public abstract void unregister();
 }

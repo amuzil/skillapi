@@ -1,6 +1,5 @@
 package com.amuzil.omegasource.skillapi.activateable;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
