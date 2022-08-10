@@ -56,7 +56,16 @@ public class SkillAPI {
         //Testing for some conditions
 //        Function<Event, Boolean> cond = event1 -> event1 instanceof LivingAttackEvent && ((LivingAttackEvent) event1).getSource().getEntity() instanceof Player;
 //        ForgeEventCondition<Event> test = new ForgeEventCondition<>(cond);
-//        test.register(() -> System.out.println("Success??"), () -> {});//System.out.println("Condition failed??"));
+//        ForgeEventCondition<Event> test2 = new ForgeEventCondition<>(cond);
+//        test.register(() -> {
+//            System.out.println("Success??");
+//            test.unregister();
+//        }, () -> {});
+//        test2.register(() -> {
+//            System.out.println("Sus-ccess");
+//            test.unregister();
+//        }, () -> {
+//        });
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {

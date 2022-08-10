@@ -18,11 +18,11 @@ public class ForgeEventCondition<E extends Event> extends EventCondition<E> {
     @Override
     public void register(Runnable success, Runnable expire) {
         super.register(success, expire);
-        MinecraftForge.EVENT_BUS.addListener(this::listen);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
     public void unregister() {
-        //MinecraftForge.EVENT_BUS.removeListener(this::listen);
+        MinecraftForge.EVENT_BUS.unregister(this);
     }
 }
