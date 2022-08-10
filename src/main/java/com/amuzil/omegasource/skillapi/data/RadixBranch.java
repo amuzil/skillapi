@@ -1,5 +1,7 @@
 package com.amuzil.omegasource.skillapi.data;
 
+import com.amuzil.omegasource.skillapi.util.ClassToLeafMap;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -7,7 +9,8 @@ public class RadixBranch {
     LinkedList<Step> path;
 
     //TODO: Fix this
-    HashMap<Class<RadixLeaf<?>>, RadixLeaf<?>> leaves;
+    //Class<T> and Consumer<T>
+    HashMap<Class<?>, RadixLeaf<?>> leaves;
 
     void init() {
         path = new LinkedList<>();
