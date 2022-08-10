@@ -1,6 +1,5 @@
 package com.amuzil.omegasource.skillapi.data;
 
-import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -17,8 +16,12 @@ public class RadixNode {
     // If this condition is fulfilled, the active node will be terminated. If it expires, nothing special happens. It doesn't have to expire for the branch to terminate
     Condition terminateCondition;
 
+    public RadixNode () {
+        this.init();
+    }
+
     void init() {
-        //All can be anything
+        //All can be anything. TODO: Fix.
         children = null;
         onEnter = null;
         onLeave = null;
@@ -30,6 +33,7 @@ public class RadixNode {
 class RootNode extends RadixNode {
     // This is the only node where onEnter is called not when this node is moved down to, but rather when a (sub)child node terminates
 
+    @Override
     void init() {
         onTerminate = null;
         terminateCondition = null;
@@ -37,6 +41,8 @@ class RootNode extends RadixNode {
 }
 
 class EndNode extends RadixNode {
+
+    @Override
     void init() {
         children = null;
         //@Nonnull

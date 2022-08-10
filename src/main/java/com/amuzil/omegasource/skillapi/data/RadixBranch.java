@@ -6,6 +6,7 @@ import java.util.LinkedList;
 public class RadixBranch {
     LinkedList<Step> path;
 
+    //TODO: Fix this
     HashMap<Class<RadixLeaf<?>>, RadixLeaf<?>> leaves;
 
     void init() {
@@ -50,11 +51,28 @@ public class RadixBranch {
         Condition activator;
         RadixNode node;
 
-        //TODO: Constructor
+
+        public Step(Condition activator, RadixNode node) {
+            this.activator = activator;
+            this.node = node;
+        }
+
+        public Step() {
+            this.init();
+        }
+
         void init() {
             activator = null;
             //Nonnull
-            node = null;
+            node = new RadixNode();
+        }
+
+        public Condition getActivator() {
+            return activator;
+        }
+
+        public RadixNode getNode() {
+            return node;
         }
     }
 }

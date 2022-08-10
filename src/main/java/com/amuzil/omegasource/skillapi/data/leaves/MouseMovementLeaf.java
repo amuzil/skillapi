@@ -1,27 +1,28 @@
 package com.amuzil.omegasource.skillapi.data.leaves;
 
 import com.amuzil.omegasource.skillapi.data.RadixLeaf;
-import javafx.scene.input.MouseEvent;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingEvent;
 
-import java.awt.*;
-import java.awt.geom.Point2D;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MouseMovementLeaf implements RadixLeaf<List<Point2D>> {
-    java.util.List<Point2D> path;
+public class MouseMovementLeaf implements RadixLeaf<List<Vec3>> {
+    java.util.List<Vec3> path;
 
 
     public void init() {
-        path = new LinkedList<Point2D>();
+        path = new LinkedList<>();
         MinecraftForge.EVENT_BUS.addListener(this::listener);
     }
 
     @Override
     public void burn() {
         path.clear();
-        MinecraftForge.EVENT_BUS.removeListener(this::listener);
+        //MinecraftForge.EVENT_BUS.removeListener();
     }
 
     @Override
@@ -30,14 +31,20 @@ public class MouseMovementLeaf implements RadixLeaf<List<Point2D>> {
     }
 
     @Override
-    public List<Point2D> measure() {
+    public List<Vec3> measure() {
         return path;
     }
 
     //TODO: Find the right event
     //Dunno if this is the right event
-    void listener(MouseEvent event) {
-        path.add(new Point2D.Double(event.getX(), event.getY()));
+    void listener(LivingEvent.LivingUpdateEvent event) {
+        Vec3 look = event.getEntityLiving().getLookAngle();
+        //int x = InputConstants.
+        path.add(look);
+    }
+
+    void listen(ScreenEvent.KeyboardCharTypedEvent event) {
+
     }
 
 }
