@@ -1,9 +1,13 @@
 package com.amuzil.omegasource.skillapi;
 
+import com.amuzil.omegasource.skillapi.data.conditions.ForgeEventCondition;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
@@ -12,6 +16,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -25,7 +30,7 @@ import java.util.stream.Collectors;
 @Mod(SkillAPI.MODID)
 public class SkillAPI {
     //MODID reference
-    public static final String MODID = "skill_api";
+    public static final String MODID = "magus";
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -47,6 +52,11 @@ public class SkillAPI {
         // some preinit code
         LOGGER.info("HELLO FROM PREINIT");
         LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
+
+        //Testing for some conditions
+//        Function<Event, Boolean> cond = event1 -> event1 instanceof LivingAttackEvent && ((LivingAttackEvent) event1).getSource().getEntity() instanceof Player;
+//        ForgeEventCondition<Event> test = new ForgeEventCondition<>(cond);
+//        test.register(() -> System.out.println("Success??"), () -> {});//System.out.println("Condition failed??"));
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
@@ -55,7 +65,7 @@ public class SkillAPI {
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
         // some example code to dispatch IMC to another mod
-        InterModComms.sendTo("examplemod", "helloworld", () -> {
+        InterModComms.sendTo("magus", "helloworld", () -> {
             LOGGER.info("Hello world from the MDK");
             return "Hello world";
         });

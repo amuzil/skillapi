@@ -13,7 +13,7 @@ public abstract class KeyReleaseCondition extends KeyEventCondition<InputEvent.K
     @Override
     public void listen(InputEvent.KeyInputEvent event) {
         if (event.getAction() == GLFW.GLFW_RELEASE && event.getKey() == getKeyInfo().getKey().getValue()) {
-            success.run();
+          //  success.run();
         }
     }
 }

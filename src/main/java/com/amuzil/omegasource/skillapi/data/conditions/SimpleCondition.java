@@ -1,26 +1,25 @@
 package com.amuzil.omegasource.skillapi.data.conditions;
 
 import com.amuzil.omegasource.skillapi.data.Condition;
-import net.minecraft.world.entity.ai.Brain;
 
-import javax.xml.ws.Provider;
+//import javax.xml.ws.Provider;
 
 public class SimpleCondition extends Condition {
 
-    Provider<Boolean> condition;
+    boolean condition;
 
-    public SimpleCondition(Provider<Boolean> condition) {
+    public SimpleCondition(boolean condition) {
         this.condition = condition;
     }
 
     public SimpleCondition() {
-        this.condition = null;
+        this.condition = false;
     }
 
     @Override
     //TODO: Fix this/check if using the right provider
     public void register(Runnable onSuccess, Runnable onExpire) {
-        if (condition.invoke(true)) {
+        if (condition) {
             onSuccess.run();
         } else {
             onExpire.run();

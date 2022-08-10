@@ -13,7 +13,7 @@ public abstract class KeyPressCondition extends KeyEventCondition<InputEvent.Key
     @Override
     public void listen(InputEvent.KeyInputEvent event) {
         if (event.getAction() == GLFW.GLFW_PRESS && event.getKey() == getKeyInfo().getKey().getValue()) {
-            success.run();
+            //success.run();
         }
     }
 }

@@ -2,7 +2,7 @@ package com.amuzil.omegasource.skillapi.data.conditions;
 
 import com.amuzil.omegasource.skillapi.data.Condition;
 
-public interface StateCondition extends Condition {
+public interface StateCondition {//extends Condition {
 
     boolean isSatisfied();
 

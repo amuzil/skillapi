@@ -20,7 +20,7 @@ public abstract class KeyHoldCondition<E extends InputEvent.KeyInputEvent> exten
         if (event.getAction() == GLFW.GLFW_PRESS && event.getKey() == getKeyInfo().getKey().getValue()) {
             //We don't actually want success to run here, we want it to run if this condition is satisfied
             //and the key has been held for a certain amount of time
-            success.run();
+        //    success.run();
         }
     }
 
