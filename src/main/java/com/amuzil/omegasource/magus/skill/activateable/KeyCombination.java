@@ -22,4 +22,8 @@ public class KeyCombination {
         this.keys = keys;
     }
 
+    public LinkedList<KeyPermutation> getKeys() {
+        return this.keys;
+    }
+
 }
