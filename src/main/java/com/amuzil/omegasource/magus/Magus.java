@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
@@ -18,8 +19,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.LinkedList;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.amuzil.omegasource.magus.radix.condition.util.ConditionConverter.keyToConditions;
 import static com.amuzil.omegasource.magus.radix.condition.util.ConditionConverter.keysToConditions;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -56,19 +59,17 @@ public class Magus {
         LOGGER.info("HELLO FROM PRE INIT");
         LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
 
+
+
         //Testing for some conditions
-//        Function<Event, Boolean> cond = event1 -> event1 instanceof LivingAttackEvent && ((LivingAttackEvent) event1).getSource().getEntity() instanceof Player;
-//        ForgeEventCondition<Event> test = new ForgeEventCondition<>(cond);
-//        ForgeEventCondition<Event> test2 = new ForgeEventCondition<>(cond);
+
+        //Note: this is only executed client-side, due to how events work. Be sure to send a packet!
+//        Condition test = keyToConditions(new KeyInfo(InputConstants.getKey(-1, InputConstants.KEY_X),
+//                0, 40)).get(0);
 //        test.register(() -> {
 //            System.out.println("Success??");
 //            test.unregister();
 //        }, () -> {});
-//        test2.register(() -> {
-//            System.out.println("Sus-ccess");
-//            test.unregister();
-//        }, () -> {
-//        });
 
         //More testing:
 //        KeyInfo k1 = new KeyInfo(InputConstants.getKey(-1, InputConstants.KEY_D), 10, 10),
