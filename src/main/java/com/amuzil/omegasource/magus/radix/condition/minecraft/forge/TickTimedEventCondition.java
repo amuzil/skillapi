@@ -14,7 +14,8 @@ public class TickTimedEventCondition extends Condition {
 	private final Condition subCondition;
 	private final boolean respectSubExpire;
 
-	private int current;
+	//TickEvent extends this, so this needs to be protected vs private
+	protected int current;
 
 	public TickTimedEventCondition(Type type, Phase phase, Condition subCondition, boolean respectSubExpire, int timeout) {
 		assert timeout >= 0; // TODO Assert util

@@ -10,6 +10,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.function.Consumer;
 
 public class KeyHoldCondition extends Condition {
+
 	private final Consumer<KeyInputEvent> keyInputListener;
 	private final Consumer<ClientTickEvent> clientTickListener;
 

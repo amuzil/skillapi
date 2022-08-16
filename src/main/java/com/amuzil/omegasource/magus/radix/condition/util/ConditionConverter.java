@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.radix.condition.util;
 
 import com.amuzil.omegasource.magus.radix.Condition;
+import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.EventCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.TickTimedEventCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressCondition;
@@ -8,6 +9,7 @@ import com.amuzil.omegasource.magus.skill.activateable.KeyCombination;
 import com.amuzil.omegasource.magus.skill.activateable.KeyInfo;
 import com.amuzil.omegasource.magus.skill.activateable.KeyPermutation;
 import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.TickEvent;
 
 import java.util.LinkedList;
@@ -41,9 +43,10 @@ public class ConditionConverter {
         else ls.add(new KeyPressCondition(key.getKey(), 50));
 
         if (key.getMinDelay() > 0)
-            //TODO: Fix this
+            //TODO: Fix this to account for "action keys".
             ls.add(new TickTimedEventCondition(TickEvent.Type.CLIENT, TickEvent.Phase.START,
-                    null, false, key.getMinDelay()));
+                    new EventCondition<InputEvent.KeyInputEvent>(
+                            event -> false), false, key.getMinDelay()));
 
         return ls;
     }

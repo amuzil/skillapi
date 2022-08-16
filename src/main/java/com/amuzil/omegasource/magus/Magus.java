@@ -64,12 +64,12 @@ public class Magus {
         //Testing for some conditions
 
         //Note: this is only executed client-side, due to how events work. Be sure to send a packet!
-//        Condition test = keyToConditions(new KeyInfo(InputConstants.getKey(-1, InputConstants.KEY_X),
-//                0, 40)).get(0);
-//        test.register(() -> {
-//            System.out.println("Success??");
-//            test.unregister();
-//        }, () -> {});
+        Condition test = keyToConditions(new KeyInfo(InputConstants.getKey(-1, InputConstants.KEY_X),
+                0, 40)).get(0);
+        test.register(() -> {
+            System.out.println("Success??");
+            test.unregister();
+        }, () -> {});
 
         //More testing:
 //        KeyInfo k1 = new KeyInfo(InputConstants.getKey(-1, InputConstants.KEY_D), 10, 10),
