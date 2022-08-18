@@ -3,6 +3,10 @@ buildscript {
         // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
         maven { url = 'https://maven.minecraftforge.net' }
         mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
@@ -11,10 +15,11 @@ buildscript {
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
 plugins {
+    //In case people use the inferior IDE
+    id ('eclipse')
     id ('maven-publish')
-    id ('net.minecraftforge') version '5.1.+'
 }
-
+apply plugin: 'net.minecraftforge.gradle'
 version = '1.0'
 group = 'com.amuzil.omegasource' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'magus'
@@ -60,10 +65,10 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            property 'forge.enabledGameTestNamespaces', 'examplemod'
+            property 'forge.enabledGameTestNamespaces', 'magus'
 
             mods {
-                examplemod {
+                magus {
                     source sourceSets.main
                 }
             }
@@ -76,10 +81,10 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-            property 'forge.enabledGameTestNamespaces', 'examplemod'
+            property 'forge.enabledGameTestNamespaces', 'magus'
 
             mods {
-                examplemod {
+                magus {
                     source sourceSets.main
                 }
             }
@@ -95,10 +100,10 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-            property 'forge.enabledGameTestNamespaces', 'examplemod'
+            property 'forge.enabledGameTestNamespaces', 'magus'
 
             mods {
-                examplemod {
+                magus {
                     source sourceSets.main
                 }
             }
@@ -115,7 +120,7 @@ minecraft {
             args '--mod', 'magus', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                examplemod {
+                magus {
                     source sourceSets.main
                 }
             }

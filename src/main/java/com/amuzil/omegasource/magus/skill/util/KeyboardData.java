@@ -1,11 +1,7 @@
 package com.amuzil.omegasource.magus.skill.util;
 
-import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.KeyMapping;
-import net.minecraftforge.client.settings.KeyBindingMap;
 import org.lwjgl.glfw.GLFW;
 
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 

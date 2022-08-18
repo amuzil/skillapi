@@ -5,10 +5,8 @@ import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPress
 import com.amuzil.omegasource.magus.skill.activateable.key.KeyInput;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
@@ -31,44 +29,45 @@ import static com.amuzil.omegasource.magus.radix.condition.util.ConditionConvert
 
 @Mod(Magus.MOD_ID)
 public class Magus {
-	//MODID reference
-	public static final String MOD_ID = "magus";
-	// Directly reference a log4j logger.
-	private static final Logger LOGGER = LogManager.getLogger();
+    //MODID reference
+    public static final String MOD_ID = "magus";
+    // Directly reference a log4j logger.
+    private static final Logger LOGGER = LogManager.getLogger();
 
-	public Magus() {
-		// Register the setup method for mod loading
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-		// Register the enqueueIMC method for mod loading
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
-		// Register the processIMC method for mod loading
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
-		// Register the doClientStuff method for mod loading
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
+    public Magus() {
+        // Register the setup method for mod loading
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+        // Register the enqueueIMC method for mod loading
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
+        // Register the processIMC method for mod loading
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
+        // Register the doClientStuff method for mod loading
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
 
-		// Register ourselves for server and other game events we are interested in
-		MinecraftForge.EVENT_BUS.register(this);
-	}
+        // Register ourselves for server and other game events we are interested in
+        MinecraftForge.EVENT_BUS.register(this);
+    }
 
-	private void setup(final FMLCommonSetupEvent event) {
-		// some pre init code
-		LOGGER.info("HELLO FROM PRE INIT");
-		LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
+    private void setup(final FMLCommonSetupEvent event) {
+        // some pre init code
+        LOGGER.info("HELLO FROM PRE INIT");
+        LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getName());
 
 
-		//Testing for some conditions
+        //Testing for some conditions
 
-		//Note: this is only executed client-side, due to how events work. Be sure to send a packet!
-		Condition test = keyToConditions(
-            new KeyInput(InputConstants.getKey(-1, InputConstants.KEY_X), 0, 0, 40)
+        //Note: this is only executed client-side, due to how events work. Be sure to send a packet!
+        Condition test = keyToConditions(
+                new KeyInput(InputConstants.getKey(-1, InputConstants.KEY_X), 0, 0, 40)
         ).get(0);
-		Condition wait = new KeyPressedCondition(40);
-		wait.register(() -> {
-			System.out.println("Success??");
-			wait.unregister();
-		}, () -> {});
+        Condition wait = new KeyPressedCondition(40);
+        wait.register(() -> {
+            System.out.println("Success??");
+            wait.unregister();
+        }, () -> {
+        });
 
-		//More testing:
+        //More testing:
 //        KeyInfo k1 = new KeyInfo(InputConstants.getKey(-1, InputConstants.KEY_D), 10, 10),
 //                k2 = new KeyInfo(InputConstants.getKey(-1, InputConstants.KEY_D)),
 //                k3 = new KeyInfo(InputConstants.getKey(-1, InputConstants.KEY_S), 0, 5),
@@ -102,55 +101,53 @@ public class Magus {
 //
 //        for (Condition c : conds)
 //            System.out.println(c);
-	}
+    }
 
-	private void doClientStuff(final FMLClientSetupEvent event) {
-		// do something that can only be done on the client
-	}
+    private void doClientStuff(final FMLClientSetupEvent event) {
+        // do something that can only be done on the client
+    }
 
-	private void enqueueIMC(final InterModEnqueueEvent event) {
-		// some example code to dispatch IMC to another mod
-		InterModComms.sendTo("magus", "helloworld", () -> {
-			LOGGER.info("Hello world from the MDK");
-			return "Hello world";
-		});
-	}
+    private void enqueueIMC(final InterModEnqueueEvent event) {
+        // some example code to dispatch IMC to another mod
+        InterModComms.sendTo("magus", "helloworld", () -> {
+            LOGGER.info("Hello world from the MDK");
+            return "Hello world";
+        });
+    }
 
-	private void processIMC(final InterModProcessEvent event) {
-		// some example code to receive and process InterModComms from other mods
-		LOGGER.info("Got IMC {}",
-			event.getIMCStream().map(message -> message.messageSupplier().get()).collect(Collectors.toList())
-		);
-	}
+    private void processIMC(final InterModProcessEvent event) {
+        // some example code to receive and process InterModComms from other mods
+        LOGGER.info("Got IMC {}",
+                event.getIMCStream().map(message -> message.messageSupplier().get()).collect(Collectors.toList())
+        );
+    }
 
-	// You can use SubscribeEvent and let the Event Bus discover methods to call
-	@SubscribeEvent
-	public void onServerStarting(FMLDedicatedServerSetupEvent event) {
-		// do something when the server starts
-		LOGGER.info("HELLO from server starting");
-	}
+    // You can use SubscribeEvent and let the Event Bus discover methods to call
+    @SubscribeEvent
+    public void onServerStarting(FMLDedicatedServerSetupEvent event) {
+        // do something when the server starts
+        LOGGER.info("HELLO from server starting");
+    }
 
-	// You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
-	// Event bus for receiving Registry Events)
-	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-	public static class RegistryEvents {
-		@SubscribeEvent
-		public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
-			// register a new block here
-			LOGGER.info("HELLO from Register Block");
-		}
-	}
+    // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
+    // Event bus for receiving Registry Events)
+//	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+//	public static class RegistryEvents {
+//		@SubscribeEvent
+//		public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
+//			// register a new block here
+//			LOGGER.info("HELLO from Register Block");
+//		}
+//	}
 
-	//Copied for 1.19
-	@Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-	public static class ClientModEvents
-	{
-		@SubscribeEvent
-		public static void onClientSetup(FMLClientSetupEvent event)
-		{
-			// Some client setup code
-			LOGGER.info("HELLO FROM CLIENT SETUP");
-			LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
-		}
-	}
+    //Copied for 1.19
+    @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+    public static class ClientModEvents {
+        @SubscribeEvent
+        public static void onClientSetup(FMLClientSetupEvent event) {
+            // Some client setup code
+            LOGGER.info("HELLO FROM CLIENT SETUP");
+            LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
+        }
+    }
 }

@@ -9,7 +9,7 @@ import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPress
 import com.amuzil.omegasource.magus.skill.activateable.key.KeyCombination;
 import com.amuzil.omegasource.magus.skill.activateable.key.KeyInput;
 import com.amuzil.omegasource.magus.skill.activateable.key.KeyPermutation;
-import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
+import net.minecraftforge.client.event.InputEvent.Key;
 import net.minecraftforge.event.TickEvent;
 
 import java.util.LinkedList;
@@ -51,7 +51,7 @@ public class ConditionConverter {
 			conditions.add(new TickTimedCondition(
 				TickEvent.Type.CLIENT, TickEvent.Phase.START,
 				key.maxDelay(), Result.SUCCESS,
-				new EventCondition<KeyInputEvent>(event -> false), Result.SUCCESS, Result.FAILURE
+				new EventCondition<Key>(event -> false), Result.SUCCESS, Result.FAILURE
 			));
 		}
 
