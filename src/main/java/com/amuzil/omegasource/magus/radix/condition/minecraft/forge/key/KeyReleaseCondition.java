@@ -10,8 +10,8 @@ import org.lwjgl.glfw.GLFW;
 
 public class KeyReleaseCondition extends TickTimedCondition {
 	public KeyReleaseCondition(Key key, int timeout) {
-		super(Type.CLIENT, Phase.START, timeout, Result.FAILURE, new EventCondition<InputEvent.Key>(
-			event -> event.getAction() == GLFW.GLFW_RELEASE && event.getKey() == key.getValue()
+		super(Type.CLIENT, Phase.START, timeout, Result.FAILURE, new EventCondition<>(
+				InputEvent.Key.class, event -> event.getAction() == GLFW.GLFW_RELEASE && event.getKey() == key.getValue()
 		), Result.SUCCESS, Result.FAILURE);
 	}
 }

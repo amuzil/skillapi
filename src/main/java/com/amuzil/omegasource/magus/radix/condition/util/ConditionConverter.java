@@ -6,6 +6,7 @@ import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.EventConditi
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.TickTimedCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressCondition;
+import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressedCondition;
 import com.amuzil.omegasource.magus.skill.activateable.key.KeyCombination;
 import com.amuzil.omegasource.magus.skill.activateable.key.KeyInput;
 import com.amuzil.omegasource.magus.skill.activateable.key.KeyPermutation;
@@ -51,7 +52,7 @@ public class ConditionConverter {
 			conditions.add(new TickTimedCondition(
 				TickEvent.Type.CLIENT, TickEvent.Phase.START,
 				key.maxDelay(), Result.SUCCESS,
-				new EventCondition<Key>(event -> false), Result.SUCCESS, Result.FAILURE
+				new KeyPressedCondition(TIMEOUT_THRESHOLD), Result.FAILURE, Result.SUCCESS
 			));
 		}
 

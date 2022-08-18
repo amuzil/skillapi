@@ -10,8 +10,8 @@ import org.lwjgl.glfw.GLFW;
 
 public class KeyPressCondition extends TickTimedCondition {
 	public KeyPressCondition(Key key, int timeout) {
-		super(Type.CLIENT, Phase.START, timeout, Result.FAILURE, new EventCondition<InputEvent.Key>(
-			event -> event.getAction() == GLFW.GLFW_PRESS && event.getKey() == key.getValue()
+		super(Type.CLIENT, Phase.START, timeout, Result.FAILURE, new EventCondition<>(
+			InputEvent.Key.class, event -> event.getAction() == GLFW.GLFW_PRESS && event.getKey() == key.getValue()
 		), Result.SUCCESS, Result.FAILURE);
 	}
 }
