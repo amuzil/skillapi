@@ -1,59 +1,12 @@
 package com.amuzil.omegasource.magus.skill.activateable;
 
-/**
- * Covers all the different ways to activate an ability.
- * Gonna use an enum to describe for now. Will update that later; think of it as a placeholder.
- */
+import com.amuzil.omegasource.magus.radix.Condition;
+
+import java.util.LinkedList;
+
 public class Activator {
-
-    //Will fix this later
-    public Activator() {
-    }
-    /**
-     * 4 main types of activation. Each of these have sub-types. Again, I'll define them as an enum for now and
-     * consolidate for good code practice later.
-     */
-    public enum ActivationType {
-        RADIAL,
-        HOTKEY,
-        MULTIKEY,
-        GESTURE
-    }
-
-    public enum RadialType {
-        MOUSE,
-        NUMBER
-    }
-
-    /**
-     * These 2 types are generally used for multikey. Initialise is how to start listening for the hotkey or key combo,
-     * and the execution is when to stop.
-     */
-    public enum InitialiseType {
-        TOGGLE,
-        HOLD
-    }
-
-    public enum ExecuteType {
-        DESIGNATED,
-        SPECIAL
-    }
-
-    /**
-     * Covers a range of VR gestures for those who aren't too flexible or athletically inclined, and those
-     * who are quite adept in their range of motion.
-     */
-    public enum GestureType {
-        SIMPLE,
-        COMPLEX
-    }
-
-    /**
-     * Simple activators take direct events/information to pass to a listener (radial menu and such).
-     * Complex take other activators and simple events.
-     */
-    public enum ActivatorType {
-        SIMPLE,
-        COMPLEX
+    //Returns a linked list of all conditions derived from the current class
+    public LinkedList<Condition> toCondition() {
+        return new LinkedList<>();
     }
 }

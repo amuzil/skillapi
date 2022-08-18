@@ -4,6 +4,7 @@ import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressedCondition;
 import com.amuzil.omegasource.magus.skill.activateable.key.KeyInput;
 import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
@@ -137,6 +138,19 @@ public class Magus {
 		public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
 			// register a new block here
 			LOGGER.info("HELLO from Register Block");
+		}
+	}
+
+	//Copied for 1.19
+	@Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+	public static class ClientModEvents
+	{
+		@SubscribeEvent
+		public static void onClientSetup(FMLClientSetupEvent event)
+		{
+			// Some client setup code
+			LOGGER.info("HELLO FROM CLIENT SETUP");
+			LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
 		}
 	}
 }

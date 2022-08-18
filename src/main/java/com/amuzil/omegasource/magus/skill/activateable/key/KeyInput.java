@@ -1,8 +1,7 @@
 package com.amuzil.omegasource.magus.skill.activateable.key;
 
+import com.amuzil.omegasource.magus.skill.activateable.Activator;
 import com.mojang.blaze3d.platform.InputConstants;
-
-import java.util.LinkedList;
 
 //Takes a key, delay, and held length.
 public record KeyInput (
