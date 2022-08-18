@@ -12,11 +12,11 @@ public class SimpleCondition extends Condition {
 	}
 
 	@Override
-	public void register(Runnable onSuccess, Runnable onExpire) {
+	public void register(Runnable onSuccess, Runnable onFailure) {
 		if (condition.get()) {
 			onSuccess.run();
 		} else {
-			onExpire.run();
+			onFailure.run();
 		}
 	}
 }

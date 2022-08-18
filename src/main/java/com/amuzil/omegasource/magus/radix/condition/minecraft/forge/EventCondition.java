@@ -15,14 +15,14 @@ public class EventCondition<E extends Event> extends Condition {
 			if (condition.apply(event)) {
 				this.onSuccess.run();
 			} else {
-				this.onExpire.run();
+				this.onFailure.run();
 			}
 		};
 	}
 
 	@Override
-	public void register(Runnable onSuccess, Runnable onExpire) {
-		super.register(onSuccess, onExpire);
+	public void register(Runnable onSuccess, Runnable onFailure) {
+		super.register(onSuccess, onFailure);
 		MinecraftForge.EVENT_BUS.addListener(listener);
 	}
 

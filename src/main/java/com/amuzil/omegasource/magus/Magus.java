@@ -1,15 +1,12 @@
 package com.amuzil.omegasource.magus;
 
 import com.amuzil.omegasource.magus.radix.Condition;
-import com.amuzil.omegasource.magus.skill.activateable.KeyCombination;
 import com.amuzil.omegasource.magus.skill.activateable.KeyInfo;
-import com.amuzil.omegasource.magus.skill.activateable.KeyPermutation;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
@@ -18,12 +15,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.LinkedList;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.amuzil.omegasource.magus.radix.condition.util.ConditionConverter.keyToConditions;
-import static com.amuzil.omegasource.magus.radix.condition.util.ConditionConverter.keysToConditions;
 
 // The value here should match an entry in the META-INF/mods.toml file
 

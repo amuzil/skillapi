@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key;
 
 import com.amuzil.omegasource.magus.radix.Condition;
+import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.mojang.blaze3d.platform.InputConstants.Key;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -19,8 +20,8 @@ public class KeyHoldCondition extends Condition {
 	private int currentHolding;
 
 	public KeyHoldCondition(Key key, int duration, int timeout) {
-		assert duration >= 0; // TODO Assert util
-		assert timeout >= 0; // TODO Assert util
+		RadixUtil.assertTrue(duration >= 0, "duration must be >= 0");
+		RadixUtil.assertTrue(timeout >= 0, "timeout must be >= 0");
 
 		this.currentTotal = 0;
 		this.isHolding = false;
@@ -35,7 +36,7 @@ public class KeyHoldCondition extends Condition {
 					this.isHolding = false;
 				}
 			} else {
-				this.onExpire.run();
+				this.onFailure.run();
 			}
 		};
 
@@ -49,15 +50,15 @@ public class KeyHoldCondition extends Condition {
 					}
 				}
 				if (this.currentTotal >= timeout) {
-					this.onExpire.run();
+					this.onFailure.run();
 				}
 			}
 		};
 	}
 
 	@Override
-	public void register(Runnable onSuccess, Runnable onExpire) {
-		super.register(onSuccess, onExpire);
+	public void register(Runnable onSuccess, Runnable onFailure) {
+		super.register(onSuccess, onFailure);
 		MinecraftForge.EVENT_BUS.addListener(keyInputListener);
 		MinecraftForge.EVENT_BUS.addListener(clientTickListener);
 	}
