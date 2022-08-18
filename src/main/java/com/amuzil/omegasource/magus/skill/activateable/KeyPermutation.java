@@ -13,22 +13,22 @@ import java.util.List;
 public class KeyPermutation {
 
     //Key and delay.
-    private List<KeyInfo> keys;
+    private List<KeyInput> keys;
 
     public KeyPermutation() {
         this.keys = new ArrayList<>();
     }
 
-    public KeyPermutation(List<KeyInfo> keys) {
+    public KeyPermutation(List<KeyInput> keys) {
         this.keys = keys;
     }
 
-    public KeyPermutation(KeyInfo info) {
+    public KeyPermutation(KeyInput info) {
         this.keys = new ArrayList<>();
         this.keys.add(info);
     }
 
-    public List<KeyInfo> getKeys() {
+    public List<KeyInput> getKeys() {
         return this.keys;
     }
 

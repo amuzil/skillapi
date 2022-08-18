@@ -3,7 +3,7 @@ package com.amuzil.omegasource.magus.skill.activateable;
 import com.mojang.blaze3d.platform.InputConstants;
 
 //Takes a key, delay, and held length.
-public class KeyInfo {
+public class KeyInput {
 
     private InputConstants.Key key;
     //In ticks (20 ticks a second). Can be used to make someone wait between key presses for something.
@@ -15,25 +15,25 @@ public class KeyInfo {
     private int held;
 
 
-    public KeyInfo() {
+    public KeyInput() {
         this.key = InputConstants.UNKNOWN;
         this.minDelay = 0;
         this.held = -1;
     }
 
-    public KeyInfo(InputConstants.Key key) {
+    public KeyInput(InputConstants.Key key) {
         this.key = key;
         this.minDelay = 0;
         this.held = - 1;
     }
 
-    public KeyInfo(InputConstants.Key key, int delay) {
+    public KeyInput(InputConstants.Key key, int delay) {
         this.key = key;
         this.minDelay = delay;
         this.held = -1;
     }
 
-    public KeyInfo(InputConstants.Key key, int delay, int held) {
+    public KeyInput(InputConstants.Key key, int delay, int held) {
         this.key = key;
         this.minDelay = delay;
         this.held = held;

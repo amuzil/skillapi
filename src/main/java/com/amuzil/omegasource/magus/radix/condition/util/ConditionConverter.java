@@ -7,7 +7,7 @@ import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.TickTimedCon
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressCondition;
 import com.amuzil.omegasource.magus.skill.activateable.KeyCombination;
-import com.amuzil.omegasource.magus.skill.activateable.KeyInfo;
+import com.amuzil.omegasource.magus.skill.activateable.KeyInput;
 import com.amuzil.omegasource.magus.skill.activateable.KeyPermutation;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.event.TickEvent;
@@ -35,7 +35,7 @@ public class ConditionConverter {
 			.collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll);
 	}
 
-	public static LinkedList<Condition> keyToConditions(KeyInfo key) {
+	public static LinkedList<Condition> keyToConditions(KeyInput key) {
 		LinkedList<Condition> conditions = new LinkedList<>();
 
 		// Any time less than this is just a key press.

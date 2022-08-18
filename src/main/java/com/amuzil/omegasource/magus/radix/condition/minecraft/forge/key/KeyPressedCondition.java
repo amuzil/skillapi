@@ -9,7 +9,7 @@ import net.minecraftforge.event.TickEvent;
 public class KeyPressedCondition extends TickTimedCondition {
     //Upon *any* key (not including modifiers or wasd) being pressed, return true
     public KeyPressedCondition(int timeout) {
-        super(TickEvent.Type.CLIENT, TickEvent.Phase.START, timeout, Result.FAILURE, new EventCondition<InputEvent.KeyInputEvent>(
+        super(TickEvent.Type.CLIENT, TickEvent.Phase.START, timeout, Result.SUCCESS, new EventCondition<InputEvent.KeyInputEvent>(
                 event -> !KeyboardData.ignore(event.getKey())
         ), Result.SUCCESS, Result.FAILURE);
     }

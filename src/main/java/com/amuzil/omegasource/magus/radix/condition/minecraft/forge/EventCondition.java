@@ -12,10 +12,15 @@ public class EventCondition<E extends Event> extends Condition {
 
 	public EventCondition(Function<E, Boolean> condition) {
 		this.listener = event -> {
-			if (condition.apply(event)) {
-				this.onSuccess.run();
-			} else {
-				this.onFailure.run();
+			try {
+				if (condition.apply(event)) {
+					this.onSuccess.run();
+				} else {
+					this.onFailure.run();
+				}
+			}
+			catch (ClassCastException e) {
+				e.printStackTrace();
 			}
 		};
 	}
