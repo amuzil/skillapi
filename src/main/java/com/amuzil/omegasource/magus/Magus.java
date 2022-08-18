@@ -2,7 +2,7 @@ package com.amuzil.omegasource.magus;
 
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressedCondition;
-import com.amuzil.omegasource.magus.skill.activateable.KeyInput;
+import com.amuzil.omegasource.magus.skill.activateable.key.KeyInput;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -59,7 +59,7 @@ public class Magus {
 
 		//Note: this is only executed client-side, due to how events work. Be sure to send a packet!
 		Condition test = keyToConditions(
-            new KeyInput(InputConstants.getKey(-1, InputConstants.KEY_X), 0, 40)
+            new KeyInput(InputConstants.getKey(-1, InputConstants.KEY_X), 0, 0, 40)
         ).get(0);
 		Condition wait = new KeyPressedCondition(40);
 		wait.register(() -> {

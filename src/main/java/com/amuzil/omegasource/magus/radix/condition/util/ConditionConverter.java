@@ -6,9 +6,9 @@ import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.EventConditi
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.TickTimedCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressCondition;
-import com.amuzil.omegasource.magus.skill.activateable.KeyCombination;
-import com.amuzil.omegasource.magus.skill.activateable.KeyInput;
-import com.amuzil.omegasource.magus.skill.activateable.KeyPermutation;
+import com.amuzil.omegasource.magus.skill.activateable.key.KeyCombination;
+import com.amuzil.omegasource.magus.skill.activateable.key.KeyInput;
+import com.amuzil.omegasource.magus.skill.activateable.key.KeyPermutation;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.event.TickEvent;
 
@@ -23,15 +23,16 @@ public class ConditionConverter {
 	 * Minimum amount of ticks a key must be pressed for it to be considered a held condition.
 	 */
 	public static final int HELD_THRESHOLD = 3;
+	public static final int TIMEOUT_THRESHOLD = 50;
 
 	public static LinkedList<Condition> combinationToConditions(KeyCombination combination) {
-		return combination.getKeys().stream().map(ConditionConverter::permutationToConditions)
+		return combination.keys().stream().map(ConditionConverter::permutationToConditions)
 			.collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll);
 	}
 
 	public static LinkedList<Condition> permutationToConditions(KeyPermutation permutation) {
 		// TODO ensure the order is preserved
-		return permutation.getKeys().stream().map(ConditionConverter::keyToConditions)
+		return permutation.keys().stream().map(ConditionConverter::keyToConditions)
 			.collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll);
 	}
 
@@ -39,16 +40,17 @@ public class ConditionConverter {
 		LinkedList<Condition> conditions = new LinkedList<>();
 
 		// Any time less than this is just a key press.
-		conditions.add(key.getHeld() > HELD_THRESHOLD
-			? new KeyHoldCondition(key.getKey(), key.getHeld(), 50)
-			: new KeyPressCondition(key.getKey(), 50)
+		// TODO: Adjust timeout to be per node.
+		conditions.add(key.held() > HELD_THRESHOLD
+			? new KeyHoldCondition(key.key(), key.held(), TIMEOUT_THRESHOLD)
+			: new KeyPressCondition(key.key(), TIMEOUT_THRESHOLD)
 		);
 
-		if (key.getMinDelay() > 0) {
+		if (key.minDelay() > 0) {
 			//TODO: Fix this to account for "action keys".
 			conditions.add(new TickTimedCondition(
 				TickEvent.Type.CLIENT, TickEvent.Phase.START,
-				key.getMinDelay(), Result.SUCCESS,
+				key.maxDelay(), Result.SUCCESS,
 				new EventCondition<KeyInputEvent>(event -> false), Result.SUCCESS, Result.FAILURE
 			));
 		}
