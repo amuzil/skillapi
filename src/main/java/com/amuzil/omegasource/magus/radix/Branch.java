@@ -52,8 +52,7 @@ public class Branch {
 		return (T) leaves.get(type).measure();
 	}
 
-	public record Step(Condition activator, Node node) {
-
+	public record Step (Condition activator, Node node) {
 	}
 }
 

@@ -2,6 +2,7 @@ package com.amuzil.omegasource.magus;
 
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressedCondition;
+import com.amuzil.omegasource.magus.radix.path.PathBuilder;
 import com.amuzil.omegasource.magus.skill.activateable.key.KeyInput;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
@@ -16,8 +17,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.stream.Collectors;
-
-import static com.amuzil.omegasource.magus.radix.condition.util.ConditionConverter.keyToConditions;
 
 // The value here should match an entry in the META-INF/mods.toml file
 
@@ -57,7 +56,7 @@ public class Magus {
         //Testing for some conditions
 
         //Note: this is only executed client-side, due to how events work. Be sure to send a packet!
-        Condition test = keyToConditions(
+        Condition test = PathBuilder.buildPathFrom(
                 new KeyInput(InputConstants.getKey(-1, InputConstants.KEY_X), 0, 0, 40)
         ).get(0);
         Condition wait = new KeyPressedCondition(40);

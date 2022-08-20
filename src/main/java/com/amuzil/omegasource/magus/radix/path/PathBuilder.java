@@ -22,6 +22,7 @@ public class PathBuilder {
 	static {
 		registerBuilder(KeyInput.class, keyInput -> {
 			// Minimum amount of ticks a key must be pressed for it to be considered a held condition.
+			//TODO: Adjust these
 			final int HELD_THRESHOLD = 3;
 			final int TIMEOUT_THRESHOLD = 50;
 
