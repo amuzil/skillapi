@@ -6,6 +6,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.Type;
+import net.minecraftforge.eventbus.api.EventPriority;
 
 import java.util.function.Consumer;
 
@@ -43,7 +44,8 @@ public class TickTimedCondition extends Condition {
 		super.register(onSuccess, onFailure);
 		// TODO is this the correct approach?
 		this.subCondition.register(runOn(this.onSubSuccess), runOn(this.onSubFailure));
-		MinecraftForge.EVENT_BUS.addListener(listener);
+		//Ensures no cast errors occur (blame forge)
+		MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.class, listener);
 	}
 
 	@Override
