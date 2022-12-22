@@ -4,24 +4,28 @@ import com.amuzil.omegasource.magus.skill.skill.SkillBase;
 import com.amuzil.omegasource.magus.skill.skill.SkillCategory;
 import com.amuzil.omegasource.magus.skill.util.SkillData;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.LivingEntity;
 
 import java.util.List;
 
 public class LivingDataTrait implements DataTrait {
 
-    private LivingEntity entity;
+
     private List<SkillBase> skills;
     private SkillData data;
     private List<SkillCategory> categories;
+
+
     @Override
     public String getName() {
-        return "livingDataTrait";
+        return "livingDataTraits";
     }
 
     @Override
     public CompoundTag serializeNBT() {
-        return null;
+        CompoundTag tag = new CompoundTag();
+
+
+        return tag;
     }
 
     @Override
