@@ -6,7 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LivingData implements LivingDataInterface {
+public class LivingDataCapability implements LivingDataInterface {
 
     private List<DataTrait> traits = new ArrayList<>();
 
@@ -21,6 +21,6 @@ public class LivingData implements LivingDataInterface {
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         for (DataTrait trait : traits)
-            trait.deserializeNBT(nbt);
+            trait.deserializeNBT((CompoundTag) nbt.get(trait.getName()));
     }
 }
