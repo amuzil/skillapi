@@ -1,4 +1,4 @@
-package com.amuzil.omegasource.magus.skill.util;
+package com.amuzil.omegasource.magus.skill.util.data;
 
 import org.lwjgl.glfw.GLFW;
 

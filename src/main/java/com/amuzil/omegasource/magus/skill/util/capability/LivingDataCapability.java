@@ -1,4 +1,4 @@
-package com.amuzil.omegasource.magus.skill.capability;
+package com.amuzil.omegasource.magus.skill.util.capability;
 
 import com.amuzil.omegasource.magus.skill.util.traits.DataTrait;
 import net.minecraft.nbt.CompoundTag;

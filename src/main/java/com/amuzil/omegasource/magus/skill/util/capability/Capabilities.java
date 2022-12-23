@@ -1,4 +1,4 @@
-package com.amuzil.omegasource.magus.skill.capability;
+package com.amuzil.omegasource.magus.skill.util.capability;
 
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;

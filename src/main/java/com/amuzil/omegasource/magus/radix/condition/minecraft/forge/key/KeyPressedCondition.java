@@ -2,7 +2,7 @@ package com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key;
 
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.EventCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.TickTimedCondition;
-import com.amuzil.omegasource.magus.skill.util.KeyboardData;
+import com.amuzil.omegasource.magus.skill.util.data.KeyboardData;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.TickEvent;
 
