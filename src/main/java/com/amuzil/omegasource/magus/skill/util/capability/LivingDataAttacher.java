@@ -16,7 +16,7 @@ public class LivingDataAttacher {
     private LivingDataAttacher() {
     }
 
-    public static void attach(final AttachCapabilitiesEvent<Entity> event) {
+    public static void attach(AttachCapabilitiesEvent<Entity> event) {
         final LivingDataProvider provider = new LivingDataProvider();
 
         event.addCapability(LivingDataProvider.IDENTIFIER, provider);
