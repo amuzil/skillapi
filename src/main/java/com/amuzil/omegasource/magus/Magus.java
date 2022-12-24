@@ -48,12 +48,12 @@ public class Magus {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
 
 
-        Capabilities.initialiseRegistries();
     }
 
     private void setup(final FMLCommonSetupEvent event) {
         // some pre init code
         Registries.init();
+        Capabilities.initialiseCaps();
         LOGGER.info("HELLO FROM PRE INIT");
         LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getName());
 
@@ -61,15 +61,15 @@ public class Magus {
         //Testing for some conditions
 
         //Note: this is only executed client-side, due to how events work. Be sure to send a packet!
-        Condition test = PathBuilder.buildPathFrom(
-                new KeyInput(InputConstants.getKey(-1, InputConstants.KEY_X), 0, 0, 40)
-        ).get(0);
-        Condition wait = new KeyPressedCondition(40);
-        wait.register(() -> {
-            System.out.println("Success??");
-            wait.unregister();
-        }, () -> {
-        });
+//        Condition test = PathBuilder.buildPathFrom(
+//                new KeyInput(InputConstants.getKey(-1, InputConstants.KEY_X), 0, 0, 40)
+//        ).get(0);
+//        Condition wait = new KeyPressedCondition(40);
+//        wait.register(() -> {
+//            System.out.println("Success??");
+//            wait.unregister();
+//        }, () -> {
+//        });
 
         //More testing:
 //        KeyInfo k1 = new KeyInfo(InputConstants.getKey(-1, InputConstants.KEY_D), 10, 10),

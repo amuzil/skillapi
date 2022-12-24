@@ -1,8 +1,10 @@
 package com.amuzil.omegasource.magus.skill.util.capability;
 
+import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.util.traits.IDataTrait;
 import net.minecraft.nbt.CompoundTag;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LivingData implements IData {
@@ -22,8 +24,8 @@ public class LivingData implements IData {
     private final List<IDataTrait> traits;
 
     public LivingData() {
-        //Clones it.
-        traits = Capabilities.dataTraits.stream().toList();
+        traits = new ArrayList<>();
+        fillTraits();
     }
 
     @Override
@@ -36,6 +38,10 @@ public class LivingData implements IData {
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         traits.forEach(trait -> trait.deserializeNBT((CompoundTag) nbt.get(trait.getName())));
+    }
+
+    public void fillTraits() {
+        //traits.addAll(Registries.DATA_TRAITS.getValues());
     }
 
     //When players move to versions with new techniques and such, we'll have to use these to accomodate.
