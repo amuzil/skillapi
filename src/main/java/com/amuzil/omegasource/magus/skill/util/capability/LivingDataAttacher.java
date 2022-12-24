@@ -1,19 +1,14 @@
 package com.amuzil.omegasource.magus.skill.util.capability;
 
 import com.amuzil.omegasource.magus.Magus;
-import com.amuzil.omegasource.magus.radix.Condition;
-import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressedCondition;
-import com.amuzil.omegasource.magus.radix.path.PathBuilder;
-import com.amuzil.omegasource.magus.skill.activateable.key.KeyInput;
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -33,7 +28,9 @@ public class LivingDataAttacher {
 
     @SubscribeEvent
     public static void attach(AttachCapabilitiesEvent<Entity> event) {
-        if (event.getObject() instanceof Player) {
+        if (event.getObject() instanceof LivingEntity) {
+            //TODO: Add requirement to check against a list of compatible entities.
+            //E.g custom npcs, or specific mobs you want to be able to use Skills.
             LivingDataProvider provider = new LivingDataProvider();
             event.addCapability(LivingDataProvider.IDENTIFIER, provider);
         }
@@ -51,10 +48,15 @@ public class LivingDataAttacher {
         private final LazyOptional<IData> optionalData = LazyOptional.of(() -> livingData);
 
 
+        @Override
+        public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap) {
+            return Capabilities.LIVING_DATA.orEmpty(cap, this.optionalData);
+        }
+
         @NotNull
         @Override
         public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-            return Capabilities.LIVING_DATA.orEmpty(cap, this.optionalData);
+            return getCapability(cap);
         }
 
         void invalidate() {

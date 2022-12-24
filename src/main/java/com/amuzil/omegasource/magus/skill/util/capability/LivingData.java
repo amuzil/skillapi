@@ -28,6 +28,7 @@ public class LivingData implements IData {
         fillTraits();
     }
 
+
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();

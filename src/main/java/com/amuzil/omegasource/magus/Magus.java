@@ -6,6 +6,7 @@ import com.amuzil.omegasource.magus.radix.path.PathBuilder;
 import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.activateable.key.KeyInput;
 import com.amuzil.omegasource.magus.skill.util.capability.Capabilities;
+import com.amuzil.omegasource.magus.skill.util.capability.IData;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.block.Blocks;
@@ -61,14 +62,11 @@ public class Magus {
         //Testing for some conditions
 
         //Note: this is only executed client-side, due to how events work. Be sure to send a packet!
-//        Condition test = PathBuilder.buildPathFrom(
-//                new KeyInput(InputConstants.getKey(-1, InputConstants.KEY_X), 0, 0, 40)
-//        ).get(0);
-//        Condition wait = new KeyPressedCondition(40);
-//        wait.register(() -> {
-//            System.out.println("Success??");
-//            wait.unregister();
-//        }, () -> {
+        Condition test = PathBuilder.buildPathFrom(
+                new KeyInput(InputConstants.getKey(-1, InputConstants.KEY_X), 0, 0, 40)
+        ).get(0);
+        Condition wait = new KeyPressedCondition(40);
+//        test.register(() -> { }, () -> {
 //        });
 
         //More testing:
