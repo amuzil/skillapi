@@ -3,6 +3,7 @@ package com.amuzil.omegasource.magus;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressedCondition;
 import com.amuzil.omegasource.magus.radix.path.PathBuilder;
+import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.activateable.key.KeyInput;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
@@ -45,6 +46,7 @@ public class Magus {
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+        Registries.init();
     }
 
     private void setup(final FMLCommonSetupEvent event) {

@@ -5,7 +5,7 @@ import java.util.UUID;
 /**
  * Basic skill class. All other skills extend this.
  */
-public class SkillBase {
+public class Skill {
 
     private String name;
     private UUID category;

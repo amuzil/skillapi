@@ -9,5 +9,5 @@ package com.amuzil.omegasource.magus.skill.skill;
  * Stance skills could range from Sun stance firebending, to give access to new combos,
  * to different types of martial arts in a martial arts mod. E.g variations on karate.
  */
-public class SkillStance extends SkillBase {
+public class SkillStance extends Skill {
 }

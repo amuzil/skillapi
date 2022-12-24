@@ -1,6 +1,6 @@
 package com.amuzil.omegasource.magus.skill.skill;
 
-public class SkillActive extends SkillBase {
+public class SkillActive extends Skill {
 
     //Need to account for the different types as worked out by Maht and I (FavouriteDragon).
     public boolean execute() {
