@@ -41,7 +41,7 @@ public class LivingData implements IData {
     }
 
     public void fillTraits() {
-        //traits.addAll(Registries.DATA_TRAITS.getValues());
+        traits.addAll(Registries.DATA_TRAITS.get().getValues());
     }
 
     //When players move to versions with new techniques and such, we'll have to use these to accomodate.

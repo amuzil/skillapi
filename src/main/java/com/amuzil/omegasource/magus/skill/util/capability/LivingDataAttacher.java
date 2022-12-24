@@ -36,15 +36,6 @@ public class LivingDataAttacher {
         if (event.getObject() instanceof Player) {
             LivingDataProvider provider = new LivingDataProvider();
             event.addCapability(LivingDataProvider.IDENTIFIER, provider);
-            Condition test = PathBuilder.buildPathFrom(
-                    new KeyInput(InputConstants.getKey(-1, InputConstants.KEY_X), 0, 0, 40)
-            ).get(0);
-            Condition wait = new KeyPressedCondition(40);
-            test.register(() -> {
-                System.out.println("Success??");
-                test.unregister();
-            }, () -> {
-            });
         }
     }
 
