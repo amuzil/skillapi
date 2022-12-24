@@ -1,13 +1,9 @@
 package com.amuzil.omegasource.magus.skill.util.capability;
 
-import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.util.traits.IDataTrait;
 import net.minecraft.nbt.CompoundTag;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class LivingDataCapability implements LivingDataInterface {
 
