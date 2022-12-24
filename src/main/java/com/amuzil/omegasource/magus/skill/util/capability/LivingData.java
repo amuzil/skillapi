@@ -5,7 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 
 import java.util.List;
 
-public class LivingDataCapability implements LivingDataInterface {
+public class LivingData implements ILivingData {
 
     //Data Traits to add:
     // private List<SkillBase> skills;
@@ -21,7 +21,7 @@ public class LivingDataCapability implements LivingDataInterface {
     //The amount of data traits the player has should not change after initialisation.
     private List<IDataTrait> traits;
 
-    public LivingDataCapability() {
+    public LivingData() {
         //Clones it.
         traits = Capabilities.dataTraits.stream().toList();
     }
@@ -29,16 +29,13 @@ public class LivingDataCapability implements LivingDataInterface {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
-        for (IDataTrait trait : traits)
-            tag.put(trait.getName(), trait.serializeNBT());
-
+        traits.forEach(trait -> tag.put(trait.getName(), trait.serializeNBT()));
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        for (IDataTrait trait : traits)
-            trait.deserializeNBT((CompoundTag) nbt.get(trait.getName()));
+        traits.forEach(trait -> trait.deserializeNBT((CompoundTag) nbt.get(trait.getName())));
     }
 
     //When players move to versions with new techniques and such, we'll have to use these to accomodate.

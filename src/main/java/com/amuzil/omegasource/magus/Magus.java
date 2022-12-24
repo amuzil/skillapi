@@ -5,6 +5,7 @@ import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPress
 import com.amuzil.omegasource.magus.radix.path.PathBuilder;
 import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.activateable.key.KeyInput;
+import com.amuzil.omegasource.magus.skill.util.capability.Capabilities;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.block.Blocks;
@@ -35,6 +36,8 @@ public class Magus {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public Magus() {
+        // Register ourselves for server and other game events we are interested in
+        MinecraftForge.EVENT_BUS.register(this);
         // Register the setup method for mod loading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         // Register the enqueueIMC method for mod loading
@@ -44,13 +47,13 @@ public class Magus {
         // Register the doClientStuff method for mod loading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
 
-        // Register ourselves for server and other game events we are interested in
-        MinecraftForge.EVENT_BUS.register(this);
-        Registries.init();
+
+        Capabilities.initialiseRegistries();
     }
 
     private void setup(final FMLCommonSetupEvent event) {
         // some pre init code
+        Registries.init();
         LOGGER.info("HELLO FROM PRE INIT");
         LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getName());
 

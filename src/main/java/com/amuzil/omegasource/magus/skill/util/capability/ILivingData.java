@@ -5,6 +5,6 @@ import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 import net.minecraftforge.common.util.INBTSerializable;
 
 @AutoRegisterCapability
-public interface LivingDataInterface extends INBTSerializable<CompoundTag> {
+public interface ILivingData extends INBTSerializable<CompoundTag> {
 
 }

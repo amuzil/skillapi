@@ -26,8 +26,8 @@ public class LivingDataAttacher {
 
         public static final ResourceLocation IDENTIFIER = new ResourceLocation("magus", "livingDataProvider");
 
-        private final LivingDataInterface livingData = new LivingDataCapability();
-        private final LazyOptional<LivingDataInterface> optionalData = LazyOptional.of(() -> livingData);
+        private final ILivingData livingData = new LivingData();
+        private final LazyOptional<ILivingData> optionalData = LazyOptional.of(() -> livingData);
 
 
         @NotNull

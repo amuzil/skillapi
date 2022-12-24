@@ -11,11 +11,11 @@ import java.util.List;
 
 public class Capabilities {
 
-    public static final Capability<LivingDataInterface> LIVING_DATA = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<ILivingData> LIVING_DATA = CapabilityManager.get(new CapabilityToken<>() {});
     public static List<IDataTrait> dataTraits;
 
     public static void register(RegisterCapabilitiesEvent event) {
-        event.register(LivingDataInterface.class);
+        event.register(ILivingData.class);
     }
 
     public static void initialiseRegistries() {

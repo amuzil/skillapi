@@ -38,12 +38,18 @@ public class Registries {
         traits.setName(new ResourceLocation(Magus.MOD_ID, "data_traits"));
         event.create(traits);
 
+        //Skill categories
         RegistryBuilder<SkillCategory> categories = new RegistryBuilder<>();
         categories.setName(new ResourceLocation(Magus.MOD_ID, "skill_categories"));
         event.create(categories);
 
+        //Skills
         RegistryBuilder<Skill> skills = new RegistryBuilder<>();
         skills.setName(new ResourceLocation(Magus.MOD_ID, "skills"));
         event.create(skills);
+
+        //Forms
+
+        //Modifiers
     }
 }
