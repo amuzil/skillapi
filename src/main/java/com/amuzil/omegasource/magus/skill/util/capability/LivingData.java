@@ -5,7 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 
 import java.util.List;
 
-public class LivingData implements ILivingData {
+public class LivingData implements IData {
 
     //Data Traits to add:
     // private List<SkillBase> skills;
@@ -19,7 +19,7 @@ public class LivingData implements ILivingData {
 //    //Miscellaneous data to save
 
     //The amount of data traits the player has should not change after initialisation.
-    private List<IDataTrait> traits;
+    private final List<IDataTrait> traits;
 
     public LivingData() {
         //Clones it.
