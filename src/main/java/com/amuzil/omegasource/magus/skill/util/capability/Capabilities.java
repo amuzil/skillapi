@@ -1,7 +1,7 @@
 package com.amuzil.omegasource.magus.skill.util.capability;
 
 import com.amuzil.omegasource.magus.Magus;
-import com.amuzil.omegasource.magus.skill.util.traits.IDataTrait;
+import com.amuzil.omegasource.magus.skill.util.traits.DataTrait;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
@@ -17,7 +17,7 @@ public class Capabilities {
 
     public static final Capability<IData> LIVING_DATA = CapabilityManager.get(new CapabilityToken<>() {
     });
-    public static List<IDataTrait> dataTraits = new ArrayList<>();
+    public static List<DataTrait> dataTraits = new ArrayList<>();
 
     private Capabilities() {
     }

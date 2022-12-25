@@ -1,7 +1,10 @@
 package com.amuzil.omegasource.magus.skill.util.capability;
 
 import com.amuzil.omegasource.magus.registry.Registries;
-import com.amuzil.omegasource.magus.skill.util.traits.IDataTrait;
+import com.amuzil.omegasource.magus.skill.skill.Skill;
+import com.amuzil.omegasource.magus.skill.skill.SkillCategory;
+import com.amuzil.omegasource.magus.skill.util.data.SkillData;
+import com.amuzil.omegasource.magus.skill.util.traits.DataTrait;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.ArrayList;
@@ -21,11 +24,16 @@ public class LivingData implements IData {
 //    //Miscellaneous data to save
 
     //The amount of data traits the player has should not change after initialisation.
-    private final List<IDataTrait> traits;
+    private List<DataTrait> traits = new ArrayList<>();
+    private List<SkillCategory> categories = new ArrayList<>();
+    private List<Skill> skills = new ArrayList<>();
 
     public LivingData() {
-        traits = new ArrayList<>();
         fillTraits();
+        //TODO: Data generation methods for each skill
+
+        fillCategories();
+        fillSkills();
     }
 
 
@@ -46,21 +54,41 @@ public class LivingData implements IData {
     }
 
     //When players move to versions with new techniques and such, we'll have to use these to accomodate.
-    public void addTraits(List<IDataTrait> dataTraits) {
+    public void addTraits(List<DataTrait> dataTraits) {
         traits.addAll(dataTraits);
     }
 
-    public void addTrait(IDataTrait trait) {
+    public void addTrait(DataTrait trait) {
         traits.add(trait);
     }
 
     //Ideally, these delete methods are *never* used, because each piece of content
     //added to the mod should be final.
-    public void removeTrait(IDataTrait trait) {
+    public void removeTrait(DataTrait trait) {
         traits.remove(trait);
     }
 
-    public void removeTraits(List<IDataTrait> dataTraits) {
+    public void removeTraits(List<DataTrait> dataTraits) {
         traits.removeAll(dataTraits);
     }
+
+    public void fillCategories() {
+        categories.addAll(Registries.SKILL_CATEGORIES.get().getValues());
+    }
+
+    public List<SkillCategory> getAllSkillCategories() {
+        return this.categories;
+    }
+
+    public void fillSkills() {
+        skills.addAll(Registries.SKILLS.get().getValues());
+    }
+    public List<Skill> getAllSkills() {
+        return this.skills;
+    }
+
+    public SkillData getSkillData() {
+        return null;
+    }
+
 }

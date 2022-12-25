@@ -3,8 +3,7 @@ package com.amuzil.omegasource.magus.registry;
 import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
 import com.amuzil.omegasource.magus.skill.skill.SkillCategory;
-import com.amuzil.omegasource.magus.skill.util.traits.DataTraits;
-import com.amuzil.omegasource.magus.skill.util.traits.IDataTrait;
+import com.amuzil.omegasource.magus.skill.util.traits.DataTrait;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -21,7 +20,7 @@ public class Registries {
     public static void init() {
     }
 
-    public static Supplier<IForgeRegistry<IDataTrait>> DATA_TRAITS;
+    public static Supplier<IForgeRegistry<DataTrait>> DATA_TRAITS;
 
     public static Supplier<IForgeRegistry<SkillCategory>> SKILL_CATEGORIES;
 
@@ -30,7 +29,7 @@ public class Registries {
     @SubscribeEvent
     public static void onRegistryRegister(NewRegistryEvent event) {
         //Data trait registry.
-        RegistryBuilder<IDataTrait> traits = new RegistryBuilder<>();
+        RegistryBuilder<DataTrait> traits = new RegistryBuilder<>();
         traits.setName(new ResourceLocation(Magus.MOD_ID, "data_traits"));
         DATA_TRAITS = event.create(traits);
 

@@ -1,5 +1,8 @@
 package com.amuzil.omegasource.magus.skill.skill;
 
+import com.amuzil.omegasource.magus.registry.Registries;
+
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -13,5 +16,9 @@ public class Skill {
     //Modifier data
     //Constant data
     //E.t.c
+
+    public static List<Skill> getSkills() {
+        return (List<Skill>) Registries.SKILLS.get().getValues();
+    }
 
 }
