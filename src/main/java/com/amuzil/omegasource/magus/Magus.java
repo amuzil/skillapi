@@ -6,7 +6,6 @@ import com.amuzil.omegasource.magus.radix.path.PathBuilder;
 import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.activateable.key.KeyInput;
 import com.amuzil.omegasource.magus.skill.util.capability.Capabilities;
-import com.amuzil.omegasource.magus.skill.util.capability.IData;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.block.Blocks;

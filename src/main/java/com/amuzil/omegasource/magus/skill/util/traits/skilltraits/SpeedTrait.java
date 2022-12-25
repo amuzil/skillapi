@@ -3,25 +3,24 @@ package com.amuzil.omegasource.magus.skill.util.traits.skilltraits;
 import com.amuzil.omegasource.magus.skill.util.traits.SkillTrait;
 import net.minecraft.nbt.CompoundTag;
 
-public class SizeTrait extends SkillTrait {
+public class SpeedTrait extends SkillTrait {
 
-    private double size;
+    private double speed;
 
-    public SizeTrait(float size, String name) {
+    public SpeedTrait(double speed, String name) {
         super(name);
-        this.size = size;
     }
 
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = super.serializeNBT();
-        tag.putDouble(getName(), size);
-        return tag;
+        tag.putDouble(getName(), speed);
+        return super.serializeNBT();
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         super.deserializeNBT(nbt);
-        size = nbt.getDouble(getName());
+        speed = nbt.getDouble(getName());
     }
 }

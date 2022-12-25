@@ -6,7 +6,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -44,8 +43,8 @@ public class LivingDataAttacher {
 
         public static final ResourceLocation IDENTIFIER = new ResourceLocation("magus", "living_data_provider");
 
-        private final IData livingData = new LivingData();
-        private final LazyOptional<IData> optionalData = LazyOptional.of(() -> livingData);
+        private final Data livingData = new LivingData();
+        private final LazyOptional<Data> optionalData = LazyOptional.of(() -> livingData);
 
 
         @Override

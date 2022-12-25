@@ -15,7 +15,7 @@ import java.util.List;
 @Mod.EventBusSubscriber(modid = Magus.MOD_ID)
 public class Capabilities {
 
-    public static final Capability<IData> LIVING_DATA = CapabilityManager.get(new CapabilityToken<>() {
+    public static final Capability<Data> LIVING_DATA = CapabilityManager.get(new CapabilityToken<>() {
     });
     public static List<DataTrait> dataTraits = new ArrayList<>();
 
@@ -24,7 +24,7 @@ public class Capabilities {
 
     @SubscribeEvent
     public static void register(RegisterCapabilitiesEvent event) {
-        event.register(IData.class);
+        event.register(Data.class);
     }
 
     public static void initialiseCaps() {

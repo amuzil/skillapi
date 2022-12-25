@@ -10,9 +10,9 @@ import net.minecraft.nbt.CompoundTag;
  */
 public class DamageTrait extends SkillTrait {
 
-    private float damage;
+    private double damage;
 
-    public DamageTrait(float damage, String name) {
+    public DamageTrait(double damage, String name) {
         super(name);
         this.damage = damage;
     }
@@ -20,13 +20,13 @@ public class DamageTrait extends SkillTrait {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = super.serializeNBT();
-        tag.putFloat(getName(), damage);
+        tag.putDouble(getName(), damage);
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         super.deserializeNBT(nbt);
-        damage = nbt.getFloat(getName());
+        damage = nbt.getDouble(getName());
     }
 }

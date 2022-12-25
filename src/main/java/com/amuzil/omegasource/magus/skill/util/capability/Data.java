@@ -9,6 +9,6 @@ import net.minecraftforge.common.util.INBTSerializable;
  * whereas IDataTrait merely stores it.
  */
 @AutoRegisterCapability
-public interface IData extends INBTSerializable<CompoundTag> {
+public interface Data extends INBTSerializable<CompoundTag> {
 
 }

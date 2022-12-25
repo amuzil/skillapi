@@ -10,7 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LivingData implements IData {
+public class LivingData implements Data {
 
     //Data Traits to add:
     // private List<SkillBase> skills;
