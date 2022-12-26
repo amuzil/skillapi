@@ -28,6 +28,7 @@ public class LivingData implements Data {
     private List<DataTrait> traits = new ArrayList<>();
     private List<SkillCategory> categories = new ArrayList<>();
     private List<Skill> skills = new ArrayList<>();
+    private boolean isDirty;
 
     public LivingData() {
         fillTraits();
@@ -35,6 +36,7 @@ public class LivingData implements Data {
 
         fillCategories();
         fillSkills();
+        markDirty();
     }
 
 
@@ -100,4 +102,24 @@ public class LivingData implements Data {
         return null;
     }
 
+    @Override
+    public void markDirty() {
+        this.isDirty = true;
+    }
+
+    @Override
+    public void markClean() {
+        this.isDirty = false;
+    }
+
+    @Override
+    public boolean isDirty() {
+        for (DataTrait trait : traits)
+            if (trait.isDirty()) {
+                markDirty();
+                return true;
+            }
+        //TODO: Add a check for all kinds of data, not just DataTraits
+        return true;
+    }
 }

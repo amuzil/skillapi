@@ -11,4 +11,11 @@ import net.minecraftforge.common.util.INBTSerializable;
 @AutoRegisterCapability
 public interface Data extends INBTSerializable<CompoundTag> {
 
+    void markDirty();
+
+    void markClean();
+
+    boolean isDirty();
+
+
 }
