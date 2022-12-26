@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Basic skill class. All other skills extend this.
  */
-public class Skill {
+public abstract class Skill {
     private ResourceLocation id;
     private SkillCategory category;
     private List<SkillTrait> traits;
@@ -21,11 +21,11 @@ public class Skill {
     public Skill(String name, SkillCategory category) {
         this.id = new ResourceLocation(Magus.MOD_ID, name);
         this.category = category;
-        Registries.SKILLS.get().register(id, this);
     }
 
     public Skill(ResourceLocation id, SkillCategory category) {
-
+        this.id = id;
+        this.category = category;
     }
 
     public SkillCategory getCategory() {
@@ -34,6 +34,14 @@ public class Skill {
 
     public ResourceLocation getId() {
         return id;
+    }
+
+    public List<SkillTrait> getTraits() {
+        return this.traits;
+    }
+
+    public List<SkillType> getTypes() {
+        return types;
     }
 
     public final void lifecycle(LivingEntity entity, RadixTree tree) {
@@ -60,26 +68,17 @@ public class Skill {
 //        }
     }
 
-    public boolean shouldStart(LivingEntity entity, RadixTree tree) {
-        return false;
-    }
+    public abstract boolean shouldStart(LivingEntity entity, RadixTree tree);
 
-    public boolean shouldRun(LivingEntity entity, RadixTree tree) {
-        return false;
-    }
+    public abstract boolean shouldRun(LivingEntity entity, RadixTree tree);
 
-    public boolean shouldStop(LivingEntity entity, RadixTree tree) {
-        return false;
-    }
+    public abstract boolean shouldStop(LivingEntity entity, RadixTree tree);
 
-    public void start(LivingEntity entity, RadixTree tree) {
-    }
+    public abstract void start(LivingEntity entity, RadixTree tree);
 
-    public void run(LivingEntity entity, RadixTree tree) {
-    }
+    public abstract void run(LivingEntity entity, RadixTree tree);
 
-    public void stop(LivingEntity entity, RadixTree tree) {
-    }
+    public abstract void stop(LivingEntity entity, RadixTree tree);
 
     /**
      * Different skill types. A skill can be multiple of one type.

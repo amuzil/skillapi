@@ -2,6 +2,7 @@ package com.amuzil.omegasource.magus.registry;
 
 import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
+import com.amuzil.omegasource.magus.skill.skill.SkillActive;
 import com.amuzil.omegasource.magus.skill.skill.SkillCategory;
 import com.amuzil.omegasource.magus.skill.util.traits.DataTrait;
 import net.minecraft.core.Registry;
@@ -88,7 +89,7 @@ public class Registries {
 
 
             event.register(resKey, helper -> {
-                Skill fireball = new Skill("fireball", null);
+                Skill fireball = new SkillActive("fireball", null);
                 registry.register(fireball.getId(), fireball);
             });
         }
