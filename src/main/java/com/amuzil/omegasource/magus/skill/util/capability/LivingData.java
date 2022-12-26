@@ -6,6 +6,7 @@ import com.amuzil.omegasource.magus.skill.skill.SkillCategory;
 import com.amuzil.omegasource.magus.skill.util.data.SkillData;
 import com.amuzil.omegasource.magus.skill.util.traits.DataTrait;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,13 +41,21 @@ public class LivingData implements Data {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
-        traits.forEach(trait -> tag.put(trait.getName(), trait.serializeNBT()));
+        traits.forEach(trait -> {
+            if (trait.isDirty()) {
+                tag.put(trait.getName(), trait.serializeNBT());
+            }
+        });
         return tag;
     }
 
+
+
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        traits.forEach(trait -> trait.deserializeNBT((CompoundTag) nbt.get(trait.getName())));
+        traits.forEach(trait -> {
+            trait.deserializeNBT((CompoundTag) nbt.get(trait.getName()));
+        });
     }
 
     public void fillTraits() {

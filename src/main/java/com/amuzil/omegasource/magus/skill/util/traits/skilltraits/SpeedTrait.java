@@ -9,6 +9,7 @@ public class SpeedTrait extends SkillTrait {
 
     public SpeedTrait(double speed, String name) {
         super(name);
+        this.speed = speed;
     }
 
     @Override
@@ -22,5 +23,14 @@ public class SpeedTrait extends SkillTrait {
     public void deserializeNBT(CompoundTag nbt) {
         super.deserializeNBT(nbt);
         speed = nbt.getDouble(getName());
+    }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
+        markDirty();
+    }
+
+    public double getSpeed() {
+        return speed;
     }
 }

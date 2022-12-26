@@ -15,13 +15,13 @@ public class SizeTrait extends SkillTrait {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = super.serializeNBT();
-        tag.putDouble(getName(), size);
+        tag.putDouble("size", size);
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         super.deserializeNBT(nbt);
-        size = nbt.getDouble(getName());
+        size = nbt.getDouble("size");
     }
 }

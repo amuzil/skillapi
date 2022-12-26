@@ -26,4 +26,13 @@ public class LifetimeTrait extends SkillTrait {
         super.deserializeNBT(nbt);
         lifetime = nbt.getInt(getName());
     }
+
+    public void setLifetime(int lifetime) {
+        this.lifetime = lifetime;
+        markDirty();
+    }
+
+    public int getLifetime() {
+        return lifetime;
+    }
 }
