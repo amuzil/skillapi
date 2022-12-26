@@ -10,4 +10,7 @@ package com.amuzil.omegasource.magus.skill.skill;
  * to different types of martial arts in a martial arts mod. E.g variations on karate.
  */
 public class SkillStance extends Skill {
+    public SkillStance(String name, SkillCategory category) {
+        super(name, category);
+    }
 }
