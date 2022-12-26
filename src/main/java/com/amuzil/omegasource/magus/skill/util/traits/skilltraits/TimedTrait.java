@@ -4,35 +4,36 @@ import com.amuzil.omegasource.magus.skill.util.traits.SkillTrait;
 import net.minecraft.nbt.CompoundTag;
 
 /**
- * Lifetime of an entity or projectile, in ticks.
+ * The most generic trait of all time. Works for:
+ * -Fire time, charging, lifetime, potion duration, e.t.c.
  */
-public class LifetimeTrait extends SkillTrait {
-    private int lifetime;
+public class TimedTrait extends SkillTrait {
+    private int time;
 
-    public LifetimeTrait(int lifetime, String name) {
+    public TimedTrait(int time, String name) {
         super(name);
-        this.lifetime = lifetime;
+        this.time = time;
     }
 
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = super.serializeNBT();
-        tag.putInt(getName(), lifetime);
+        tag.putInt(getName(), time);
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         super.deserializeNBT(nbt);
-        lifetime = nbt.getInt(getName());
+        time = nbt.getInt(getName());
     }
 
-    public void setLifetime(int lifetime) {
-        this.lifetime = lifetime;
+    public void setTime(int time) {
+        this.time = time;
         markDirty();
     }
 
-    public int getLifetime() {
-        return lifetime;
+    public int getTime() {
+        return time;
     }
 }

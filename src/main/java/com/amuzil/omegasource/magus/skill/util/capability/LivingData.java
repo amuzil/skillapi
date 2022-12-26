@@ -6,11 +6,13 @@ import com.amuzil.omegasource.magus.skill.skill.SkillCategory;
 import com.amuzil.omegasource.magus.skill.util.data.SkillData;
 import com.amuzil.omegasource.magus.skill.util.traits.DataTrait;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * TODO: Figure out how to save this data when MC wants to save but nothing has changed/.
+ */
 public class LivingData implements Data {
 
     //Data Traits to add:
@@ -120,6 +122,6 @@ public class LivingData implements Data {
                 return true;
             }
         //TODO: Add a check for all kinds of data, not just DataTraits
-        return true;
+        return this.isDirty;
     }
 }

@@ -20,14 +20,14 @@ public class DamageTrait extends SkillTrait {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = super.serializeNBT();
-        tag.putDouble("damage", damage);
+        tag.putDouble(getName(), damage);
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         super.deserializeNBT(nbt);
-        damage = nbt.getDouble("damage");
+        damage = nbt.getDouble(getName());
     }
 
     public void setDamage(double damage) {

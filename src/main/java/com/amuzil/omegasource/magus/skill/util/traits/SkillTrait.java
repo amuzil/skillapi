@@ -34,13 +34,13 @@ public class SkillTrait implements DataTrait {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
-        tag.putString(getName(), name);
+        tag.putString("name", name);
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         markClean();
-        name = nbt.getString(getName());
+        name = nbt.getString("name");
     }
 }
