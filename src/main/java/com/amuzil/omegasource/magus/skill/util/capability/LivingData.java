@@ -46,7 +46,7 @@ public class LivingData implements Data {
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         traits.forEach(trait -> {
-            if (trait.isDirty()) {
+            if (trait.isDirty() || isDirty()) {
                 tag.put(trait.getName(), trait.serializeNBT());
             }
         });
@@ -54,12 +54,10 @@ public class LivingData implements Data {
     }
 
 
-
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        traits.forEach(trait -> {
-            trait.deserializeNBT((CompoundTag) nbt.get(trait.getName()));
-        });
+        markClean();
+        traits.forEach(trait -> trait.deserializeNBT((CompoundTag) nbt.get(trait.getName())));
     }
 
     public void fillTraits() {
@@ -96,6 +94,7 @@ public class LivingData implements Data {
     public void fillSkills() {
         skills.addAll(Registries.SKILLS.get().getValues());
     }
+
     public List<Skill> getAllSkills() {
         return this.skills;
     }
@@ -116,11 +115,6 @@ public class LivingData implements Data {
 
     @Override
     public boolean isDirty() {
-        for (DataTrait trait : traits)
-            if (trait.isDirty()) {
-                markDirty();
-                return true;
-            }
         //TODO: Add a check for all kinds of data, not just DataTraits
         return this.isDirty;
     }

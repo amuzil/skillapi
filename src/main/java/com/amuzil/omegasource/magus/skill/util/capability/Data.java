@@ -11,6 +11,9 @@ import net.minecraftforge.common.util.INBTSerializable;
 @AutoRegisterCapability
 public interface Data extends INBTSerializable<CompoundTag> {
 
+    /* These are used to make everything stored in the class serialised/unserialised.
+        Not for generic purposes like DataTrait.
+     */
     void markDirty();
 
     void markClean();
