@@ -7,6 +7,7 @@ import com.amuzil.omegasource.magus.skill.util.traits.DataTrait;
 import com.amuzil.omegasource.magus.skill.util.traits.SkillTrait;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,5 +101,19 @@ public class SkillData implements DataTrait {
     public <T extends SkillTrait> List<SkillTrait> getFilteredTraits(Class<T> filter) {
         return getSkillTraits().stream().filter(filter::isInstance)
                 .collect(Collectors.toList());
+    }
+
+    @Nullable
+    public SkillTrait getTrait(String name) {
+        for (SkillTrait trait : getSkillTraits())
+            if (trait.getName().equals(name))
+                return trait;
+
+        return null;
+    }
+    
+    public void reset() {
+        for (SkillTrait trait : getSkillTraits())
+            trait.reset();
     }
 }
