@@ -33,4 +33,11 @@ public class StringTrait extends SkillTrait {
     public String getInfo() {
         return info;
     }
+
+    //Probably won't be used, but just in case.
+    @Override
+    public void reset() {
+        super.reset();
+        setInfo("");
+    }
 }

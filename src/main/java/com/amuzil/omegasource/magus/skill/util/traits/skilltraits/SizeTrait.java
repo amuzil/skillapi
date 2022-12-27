@@ -24,4 +24,19 @@ public class SizeTrait extends SkillTrait {
         super.deserializeNBT(nbt);
         size = nbt.getDouble("size");
     }
+
+    public void setSize(double size) {
+        this.size = size;
+        markDirty();
+    }
+
+    public double getSize() {
+        return size;
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        setSize(0);
+    }
 }

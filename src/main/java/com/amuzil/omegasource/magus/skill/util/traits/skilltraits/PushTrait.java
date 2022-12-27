@@ -25,6 +25,21 @@ public class PushTrait extends SkillTrait {
         type = PushType.valueOf(nbt.getString(getName()));
     }
 
+    public void setType(PushType type) {
+        this.type = type;
+        markDirty();
+    }
+
+    public PushType getType() {
+        return type;
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        setType(PushType.NONE);
+    }
+
     /** Shows the different levels of redstone pushing in increasing order of redstone.
      *
      */

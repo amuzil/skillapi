@@ -24,4 +24,19 @@ public class KnockbackTrait extends SkillTrait {
         super.deserializeNBT(nbt);
         knockback = nbt.getDouble(getName());
     }
+
+    public void setKnockback(double knockback) {
+        this.knockback = knockback;
+        markDirty();
+    }
+
+    public double getKnockback() {
+        return knockback;
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        setKnockback(0);
+    }
 }

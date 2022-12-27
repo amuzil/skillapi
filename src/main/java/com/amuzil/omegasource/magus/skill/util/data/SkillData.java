@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 //E.g SizeTrait vs ElementTrait or something are both SkillTraits but....
 public class SkillData implements DataTrait {
 
-    List<SkillTrait> skillTraits = new ArrayList<>();
+    List<SkillTrait> skillTraits;
     //The reason we're using a resource location and not the actual Skill object is because
     //it's much easier to serialise a String and then get a skill from it.
     ResourceLocation skillId;

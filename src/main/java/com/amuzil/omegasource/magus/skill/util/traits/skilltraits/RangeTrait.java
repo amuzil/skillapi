@@ -33,4 +33,10 @@ public class RangeTrait extends SkillTrait {
     public double getRange() {
         return range;
     }
+
+    @Override
+    public void reset() {
+        super.reset();
+        setRange(0);
+    }
 }

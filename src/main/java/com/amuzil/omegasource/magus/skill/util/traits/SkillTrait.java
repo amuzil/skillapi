@@ -43,4 +43,12 @@ public class SkillTrait implements DataTrait {
         markClean();
         name = nbt.getString("name");
     }
+
+    /**
+     * Resets stored values. Good for resetting things that are ticked during a Skill's use,
+     * such as a combo count or timed duration.
+     */
+    public void reset() {
+        markDirty();
+    }
 }

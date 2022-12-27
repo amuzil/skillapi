@@ -71,7 +71,12 @@ public class ColourTrait extends SkillTrait {
         return g;
     }
 
-    public double getB() {
-        return b;
+    public double getB() { return b;}
+
+    @Override
+    public void reset() {
+        super.reset();
+        //Default colour is white.
+        setRGB(1D, 1D, 1D);
     }
 }

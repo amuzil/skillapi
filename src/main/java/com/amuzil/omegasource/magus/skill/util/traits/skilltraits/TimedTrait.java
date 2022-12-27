@@ -36,4 +36,14 @@ public class TimedTrait extends SkillTrait {
     public int getTime() {
         return time;
     }
+
+    /**
+     * -1 instead of 0 here, because 0 implies a duration of nothing, whereas
+     * -1 means never iterate at all.
+     */
+    @Override
+    public void reset() {
+        super.reset();
+        setTime(-1);
+    }
 }

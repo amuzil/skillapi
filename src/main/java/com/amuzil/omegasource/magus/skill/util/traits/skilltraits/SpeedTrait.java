@@ -33,4 +33,10 @@ public class SpeedTrait extends SkillTrait {
     public double getSpeed() {
         return speed;
     }
+
+    @Override
+    public void reset() {
+        super.reset();
+        setSpeed(0);
+    }
 }

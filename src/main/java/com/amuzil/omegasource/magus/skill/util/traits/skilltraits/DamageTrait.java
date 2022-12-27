@@ -38,4 +38,10 @@ public class DamageTrait extends SkillTrait {
     public double getDamage() {
         return this.damage;
     }
+
+    @Override
+    public void reset() {
+        super.reset();
+        setDamage(0);
+    }
 }

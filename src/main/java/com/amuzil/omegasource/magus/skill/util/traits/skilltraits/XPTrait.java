@@ -24,4 +24,19 @@ public class XPTrait extends SkillTrait {
         super.deserializeNBT(nbt);
         xp = nbt.getDouble(getName());
     }
+
+    public void setXp(double xp) {
+        this.xp = xp;
+        markDirty();
+    }
+
+    public double getXp() {
+        return xp;
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        setXp(0);
+    }
 }

@@ -41,4 +41,10 @@ public class BooleanTrait extends SkillTrait {
     public void toggleEnabled() {
         setEnabled(!isEnabled());
     }
+
+    @Override
+    public void reset() {
+        super.reset();
+        setEnabled(false);
+    }
 }
