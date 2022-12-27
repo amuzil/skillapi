@@ -32,6 +32,7 @@ public abstract class Skill {
         this.category = category;
     }
 
+
     public SkillCategory getCategory() {
         return category;
     }
