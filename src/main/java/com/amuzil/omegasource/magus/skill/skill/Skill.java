@@ -21,6 +21,7 @@ public abstract class Skill {
     private SkillCategory category;
     private List<SkillTrait> traits;
     private List<SkillType> types;
+    private RadixTree requirements;
 
     public Skill(String name, SkillCategory category) {
         this.id = new ResourceLocation(Magus.MOD_ID, name);
@@ -73,6 +74,8 @@ public abstract class Skill {
             }
         }
     }
+
+
 
     public abstract boolean shouldStart(LivingEntity entity, RadixTree tree);
 

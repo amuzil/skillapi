@@ -31,7 +31,7 @@ public class TickTimedCondition extends Condition {
 
 		this.listener = event -> {
 			if (event.type == type && event.phase == phase) {
-				this.current += 1;
+				this.current++;
 				if (this.current >= timeout) {
 					runOn(onTimeout).run();
 				}

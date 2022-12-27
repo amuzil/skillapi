@@ -16,7 +16,7 @@ public class ConditionBuilder {
      * consolidate for good code practice later.
      */
     public enum ActivationType {
-        RADIAL,
+        MENU,
         HOTKEY,
         MULTIKEY,
         GESTURE

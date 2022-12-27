@@ -15,7 +15,7 @@ public class KeyHoldCondition extends Condition {
     private final Consumer<InputEvent.Key> keyInputListener;
     private final Consumer<ClientTickEvent> clientTickListener;
 
-    private int currentTotal;
+    private final int currentTotal;
     private boolean isHolding;
     private int currentHolding;
 
@@ -42,13 +42,13 @@ public class KeyHoldCondition extends Condition {
 
         this.clientTickListener = event -> {
             if (event.phase == ClientTickEvent.Phase.START) {
-                this.currentTotal += 1;
                 if (this.isHolding) {
-                    this.currentHolding += 1;
-                    if (this.currentHolding >= duration) {
-                        this.onSuccess.run();
-                    }
+                    this.currentHolding++;
                 }
+                if (this.currentHolding >= duration) {
+                    this.onSuccess.run();
+                }
+
                 if (this.currentTotal >= timeout) {
                     this.onFailure.run();
                 }

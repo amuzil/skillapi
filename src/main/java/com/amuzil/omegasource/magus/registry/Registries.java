@@ -5,6 +5,7 @@ import com.amuzil.omegasource.magus.skill.skill.Skill;
 import com.amuzil.omegasource.magus.skill.skill.SkillActive;
 import com.amuzil.omegasource.magus.skill.skill.SkillCategory;
 import com.amuzil.omegasource.magus.skill.util.traits.DataTrait;
+import com.amuzil.omegasource.magus.skill.util.traits.SkillTrait;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -100,9 +101,15 @@ public class Registries {
             ResourceKey<Registry<DataTrait>> resKey = registry.getRegistryKey();
 
 
-            /* For each skill registered, grab its list of SkillTraits and register it here. */
-            event.register(resKey, helper -> {
-            });
+            //Registers every Data Trait for every skill.
+            //Register other traits manually.
+            for (Skill skill : SKILLS.get().getValues()) {
+                for (SkillTrait trait : skill.getTraits()) {
+                    /* For each skill registered, grab its list of SkillTraits and register it here. */
+                    event.register(resKey, helper -> registry.register(new ResourceLocation(Magus.MOD_ID)
+                    + trait.getName(), trait));
+                }
+            }
         }
     }
 }

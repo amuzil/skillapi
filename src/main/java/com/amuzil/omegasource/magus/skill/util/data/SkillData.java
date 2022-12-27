@@ -9,9 +9,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 //TODO: Make this an implementation rather than a class.
@@ -36,7 +36,7 @@ public class SkillData implements DataTrait {
 
     @Override
     public String getName() {
-        return "skillData";
+        return "skillData-" + getSkillId();
     }
 
     @Override
@@ -98,8 +98,8 @@ public class SkillData implements DataTrait {
         return Registries.SKILLS.get().getValue(getSkillId());
     }
 
-    public <T extends SkillTrait> List<SkillTrait> getFilteredTraits(Class<T> filter) {
-        return getSkillTraits().stream().filter(filter::isInstance)
+    public List<SkillTrait> getFilteredTraits(Predicate<? super SkillTrait> filter) {
+        return getSkillTraits().stream().filter(filter)
                 .collect(Collectors.toList());
     }
 
@@ -111,7 +111,7 @@ public class SkillData implements DataTrait {
 
         return null;
     }
-    
+
     public void reset() {
         for (SkillTrait trait : getSkillTraits())
             trait.reset();

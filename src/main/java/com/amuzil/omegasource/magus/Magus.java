@@ -1,5 +1,6 @@
 package com.amuzil.omegasource.magus;
 
+import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressedCondition;
 import com.amuzil.omegasource.magus.radix.path.PathBuilder;
@@ -54,6 +55,7 @@ public class Magus {
         // some pre init code
         Registries.init();
         Capabilities.initialiseCaps();
+        MagusNetwork.registerMessages();
         LOGGER.info("HELLO FROM PRE INIT");
         LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getName());
 

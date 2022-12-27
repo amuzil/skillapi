@@ -1,11 +1,15 @@
 package com.amuzil.omegasource.magus.skill.util.capability;
 
+import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
 import com.amuzil.omegasource.magus.skill.skill.SkillCategory;
 import com.amuzil.omegasource.magus.skill.util.data.SkillData;
 import com.amuzil.omegasource.magus.skill.util.traits.DataTrait;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.entity.LevelEntityGetter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,10 +31,13 @@ public class LivingData implements Data {
 //    //Miscellaneous data to save
 
     //The amount of data traits the player has should not change after initialisation.
-    private List<DataTrait> traits = new ArrayList<>();
-    private List<SkillCategory> categories = new ArrayList<>();
-    private List<Skill> skills = new ArrayList<>();
+    private final List<DataTrait> traits = new ArrayList<>();
+    private final List<SkillCategory> categories = new ArrayList<>();
+    private final List<Skill> skills = new ArrayList<>();
     private boolean isDirty;
+
+    //Gets the tree from the event bus.
+    private RadixTree tree;
 
     public LivingData() {
         fillTraits();
@@ -60,8 +67,22 @@ public class LivingData implements Data {
         traits.forEach(trait -> trait.deserializeNBT((CompoundTag) nbt.get(trait.getName())));
     }
 
+
+    public void setTree(RadixTree tree) {
+        this.tree = tree;
+        markDirty();
+    }
+
+    public RadixTree getTree() {
+        return tree;
+    }
+
     public void fillTraits() {
         traits.addAll(Registries.DATA_TRAITS.get().getValues());
+    }
+
+    public List<DataTrait> getTraits() {
+        return this.traits;
     }
 
     //When players move to versions with new techniques and such, we'll have to use these to accomodate.
@@ -81,6 +102,16 @@ public class LivingData implements Data {
 
     public void removeTraits(List<DataTrait> dataTraits) {
         traits.removeAll(dataTraits);
+    }
+
+    @Nullable
+    public DataTrait getTrait(String name) {
+        for (DataTrait trait : getTraits())
+            if (trait.getName().equals(name))
+                return trait;
+
+        return null;
+
     }
 
     public void fillCategories() {
