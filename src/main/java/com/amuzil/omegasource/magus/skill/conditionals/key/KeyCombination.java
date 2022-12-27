@@ -1,4 +1,4 @@
-package com.amuzil.omegasource.magus.skill.activateable.key;
+package com.amuzil.omegasource.magus.skill.conditionals.key;
 
 import java.util.LinkedList;
 

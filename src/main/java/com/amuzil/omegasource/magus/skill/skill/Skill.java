@@ -3,9 +3,13 @@ package com.amuzil.omegasource.magus.skill.skill;
 import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.registry.Registries;
+import com.amuzil.omegasource.magus.skill.event.SkillTickEvent;
 import com.amuzil.omegasource.magus.skill.util.traits.SkillTrait;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.EventBus;
 
 import java.util.List;
 
@@ -44,28 +48,29 @@ public abstract class Skill {
         return types;
     }
 
-    public final void lifecycle(LivingEntity entity, RadixTree tree) {
-        // Run this asynchronously
+    public void tick(LivingEntity entity, RadixTree tree) {
+        //Run this asynchronously
         if (!shouldStart(entity, tree))
             return;
 
-//        if (EventBus.post(new SkillLifecycleEvent.Start(entity, tree, this)) == EventResult.CANCEL)
-//            return;
-//
-//        start(entity, tree);
-//
-//        while (shouldRun(entity, tree)) {
-//            if (shouldStop(entity, tree)) {
-//                if (EventBus.post(new SkillLifecycleEvent.Stop(entity, tree, this)) == EventResult.CANCEL)
-//                    break;
-//
-//                stop(entity, tree);
-//            } else {
-//                if (EventBus.post(new SkillLifecycleEvent.Run(entity, tree, this)) == EventResult.CANCEL)
-//                    break;
-//                run(entity, tree);
-//            }
-//        }
+        //Remember, for some reason post only returns true upon the event being cancelled. Blame Forge.
+        if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Start(entity, tree, this)))
+            return;
+
+        start(entity, tree);
+
+        while (shouldRun(entity, tree)) {
+            if (shouldStop(entity, tree)) {
+                if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Stop(entity, tree, this)))
+                    break;
+
+                stop(entity, tree);
+            } else {
+                if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Run(entity, tree, this)))
+                    break;
+                run(entity, tree);
+            }
+        }
     }
 
     public abstract boolean shouldStart(LivingEntity entity, RadixTree tree);

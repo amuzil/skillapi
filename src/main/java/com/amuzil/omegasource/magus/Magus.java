@@ -4,7 +4,7 @@ import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressedCondition;
 import com.amuzil.omegasource.magus.radix.path.PathBuilder;
 import com.amuzil.omegasource.magus.registry.Registries;
-import com.amuzil.omegasource.magus.skill.activateable.key.KeyInput;
+import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
 import com.amuzil.omegasource.magus.skill.util.capability.Capabilities;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;

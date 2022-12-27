@@ -1,4 +1,4 @@
-package com.amuzil.omegasource.magus.skill.activateable;
+package com.amuzil.omegasource.magus.skill.conditionals;
 
 /**
  * Covers all the different ways to activate an ability.

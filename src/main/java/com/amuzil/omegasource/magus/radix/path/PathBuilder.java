@@ -6,9 +6,9 @@ import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.TickTimedCon
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressedCondition;
-import com.amuzil.omegasource.magus.skill.activateable.key.KeyCombination;
-import com.amuzil.omegasource.magus.skill.activateable.key.KeyInput;
-import com.amuzil.omegasource.magus.skill.activateable.key.KeyPermutation;
+import com.amuzil.omegasource.magus.skill.conditionals.key.KeyCombination;
+import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
+import com.amuzil.omegasource.magus.skill.conditionals.key.KeyPermutation;
 import net.minecraftforge.event.TickEvent;
 
 import java.util.HashMap;
