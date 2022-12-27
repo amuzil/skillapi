@@ -24,4 +24,22 @@ public class PotionLevelTrait extends SkillTrait {
         super.deserializeNBT(nbt);
         level = nbt.getInt(getName());
     }
+
+    public void setLevel(int level) {
+        this.level = level;
+        markDirty();
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    /**
+     * 0 means a level 1 potion, so -1 means nothing at all.
+     */
+    @Override
+    public void reset() {
+        super.reset();
+        setLevel(-1);
+    }
 }

@@ -37,4 +37,10 @@ public class AngleWidthTrait extends SkillTrait {
     public double getDegrees() {
         return degrees;
     }
+
+    @Override
+    public void reset() {
+        super.reset();
+        setDegrees(0);
+    }
 }
