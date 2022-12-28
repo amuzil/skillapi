@@ -36,7 +36,7 @@ public class SkillData implements DataTrait {
 
     @Override
     public String getName() {
-        return "skillData-" + getSkillId();
+        return getSkillId() + "_skillData";
     }
 
     @Override

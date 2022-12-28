@@ -23,9 +23,12 @@ public abstract class Skill {
     private List<SkillType> types;
     private RadixTree requirements;
 
+    public Skill(String modID, String name, SkillCategory category) {
+        this(new ResourceLocation(modID, name), category);
+    }
+
     public Skill(String name, SkillCategory category) {
-        this.id = new ResourceLocation(Magus.MOD_ID, name);
-        this.category = category;
+        this(Magus.MOD_ID, name, category);
     }
 
     public Skill(ResourceLocation id, SkillCategory category) {

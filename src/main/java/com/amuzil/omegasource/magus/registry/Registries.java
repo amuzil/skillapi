@@ -4,6 +4,7 @@ import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
 import com.amuzil.omegasource.magus.skill.skill.SkillActive;
 import com.amuzil.omegasource.magus.skill.skill.SkillCategory;
+import com.amuzil.omegasource.magus.skill.util.capability.Data;
 import com.amuzil.omegasource.magus.skill.util.traits.DataTrait;
 import com.amuzil.omegasource.magus.skill.util.traits.SkillTrait;
 import net.minecraft.core.Registry;
@@ -13,6 +14,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.*;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -101,15 +103,42 @@ public class Registries {
             ResourceKey<Registry<DataTrait>> resKey = registry.getRegistryKey();
 
 
-            //Registers every Data Trait for every skill.
+            //Registers every Data Trait for every skill included within Magus.
             //Register other traits manually.
-            for (Skill skill : SKILLS.get().getValues()) {
-                for (SkillTrait trait : skill.getTraits()) {
-                    /* For each skill registered, grab its list of SkillTraits and register it here. */
-                    event.register(resKey, helper -> registry.register(new ResourceLocation(Magus.MOD_ID)
-                    + trait.getName(), trait));
-                }
-            }
+            registerTraitsFromSkills((List<Skill>) SKILLS.get().getValues(), event);
         }
+    }
+
+    /**
+     * Use this method to register the data traits of all registered skills.
+     * @param skills List of skills.
+     * @param event Registry event.
+     * @param modID ModID.
+     */
+    public static void registerTraitsFromSkills(List<Skill> skills, RegisterEvent event,
+                                                String modID) {
+        ResourceKey<Registry<DataTrait>> key = DATA_TRAITS.get().getRegistryKey();
+        IForgeRegistry<DataTrait> registry = DATA_TRAITS.get();
+        for (Skill skill : skills)
+            for (SkillTrait trait : skill.getTraits())
+                event.register(key, helper ->
+                        registry.register(new ResourceLocation(modID) + trait.getName(), trait));
+
+    }
+
+    /**
+     *  Same as the above method, but if you standardise your modID in your data,
+     *  then use this.
+     * @param skills Skills to register.
+     * @param event The registry event.
+     */
+    public static void registerTraitsFromSkills(List<Skill> skills, RegisterEvent event) {
+        ResourceKey<Registry<DataTrait>> key = DATA_TRAITS.get().getRegistryKey();
+        IForgeRegistry<DataTrait> registry = DATA_TRAITS.get();
+        for (Skill skill : skills)
+            for (SkillTrait trait : skill.getTraits())
+                event.register(key, helper ->
+                        registry.register(trait.getName(), trait));
+
     }
 }
