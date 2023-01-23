@@ -4,7 +4,6 @@ import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
 import com.amuzil.omegasource.magus.skill.skill.SkillActive;
 import com.amuzil.omegasource.magus.skill.skill.SkillCategory;
-import com.amuzil.omegasource.magus.skill.util.capability.Data;
 import com.amuzil.omegasource.magus.skill.util.traits.DataTrait;
 import com.amuzil.omegasource.magus.skill.util.traits.SkillTrait;
 import net.minecraft.core.Registry;
@@ -60,18 +59,23 @@ public class Registries {
 
 
     //What to do in the case of missing registry entries for each type of registry.
-    @SubscribeEvent
-    public static void onMissing(MissingMappingsEvent event) {
-        //Data Traits
 
-        //Skill Categories
+    @Mod.EventBusSubscriber(modid = Magus.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+    public class ForgeRegistries {
+        @SubscribeEvent
+        public static void onMissing(MissingMappingsEvent event) {
+            //Data Traits
 
-        //Skills
+            //Skill Categories
 
-        //Forms
+            //Skills
 
-        //Modifiers
+            //Forms
+
+            //Modifiers
+        }
     }
+
 
     @SubscribeEvent
     public static void gameRegistry(RegisterEvent event) {

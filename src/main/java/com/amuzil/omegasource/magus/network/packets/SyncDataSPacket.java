@@ -1,6 +1,6 @@
 package com.amuzil.omegasource.magus.network.packets;
 
-import com.amuzil.omegasource.magus.skill.util.capability.Data;
+import com.amuzil.omegasource.magus.skill.util.capability.entity.Data;
 
 public class SyncDataSPacket {
     private Data data;
