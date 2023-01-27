@@ -28,6 +28,24 @@ public class Registries {
     public static Supplier<IForgeRegistry<Skill>> SKILLS;
     public static Supplier<IForgeRegistry<Form>> FORMS;
 
+    // SKILLS
+    public static final Skill FIREBALL = new SkillActive("fireball", null);
+
+    // FORMS
+    public static final Form PUSH = new Form("push");
+    public static final Form PULL = new Form("pull");
+    public static final Form RAISE = new Form("raise");
+    public static final Form LOWER = new Form("lower");
+    public static final Form BURST = new Form("burst");
+    public static final Form ARC = new Form("arc");
+    public static final Form COMPRESS = new Form("compress");
+    public static final Form EXPAND = new Form("expand");
+    public static final Form TWIST = new Form("twist");
+    public static final Form STRIKE = new Form("strike");
+    public static final Form BLOCK = new Form("block");
+    public static final Form BREATHE = new Form("breathe");
+    public static final Form STEP = new Form("step");
+
     public static void init() {
     }
 
@@ -101,8 +119,7 @@ public class Registries {
 
 
             event.register(resKey, helper -> {
-                Skill fireball = new SkillActive("fireball", null);
-                registry.register(fireball.getId(), fireball);
+                registry.register(FIREBALL.getId(), FIREBALL);
             });
         }
 
@@ -113,45 +130,19 @@ public class Registries {
 
 
             event.register(resKey, helper -> {
-                Form push = new Form("push");
-                registry.register(push.getName(), push);
-
-                Form pull = new Form("pull");
-                registry.register(pull.getName(), pull);
-
-                Form raise = new Form("raise");
-                registry.register(raise.getName(), raise);
-
-                Form lower = new Form("lower");
-                registry.register(lower.getName(), lower);
-
-                Form burst = new Form("burst");
-                registry.register(burst.getName(), burst);
-
-                Form arc = new Form("arc");
-                registry.register(arc.getName(), arc);
-
-                Form compress = new Form("compress");
-                registry.register(compress.getName(), compress);
-
-                Form expand = new Form("expand");
-                registry.register(expand.getName(), expand);
-
-                Form twist = new Form("twist");
-                registry.register(twist.getName(), twist);
-
-                Form strike = new Form("strike");
-                registry.register(strike.getName(), strike);
-
-                Form block = new Form("block");
-                registry.register(block.getName(), block);
-
-                Form breathe = new Form("breathe");
-                registry.register(breathe.getName(), breathe);
-
-                Form step = new Form("step");
-                registry.register(step.getName(), step);
-
+                registry.register(PUSH.getName(), PUSH);
+                registry.register(PULL.getName(), PULL);
+                registry.register(RAISE.getName(), RAISE);
+                registry.register(LOWER.getName(), LOWER);
+                registry.register(BURST.getName(), BURST);
+                registry.register(ARC.getName(), ARC);
+                registry.register(COMPRESS.getName(), COMPRESS);
+                registry.register(EXPAND.getName(), EXPAND);
+                registry.register(TWIST.getName(), TWIST);
+                registry.register(STRIKE.getName(), STRIKE);
+                registry.register(BLOCK.getName(), BLOCK);
+                registry.register(BREATHE.getName(), BREATHE);
+                registry.register(STEP.getName(), STEP);
                 //TODO: Element specific forms
             });
         }
