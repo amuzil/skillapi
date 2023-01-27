@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.registry;
 
 import com.amuzil.omegasource.magus.Magus;
+import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
 import com.amuzil.omegasource.magus.skill.skill.SkillActive;
 import com.amuzil.omegasource.magus.skill.skill.SkillCategory;
@@ -25,6 +26,7 @@ public class Registries {
     public static Supplier<IForgeRegistry<DataTrait>> DATA_TRAITS;
     public static Supplier<IForgeRegistry<SkillCategory>> SKILL_CATEGORIES;
     public static Supplier<IForgeRegistry<Skill>> SKILLS;
+    public static Supplier<IForgeRegistry<Form>> FORMS;
 
     public static void init() {
     }
@@ -53,6 +55,9 @@ public class Registries {
         SKILLS = event.create(skills);
 
         //Forms
+        RegistryBuilder<Form> forms = new RegistryBuilder<>();
+        forms.setName(new ResourceLocation(Magus.MOD_ID, "forms"));
+        FORMS = event.create(forms);
 
         //Modifiers
     }
@@ -61,7 +66,7 @@ public class Registries {
     //What to do in the case of missing registry entries for each type of registry.
 
     @Mod.EventBusSubscriber(modid = Magus.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-    public class ForgeRegistries {
+    public static class ForgeRegistries {
         @SubscribeEvent
         public static void onMissing(MissingMappingsEvent event) {
             //Data Traits
@@ -98,6 +103,56 @@ public class Registries {
             event.register(resKey, helper -> {
                 Skill fireball = new SkillActive("fireball", null);
                 registry.register(fireball.getId(), fireball);
+            });
+        }
+
+        /* Forms. */
+        if (event.getRegistryKey().equals(FORMS.get().getRegistryKey())) {
+            IForgeRegistry<Form> registry = FORMS.get();
+            ResourceKey<Registry<Form>> resKey = registry.getRegistryKey();
+
+
+            event.register(resKey, helper -> {
+                Form push = new Form("push");
+                registry.register(push.getName(), push);
+
+                Form pull = new Form("pull");
+                registry.register(pull.getName(), pull);
+
+                Form raise = new Form("raise");
+                registry.register(raise.getName(), raise);
+
+                Form lower = new Form("lower");
+                registry.register(lower.getName(), lower);
+
+                Form burst = new Form("burst");
+                registry.register(burst.getName(), burst);
+
+                Form arc = new Form("arc");
+                registry.register(arc.getName(), arc);
+
+                Form compress = new Form("compress");
+                registry.register(compress.getName(), compress);
+
+                Form expand = new Form("expand");
+                registry.register(expand.getName(), expand);
+
+                Form twist = new Form("twist");
+                registry.register(twist.getName(), twist);
+
+                Form strike = new Form("strike");
+                registry.register(strike.getName(), strike);
+
+                Form block = new Form("block");
+                registry.register(block.getName(), block);
+
+                Form breathe = new Form("breathe");
+                registry.register(breathe.getName(), breathe);
+
+                Form step = new Form("step");
+                registry.register(step.getName(), step);
+
+                //TODO: Element specific forms
             });
         }
 
