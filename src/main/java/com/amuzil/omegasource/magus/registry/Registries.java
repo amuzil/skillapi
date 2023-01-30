@@ -29,6 +29,7 @@ public class Registries {
     public static Supplier<IForgeRegistry<Form>> FORMS;
 
     // SKILLS
+    // this is a placeholder skill for testing purposes.
     public static final Skill FIREBALL = new SkillActive("fireball", null);
 
     // FORMS
@@ -130,19 +131,19 @@ public class Registries {
 
 
             event.register(resKey, helper -> {
-                registry.register(PUSH.getName(), PUSH);
-                registry.register(PULL.getName(), PULL);
-                registry.register(RAISE.getName(), RAISE);
-                registry.register(LOWER.getName(), LOWER);
-                registry.register(BURST.getName(), BURST);
-                registry.register(ARC.getName(), ARC);
-                registry.register(COMPRESS.getName(), COMPRESS);
-                registry.register(EXPAND.getName(), EXPAND);
-                registry.register(TWIST.getName(), TWIST);
-                registry.register(STRIKE.getName(), STRIKE);
-                registry.register(BLOCK.getName(), BLOCK);
-                registry.register(BREATHE.getName(), BREATHE);
-                registry.register(STEP.getName(), STEP);
+                registry.register(PUSH.name(), PUSH);
+                registry.register(PULL.name(), PULL);
+                registry.register(RAISE.name(), RAISE);
+                registry.register(LOWER.name(), LOWER);
+                registry.register(BURST.name(), BURST);
+                registry.register(ARC.name(), ARC);
+                registry.register(COMPRESS.name(), COMPRESS);
+                registry.register(EXPAND.name(), EXPAND);
+                registry.register(TWIST.name(), TWIST);
+                registry.register(STRIKE.name(), STRIKE);
+                registry.register(BLOCK.name(), BLOCK);
+                registry.register(BREATHE.name(), BREATHE);
+                registry.register(STEP.name(), STEP);
                 //TODO: Element specific forms
             });
         }
