@@ -6,9 +6,10 @@ import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPress
 import com.amuzil.omegasource.magus.radix.path.PathBuilder;
 import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
-import com.amuzil.omegasource.magus.skill.util.capability.Capabilities;
+import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -39,6 +40,10 @@ public class Magus {
     public Magus() {
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+        // Register capabilities
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(CapabilityHandler::registerCapabilities);
+        // attach capabilities
+        MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, CapabilityHandler::attachEntityCapability);
         // Register the setup method for mod loading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         // Register the enqueueIMC method for mod loading
@@ -54,7 +59,7 @@ public class Magus {
     private void setup(final FMLCommonSetupEvent event) {
         // some pre init code
         Registries.init();
-        Capabilities.initialiseCaps();
+        CapabilityHandler.initialiseCaps();
         MagusNetwork.registerMessages();
         LOGGER.info("HELLO FROM PRE INIT");
         LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getName());

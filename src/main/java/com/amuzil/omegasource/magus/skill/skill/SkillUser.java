@@ -1,7 +1,7 @@
 package com.amuzil.omegasource.magus.skill.skill;
 
 import com.amuzil.omegasource.magus.Magus;
-import com.amuzil.omegasource.magus.skill.util.capability.LivingData;
+import com.amuzil.omegasource.magus.skill.util.capability.entity.Data;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = Magus.MOD_ID)
 public abstract class SkillUser {
 
-    public abstract LivingData getData();
+    public abstract Data getData();
     public abstract LivingEntity getEntity();
 
     public void onUpdate() {
