@@ -1,5 +1,7 @@
 package com.amuzil.omegasource.magus.skill.conditionals.key;
 
+import com.amuzil.omegasource.magus.skill.conditionals.InputData;
+
 import java.util.LinkedList;
 
 /**
@@ -9,7 +11,4 @@ import java.util.LinkedList;
  * ONLY SUPPORTS MULTIPLE KEYS AT ONCE. DELAY IS USELESS HERE. If multiple keys are passed with *different* delay,
  * the key with the most delay will be read.
  */
-public record KeyPermutation (
-        LinkedList<KeyInput> keys
-) {
-}
+public record KeyPermutation(LinkedList<KeyInput> keys) implements InputData {}
