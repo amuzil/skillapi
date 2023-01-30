@@ -1,4 +1,3 @@
 package com.amuzil.omegasource.magus.skill.forms;
 
-public class Form {
-}
+public record Form(String name) {}

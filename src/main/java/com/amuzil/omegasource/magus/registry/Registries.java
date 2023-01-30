@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.registry;
 
 import com.amuzil.omegasource.magus.Magus;
+import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
 import com.amuzil.omegasource.magus.skill.skill.SkillActive;
 import com.amuzil.omegasource.magus.skill.skill.SkillCategory;
@@ -25,6 +26,26 @@ public class Registries {
     public static Supplier<IForgeRegistry<DataTrait>> DATA_TRAITS;
     public static Supplier<IForgeRegistry<SkillCategory>> SKILL_CATEGORIES;
     public static Supplier<IForgeRegistry<Skill>> SKILLS;
+    public static Supplier<IForgeRegistry<Form>> FORMS;
+
+    // SKILLS
+    // this is a placeholder skill for testing purposes.
+    public static final Skill FIREBALL = new SkillActive("fireball", null);
+
+    // FORMS
+    public static final Form PUSH = new Form("push");
+    public static final Form PULL = new Form("pull");
+    public static final Form RAISE = new Form("raise");
+    public static final Form LOWER = new Form("lower");
+    public static final Form BURST = new Form("burst");
+    public static final Form ARC = new Form("arc");
+    public static final Form COMPRESS = new Form("compress");
+    public static final Form EXPAND = new Form("expand");
+    public static final Form TWIST = new Form("twist");
+    public static final Form STRIKE = new Form("strike");
+    public static final Form BLOCK = new Form("block");
+    public static final Form BREATHE = new Form("breathe");
+    public static final Form STEP = new Form("step");
 
     public static void init() {
     }
@@ -53,6 +74,9 @@ public class Registries {
         SKILLS = event.create(skills);
 
         //Forms
+        RegistryBuilder<Form> forms = new RegistryBuilder<>();
+        forms.setName(new ResourceLocation(Magus.MOD_ID, "forms"));
+        FORMS = event.create(forms);
 
         //Modifiers
     }
@@ -61,7 +85,7 @@ public class Registries {
     //What to do in the case of missing registry entries for each type of registry.
 
     @Mod.EventBusSubscriber(modid = Magus.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-    public class ForgeRegistries {
+    public static class ForgeRegistries {
         @SubscribeEvent
         public static void onMissing(MissingMappingsEvent event) {
             //Data Traits
@@ -96,8 +120,31 @@ public class Registries {
 
 
             event.register(resKey, helper -> {
-                Skill fireball = new SkillActive("fireball", null);
-                registry.register(fireball.getId(), fireball);
+                registry.register(FIREBALL.getId(), FIREBALL);
+            });
+        }
+
+        /* Forms. */
+        if (event.getRegistryKey().equals(FORMS.get().getRegistryKey())) {
+            IForgeRegistry<Form> registry = FORMS.get();
+            ResourceKey<Registry<Form>> resKey = registry.getRegistryKey();
+
+
+            event.register(resKey, helper -> {
+                registry.register(PUSH.name(), PUSH);
+                registry.register(PULL.name(), PULL);
+                registry.register(RAISE.name(), RAISE);
+                registry.register(LOWER.name(), LOWER);
+                registry.register(BURST.name(), BURST);
+                registry.register(ARC.name(), ARC);
+                registry.register(COMPRESS.name(), COMPRESS);
+                registry.register(EXPAND.name(), EXPAND);
+                registry.register(TWIST.name(), TWIST);
+                registry.register(STRIKE.name(), STRIKE);
+                registry.register(BLOCK.name(), BLOCK);
+                registry.register(BREATHE.name(), BREATHE);
+                registry.register(STEP.name(), STEP);
+                //TODO: Element specific forms
             });
         }
 
