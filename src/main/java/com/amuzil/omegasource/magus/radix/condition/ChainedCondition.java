@@ -20,7 +20,7 @@ public class ChainedCondition extends Condition {
     }
 
     public void finishCurrentCondition() {
-        if(currentCondition == null) ;
+        if(currentCondition == null) return;
         currentCondition.unregister();
         if(currentConditionIndex == (chainedConditions.size() - 1)) {
             onCompleteSuccess.run();
