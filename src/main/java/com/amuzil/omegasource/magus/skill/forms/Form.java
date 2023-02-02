@@ -1,3 +1,21 @@
 package com.amuzil.omegasource.magus.skill.forms;
 
-public record Form(String name) {}
+import com.amuzil.omegasource.magus.registry.Registries;
+
+public class Form {
+    private String name;
+
+    public Form(String name) {
+        this.name = name;
+        Registries.registerForm(this);
+    }
+
+    public Form(String name, String modID) {
+        this(name);
+
+    }
+
+    public String name() {
+        return name;
+    }
+}

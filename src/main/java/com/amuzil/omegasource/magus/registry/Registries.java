@@ -14,6 +14,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -28,26 +29,55 @@ public class Registries {
     public static Supplier<IForgeRegistry<Skill>> SKILLS;
     public static Supplier<IForgeRegistry<Form>> FORMS;
 
+
+    public static List<DataTrait> traits = new ArrayList<>();
+    public static List<SkillCategory> categories = new ArrayList<>();
+    public static List<Skill> skills = new ArrayList<>();
+    public static List<Form> forms = new ArrayList<>();
+
     // SKILLS
     // this is a placeholder skill for testing purposes.
     public static final Skill FIREBALL = new SkillActive("fireball", null);
 
-    // FORMS
-    public static final Form PUSH = new Form("push");
-    public static final Form PULL = new Form("pull");
-    public static final Form RAISE = new Form("raise");
-    public static final Form LOWER = new Form("lower");
-    public static final Form BURST = new Form("burst");
-    public static final Form ARC = new Form("arc");
-    public static final Form COMPRESS = new Form("compress");
-    public static final Form EXPAND = new Form("expand");
-    public static final Form TWIST = new Form("twist");
-    public static final Form STRIKE = new Form("strike");
-    public static final Form BLOCK = new Form("block");
-    public static final Form BREATHE = new Form("breathe");
-    public static final Form STEP = new Form("step");
 
     public static void init() {
+    }
+
+    /**
+     * Registry methods.
+     */
+    //These are added to the forge event bus registry. To get a specific trait, use the registry.
+    public static void registerTraits(List<DataTrait> dataTraits) {
+        traits.addAll(dataTraits);
+    }
+
+    public static void registerTrait(DataTrait dataTrait) {
+        traits.add(dataTrait);
+    }
+
+    public static void registerSkillCategories(List<SkillCategory> skillCategories) {
+        categories.addAll(skillCategories);
+    }
+
+    public static void registerSkillCategory(SkillCategory skillCategory) {
+        categories.add(skillCategory);
+    }
+
+
+    public static void registerSkills(List<Skill> registrySkills) {
+        skills.addAll(registrySkills);
+    }
+
+    public static void registerSkill(Skill registrySkill) {
+        skills.add(registrySkill);
+    }
+
+    public static void registerForms(List<Form> registryForms) {
+        forms.addAll(registryForms);
+    }
+
+    public static void registerForm(Form registryForm) {
+        forms.add(registryForm);
     }
 
     //How registering will work:
@@ -131,19 +161,8 @@ public class Registries {
 
 
             event.register(resKey, helper -> {
-                registry.register(PUSH.name(), PUSH);
-                registry.register(PULL.name(), PULL);
-                registry.register(RAISE.name(), RAISE);
-                registry.register(LOWER.name(), LOWER);
-                registry.register(BURST.name(), BURST);
-                registry.register(ARC.name(), ARC);
-                registry.register(COMPRESS.name(), COMPRESS);
-                registry.register(EXPAND.name(), EXPAND);
-                registry.register(TWIST.name(), TWIST);
-                registry.register(STRIKE.name(), STRIKE);
-                registry.register(BLOCK.name(), BLOCK);
-                registry.register(BREATHE.name(), BREATHE);
-                registry.register(STEP.name(), STEP);
+                for (Form form : forms)
+                    registry.register(form.name(), form);
                 //TODO: Element specific forms
             });
         }
@@ -157,14 +176,19 @@ public class Registries {
             //Registers every Data Trait for every skill included within Magus.
             //Register other traits manually.
             registerTraitsFromSkills((List<Skill>) SKILLS.get().getValues(), event);
+            event.register(resKey, helper -> {
+                for (DataTrait trait : traits)
+                    registry.register(trait.getName(), trait);
+            });
         }
     }
 
     /**
      * Use this method to register the data traits of all registered skills.
+     *
      * @param skills List of skills.
-     * @param event Registry event.
-     * @param modID ModID.
+     * @param event  Registry event.
+     * @param modID  ModID.
      */
     public static void registerTraitsFromSkills(List<Skill> skills, RegisterEvent event,
                                                 String modID) {
@@ -178,10 +202,11 @@ public class Registries {
     }
 
     /**
-     *  Same as the above method, but if you standardise your modID in your data,
-     *  then use this.
+     * Same as the above method, but if you standardise your modID in your data,
+     * then use this.
+     *
      * @param skills Skills to register.
-     * @param event The registry event.
+     * @param event  The registry event.
      */
     public static void registerTraitsFromSkills(List<Skill> skills, RegisterEvent event) {
         ResourceKey<Registry<DataTrait>> key = DATA_TRAITS.get().getRegistryKey();
