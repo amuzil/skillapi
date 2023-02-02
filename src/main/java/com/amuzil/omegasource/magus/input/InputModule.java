@@ -11,5 +11,10 @@ import java.util.Map;
 public abstract class InputModule {
     protected final Map<Condition, Form> _formInputs = new HashMap<>();
 
-    public abstract void registerInputData(List<InputData> formExecutionInputs, Form formToExecute);
+    public abstract Condition registerInputData(Condition formCondition, Form formToExecute, Runnable onSuccess, Runnable onFailure);
+
+    public void unregisterCondition(Condition condition) {
+        condition.unregister();
+        _formInputs.remove(condition);
+    }
 }

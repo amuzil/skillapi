@@ -1,5 +1,7 @@
 package com.amuzil.omegasource.magus.radix;
 
+import com.amuzil.omegasource.magus.skill.forms.Form;
+
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -11,7 +13,7 @@ import java.util.function.Consumer;
  * @param terminateCondition If this condition is fulfilled, the active node will be terminated. If it expires, nothing special happens. It doesn't have to expire for the branch to terminate
  */
 public record Node(
-        Map<Condition, Node> children,
+        Map<Form, Node> children,
         Consumer<Branch> onEnter,
         Consumer<Branch> onLeave,
         Consumer<Branch> onTerminate,
