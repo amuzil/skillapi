@@ -10,8 +10,6 @@ import java.util.List;
 
 public class KeyboardMouseInputModule extends InputModule {
 
-    private RadixTree tree;
-
     @Override
     public Condition registerInputData(Condition formCondition, Form formToExecute, Runnable onSuccess, Runnable onFailure) {
         if(formCondition != null) {
