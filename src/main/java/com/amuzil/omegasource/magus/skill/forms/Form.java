@@ -10,9 +10,13 @@ public class Form {
         Registries.registerForm(this);
     }
 
+    /**
+     * Just in case. I don't think we care about the MOD_ID as forge handles that.
+     * @param name
+     * @param modID
+     */
     public Form(String name, String modID) {
         this(name);
-
     }
 
     public String name() {
