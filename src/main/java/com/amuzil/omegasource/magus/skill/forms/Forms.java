@@ -15,4 +15,9 @@ public class Forms {
     public static final Form BLOCK = new Form("block");
     public static final Form BREATHE = new Form("breathe");
     public static final Form STEP = new Form("step");
+
+
+    //These two may not be necessary.
+    public static final Form MENU = new Form("menu");
+    public static final Form HOTKEY = new Form("hotkey");
 }
