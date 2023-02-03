@@ -1,5 +1,7 @@
 package com.amuzil.omegasource.magus.radix;
 
+import com.amuzil.omegasource.magus.skill.forms.Form;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -7,7 +9,7 @@ import java.util.function.Consumer;
 
 public class NodeBuilder {
 	private final Type type;
-	private final Map<Condition, Node> children;
+	private final Map<Form, Node> children;
 	private Consumer<Branch> onEnter;
 	private Consumer<Branch> onLeave;
 	private Consumer<Branch> onTerminate;
@@ -38,18 +40,18 @@ public class NodeBuilder {
 		return new IllegalStateException("A " + type.name().toLowerCase(Locale.ROOT) + " node cannot " + message);
 	}
 
-	public NodeBuilder addChild(Condition condition, Node child) {
+	public NodeBuilder addChild(Form form, Node child) {
 		if (type.canHaveChildren) {
-			children.put(condition, child);
+			children.put(form, child);
 			return this;
 		} else {
 			throw cannot("have children");
 		}
 	}
 
-	public NodeBuilder removeChild(Condition condition) {
+	public NodeBuilder removeChild(Form form) {
 		if (type.canHaveChildren) {
-			children.remove(condition);
+			children.remove(form);
 			return this;
 		} else {
 			throw cannot("have children");
