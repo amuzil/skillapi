@@ -1,5 +1,7 @@
 package com.amuzil.omegasource.magus;
 
+import com.amuzil.omegasource.magus.input.InputModule;
+import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressedCondition;
@@ -36,6 +38,8 @@ public class Magus {
     public static final String MOD_ID = "magus";
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
+
+    public static InputModule inputModule = new KeyboardMouseInputModule();
 
     public Magus() {
         // Register ourselves for server and other game events we are interested in

@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.input;
 
 import com.amuzil.omegasource.magus.radix.Condition;
+import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.forms.Form;
@@ -8,11 +9,13 @@ import com.amuzil.omegasource.magus.skill.forms.Form;
 import java.util.List;
 
 public class KeyboardMouseInputModule extends InputModule {
+
     @Override
     public void registerInputData(List<InputData> formExecutionInputs, Form formToExecute) {
         //generate condition from InputData.
         Runnable onSuccess = () -> {
             //todo pass formToExecute to the form queue.
+
             //reset condition?
         };
         Runnable onFailure = () -> {
