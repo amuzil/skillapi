@@ -14,9 +14,9 @@ import java.util.function.Consumer;
  */
 public record Node(
         Map<Form, Node> children,
-        Consumer<Branch> onEnter,
-        Consumer<Branch> onLeave,
-        Consumer<Branch> onTerminate,
+        Consumer<RadixTree> onEnter,
+        Consumer<RadixTree> onLeave,
+        Consumer<RadixTree> onTerminate,
         Condition terminateCondition
 ) {
 

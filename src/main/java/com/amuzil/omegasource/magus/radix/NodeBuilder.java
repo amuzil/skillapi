@@ -10,9 +10,9 @@ import java.util.function.Consumer;
 public class NodeBuilder {
 	private final Type type;
 	private final Map<Form, Node> children;
-	private Consumer<Branch> onEnter;
-	private Consumer<Branch> onLeave;
-	private Consumer<Branch> onTerminate;
+	private Consumer<RadixTree> onEnter;
+	private Consumer<RadixTree> onLeave;
+	private Consumer<RadixTree> onTerminate;
 	private Condition terminateCondition;
 
 	private NodeBuilder(Type type) {
@@ -58,7 +58,7 @@ public class NodeBuilder {
 		}
 	}
 
-	public NodeBuilder onEnter(Consumer<Branch> onEnter) {
+	public NodeBuilder onEnter(Consumer<RadixTree> onEnter) {
 		if (type.canBeEntered) {
 			this.onEnter = onEnter;
 			return this;
@@ -67,7 +67,7 @@ public class NodeBuilder {
 		}
 	}
 
-	public NodeBuilder onLeave(Consumer<Branch> onLeave) {
+	public NodeBuilder onLeave(Consumer<RadixTree> onLeave) {
 		if (type.canBeLeft) {
 			this.onLeave = onLeave;
 			return this;
@@ -76,7 +76,7 @@ public class NodeBuilder {
 		}
 	}
 
-	public NodeBuilder onTerminate(Consumer<Branch> onTerminate) {
+	public NodeBuilder onTerminate(Consumer<RadixTree> onTerminate) {
 		if (type.canBeTerminated) {
 			this.onTerminate = onTerminate;
 			return this;
