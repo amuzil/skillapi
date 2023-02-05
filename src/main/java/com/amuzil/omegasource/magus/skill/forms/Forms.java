@@ -10,9 +10,10 @@ public class Forms {
     public static final Form ARC = new Form("arc");
     public static final Form COMPRESS = new Form("compress");
     public static final Form EXPAND = new Form("expand");
-    public static final Form TWIST = new Form("twist");
+    public static final Form SPIN = new Form("spin");
+    public static final Form ROTATE = new Form("rotate");
     public static final Form STRIKE = new Form("strike");
-    public static final Form BLOCK = new Form("block");
+    public static final Form FORCE = new Form("force");
     public static final Form BREATHE = new Form("breathe");
     public static final Form STEP = new Form("step");
 }
