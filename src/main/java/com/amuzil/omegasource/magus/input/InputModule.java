@@ -3,7 +3,6 @@ package com.amuzil.omegasource.magus.input;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.forms.Form;
-import com.amuzil.omegasource.magus.skill.modifiers.ModifierListener;
 
 import java.util.HashMap;
 import java.util.List;
