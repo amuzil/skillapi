@@ -13,7 +13,7 @@ public class NodeBuilder {
 	private Consumer<RadixTree> onLeave;
 	private Consumer<RadixTree> onTerminate;
 	private Condition terminateCondition;
-	private List<Modifier> availableModifiers;
+	private final List<Modifier> availableModifiers;
 
 	private NodeBuilder(Type type) {
 		this.type = type;
