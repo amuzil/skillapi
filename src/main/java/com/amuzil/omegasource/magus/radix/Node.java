@@ -3,7 +3,6 @@ package com.amuzil.omegasource.magus.radix;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.modifiers.Modifier;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -17,7 +16,7 @@ public final class Node {
     private final Consumer<RadixTree> onLeave;
     private final Consumer<RadixTree> onTerminate;
     private final Condition terminateCondition;
-    private final List<Modifier> modifiers = new ArrayList<>();
+    private final List<Modifier> modifiers;
 
     /**
      * @param children           If a condition is fulfilled, the active node moves down to the mapped child node
@@ -31,13 +30,15 @@ public final class Node {
             Consumer<RadixTree> onEnter,
             Consumer<RadixTree> onLeave,
             Consumer<RadixTree> onTerminate,
-            Condition terminateCondition
+            Condition terminateCondition,
+            List<Modifier> modifiers
     ) {
         this.children = children;
         this.onEnter = onEnter;
         this.onLeave = onLeave;
         this.onTerminate = onTerminate;
         this.terminateCondition = terminateCondition;
+        this.modifiers = modifiers;
     }
 
     public Map<Form, Node> children() {

@@ -51,7 +51,7 @@ public class NodeBuilder {
 	}
 
 	public NodeBuilder addModifiers(List<Modifier> modifiers) {
-		availableModifiers.addAll(modifiers);
+		this.availableModifiers.addAll(modifiers);
 
 		return this;
 	}
@@ -108,7 +108,7 @@ public class NodeBuilder {
 	}
 
 	public Node build() {
-		return new Node(children, onEnter, onLeave, onTerminate, terminateCondition);
+		return new Node(children, onEnter, onLeave, onTerminate, terminateCondition, availableModifiers);
 	}
 
 	private enum Type {
