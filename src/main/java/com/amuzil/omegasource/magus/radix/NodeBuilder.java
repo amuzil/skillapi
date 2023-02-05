@@ -1,10 +1,9 @@
 package com.amuzil.omegasource.magus.radix;
 
 import com.amuzil.omegasource.magus.skill.forms.Form;
+import com.amuzil.omegasource.magus.skill.modifiers.Modifier;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class NodeBuilder {
@@ -14,10 +13,12 @@ public class NodeBuilder {
 	private Consumer<RadixTree> onLeave;
 	private Consumer<RadixTree> onTerminate;
 	private Condition terminateCondition;
+	private List<Modifier> availableModifiers;
 
 	private NodeBuilder(Type type) {
 		this.type = type;
 		this.children = new HashMap<>();
+		this.availableModifiers = new ArrayList<>();
 		this.onEnter = null;
 		this.onLeave = null;
 		this.onTerminate = null;
@@ -47,6 +48,18 @@ public class NodeBuilder {
 		} else {
 			throw cannot("have children");
 		}
+	}
+
+	public NodeBuilder addModifiers(List<Modifier> modifiers) {
+		availableModifiers.addAll(modifiers);
+
+		return this;
+	}
+
+	public NodeBuilder addModifier(Modifier modifier) {
+		this.availableModifiers.add(modifier);
+
+		return this;
 	}
 
 	public NodeBuilder removeChild(Form form) {
