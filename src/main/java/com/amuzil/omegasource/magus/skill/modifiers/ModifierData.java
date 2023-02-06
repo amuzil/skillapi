@@ -2,6 +2,8 @@ package com.amuzil.omegasource.magus.skill.modifiers;
 
 import com.amuzil.omegasource.magus.skill.util.traits.DataTrait;
 
+
+// actually adding data is handled by sub-class implementations, this is just for generics.
 public abstract class ModifierData implements DataTrait {
 
     public ModifierData() {
