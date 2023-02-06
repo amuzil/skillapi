@@ -4,6 +4,8 @@ import com.amuzil.omegasource.magus.input.InputModule;
 import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.radix.Condition;
+import com.amuzil.omegasource.magus.radix.NodeBuilder;
+import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressedCondition;
 import com.amuzil.omegasource.magus.radix.path.PathBuilder;
 import com.amuzil.omegasource.magus.registry.Registries;
@@ -39,6 +41,8 @@ public class Magus {
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
 
+    //todo: move these to a better place
+    public static RadixTree radixTree = new RadixTree(NodeBuilder.root().build());
     public static InputModule inputModule = new KeyboardMouseInputModule();
 
     public Magus() {
