@@ -1,6 +1,8 @@
 package com.amuzil.omegasource.magus.radix.condition.minecraft.forge;
 
 import com.amuzil.omegasource.magus.radix.Condition;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -35,4 +37,6 @@ public class EventCondition<E extends Event> extends Condition {
         super.unregister();
         MinecraftForge.EVENT_BUS.unregister(listener);
     }
+
+
 }

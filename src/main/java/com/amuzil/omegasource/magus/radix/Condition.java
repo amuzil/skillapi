@@ -15,7 +15,7 @@ public abstract class Condition {
 	public void register(Runnable onSuccess, Runnable onFailure) {
 		RadixUtil.getLogger().debug("Registering results");
 		this.onSuccess = () -> {
-			//RadixUtil.getLogger().debug("Result: success");
+			RadixUtil.getLogger().debug("Result: success");
 			onSuccess.run();
 		};
 		this.onFailure = () -> {
