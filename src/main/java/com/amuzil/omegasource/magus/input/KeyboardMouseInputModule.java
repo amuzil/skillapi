@@ -21,7 +21,7 @@ public class KeyboardMouseInputModule extends InputModule {
         };
         Runnable onFailure = () -> {
             //reset conditions?
-            Magus.radixTree.burn();
+           // Magus.radixTree.burn();
         };
         Condition formCondition = new ConditionBuilder()
                 .fromInputData(formExecutionInputs)
