@@ -1,7 +1,7 @@
 package com.amuzil.omegasource.magus.radix;
 
 import com.amuzil.omegasource.magus.skill.forms.Form;
-import com.amuzil.omegasource.magus.skill.modifiers.Modifier;
+import com.amuzil.omegasource.magus.skill.modifiers.api.Modifier;
 
 import java.util.List;
 import java.util.Map;
@@ -54,8 +54,10 @@ public class Node {
 
     public Consumer<RadixTree> onLeave() {
         // todo: wrap the listener unregistration in a check if this is in a player or AI context.
-        if(modifiers.size() > 0)
+        if(modifiers.size() > 0) {
+            modifiers.forEach(modifier -> modifier.print());
             unregisterModifierListeners();
+        }
         return onLeave;
     }
 

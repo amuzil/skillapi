@@ -1,8 +1,12 @@
 package com.amuzil.omegasource.magus.skill.util.capability.entity;
 
 import com.amuzil.omegasource.magus.Magus;
+import com.amuzil.omegasource.magus.radix.Node;
+import com.amuzil.omegasource.magus.radix.NodeBuilder;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.registry.Registries;
+import com.amuzil.omegasource.magus.skill.forms.Forms;
+import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
 import com.amuzil.omegasource.magus.skill.skill.SkillCategory;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
@@ -52,9 +56,13 @@ public class LivingDataCapability {
         public LivingDataCapabilityImp() {
             fillTraits();
             //TODO: Data generation methods for each skill
-
             fillCategories();
             fillSkills();
+            Node secondNode = NodeBuilder.middle().addModifier(ModifiersRegistry.FOCUS.copy()).build();
+            tree = new RadixTree(NodeBuilder.root().addChild(Forms.STRIKE, secondNode).build());
+
+            //todo this should probably not be where we call start, but for now it'll stop us crashing
+            tree.start();
             markDirty();
         }
 

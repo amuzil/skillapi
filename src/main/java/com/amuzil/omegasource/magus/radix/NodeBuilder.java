@@ -1,7 +1,8 @@
 package com.amuzil.omegasource.magus.radix;
 
 import com.amuzil.omegasource.magus.skill.forms.Form;
-import com.amuzil.omegasource.magus.skill.modifiers.Modifier;
+import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
+import com.amuzil.omegasource.magus.skill.modifiers.api.Modifier;
 
 import java.util.*;
 import java.util.function.Consumer;
