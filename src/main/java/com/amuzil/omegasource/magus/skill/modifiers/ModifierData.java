@@ -1,8 +1,8 @@
 package com.amuzil.omegasource.magus.skill.modifiers;
 
-import net.minecraftforge.common.util.INBTSerializable;
+import com.amuzil.omegasource.magus.skill.util.traits.DataTrait;
 
-public abstract class ModifierData implements INBTSerializable {
+public abstract class ModifierData implements DataTrait {
 
     public ModifierData() {
     }
@@ -14,6 +14,8 @@ public abstract class ModifierData implements INBTSerializable {
     public void add(ModifierData modifierData) {
         if(!modifierData.getClass().equals(this.getClass())) {
             //todo logging - tried to merge 2 different types of ModifierData together
+        } else {
+            markDirty();
         }
     }
 }

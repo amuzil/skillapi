@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 /**
  *
  */
-public final class Node {
+public class Node {
     private final Map<Form, Node> children;
     private final Consumer<RadixTree> onEnter;
     private final Consumer<RadixTree> onLeave;
