@@ -1,5 +1,6 @@
 package com.amuzil.omegasource.magus.input;
 
+import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
@@ -15,11 +16,12 @@ public class KeyboardMouseInputModule extends InputModule {
         //generate condition from InputData.
         Runnable onSuccess = () -> {
             //todo pass formToExecute to the form queue.
-
+            Magus.radixTree.moveDown(formToExecute);
             //reset condition?
         };
         Runnable onFailure = () -> {
             //reset conditions?
+            Magus.radixTree.burn();
         };
         Condition formCondition = new ConditionBuilder()
                 .fromInputData(formExecutionInputs)

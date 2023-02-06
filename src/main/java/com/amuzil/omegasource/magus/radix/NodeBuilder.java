@@ -1,23 +1,24 @@
 package com.amuzil.omegasource.magus.radix;
 
 import com.amuzil.omegasource.magus.skill.forms.Form;
+import com.amuzil.omegasource.magus.skill.modifiers.Modifier;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class NodeBuilder {
 	private final Type type;
 	private final Map<Form, Node> children;
-	private Consumer<Branch> onEnter;
-	private Consumer<Branch> onLeave;
-	private Consumer<Branch> onTerminate;
+	private Consumer<RadixTree> onEnter;
+	private Consumer<RadixTree> onLeave;
+	private Consumer<RadixTree> onTerminate;
 	private Condition terminateCondition;
+	private final List<Modifier> availableModifiers;
 
 	private NodeBuilder(Type type) {
 		this.type = type;
 		this.children = new HashMap<>();
+		this.availableModifiers = new ArrayList<>();
 		this.onEnter = null;
 		this.onLeave = null;
 		this.onTerminate = null;
@@ -49,6 +50,18 @@ public class NodeBuilder {
 		}
 	}
 
+	public NodeBuilder addModifiers(List<Modifier> modifiers) {
+		this.availableModifiers.addAll(modifiers);
+
+		return this;
+	}
+
+	public NodeBuilder addModifier(Modifier modifier) {
+		this.availableModifiers.add(modifier);
+
+		return this;
+	}
+
 	public NodeBuilder removeChild(Form form) {
 		if (type.canHaveChildren) {
 			children.remove(form);
@@ -58,7 +71,7 @@ public class NodeBuilder {
 		}
 	}
 
-	public NodeBuilder onEnter(Consumer<Branch> onEnter) {
+	public NodeBuilder onEnter(Consumer<RadixTree> onEnter) {
 		if (type.canBeEntered) {
 			this.onEnter = onEnter;
 			return this;
@@ -67,7 +80,7 @@ public class NodeBuilder {
 		}
 	}
 
-	public NodeBuilder onLeave(Consumer<Branch> onLeave) {
+	public NodeBuilder onLeave(Consumer<RadixTree> onLeave) {
 		if (type.canBeLeft) {
 			this.onLeave = onLeave;
 			return this;
@@ -76,7 +89,7 @@ public class NodeBuilder {
 		}
 	}
 
-	public NodeBuilder onTerminate(Consumer<Branch> onTerminate) {
+	public NodeBuilder onTerminate(Consumer<RadixTree> onTerminate) {
 		if (type.canBeTerminated) {
 			this.onTerminate = onTerminate;
 			return this;
@@ -95,7 +108,7 @@ public class NodeBuilder {
 	}
 
 	public Node build() {
-		return new Node(children, onEnter, onLeave, onTerminate, terminateCondition);
+		return new Node(children, onEnter, onLeave, onTerminate, terminateCondition, availableModifiers);
 	}
 
 	private enum Type {
