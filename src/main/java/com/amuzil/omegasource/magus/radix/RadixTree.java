@@ -62,6 +62,8 @@ public class RadixTree {
 //            active.onLeave().accept(branch);
 //        }
 
+        if(active.children().size() == 0) return;
+
         if (active.terminateCondition() != null) {
             active.terminateCondition().unregister();
         }

@@ -14,7 +14,7 @@ public class FormDataRegistry {
     //Remember to see #InputConstants for the key names.
     public static void init() {
         List<InputData> inputs = new ArrayList<>();
-        inputs.add(new KeyInput(InputConstants.getKey("key.mouse.left"),
+        inputs.add(new KeyInput(InputConstants.getKey("key.keyboard.semicolon"),
                 0, 0, 0));
         Magus.inputModule.registerInputData(inputs, Forms.STRIKE);
     }

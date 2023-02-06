@@ -25,7 +25,7 @@ public class CapabilityHandler {
             //capabilities all living entities get.
             //TODO: Add requirement to check against a list of compatible entities.
             //E.g custom npcs, or specific mobs you want to be able to use Skills.
-            e.addCapability(LivingDataCapability.IDENTIFIER, new LivingDataCapability.LivingDataProvider());
+//            e.addCapability(LivingDataCapability.IDENTIFIER, new LivingDataCapability.LivingDataProvider());
             if (e.getObject() instanceof Player) {
                 //capabilities just players get.
             }

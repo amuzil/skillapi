@@ -8,6 +8,7 @@ import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
 
 public class KeyboardMouseInputModule extends InputModule {
 
@@ -16,6 +17,7 @@ public class KeyboardMouseInputModule extends InputModule {
         //generate condition from InputData.
         Runnable onSuccess = () -> {
             //todo pass formToExecute to the form queue.
+            LogManager.getLogger().info("FORM ACTIVATED :" + formToExecute.name());
             Magus.radixTree.moveDown(formToExecute);
             //reset condition?
         };

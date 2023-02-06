@@ -175,7 +175,7 @@ public class Registries {
 
             //Registers every Data Trait for every skill included within Magus.
             //Register other traits manually.
-            registerTraitsFromSkills((List<Skill>) SKILLS.get().getValues(), event);
+            registerTraitsFromSkills(SKILLS.get().getValues().stream().toList(), event);
             event.register(resKey, helper -> {
                 for (DataTrait trait : traits)
                     registry.register(trait.getName(), trait);
