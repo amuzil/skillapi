@@ -25,4 +25,6 @@ public abstract class ModifierData implements DataTrait {
     protected abstract void mergeFields(ModifierData modifierData);
 
     public abstract void print();
+
+    public abstract void reset();
 }

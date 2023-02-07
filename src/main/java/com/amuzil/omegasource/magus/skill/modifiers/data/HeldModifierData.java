@@ -44,6 +44,11 @@ public class HeldModifierData extends BaseModifierData {
     }
 
     @Override
+    public void reset() {
+        this.duration = 0;
+    }
+
+    @Override
     public void print() {
         LogManager.getLogger().info("HeldModifierData duration: " + duration);
     }
