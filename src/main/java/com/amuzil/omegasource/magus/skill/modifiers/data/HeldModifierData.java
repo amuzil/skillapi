@@ -40,9 +40,7 @@ public class HeldModifierData extends BaseModifierData {
     @Override
     protected void mergeFields(ModifierData modifierData) {
         HeldModifierData heldModifierData = (HeldModifierData) modifierData;
-        LogManager.getLogger().info("MERGING DATA: " + heldModifierData.duration);
         this.duration += heldModifierData.duration;
-        LogManager.getLogger().info("NEW VALUE: " + this.duration);
     }
 
     @Override
