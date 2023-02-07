@@ -1,27 +1,37 @@
 package com.amuzil.omegasource.magus.input;
 
-import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.radix.Condition;
-import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 
 import java.util.List;
+
+import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
+import com.amuzil.omegasource.magus.skill.util.capability.entity.Data;
+import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.LogManager;
 
 public class KeyboardMouseInputModule extends InputModule {
+
+    private Form activeForm = null;
 
     @Override
     public void registerInputData(List<InputData> formExecutionInputs, Form formToExecute) {
         //generate condition from InputData.
         Runnable onSuccess = () -> {
             //todo pass formToExecute to the form queue.
-            LogManager.getLogger().info("FORM ACTIVATED :" + formToExecute.name());
-            Magus.radixTree.moveDown(formToExecute);
+            Minecraft mc = Minecraft.getInstance();
+            if(mc.level != null && formToExecute != activeForm) {
+                Data livingDataCapability = CapabilityHandler.getCapability(mc.player, CapabilityHandler.LIVING_DATA);
+                LogManager.getLogger().info("FORM ACTIVATED :" + formToExecute.name());
+                livingDataCapability.getTree().moveDown(formToExecute);
+                activeForm = formToExecute;
+            }
             //reset condition?
         };
         Runnable onFailure = () -> {
+            activeForm = null;
             //reset conditions?
            // Magus.radixTree.burn();
         };

@@ -3,17 +3,10 @@ package com.amuzil.omegasource.magus;
 import com.amuzil.omegasource.magus.input.InputModule;
 import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
-import com.amuzil.omegasource.magus.radix.Condition;
-import com.amuzil.omegasource.magus.radix.NodeBuilder;
-import com.amuzil.omegasource.magus.radix.RadixTree;
-import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressedCondition;
-import com.amuzil.omegasource.magus.radix.path.PathBuilder;
 import com.amuzil.omegasource.magus.registry.Registries;
-import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
-import com.amuzil.omegasource.magus.skill.forms.Forms;
+import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Blocks;
@@ -44,7 +37,6 @@ public class Magus {
     private static final Logger LOGGER = LogManager.getLogger();
 
     //todo: move these to a better place
-    public static RadixTree radixTree = new RadixTree(NodeBuilder.root().build());
     public static InputModule inputModule = new KeyboardMouseInputModule();
 
     public Magus() {
@@ -63,8 +55,8 @@ public class Magus {
         // Register the doClientStuff method for mod loading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
         //Assign input data to forms
-        radixTree.start();
         FormDataRegistry.init();
+        ModifiersRegistry.init();
 
     }
 

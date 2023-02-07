@@ -34,9 +34,9 @@ public class RadixTree {
     private void setActive(Node node) {
         active = node;
 
-//        if (active.onEnter() != null) {
-//            active.onEnter().accept(branch);
-//        }
+        if (active.onEnter() != null) {
+            active.onEnter().accept(this);
+        }
 
         if (active.terminateCondition() != null) {
             active.terminateCondition().register(this::terminate, () -> {
@@ -46,9 +46,9 @@ public class RadixTree {
 
     // Called when either the node's terminate condition is fulfilled or all active child conditions have expired
     private void terminate() {
-//        if (active.onTerminate() != null) {
-//            active.onTerminate().accept(branch);
-//        }
+        if (active.onTerminate() != null) {
+            active.onTerminate().accept(this);
+        }
 
         if (active.terminateCondition() != null) {
             active.terminateCondition().unregister();
@@ -58,11 +58,14 @@ public class RadixTree {
     }
 
     public void moveDown(Form executedForm) {
-//        if (active.onLeave() != null) {
-//            active.onLeave().accept(branch);
-//        }
+        if(active.getModifiers().size() > 0) active.getModifiers().forEach(modifier -> modifier.print());
 
         if(active.children().size() == 0) return;
+
+        if (active.onLeave() != null) {
+            active.onLeave().accept(this);
+        }
+
 
         if (active.terminateCondition() != null) {
             active.terminateCondition().unregister();
