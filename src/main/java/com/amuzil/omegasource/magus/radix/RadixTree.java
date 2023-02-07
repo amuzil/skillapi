@@ -1,10 +1,13 @@
 package com.amuzil.omegasource.magus.radix;
 
 import com.amuzil.omegasource.magus.skill.forms.Form;
+import com.amuzil.omegasource.magus.skill.modifiers.api.Modifier;
 
 public class RadixTree {
     private final Node root;
     private Node active;
+    private Form lastActivated = null;
+    private RadixPath path;
 
     public RadixTree(Node root) {
         this.root = root;
@@ -29,6 +32,7 @@ public class RadixTree {
     public void start() {
 //        branch.reset(root);
         setActive(root);
+        path = new RadixPath();
     }
 
     private void setActive(Node node) {
@@ -58,6 +62,11 @@ public class RadixTree {
     }
 
     public void moveDown(Form executedForm) {
+        //add the last Node to the activation Path and store its ModifierData's
+        path.addStep(this.lastActivated, active.getModifiers().stream().map(Modifier::data).toList());
+        this.lastActivated = executedForm;
+
+        //todo remove this its just for testing
         if(active.getModifiers().size() > 0) active.getModifiers().forEach(modifier -> modifier.print());
 
         if(active.children().size() == 0) return;

@@ -56,6 +56,7 @@ public class Node {
         // todo: wrap the listener unregistration in a check if this is in a player or AI context.
         if(modifiers.size() > 0) {
             modifiers.forEach(modifier -> modifier.print());
+
             unregisterModifierListeners();
         }
         return onLeave;

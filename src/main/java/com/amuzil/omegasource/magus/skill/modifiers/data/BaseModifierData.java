@@ -25,6 +25,9 @@ public abstract class BaseModifierData extends ModifierData {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag compoundTag = new CompoundTag();
+
+        compoundTag.putString("dataIdentifier", getName());
+
         return compoundTag;
     }
 }

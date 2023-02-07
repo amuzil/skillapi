@@ -6,27 +6,56 @@ import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import com.amuzil.omegasource.magus.skill.util.capability.entity.Data;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
 import org.apache.logging.log4j.LogManager;
 
 public class KeyboardMouseInputModule extends InputModule {
 
+    private final Consumer<TickEvent> tickEventConsumer;
+
+    private Form lastActivatedForm = null;
     private Form activeForm = null;
+    private int ticksSinceActivated = 0;
+
+    //todo make this threshold configurable
+    private final int tickActivationThreshold = 4;
+    Minecraft mc = Minecraft.getInstance();
+
+    public KeyboardMouseInputModule() {
+        tickEventConsumer = tickEvent -> {
+            if(activeForm != null) {
+                ticksSinceActivated++;
+            }
+
+            if(ticksSinceActivated >= tickActivationThreshold) {
+                Data livingDataCapability = CapabilityHandler.getCapability(mc.player, CapabilityHandler.LIVING_DATA);
+                LogManager.getLogger().info("FORM ACTIVATED :" + activeForm.name());
+                livingDataCapability.getTree().moveDown(activeForm);
+                lastActivatedForm = activeForm;
+                activeForm = null;
+                ticksSinceActivated = 0;
+            }
+        };
+        MinecraftForge.EVENT_BUS.addListener(tickEventConsumer);
+    }
 
     @Override
     public void registerInputData(List<InputData> formExecutionInputs, Form formToExecute) {
         //generate condition from InputData.
         Runnable onSuccess = () -> {
-            //todo pass formToExecute to the form queue.
-            Minecraft mc = Minecraft.getInstance();
-            if(mc.level != null && formToExecute != activeForm) {
-                Data livingDataCapability = CapabilityHandler.getCapability(mc.player, CapabilityHandler.LIVING_DATA);
-                LogManager.getLogger().info("FORM ACTIVATED :" + formToExecute.name());
-                livingDataCapability.getTree().moveDown(formToExecute);
-                activeForm = formToExecute;
+            if(mc.level != null) {
+                //this section is to prevent re-activating
+                // single condition forms when you hold the activation key for Held modifiers
+                if(formToExecute != lastActivatedForm) {
+                    activeForm = formToExecute;
+                }
+                ticksSinceActivated = 0;
             }
             //reset condition?
         };
@@ -47,5 +76,11 @@ public class KeyboardMouseInputModule extends InputModule {
             //todo errors/logging
         }
 
+    }
+
+    @Override
+    public void unregister() {
+        MinecraftForge.EVENT_BUS.unregister(tickEventConsumer);
+        _formInputs.forEach((condition, form) -> condition.unregister());
     }
 }

@@ -6,7 +6,6 @@ import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraftforge.client.event.InputEvent;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,4 +26,6 @@ public abstract class InputModule {
                 event -> event.getKey() == key.getValue() && event.getAction()
         == actionCondition);
     }
+
+    public abstract void unregister();
 }
