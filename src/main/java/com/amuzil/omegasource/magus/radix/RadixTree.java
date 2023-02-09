@@ -2,6 +2,7 @@ package com.amuzil.omegasource.magus.radix;
 
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.modifiers.api.Modifier;
+import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 
 public class RadixTree {
     private final Node root;
@@ -37,6 +38,9 @@ public class RadixTree {
 
     private void setActive(Node node) {
         active = node;
+
+        if(active.getModifiers().size() > 0)
+            active.registerModifierListeners(lastActivated);
 
         if (active.onEnter() != null) {
             active.onEnter().accept(this);
@@ -85,5 +89,9 @@ public class RadixTree {
 
     public void expire() {
         terminate();
+    }
+
+    public void addModifierData(ModifierData modifierData) {
+        active.addModifierData(modifierData);
     }
 }

@@ -11,8 +11,11 @@ import net.minecraftforge.event.TickEvent.Type;
 import org.lwjgl.glfw.GLFW;
 
 public class KeyPressCondition extends TickTimedCondition {
+	public InputConstants.Key key;
+
 	public KeyPressCondition(Key key, int timeout) {
 		super(Type.CLIENT, Phase.START, timeout, Result.FAILURE, InputModule.keyToCondition(key,
 				GLFW.GLFW_PRESS), Result.SUCCESS, Result.FAILURE);
+		this.key = key;
 	}
 }

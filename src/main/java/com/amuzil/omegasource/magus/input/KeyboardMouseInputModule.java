@@ -8,8 +8,6 @@ import com.amuzil.omegasource.magus.skill.forms.Form;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
-import com.amuzil.omegasource.magus.skill.util.capability.entity.Data;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -18,6 +16,7 @@ import org.apache.logging.log4j.LogManager;
 public class KeyboardMouseInputModule extends InputModule {
 
     private final Consumer<TickEvent> tickEventConsumer;
+
 
     private Form lastActivatedForm = null;
     private Form activeForm = null;
@@ -34,9 +33,9 @@ public class KeyboardMouseInputModule extends InputModule {
             }
 
             if(ticksSinceActivated >= tickActivationThreshold) {
-                Data livingDataCapability = CapabilityHandler.getCapability(mc.player, CapabilityHandler.LIVING_DATA);
                 LogManager.getLogger().info("FORM ACTIVATED :" + activeForm.name());
-                livingDataCapability.getTree().moveDown(activeForm);
+                //todo send form activation packet
+//                new FormActivatedPacket(activeForm);
                 lastActivatedForm = activeForm;
                 activeForm = null;
                 ticksSinceActivated = 0;
@@ -79,7 +78,7 @@ public class KeyboardMouseInputModule extends InputModule {
     }
 
     @Override
-    public void unregister() {
+    public void unregisterInputs() {
         MinecraftForge.EVENT_BUS.unregister(tickEventConsumer);
         _formInputs.forEach((condition, form) -> condition.unregister());
     }

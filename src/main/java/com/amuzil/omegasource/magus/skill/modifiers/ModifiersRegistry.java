@@ -4,7 +4,6 @@ import com.amuzil.omegasource.magus.skill.modifiers.api.Modifier;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.data.HeldModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.listeners.KeyHeldModifierListener;
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.HashMap;
@@ -12,8 +11,8 @@ import java.util.Map;
 
 public class ModifiersRegistry {
 
-    //used to look up what instance to deserialise into from nbt
-    private static Map<String, ModifierData> modifierDataTypes;
+    //used to look up what instance to deserialize into from nbt
+    private static Map<String, Modifier> modifierDataTypes;
 
     public static Modifier FOCUS;
 
@@ -21,14 +20,17 @@ public class ModifiersRegistry {
         modifierDataTypes = new HashMap<>();
 
         ModifierData heldModifierData = new HeldModifierData();
-        FOCUS = new Modifier(heldModifierData, new KeyHeldModifierListener(InputConstants.getKey("key.mouse.right")));
-        modifierDataTypes.put(heldModifierData.getName(), heldModifierData);
+        FOCUS = new Modifier(heldModifierData, new KeyHeldModifierListener());
+        modifierDataTypes.put(heldModifierData.getName(), FOCUS);
     }
 
     public static ModifierData fromCompoundTag(CompoundTag compoundTag) {
-        ModifierData data = modifierDataTypes.get(compoundTag.getString("dataIdentifier"));
+        ModifierData data = modifierDataTypes.get(compoundTag.getString("dataIdentifier")).data();
         data.deserializeNBT(compoundTag);
         return data;
     }
 
+    public static Modifier fromName(String name) {
+        return modifierDataTypes.get(name);
+    }
 }
