@@ -1,11 +1,13 @@
 package com.amuzil.omegasource.magus.radix;
 
+import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.client_executed.RegisterModifierListenersPacket;
 import com.amuzil.omegasource.magus.network.packets.client_executed.UnregisterModifierListenersPacket;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.modifiers.api.Modifier;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,17 +53,10 @@ public class Node {
     }
 
     public Consumer<RadixTree> onEnter() {
-        // todo: wrap the listener registration in a check if this is in a player or AI context.
         return onEnter;
     }
 
     public Consumer<RadixTree> onLeave() {
-        // todo: wrap the listener unregistration in a check if this is in a player or AI context.
-        if(modifiers.size() > 0) {
-            modifiers.forEach(modifier -> modifier.print());
-
-            unregisterModifierListeners();
-        }
         return onLeave;
     }
 
@@ -77,7 +72,7 @@ public class Node {
         return modifiers;
     }
 
-    public void registerModifierListeners(Form lastActivatedForm) {
+    public void registerModifierListeners(Form lastActivatedForm, ServerPlayer player) {
         CompoundTag listenerInstanceData = new CompoundTag();
 
         //here we can send information to the client to help build the Modifier Listeners appropriately.
@@ -86,14 +81,11 @@ public class Node {
         List<String> modifierTypes = new ArrayList<>();
         modifiers.forEach(type -> modifierTypes.add(type.data().getName()));
 
-        //todo send RegisterModifierListeners packet to register
-        // new Modifier listener instances based on the form used to execute this node
-//        new RegisterModifierListenersPacket(modifierTypes, listenerInstanceData);
+        MagusNetwork.sendToClient(new RegisterModifierListenersPacket(modifierTypes, listenerInstanceData), player);
     }
 
-    public void unregisterModifierListeners() {
-        //todo send packet to unregister modifier listeners
-//        new UnregisterModifierListenersPacket();
+    public void unregisterModifierListeners(ServerPlayer player) {
+        MagusNetwork.sendToClient(new UnregisterModifierListenersPacket(), player);
     }
 
     public void addModifierData(ModifierData modifierData) {

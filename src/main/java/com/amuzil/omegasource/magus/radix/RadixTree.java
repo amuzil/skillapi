@@ -3,22 +3,19 @@ package com.amuzil.omegasource.magus.radix;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.modifiers.api.Modifier;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
+import net.minecraft.server.level.ServerPlayer;
 
 public class RadixTree {
     private final Node root;
     private Node active;
     private Form lastActivated = null;
     private RadixPath path;
+    private ServerPlayer player;
 
     public RadixTree(Node root) {
         this.root = root;
-//        this.branch = new Branch();
         this.active = root;
     }
-
-//    public <T> boolean registerLeaf(Class<Leaf<T>> type, Leaf<T> leaf) {
-//        return branch.registerLeaf(type, leaf);
-//    }
 
     public void burn() {
         if (active.terminateCondition() != null) {
@@ -26,12 +23,9 @@ public class RadixTree {
         }
 
         active = null;
-
-//        branch.burn();
     }
 
     public void start() {
-//        branch.reset(root);
         setActive(root);
         path = new RadixPath();
     }
@@ -40,7 +34,7 @@ public class RadixTree {
         active = node;
 
         if(active.getModifiers().size() > 0)
-            active.registerModifierListeners(lastActivated);
+            active.registerModifierListeners(lastActivated, player);
 
         if (active.onEnter() != null) {
             active.onEnter().accept(this);
@@ -71,7 +65,10 @@ public class RadixTree {
         this.lastActivated = executedForm;
 
         //todo remove this its just for testing
-        if(active.getModifiers().size() > 0) active.getModifiers().forEach(modifier -> modifier.print());
+        if(active.getModifiers().size() > 0) {
+            active.getModifiers().forEach(modifier -> modifier.print());
+            active.unregisterModifierListeners(player);
+        }
 
         if(active.children().size() == 0) return;
 

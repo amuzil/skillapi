@@ -5,6 +5,8 @@ import com.amuzil.omegasource.magus.network.packets.client_executed.SkillTrigger
 import com.amuzil.omegasource.magus.network.packets.server_executed.FormActivatedPacket;
 import com.amuzil.omegasource.magus.network.packets.server_executed.StartBendingPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
@@ -40,5 +42,14 @@ public class MagusNetwork {
                 .decoder(StartBendingPacket::fromBytes)
                 .consumerMainThread(StartBendingPacket::handle)
                 .add();
+    }
+
+
+    public static void sendToClient(Object packet, ServerPlayer player) {
+        CHANNEL.sendTo(packet, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+    }
+
+    public static void sendToServer(Object packet) {
+        CHANNEL.sendToServer(packet);
     }
 }

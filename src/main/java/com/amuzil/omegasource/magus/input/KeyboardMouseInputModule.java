@@ -1,5 +1,7 @@
 package com.amuzil.omegasource.magus.input;
 
+import com.amuzil.omegasource.magus.network.MagusNetwork;
+import com.amuzil.omegasource.magus.network.packets.server_executed.FormActivatedPacket;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
@@ -34,8 +36,7 @@ public class KeyboardMouseInputModule extends InputModule {
 
             if(ticksSinceActivated >= tickActivationThreshold) {
                 LogManager.getLogger().info("FORM ACTIVATED :" + activeForm.name());
-                //todo send form activation packet
-//                new FormActivatedPacket(activeForm);
+                MagusNetwork.sendToServer(new FormActivatedPacket(activeForm));
                 lastActivatedForm = activeForm;
                 activeForm = null;
                 ticksSinceActivated = 0;

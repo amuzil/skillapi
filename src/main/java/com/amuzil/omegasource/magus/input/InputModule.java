@@ -1,5 +1,7 @@
 package com.amuzil.omegasource.magus.input;
 
+import com.amuzil.omegasource.magus.network.MagusNetwork;
+import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.EventCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
@@ -24,7 +26,7 @@ public abstract class InputModule {
     public void registerModifierListener(ModifierListener listener, CompoundTag treeData) {
         listener.setupListener(treeData);
         listener.register(() -> {
-            //todo send modifier data via packet
+            MagusNetwork.sendToServer(new SendModifierDataPacket(listener.getModifierData()));
         });
 
         _modifierListeners.add(listener);
