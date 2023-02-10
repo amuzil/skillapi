@@ -1,58 +1,64 @@
 package com.amuzil.omegasource.magus.skill.modifiers.listeners;
 
+import com.amuzil.omegasource.magus.Magus;
+import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
+import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressCondition;
+import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
+import com.amuzil.omegasource.magus.skill.conditionals.InputData;
+import com.amuzil.omegasource.magus.skill.forms.Form;
+import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierListener;
 import com.amuzil.omegasource.magus.skill.modifiers.data.HeldModifierData;
-import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraftforge.client.event.InputEvent;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
-import org.lwjgl.glfw.GLFW;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
-
-    private final Consumer<InputEvent.MouseButton> keyInputListener;
-    private final Consumer<TickEvent.ClientTickEvent> clientTickListener;
+    private Consumer<TickEvent.ClientTickEvent> clientTickListener;
     private int currentHolding;
-    private boolean isHeld = false;
+    private boolean isHeld = true;
+    private boolean wasHeld = true;
 
-    public KeyHeldModifierListener(InputConstants.Key key) {
+    public KeyHeldModifierListener() {
         this.modifierData = new HeldModifierData();
-
-        this.keyInputListener = event -> {
-            if (event.getButton() == key.getValue()) {
-                if (event.getAction() == GLFW.GLFW_PRESS) {
-                    this.isHeld = true;
-                    this.currentHolding = 0;
-                } else if (event.getAction() == GLFW.GLFW_RELEASE) {
-                    this.isHeld = false;
-                }
-            }
-        };
-
-        this.clientTickListener = event -> {
-            if (event.phase == TickEvent.ClientTickEvent.Phase.START) {
-                if (this.isHeld) {
-                    this.currentHolding++;
-                }
-            }
-        };
     }
 
     @Override
     public void register(Runnable onSuccess) {
         super.register(onSuccess);
-        MinecraftForge.EVENT_BUS.addListener(keyInputListener);
         MinecraftForge.EVENT_BUS.addListener(clientTickListener);
     }
 
     @Override
     public void unregister() {
         super.unregister();
-        MinecraftForge.EVENT_BUS.unregister(keyInputListener);
         MinecraftForge.EVENT_BUS.unregister(clientTickListener);
+    }
+
+    @Override
+    public void setupListener(CompoundTag compoundTag) {
+        Form formToModify = FormDataRegistry.getFormByName(compoundTag.getString("lastFormActivated"));
+        List<InputData> formConditions = FormDataRegistry.getInputsForForm(formToModify);
+
+        int keyToHold = ((KeyPressCondition)new ConditionBuilder().fromInputData(formConditions.get(formConditions.size() - 1)).build()).getKey();
+
+        this.clientTickListener = event -> {
+            if (event.phase == TickEvent.ClientTickEvent.Phase.START) {
+                if (((KeyboardMouseInputModule)Magus.inputModule).keyPressed(keyToHold)) {
+                    this.isHeld = true;
+                    this.currentHolding++;
+                } else {
+                    if(this.isHeld) {
+                        this.wasHeld = true;
+                        this.isHeld = false;
+                    }
+                }
+            }
+        };
     }
 
     @Override
@@ -60,14 +66,24 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
         if(isHeld && currentHolding > 0) {
             return true;
         }
+        //so that we send a packet to say we've stopped holding(for continuous cast ability support)
+        if(!this.isHeld && this.wasHeld) {
+            this.wasHeld = false;
+            Magus.inputModule.resetLastActivated();
+            return true;
+        }
         return false;
     }
 
     @Override
     public ModifierData collectModifierDataFromEvent(TickEvent event) {
-        //todo check how often this is called.
-        HeldModifierData data = new HeldModifierData(currentHolding);
+        HeldModifierData data = new HeldModifierData(currentHolding, isHeld);
         this.currentHolding = 0;
         return data;
+    }
+
+    @Override
+    public ModifierListener copy() {
+        return new KeyHeldModifierListener();
     }
 }

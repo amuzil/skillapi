@@ -7,14 +7,16 @@ import org.apache.logging.log4j.LogManager;
 public class HeldModifierData extends BaseModifierData {
 
     private int duration;
+    private boolean currentlyHeld;
 
     public HeldModifierData() {
         this.duration = 0;
     }
 
-    public HeldModifierData(int duration) {
+    public HeldModifierData(int duration, boolean currentlyHeld) {
         super();
         this.duration = duration;
+        this.currentlyHeld = currentlyHeld;
     }
 
     @Override
@@ -27,29 +29,39 @@ public class HeldModifierData extends BaseModifierData {
         CompoundTag compoundTag = super.serializeNBT();
 
         compoundTag.putInt("duration", duration);
+        compoundTag.putBoolean("currentlyHeld", currentlyHeld);
 
         return compoundTag;
     }
 
     @Override
+    public HeldModifierData copy() {
+        return new HeldModifierData();
+    }
+
+    @Override
     public void deserializeNBT(CompoundTag compoundTag) {
         this.duration = compoundTag.getInt("duration");
+        this.currentlyHeld = compoundTag.getBoolean("currentlyHeld");
     }
 
     //it is safe to cast at this point because the public add(ModifierData data) method encapsulates type-checking
     @Override
     protected void mergeFields(ModifierData modifierData) {
         HeldModifierData heldModifierData = (HeldModifierData) modifierData;
-        this.duration += heldModifierData.duration;
+        this.duration = this.duration + heldModifierData.duration;
+        this.currentlyHeld = heldModifierData.currentlyHeld;
     }
 
     @Override
     public void reset() {
         this.duration = 0;
+        this.currentlyHeld = false;
     }
 
     @Override
     public void print() {
         LogManager.getLogger().info("HeldModifierData duration: " + duration);
+        LogManager.getLogger().info("HeldModifierData currentlyHeld: " + currentlyHeld);
     }
 }

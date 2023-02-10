@@ -1,5 +1,6 @@
 package com.amuzil.omegasource.magus.skill.modifiers.api;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
 import org.apache.logging.log4j.LogManager;
@@ -20,6 +21,8 @@ public abstract class ModifierListener<T extends Event> implements Consumer<T> {
         MinecraftForge.EVENT_BUS.unregister(this);
     }
 
+    public abstract void setupListener(CompoundTag compoundTag);
+
     public abstract boolean shouldCollectModifierData(T event);
 
     public abstract ModifierData collectModifierDataFromEvent(T event);
@@ -34,4 +37,6 @@ public abstract class ModifierListener<T extends Event> implements Consumer<T> {
             onSuccess.run();
         }
     }
+
+    public abstract ModifierListener copy();
 }

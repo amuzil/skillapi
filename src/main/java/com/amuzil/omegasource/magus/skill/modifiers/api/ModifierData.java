@@ -27,4 +27,5 @@ public abstract class ModifierData implements DataTrait {
     public abstract void print();
 
     public abstract void reset();
+    public abstract ModifierData copy();
 }

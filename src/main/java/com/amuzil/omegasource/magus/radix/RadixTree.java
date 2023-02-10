@@ -1,20 +1,24 @@
 package com.amuzil.omegasource.magus.radix;
 
 import com.amuzil.omegasource.magus.skill.forms.Form;
+import com.amuzil.omegasource.magus.skill.modifiers.api.Modifier;
+import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+
+import java.util.List;
 
 public class RadixTree {
     private final Node root;
     private Node active;
+    private Form lastActivated = null;
+    private RadixPath path;
+    private Entity owner;
 
     public RadixTree(Node root) {
         this.root = root;
-//        this.branch = new Branch();
         this.active = root;
     }
-
-//    public <T> boolean registerLeaf(Class<Leaf<T>> type, Leaf<T> leaf) {
-//        return branch.registerLeaf(type, leaf);
-//    }
 
     public void burn() {
         if (active.terminateCondition() != null) {
@@ -22,17 +26,18 @@ public class RadixTree {
         }
 
         active = null;
-
-//        branch.burn();
     }
 
     public void start() {
-//        branch.reset(root);
         setActive(root);
+        path = new RadixPath();
     }
 
     private void setActive(Node node) {
         active = node;
+
+        if(active.getModifiers().size() > 0 && owner instanceof ServerPlayer player)
+            active.registerModifierListeners(lastActivated, player);
 
         if (active.onEnter() != null) {
             active.onEnter().accept(this);
@@ -58,7 +63,17 @@ public class RadixTree {
     }
 
     public void moveDown(Form executedForm) {
-        if(active.getModifiers().size() > 0) active.getModifiers().forEach(modifier -> modifier.print());
+        //add the last Node to the activation Path and store its ModifierData's
+        if (this.lastActivated != null && active != null) {
+            path.addStep(this.lastActivated, active.getModifiers());
+        }
+        this.lastActivated = executedForm;
+
+        if(active.getModifiers().size() > 0 && owner instanceof ServerPlayer player) {
+            active.unregisterModifierListeners(player);
+            //todo remove this its just for testing
+            active.getModifiers().forEach(modifier -> modifier.print());
+        }
 
         if(active.children().size() == 0) return;
 
@@ -76,5 +91,13 @@ public class RadixTree {
 
     public void expire() {
         terminate();
+    }
+
+    public void addModifierData(List<ModifierData> modifierData) {
+        active.addModifierData(modifierData);
+    }
+
+    public void setOwner(Entity entity) {
+        this.owner = entity;
     }
 }

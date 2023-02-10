@@ -23,5 +23,5 @@ public interface Data extends INBTSerializable<CompoundTag> {
 
     RadixTree getTree();
 
-
+    void setTree(RadixTree tree);
 }

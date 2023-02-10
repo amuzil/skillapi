@@ -1,18 +1,48 @@
 package com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key;
 
-import com.amuzil.omegasource.magus.input.InputModule;
-import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.EventCondition;
-import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.TickTimedCondition;
-import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.platform.InputConstants.Key;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.event.TickEvent.Phase;
-import net.minecraftforge.event.TickEvent.Type;
-import org.lwjgl.glfw.GLFW;
+import com.amuzil.omegasource.magus.Magus;
+import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
+import com.amuzil.omegasource.magus.radix.Condition;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.fml.LogicalSide;
 
-public class KeyPressCondition extends TickTimedCondition {
-	public KeyPressCondition(Key key, int timeout) {
-		super(Type.CLIENT, Phase.START, timeout, Result.FAILURE, InputModule.keyToCondition(key,
-				GLFW.GLFW_PRESS), Result.SUCCESS, Result.FAILURE);
-	}
+import java.util.function.Consumer;
+
+public class KeyPressCondition extends Condition {
+    private final Consumer<TickEvent.ClientTickEvent> clientTickListener;
+    private int current;
+    private final int key;
+
+    public KeyPressCondition(int key, int timeout) {
+        this.key = key;
+
+        this.clientTickListener = event -> {
+            if (event.phase == TickEvent.ClientTickEvent.Phase.START && event.side == LogicalSide.CLIENT) {
+                if(((KeyboardMouseInputModule)Magus.inputModule).keyPressed(key))  {
+                    this.onSuccess.run();
+                } else if(current >= timeout) {
+                    this.onFailure.run();
+                } else {
+                    current++;
+                }
+            }
+        };
+    }
+
+    public int getKey() {
+        return key;
+    }
+
+    @Override
+    public void register(Runnable onSuccess, Runnable onFailure) {
+        super.register(onSuccess, onFailure);
+        MinecraftForge.EVENT_BUS.addListener(clientTickListener);
+    }
+
+    @Override
+    public void unregister() {
+        super.unregister();
+        MinecraftForge.EVENT_BUS.unregister(clientTickListener);
+    }
 }
