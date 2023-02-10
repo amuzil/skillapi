@@ -58,7 +58,7 @@ public class HeldModifierData extends BaseModifierData {
     @Override
     public void reset() {
         this.duration = 0;
-        this.currentlyHeld = false;
+        this.currentlyHeld = true;
     }
 
     @Override
