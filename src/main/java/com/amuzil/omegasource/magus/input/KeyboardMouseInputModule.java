@@ -8,10 +8,14 @@ import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import com.amuzil.omegasource.magus.skill.util.data.KeyboardData;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import org.apache.logging.log4j.LogManager;
@@ -19,6 +23,9 @@ import org.apache.logging.log4j.LogManager;
 public class KeyboardMouseInputModule extends InputModule {
 
     private final Consumer<TickEvent> tickEventConsumer;
+    private final List<Integer> glfwKeysDown;
+    private final Consumer<InputEvent.Key> keyboardListener;
+    private final Consumer<InputEvent.MouseButton> mouseListener;
 
     private Form activeForm = null;
     private int ticksSinceActivated = 0;
@@ -30,6 +37,54 @@ public class KeyboardMouseInputModule extends InputModule {
     Minecraft mc = Minecraft.getInstance();
 
     public KeyboardMouseInputModule() {
+        this.glfwKeysDown = new ArrayList<>();
+
+        this.keyboardListener = keyboardEvent -> {
+            int keyPressed = keyboardEvent.getKey();
+            if(!KeyboardData.ignore(keyPressed)) {
+                switch (keyboardEvent.getAction()) {
+                    case InputConstants.PRESS -> {
+                        LogManager.getLogger().info("Key Pressed: " + keyPressed);
+                        glfwKeysDown.add(keyPressed);
+                    }
+                    case InputConstants.REPEAT -> {
+                        if (!glfwKeysDown.contains(keyPressed)) {
+                            glfwKeysDown.add(keyPressed);
+                        }
+                    }
+                    case InputConstants.RELEASE -> {
+                        if (glfwKeysDown.contains(keyPressed)) {
+                            LogManager.getLogger().info("Key Released: " + keyPressed);
+                            glfwKeysDown.remove(glfwKeysDown.indexOf(keyPressed));
+                        }
+                    }
+                }
+            }
+        };
+
+        this.mouseListener = mouseEvent -> {
+            int keyPressed = mouseEvent.getButton();
+            if(!KeyboardData.ignore(keyPressed)) {
+                switch (mouseEvent.getAction()) {
+                    case InputConstants.PRESS -> {
+                        LogManager.getLogger().info("Key Pressed: " + keyPressed);
+                        glfwKeysDown.add(keyPressed);
+                    }
+                    case InputConstants.REPEAT -> {
+                        if (!glfwKeysDown.contains(keyPressed)) {
+                            glfwKeysDown.add(keyPressed);
+                        }
+                    }
+                    case InputConstants.RELEASE -> {
+                        LogManager.getLogger().info("Key Released: " + keyPressed);
+                        if (glfwKeysDown.contains(keyPressed)) {
+                            glfwKeysDown.remove(keyPressed);
+                        }
+                    }
+                }
+            }
+        };
+
         tickEventConsumer = tickEvent -> {
             ticksSinceModifiersSent++;
             if(ticksSinceModifiersSent > modifierTickThreshold && !modifierQueue.isEmpty()) {
@@ -44,10 +99,10 @@ public class KeyboardMouseInputModule extends InputModule {
                     activeForm = null;
                     ticksSinceActivated = 0;
                 }
-
-
             }
         };
+        MinecraftForge.EVENT_BUS.addListener(keyboardListener);
+        MinecraftForge.EVENT_BUS.addListener(mouseListener);
         MinecraftForge.EVENT_BUS.addListener(tickEventConsumer);
     }
 
@@ -93,7 +148,13 @@ public class KeyboardMouseInputModule extends InputModule {
 
     @Override
     public void unregisterInputs() {
+        MinecraftForge.EVENT_BUS.unregister(keyboardListener);
+        MinecraftForge.EVENT_BUS.unregister(mouseListener);
         MinecraftForge.EVENT_BUS.unregister(tickEventConsumer);
         _formInputs.forEach((condition, form) -> condition.unregister());
+    }
+
+    public boolean keyPressed(int key) {
+        return glfwKeysDown.contains(key);
     }
 }

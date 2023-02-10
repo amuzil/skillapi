@@ -1,5 +1,7 @@
 package com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key;
 
+import com.amuzil.omegasource.magus.Magus;
+import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.mojang.blaze3d.platform.InputConstants.Key;
@@ -11,38 +13,20 @@ import org.lwjgl.glfw.GLFW;
 import java.util.function.Consumer;
 
 public class KeyHoldCondition extends Condition {
-
-    private final Consumer<InputEvent.Key> keyInputListener;
     private final Consumer<ClientTickEvent> clientTickListener;
-
-    private final int currentTotal;
-    private boolean isHolding;
+    private int currentTotal;
     private int currentHolding;
 
-    public KeyHoldCondition(Key key, int duration, int timeout) {
+    public KeyHoldCondition(int key, int duration, int timeout) {
         RadixUtil.assertTrue(duration >= 0, "duration must be >= 0");
         RadixUtil.assertTrue(timeout >= 0, "timeout must be >= 0");
 
         this.currentTotal = 0;
-        this.isHolding = false;
         this.currentHolding = 0;
-
-        this.keyInputListener = event -> {
-            if (event.getKey() == key.getValue()) {
-                if (event.getAction() == GLFW.GLFW_PRESS) {
-                    this.isHolding = true;
-                    this.currentHolding = 0;
-                } else if (event.getAction() == GLFW.GLFW_RELEASE) {
-                    this.isHolding = false;
-                }
-            } else {
-                this.onFailure.run();
-            }
-        };
 
         this.clientTickListener = event -> {
             if (event.phase == ClientTickEvent.Phase.START) {
-                if (this.isHolding) {
+                if (((KeyboardMouseInputModule) Magus.inputModule).keyPressed(key)) {
                     this.currentHolding++;
                 }
                 if (this.currentHolding >= duration) {
@@ -52,6 +36,7 @@ public class KeyHoldCondition extends Condition {
                 if (this.currentTotal >= timeout) {
                     this.onFailure.run();
                 }
+                this.currentTotal++;
             }
         };
     }
@@ -59,13 +44,11 @@ public class KeyHoldCondition extends Condition {
     @Override
     public void register(Runnable onSuccess, Runnable onFailure) {
         super.register(onSuccess, onFailure);
-        MinecraftForge.EVENT_BUS.addListener(keyInputListener);
         MinecraftForge.EVENT_BUS.addListener(clientTickListener);
     }
 
     @Override
     public void unregister() {
-        MinecraftForge.EVENT_BUS.unregister(keyInputListener);
         MinecraftForge.EVENT_BUS.unregister(clientTickListener);
     }
 }
