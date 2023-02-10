@@ -1,12 +1,13 @@
 package com.amuzil.omegasource.magus.network.packets.client_executed;
 
 import com.amuzil.omegasource.magus.network.ClientPacketHandler;
+import com.amuzil.omegasource.magus.network.packets.api.MagusPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class UnregisterModifierListenersPacket {
+public class UnregisterModifierListenersPacket implements MagusPacket {
 
     public UnregisterModifierListenersPacket() {
     }

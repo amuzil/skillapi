@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.network;
 
 import com.amuzil.omegasource.magus.Magus;
+import com.amuzil.omegasource.magus.network.packets.api.MagusPacket;
 import com.amuzil.omegasource.magus.network.packets.client_executed.RegisterModifierListenersPacket;
 import com.amuzil.omegasource.magus.network.packets.client_executed.SkillTriggeredPacket;
 import com.amuzil.omegasource.magus.network.packets.client_executed.UnregisterModifierListenersPacket;
@@ -66,11 +67,11 @@ public class MagusNetwork {
     }
 
 
-    public static void sendToClient(Object packet, ServerPlayer player) {
+    public static void sendToClient(MagusPacket packet, ServerPlayer player) {
         CHANNEL.sendTo(packet, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 
-    public static void sendToServer(Object packet) {
+    public static void sendToServer(MagusPacket packet) {
         CHANNEL.sendToServer(packet);
     }
 }

@@ -1,5 +1,6 @@
 package com.amuzil.omegasource.magus.network.packets.server_executed;
 
+import com.amuzil.omegasource.magus.network.packets.api.MagusPacket;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import net.minecraft.network.FriendlyByteBuf;
@@ -8,7 +9,7 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class StartBendingPacket {
+public class StartBendingPacket implements MagusPacket {
     public void toBytes(FriendlyByteBuf buf) {
     }
 

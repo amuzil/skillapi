@@ -1,5 +1,6 @@
 package com.amuzil.omegasource.magus.network.packets.server_executed;
 
+import com.amuzil.omegasource.magus.network.packets.api.MagusPacket;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
@@ -9,7 +10,7 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class FormActivatedPacket {
+public class FormActivatedPacket implements MagusPacket {
 
     private final Form form;
 

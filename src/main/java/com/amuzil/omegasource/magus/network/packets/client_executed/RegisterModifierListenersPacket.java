@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.network.packets.client_executed;
 
 import com.amuzil.omegasource.magus.network.ClientPacketHandler;
+import com.amuzil.omegasource.magus.network.packets.api.MagusPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class RegisterModifierListenersPacket {
+public class RegisterModifierListenersPacket implements MagusPacket {
     public CompoundTag treeData;
     public List<String> modifierTypes;
 

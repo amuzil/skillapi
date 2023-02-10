@@ -97,19 +97,25 @@ public class Node {
         List<ModifierData> existingModifiers = getModifiers();
         synchronized(existingModifiers) {
             modifierData.forEach(data -> {
+                //Log the data being added to the Node
                 LogManager.getLogger().info("addModifierData: newData: ");
                 data.print();
+
+                //Identify the existing ModifierData record for this type.
                 int existingModifierIndex = existingModifiers.indexOf(existingModifiers.stream().filter(mod -> mod.getName().equals(data.getName())).findFirst().get());
-                LogManager.getLogger().info("addModifierData: existingModifierIndex: " + existingModifierIndex);
                 ModifierData currentModifier = existingModifiers.get(existingModifierIndex);
 
+                //Log the data already on the Node.
                 LogManager.getLogger().info("addModifierData: oldData: ");
                 currentModifier.print();
-                currentModifier.add(data);
+
+                //Merge the two modifier instances and log the result.
                 LogManager.getLogger().info("addModifierData: after adding together: ");
+                currentModifier.add(data);
                 currentModifier.print();
                 existingModifiers.add(existingModifierIndex, currentModifier);
 
+                //Log proving the data has been updated in the node successfully.
                 LogManager.getLogger().info("addModifierData: after setting on the node: ");
                 existingModifiers.get(existingModifierIndex).print();
             });

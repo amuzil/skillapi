@@ -56,7 +56,6 @@ public class RadixPath implements INBTSerializable<CompoundTag> {
     public void deserializeNBT(CompoundTag compoundTag) {
         ListTag listOfPairsTag = (ListTag)compoundTag.get("activationPath");
         activationPath = new LinkedList<>();
-
         listOfPairsTag.forEach(pairTag -> {
             if(pairTag instanceof CompoundTag pairTagCompound) {
                 Pair<Form, List<ModifierData>> stepPair;

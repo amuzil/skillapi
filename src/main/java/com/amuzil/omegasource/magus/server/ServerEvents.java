@@ -20,8 +20,10 @@ public class ServerEvents {
         if(!event.getLevel().isClientSide()) {
             Data capability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.LIVING_DATA);
             if(capability != null) {
-                // initialise the radix tree and set the player as an instance property for sending packets.
 
+                // initialise the radix tree and set the player as an instance property for sending packets.
+                //todo this is temporary manual tree construction for testing purposes. the true tree will be
+                // generated at runtime based on available skills for the player/entity.
                 Node secondNode = NodeBuilder.middle().addModifier(ModifiersRegistry.FOCUS.copy()).build();
                 RadixTree tree = new RadixTree(NodeBuilder.root().addChild(Forms.STRIKE, secondNode).build());
                 tree.setOwner(event.getEntity());

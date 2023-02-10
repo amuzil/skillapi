@@ -1,5 +1,6 @@
 package com.amuzil.omegasource.magus.network.packets.server_executed;
 
+import com.amuzil.omegasource.magus.network.packets.api.MagusPacket;
 import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class SendModifierDataPacket {
+public class SendModifierDataPacket implements MagusPacket {
 
     private List<ModifierData> modifierData;
 
