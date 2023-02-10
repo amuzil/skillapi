@@ -58,11 +58,7 @@ public class LivingDataCapability {
             //TODO: Data generation methods for each skill
             fillCategories();
             fillSkills();
-            Node secondNode = NodeBuilder.middle().addModifier(ModifiersRegistry.FOCUS.copy()).build();
-            tree = new RadixTree(NodeBuilder.root().addChild(Forms.STRIKE, secondNode).build());
 
-            //todo this should probably not be where we call start, but for now it'll stop us crashing
-            tree.start();
             markDirty();
         }
 

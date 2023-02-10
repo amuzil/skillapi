@@ -13,12 +13,6 @@ public class HeldModifierData extends BaseModifierData {
         this.duration = 0;
     }
 
-    public HeldModifierData(int duration) {
-        super();
-        this.duration = duration;
-        this.currentlyHeld = false;
-    }
-
     public HeldModifierData(int duration, boolean currentlyHeld) {
         super();
         this.duration = duration;
@@ -41,6 +35,11 @@ public class HeldModifierData extends BaseModifierData {
     }
 
     @Override
+    public HeldModifierData copy() {
+        return new HeldModifierData();
+    }
+
+    @Override
     public void deserializeNBT(CompoundTag compoundTag) {
         this.duration = compoundTag.getInt("duration");
         this.currentlyHeld = compoundTag.getBoolean("currentlyHeld");
@@ -50,8 +49,10 @@ public class HeldModifierData extends BaseModifierData {
     @Override
     protected void mergeFields(ModifierData modifierData) {
         HeldModifierData heldModifierData = (HeldModifierData) modifierData;
-        this.duration += heldModifierData.duration;
-        this.currentlyHeld = heldModifierData.currentlyHeld;
+        if(!this.currentlyHeld) {
+            this.duration = this.duration + heldModifierData.duration;
+            this.currentlyHeld = heldModifierData.currentlyHeld;
+        }
     }
 
     @Override

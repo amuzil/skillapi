@@ -4,13 +4,16 @@ import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.modifiers.api.Modifier;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+
+import java.util.List;
 
 public class RadixTree {
     private final Node root;
     private Node active;
     private Form lastActivated = null;
     private RadixPath path;
-    private ServerPlayer player;
+    private Entity owner;
 
     public RadixTree(Node root) {
         this.root = root;
@@ -33,7 +36,7 @@ public class RadixTree {
     private void setActive(Node node) {
         active = node;
 
-        if(active.getModifiers().size() > 0)
+        if(active.getModifiers().size() > 0 && owner instanceof ServerPlayer player)
             active.registerModifierListeners(lastActivated, player);
 
         if (active.onEnter() != null) {
@@ -61,13 +64,15 @@ public class RadixTree {
 
     public void moveDown(Form executedForm) {
         //add the last Node to the activation Path and store its ModifierData's
-        path.addStep(this.lastActivated, active.getModifiers().stream().map(Modifier::data).toList());
+        if (this.lastActivated != null && active != null) {
+            path.addStep(this.lastActivated, active.getModifiers());
+        }
         this.lastActivated = executedForm;
 
-        //todo remove this its just for testing
-        if(active.getModifiers().size() > 0) {
-            active.getModifiers().forEach(modifier -> modifier.print());
+        if(active.getModifiers().size() > 0 && owner instanceof ServerPlayer player) {
             active.unregisterModifierListeners(player);
+            //todo remove this its just for testing
+            active.getModifiers().forEach(modifier -> modifier.print());
         }
 
         if(active.children().size() == 0) return;
@@ -88,7 +93,11 @@ public class RadixTree {
         terminate();
     }
 
-    public void addModifierData(ModifierData modifierData) {
+    public void addModifierData(List<ModifierData> modifierData) {
         active.addModifierData(modifierData);
+    }
+
+    public void setOwner(Entity entity) {
+        this.owner = entity;
     }
 }

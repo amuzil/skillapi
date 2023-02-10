@@ -25,12 +25,12 @@ public class ModifiersRegistry {
     }
 
     public static ModifierData fromCompoundTag(CompoundTag compoundTag) {
-        ModifierData data = modifierDataTypes.get(compoundTag.getString("dataIdentifier")).data();
+        ModifierData data = modifierDataTypes.get(compoundTag.getString("dataIdentifier")).copy().data();
         data.deserializeNBT(compoundTag);
         return data;
     }
 
     public static Modifier fromName(String name) {
-        return modifierDataTypes.get(name);
+        return modifierDataTypes.get(name).copy();
     }
 }

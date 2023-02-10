@@ -2,6 +2,7 @@ package com.amuzil.omegasource.magus.input;
 
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.server_executed.FormActivatedPacket;
+import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
@@ -19,30 +20,42 @@ public class KeyboardMouseInputModule extends InputModule {
 
     private final Consumer<TickEvent> tickEventConsumer;
 
-
-    private Form lastActivatedForm = null;
     private Form activeForm = null;
     private int ticksSinceActivated = 0;
+    private int ticksSinceModifiersSent = 0;
 
-    //todo make this threshold configurable
+    //todo make these thresholds configurable
     private final int tickActivationThreshold = 4;
+    private final int modifierTickThreshold = 10;
     Minecraft mc = Minecraft.getInstance();
 
     public KeyboardMouseInputModule() {
         tickEventConsumer = tickEvent -> {
+            ticksSinceModifiersSent++;
+            if(ticksSinceModifiersSent > modifierTickThreshold && !modifierQueue.isEmpty()) {
+                sendModifierData();
+            }
             if(activeForm != null) {
                 ticksSinceActivated++;
-            }
+                if(ticksSinceActivated >= tickActivationThreshold) {
+                    LogManager.getLogger().info("FORM ACTIVATED :" + activeForm.name());
+                    MagusNetwork.sendToServer(new FormActivatedPacket(activeForm));
+                    lastActivatedForm = activeForm;
+                    activeForm = null;
+                    ticksSinceActivated = 0;
+                }
 
-            if(ticksSinceActivated >= tickActivationThreshold) {
-                LogManager.getLogger().info("FORM ACTIVATED :" + activeForm.name());
-                MagusNetwork.sendToServer(new FormActivatedPacket(activeForm));
-                lastActivatedForm = activeForm;
-                activeForm = null;
-                ticksSinceActivated = 0;
+
             }
         };
         MinecraftForge.EVENT_BUS.addListener(tickEventConsumer);
+    }
+
+    private void sendModifierData() {
+        LogManager.getLogger().info("SENDING MODIFIER DATA");
+        MagusNetwork.sendToServer(new SendModifierDataPacket(modifierQueue.values().stream().toList()));
+        ticksSinceModifiersSent = 0;
+        modifierQueue.clear();
     }
 
     @Override

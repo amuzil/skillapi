@@ -8,8 +8,10 @@ import com.amuzil.omegasource.magus.skill.modifiers.api.Modifier;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -23,7 +25,7 @@ public class Node {
     private final Consumer<RadixTree> onLeave;
     private final Consumer<RadixTree> onTerminate;
     private final Condition terminateCondition;
-    private final List<Modifier> modifiers;
+    private final List<ModifierData> modifiers;
 
     /**
      * @param children           If a condition is fulfilled, the active node moves down to the mapped child node
@@ -45,7 +47,7 @@ public class Node {
         this.onLeave = onLeave;
         this.onTerminate = onTerminate;
         this.terminateCondition = terminateCondition;
-        this.modifiers = modifiers;
+        this.modifiers = Collections.synchronizedList(modifiers.stream().map(Modifier::data).toList());
     }
 
     public Map<Form, Node> children() {
@@ -68,7 +70,7 @@ public class Node {
         return terminateCondition;
     }
 
-    public List<Modifier> getModifiers() {
+    public synchronized List<ModifierData> getModifiers() {
         return modifiers;
     }
 
@@ -79,7 +81,10 @@ public class Node {
         listenerInstanceData.putString("lastFormActivated", lastActivatedForm.name());
 
         List<String> modifierTypes = new ArrayList<>();
-        modifiers.forEach(type -> modifierTypes.add(type.data().getName()));
+        List<ModifierData> modifiers = getModifiers();
+        synchronized (modifiers) {
+            modifiers.forEach(type -> modifierTypes.add(type.getName()));
+        }
 
         MagusNetwork.sendToClient(new RegisterModifierListenersPacket(modifierTypes, listenerInstanceData), player);
     }
@@ -88,12 +93,26 @@ public class Node {
         MagusNetwork.sendToClient(new UnregisterModifierListenersPacket(), player);
     }
 
-    public void addModifierData(ModifierData modifierData) {
-        Modifier existingModifier = modifiers.stream()
-                .filter(modifier -> modifier.data().getName().equals(modifierData.getName())).findFirst().get();
+    public synchronized void addModifierData(List<ModifierData> modifierData) {
+        List<ModifierData> existingModifiers = getModifiers();
+        synchronized(existingModifiers) {
+            modifierData.forEach(data -> {
+                LogManager.getLogger().info("addModifierData: newData: ");
+                data.print();
+                int existingModifierIndex = existingModifiers.indexOf(existingModifiers.stream().filter(mod -> mod.getName().equals(data.getName())).findFirst().get());
+                LogManager.getLogger().info("addModifierData: existingModifierIndex: " + existingModifierIndex);
+                ModifierData currentModifier = existingModifiers.get(existingModifierIndex);
 
-        ModifierData existingData = existingModifier.data();
+                LogManager.getLogger().info("addModifierData: oldData: ");
+                currentModifier.print();
+                currentModifier.add(data);
+                LogManager.getLogger().info("addModifierData: after adding together: ");
+                currentModifier.print();
+                existingModifiers.add(existingModifierIndex, currentModifier);
 
-        existingData.add(modifierData);
+                LogManager.getLogger().info("addModifierData: after setting on the node: ");
+                existingModifiers.get(existingModifierIndex).print();
+            });
+        }
     }
 }

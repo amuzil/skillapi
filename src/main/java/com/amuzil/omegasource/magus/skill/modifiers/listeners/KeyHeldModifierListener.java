@@ -1,5 +1,6 @@
 package com.amuzil.omegasource.magus.skill.modifiers.listeners;
 
+import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
@@ -9,10 +10,12 @@ import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierListener;
 import com.amuzil.omegasource.magus.skill.modifiers.data.HeldModifierData;
 import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import org.apache.logging.log4j.LogManager;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
@@ -23,8 +26,8 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
     private Consumer<InputEvent.MouseButton> keyInputListener;
     private Consumer<TickEvent.ClientTickEvent> clientTickListener;
     private int currentHolding;
-    private boolean wasHeld = false;
-    private boolean isHeld = false;
+    private boolean isHeld = true;
+    private boolean wasHeld = true;
 
     public KeyHeldModifierListener() {
         this.modifierData = new HeldModifierData();
@@ -53,12 +56,15 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
 
         this.keyInputListener = event -> {
             if (event.getButton() == keyToHold.getValue()) {
-                if (event.getAction() == GLFW.GLFW_PRESS) {
+                if (event.getAction() == GLFW.GLFW_REPEAT) {
                     this.isHeld = true;
-                    this.wasHeld = true;
+                } else if (event.getAction() == GLFW.GLFW_PRESS) {
+                    this.isHeld = true;
                     this.currentHolding = 0;
-                } else if (event.getAction() == GLFW.GLFW_RELEASE) {
-                    this.isHeld = false;
+                } else {
+                    if (event.getAction() == GLFW.GLFW_RELEASE) {
+                        this.isHeld = false;
+                    }
                 }
             }
         };
@@ -80,6 +86,7 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
         //so that we send a packet to say we've stopped holding(for continuous cast ability support)
         if(!this.isHeld && this.wasHeld) {
             this.wasHeld = false;
+            Magus.inputModule.resetLastActivated();
             return true;
         }
         return false;

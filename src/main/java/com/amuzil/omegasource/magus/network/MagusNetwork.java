@@ -1,8 +1,11 @@
 package com.amuzil.omegasource.magus.network;
 
 import com.amuzil.omegasource.magus.Magus;
+import com.amuzil.omegasource.magus.network.packets.client_executed.RegisterModifierListenersPacket;
 import com.amuzil.omegasource.magus.network.packets.client_executed.SkillTriggeredPacket;
+import com.amuzil.omegasource.magus.network.packets.client_executed.UnregisterModifierListenersPacket;
 import com.amuzil.omegasource.magus.network.packets.server_executed.FormActivatedPacket;
+import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.network.packets.server_executed.StartBendingPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -41,6 +44,24 @@ public class MagusNetwork {
                 .encoder(StartBendingPacket::toBytes)
                 .decoder(StartBendingPacket::fromBytes)
                 .consumerMainThread(StartBendingPacket::handle)
+                .add();
+
+        CHANNEL.messageBuilder(SendModifierDataPacket.class, nextID())
+                .encoder(SendModifierDataPacket::toBytes)
+                .decoder(SendModifierDataPacket::fromBytes)
+                .consumerMainThread(SendModifierDataPacket::handle)
+                .add();
+
+        CHANNEL.messageBuilder(RegisterModifierListenersPacket.class, nextID())
+                .encoder(RegisterModifierListenersPacket::toBytes)
+                .decoder(RegisterModifierListenersPacket::fromBytes)
+                .consumerMainThread(RegisterModifierListenersPacket::handle)
+                .add();
+
+        CHANNEL.messageBuilder(UnregisterModifierListenersPacket.class, nextID())
+                .encoder(UnregisterModifierListenersPacket::toBytes)
+                .decoder(UnregisterModifierListenersPacket::fromBytes)
+                .consumerMainThread(UnregisterModifierListenersPacket::handle)
                 .add();
     }
 

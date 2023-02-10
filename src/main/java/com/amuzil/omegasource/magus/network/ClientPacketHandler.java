@@ -6,6 +6,7 @@ import com.amuzil.omegasource.magus.network.packets.client_executed.SkillTrigger
 import com.amuzil.omegasource.magus.network.packets.client_executed.UnregisterModifierListenersPacket;
 import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import net.minecraftforge.network.NetworkEvent;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.function.Supplier;
 
@@ -22,8 +23,10 @@ public class ClientPacketHandler {
     }
 
     public static boolean handlePacket(RegisterModifierListenersPacket packet, Supplier<NetworkEvent.Context> ctx) {
+        LogManager.getLogger().info("REGISTERING MODIFIERS");
         ctx.get().enqueueWork(() -> {
             packet.modifierTypes.forEach(modifierType -> {
+                LogManager.getLogger().info("REGISTERING MODIFIER: " + modifierType);
                 Magus.inputModule.registerModifierListener(ModifiersRegistry.fromName(modifierType).listener(), packet.treeData);
             });
         });
@@ -33,6 +36,7 @@ public class ClientPacketHandler {
 
     public static boolean handlePacket(UnregisterModifierListenersPacket packet, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
+            LogManager.getLogger().info("UNREGISTERING MODIFIERS");
             Magus.inputModule.unregisterModifiers();
         });
 
