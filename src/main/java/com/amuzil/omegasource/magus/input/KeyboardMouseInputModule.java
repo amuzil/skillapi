@@ -41,22 +41,18 @@ public class KeyboardMouseInputModule extends InputModule {
 
         this.keyboardListener = keyboardEvent -> {
             int keyPressed = keyboardEvent.getKey();
-            if(!KeyboardData.ignore(keyPressed)) {
-                switch (keyboardEvent.getAction()) {
-                    case InputConstants.PRESS -> {
-                        LogManager.getLogger().info("Key Pressed: " + keyPressed);
+            switch (keyboardEvent.getAction()) {
+                case InputConstants.PRESS -> {
+                    glfwKeysDown.add(keyPressed);
+                }
+                case InputConstants.REPEAT -> {
+                    if (!glfwKeysDown.contains(keyPressed)) {
                         glfwKeysDown.add(keyPressed);
                     }
-                    case InputConstants.REPEAT -> {
-                        if (!glfwKeysDown.contains(keyPressed)) {
-                            glfwKeysDown.add(keyPressed);
-                        }
-                    }
-                    case InputConstants.RELEASE -> {
-                        if (glfwKeysDown.contains(keyPressed)) {
-                            LogManager.getLogger().info("Key Released: " + keyPressed);
-                            glfwKeysDown.remove(glfwKeysDown.indexOf(keyPressed));
-                        }
+                }
+                case InputConstants.RELEASE -> {
+                    if (glfwKeysDown.contains(keyPressed)) {
+                        glfwKeysDown.remove(glfwKeysDown.indexOf(keyPressed));
                     }
                 }
             }
@@ -67,7 +63,6 @@ public class KeyboardMouseInputModule extends InputModule {
             if(!KeyboardData.ignore(keyPressed)) {
                 switch (mouseEvent.getAction()) {
                     case InputConstants.PRESS -> {
-                        LogManager.getLogger().info("Key Pressed: " + keyPressed);
                         glfwKeysDown.add(keyPressed);
                     }
                     case InputConstants.REPEAT -> {
@@ -76,7 +71,6 @@ public class KeyboardMouseInputModule extends InputModule {
                         }
                     }
                     case InputConstants.RELEASE -> {
-                        LogManager.getLogger().info("Key Released: " + keyPressed);
                         if (glfwKeysDown.contains(keyPressed)) {
                             glfwKeysDown.remove(keyPressed);
                         }
