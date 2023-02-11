@@ -34,13 +34,15 @@ public abstract class InputModule {
         _modifierListeners.add(listener);
     }
 
-    public void queueModifierData(ModifierData data) {
-        if(modifierQueue.get(data.getName()) != null) {
-            ModifierData existingData = modifierQueue.get(data.getName());
-            existingData.add(data);
-            modifierQueue.put(data.getName(), existingData);
-        } else {
-            modifierQueue.put(data.getName(), data);
+    public synchronized void queueModifierData(ModifierData data) {
+        synchronized (modifierQueue) {
+            if(modifierQueue.get(data.getName()) != null) {
+                ModifierData existingData = modifierQueue.get(data.getName());
+                existingData.add(data);
+                modifierQueue.put(data.getName(), existingData);
+            } else {
+                modifierQueue.put(data.getName(), data);
+            }
         }
     }
 

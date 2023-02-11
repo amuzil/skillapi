@@ -102,9 +102,11 @@ public class KeyboardMouseInputModule extends InputModule {
 
     private void sendModifierData() {
         LogManager.getLogger().info("SENDING MODIFIER DATA");
-        MagusNetwork.sendToServer(new SendModifierDataPacket(modifierQueue.values().stream().toList()));
-        ticksSinceModifiersSent = 0;
-        modifierQueue.clear();
+        synchronized (modifierQueue) {
+            MagusNetwork.sendToServer(new SendModifierDataPacket(modifierQueue.values().stream().toList()));
+            ticksSinceModifiersSent = 0;
+            modifierQueue.clear();
+        }
     }
 
     @Override
