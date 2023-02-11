@@ -15,7 +15,7 @@ public final class Modifier {
     }
 
     public Modifier copy() {
-        return new Modifier(data().copy(), listener().copy());
+        return new Modifier(data().copy(), listener() != null? listener().copy() : null);
     }
 
     public void print() {

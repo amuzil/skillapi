@@ -3,6 +3,7 @@ package com.amuzil.omegasource.magus.radix;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.modifiers.api.Modifier;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
+import com.amuzil.omegasource.magus.skill.modifiers.data.MultiModifierData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
@@ -64,7 +65,12 @@ public class RadixTree {
 
     public void moveDown(Form executedForm) {
         //add the last Node to the activation Path and store its ModifierData's
+
         if (this.lastActivated != null && active != null) {
+            if(this.lastActivated.name().equals(executedForm.name())) {
+                addModifierData(new MultiModifierData());
+                return;
+            }
             path.addStep(this.lastActivated, active.getModifiers());
         }
         this.lastActivated = executedForm;
@@ -94,6 +100,10 @@ public class RadixTree {
     }
 
     public void addModifierData(List<ModifierData> modifierData) {
+        active.addModifierData(modifierData);
+    }
+
+    public void addModifierData(ModifierData modifierData) {
         active.addModifierData(modifierData);
     }
 

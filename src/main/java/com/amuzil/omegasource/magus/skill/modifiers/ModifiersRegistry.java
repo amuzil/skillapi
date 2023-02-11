@@ -3,6 +3,7 @@ package com.amuzil.omegasource.magus.skill.modifiers;
 import com.amuzil.omegasource.magus.skill.modifiers.api.Modifier;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.data.HeldModifierData;
+import com.amuzil.omegasource.magus.skill.modifiers.data.MultiModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.listeners.KeyHeldModifierListener;
 import net.minecraft.nbt.CompoundTag;
 
@@ -15,6 +16,7 @@ public class ModifiersRegistry {
     private static Map<String, Modifier> modifierDataTypes;
 
     public static Modifier FOCUS;
+    public static Modifier MULTI;
 
     public static void init() {
         modifierDataTypes = new HashMap<>();
@@ -22,6 +24,10 @@ public class ModifiersRegistry {
         ModifierData heldModifierData = new HeldModifierData();
         FOCUS = new Modifier(heldModifierData, new KeyHeldModifierListener());
         modifierDataTypes.put(heldModifierData.getName(), FOCUS);
+
+        ModifierData multiModifierData = new MultiModifierData();
+        MULTI = new Modifier(multiModifierData, null);
+        modifierDataTypes.put(multiModifierData.getName(), MULTI);
     }
 
     public static ModifierData fromCompoundTag(CompoundTag compoundTag) {

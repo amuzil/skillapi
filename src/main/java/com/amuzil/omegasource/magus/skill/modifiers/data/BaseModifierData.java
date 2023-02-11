@@ -23,6 +23,11 @@ public abstract class BaseModifierData extends ModifierData {
     }
 
     @Override
+    public boolean serversideOnly() {
+        return false;
+    }
+
+    @Override
     public CompoundTag serializeNBT() {
         CompoundTag compoundTag = new CompoundTag();
 

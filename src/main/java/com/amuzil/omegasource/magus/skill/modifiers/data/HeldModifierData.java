@@ -11,6 +11,7 @@ public class HeldModifierData extends BaseModifierData {
 
     public HeldModifierData() {
         this.duration = 0;
+        this.currentlyHeld = true;
     }
 
     public HeldModifierData(int duration, boolean currentlyHeld) {
@@ -49,14 +50,16 @@ public class HeldModifierData extends BaseModifierData {
     @Override
     protected void mergeFields(ModifierData modifierData) {
         HeldModifierData heldModifierData = (HeldModifierData) modifierData;
-        this.duration = this.duration + heldModifierData.duration;
-        this.currentlyHeld = heldModifierData.currentlyHeld;
+        if(this.currentlyHeld) {
+            this.duration = this.duration + heldModifierData.duration;
+            this.currentlyHeld = heldModifierData.currentlyHeld;
+        }
     }
 
     @Override
     public void reset() {
         this.duration = 0;
-        this.currentlyHeld = false;
+        this.currentlyHeld = true;
     }
 
     @Override
