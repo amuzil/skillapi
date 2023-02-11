@@ -8,6 +8,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import org.apache.logging.log4j.LogManager;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +18,7 @@ public class DirectionModifierData extends BaseModifierData {
     private List<Direction> directions;
 
     public DirectionModifierData() {
-        this.directions = new LinkedList<>();
+        this.directions = new ArrayList<>();
     }
 
     public DirectionModifierData(List<Direction> directions) {
@@ -47,7 +48,7 @@ public class DirectionModifierData extends BaseModifierData {
 
     @Override
     public void deserializeNBT(CompoundTag compoundTag) {
-        this.directions = new LinkedList<>();
+        this.directions = new ArrayList<>();
 
         ListTag listTag = (ListTag) compoundTag.get("directions");
         listTag.forEach(tag -> this.directions.add(Direction.byName(tag.getAsString())));
@@ -62,7 +63,7 @@ public class DirectionModifierData extends BaseModifierData {
 
     @Override
     public void reset() {
-        this.directions = new LinkedList<>();
+        this.directions = new ArrayList<>();
     }
 
     @Override

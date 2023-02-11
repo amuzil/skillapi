@@ -8,12 +8,12 @@ import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 
 import com.amuzil.omegasource.magus.skill.util.data.KeyboardData;
 import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -24,6 +24,7 @@ public class KeyboardMouseInputModule extends InputModule {
 
     private final Consumer<TickEvent> tickEventConsumer;
     private final List<Integer> glfwKeysDown;
+    private static final Map<String, Integer> movementKeys = new HashMap<>();
     private final Consumer<InputEvent.Key> keyboardListener;
     private final Consumer<InputEvent.MouseButton> mouseListener;
 
@@ -152,5 +153,19 @@ public class KeyboardMouseInputModule extends InputModule {
 
     public boolean keyPressed(int key) {
         return glfwKeysDown.contains(key);
+    }
+
+    public static void determineMotionKeys() {
+        Arrays.stream(Minecraft.getInstance().options.keyMappings).toList().forEach(keyMapping -> {
+            if(keyMapping.getCategory().equals(KeyMapping.CATEGORY_MOVEMENT)) {
+                LogManager.getLogger().info(keyMapping.getName());
+                movementKeys.put(keyMapping.getName(), keyMapping.getKey().getValue());
+            }
+        });
+
+    }
+
+    public boolean isDirectionKey(int key) {
+        return movementKeys.containsValue(Integer.valueOf(key));
     }
 }

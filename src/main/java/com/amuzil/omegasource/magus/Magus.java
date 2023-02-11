@@ -58,6 +58,9 @@ public class Magus {
         FormDataRegistry.init();
         ModifiersRegistry.init();
 
+        //todo call this anytime the key mappings are updated
+        KeyboardMouseInputModule.determineMotionKeys();
+
     }
 
     private void setup(final FMLCommonSetupEvent event) {
