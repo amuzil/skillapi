@@ -28,6 +28,7 @@ public class ServerEvents {
                         .addModifier(ModifiersRegistry.FOCUS.copy())
                         .addModifier(ModifiersRegistry.MULTI.copy())
                         .addModifier(ModifiersRegistry.DIRECTION.copy())
+                        .addModifier(ModifiersRegistry.TARGET.copy())
                         .build();
                 RadixTree tree = new RadixTree(NodeBuilder.root().addChild(Forms.STRIKE, secondNode).build());
                 tree.setOwner(event.getEntity());

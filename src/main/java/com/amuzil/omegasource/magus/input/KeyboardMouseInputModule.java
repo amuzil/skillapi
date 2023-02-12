@@ -73,7 +73,7 @@ public class KeyboardMouseInputModule extends InputModule {
                     }
                     case InputConstants.RELEASE -> {
                         if (glfwKeysDown.contains(keyPressed)) {
-                            glfwKeysDown.remove(keyPressed);
+                            glfwKeysDown.remove(glfwKeysDown.indexOf(keyPressed));
                         }
                     }
                 }
