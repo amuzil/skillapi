@@ -20,6 +20,7 @@
     "minecraft:lodestone",
     "minecraft:blackstone",
     "minecraft:calcite",
-    "minecraft:cobbled_deepslate"
+    "minecraft:cobbled_deepslate",
+    "#forge:stone"
   ]
 }
