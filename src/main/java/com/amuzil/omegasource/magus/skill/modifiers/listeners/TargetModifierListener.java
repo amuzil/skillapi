@@ -53,8 +53,7 @@ public class TargetModifierListener extends ModifierListener<InputEvent.MouseBut
                 BlockPos locationHit = hitresult.getBlockPos();
                 LogManager.getLogger().info("Position: " + locationHit);
                 BlockState hitBlockState = player.level.getBlockState(new BlockPos(locationHit));
-                if(!hitBlockState.isAir()
-                        && (bendableMaterials.size() == 0 || bendableMaterials.stream().anyMatch(hitBlockState::is))) {
+                if(bendableMaterials.size() == 0 || bendableMaterials.stream().anyMatch(hitBlockState::is)) {
                     LogManager.getLogger().info("Blockstate: " + player.level.getBlockState(new BlockPos(locationHit)));
                     lastTargetPosition = new Vec3(locationHit.getX(), locationHit.getY(), locationHit.getZ());
                 }
