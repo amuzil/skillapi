@@ -1,5 +1,6 @@
 package com.amuzil.omegasource.magus.skill.modifiers.data;
 
+import com.amuzil.omegasource.magus.skill.modifiers.api.BaseModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import net.minecraft.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
@@ -11,6 +12,7 @@ public class HeldModifierData extends BaseModifierData {
 
     public HeldModifierData() {
         this.duration = 0;
+        this.currentlyHeld = true;
     }
 
     public HeldModifierData(int duration, boolean currentlyHeld) {
@@ -49,14 +51,16 @@ public class HeldModifierData extends BaseModifierData {
     @Override
     protected void mergeFields(ModifierData modifierData) {
         HeldModifierData heldModifierData = (HeldModifierData) modifierData;
-        this.duration = this.duration + heldModifierData.duration;
-        this.currentlyHeld = heldModifierData.currentlyHeld;
+        if(this.currentlyHeld) {
+            this.duration = this.duration + heldModifierData.duration;
+            this.currentlyHeld = heldModifierData.currentlyHeld;
+        }
     }
 
     @Override
     public void reset() {
         this.duration = 0;
-        this.currentlyHeld = false;
+        this.currentlyHeld = true;
     }
 
     @Override

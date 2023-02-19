@@ -1,10 +1,12 @@
 package com.amuzil.omegasource.magus.radix;
 
+import com.amuzil.omegasource.magus.skill.elements.Element;
 import com.amuzil.omegasource.magus.skill.forms.Form;
-import com.amuzil.omegasource.magus.skill.modifiers.api.Modifier;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
+import com.amuzil.omegasource.magus.skill.modifiers.data.MultiModifierData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.List;
 
@@ -12,6 +14,7 @@ public class RadixTree {
     private final Node root;
     private Node active;
     private Form lastActivated = null;
+    private Element activeElement = null;
     private RadixPath path;
     private Entity owner;
 
@@ -26,6 +29,7 @@ public class RadixTree {
         }
 
         active = null;
+        activeElement = null;
     }
 
     public void start() {
@@ -33,11 +37,15 @@ public class RadixTree {
         path = new RadixPath();
     }
 
+    private void setActive(Element element) {
+        this.activeElement = element;
+    }
+
     private void setActive(Node node) {
         active = node;
 
         if(active.getModifiers().size() > 0 && owner instanceof ServerPlayer player)
-            active.registerModifierListeners(lastActivated, player);
+            active.registerModifierListeners(lastActivated, activeElement, player);
 
         if (active.onEnter() != null) {
             active.onEnter().accept(this);
@@ -63,8 +71,17 @@ public class RadixTree {
     }
 
     public void moveDown(Form executedForm) {
+        if(activeElement == null) {
+            LogManager.getLogger().info("NO ELEMENT SELECTED");
+            return;
+        }
         //add the last Node to the activation Path and store its ModifierData's
+
         if (this.lastActivated != null && active != null) {
+            if(this.lastActivated.name().equals(executedForm.name())) {
+                addModifierData(new MultiModifierData());
+                return;
+            }
             path.addStep(this.lastActivated, active.getModifiers());
         }
         this.lastActivated = executedForm;
@@ -94,6 +111,10 @@ public class RadixTree {
     }
 
     public void addModifierData(List<ModifierData> modifierData) {
+        active.addModifierData(modifierData);
+    }
+
+    public void addModifierData(ModifierData modifierData) {
         active.addModifierData(modifierData);
     }
 

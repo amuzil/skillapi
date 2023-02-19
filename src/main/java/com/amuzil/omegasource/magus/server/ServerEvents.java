@@ -24,7 +24,12 @@ public class ServerEvents {
                 // initialise the radix tree and set the player as an instance property for sending packets.
                 //todo this is temporary manual tree construction for testing purposes. the true tree will be
                 // generated at runtime based on available skills for the player/entity.
-                Node secondNode = NodeBuilder.middle().addModifier(ModifiersRegistry.FOCUS.copy()).build();
+                Node secondNode = NodeBuilder.middle()
+                        .addModifier(ModifiersRegistry.FOCUS.copy())
+                        .addModifier(ModifiersRegistry.MULTI.copy())
+                        .addModifier(ModifiersRegistry.DIRECTION.copy())
+                        .addModifier(ModifiersRegistry.TARGET.copy())
+                        .build();
                 RadixTree tree = new RadixTree(NodeBuilder.root().addChild(Forms.STRIKE, secondNode).build());
                 tree.setOwner(event.getEntity());
                 capability.setTree(tree);

@@ -3,6 +3,7 @@ package com.amuzil.omegasource.magus.radix;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.client_executed.RegisterModifierListenersPacket;
 import com.amuzil.omegasource.magus.network.packets.client_executed.UnregisterModifierListenersPacket;
+import com.amuzil.omegasource.magus.skill.elements.Element;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.modifiers.api.Modifier;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
@@ -74,16 +75,19 @@ public class Node {
         return modifiers;
     }
 
-    public void registerModifierListeners(Form lastActivatedForm, ServerPlayer player) {
+    public void registerModifierListeners(Form lastActivatedForm, Element activeElement, ServerPlayer player) {
         CompoundTag listenerInstanceData = new CompoundTag();
 
         //here we can send information to the client to help build the Modifier Listeners appropriately.
         listenerInstanceData.putString("lastFormActivated", lastActivatedForm.name());
+        listenerInstanceData.putString("activeElement", activeElement.name());
 
         List<String> modifierTypes = new ArrayList<>();
         List<ModifierData> modifiers = getModifiers();
         synchronized (modifiers) {
-            modifiers.forEach(type -> modifierTypes.add(type.getName()));
+            modifiers.stream()
+                    .filter(modifierData -> !modifierData.serversideOnly())
+                    .forEach(type -> modifierTypes.add(type.getName()));
         }
 
         MagusNetwork.sendToClient(new RegisterModifierListenersPacket(modifierTypes, listenerInstanceData), player);
@@ -93,32 +97,43 @@ public class Node {
         MagusNetwork.sendToClient(new UnregisterModifierListenersPacket(), player);
     }
 
+    public synchronized void addModifierData(ModifierData modifierData) {
+        List<ModifierData> existingModifiers = getModifiers();
+        synchronized(existingModifiers) {
+            addModifierData(existingModifiers, modifierData);
+        }
+    }
+
     public synchronized void addModifierData(List<ModifierData> modifierData) {
         List<ModifierData> existingModifiers = getModifiers();
         synchronized(existingModifiers) {
             modifierData.forEach(data -> {
-                //Log the data being added to the Node
-                LogManager.getLogger().info("addModifierData: newData: ");
-                data.print();
-
-                //Identify the existing ModifierData record for this type.
-                int existingModifierIndex = existingModifiers.indexOf(existingModifiers.stream().filter(mod -> mod.getName().equals(data.getName())).findFirst().get());
-                ModifierData currentModifier = existingModifiers.get(existingModifierIndex);
-
-                //Log the data already on the Node.
-                LogManager.getLogger().info("addModifierData: oldData: ");
-                currentModifier.print();
-
-                //Merge the two modifier instances and log the result.
-                LogManager.getLogger().info("addModifierData: after adding together: ");
-                currentModifier.add(data);
-                currentModifier.print();
-                existingModifiers.add(existingModifierIndex, currentModifier);
-
-                //Log proving the data has been updated in the node successfully.
-                LogManager.getLogger().info("addModifierData: after setting on the node: ");
-                existingModifiers.get(existingModifierIndex).print();
+                addModifierData(existingModifiers, data);
             });
         }
+    }
+
+    private static void addModifierData(List<ModifierData> existingModifiers, ModifierData data) {
+        //Log the data being added to the Node
+        LogManager.getLogger().info("addModifierData: newData: ");
+        data.print();
+
+        //Identify the existing ModifierData record for this type.
+        int existingModifierIndex = existingModifiers.indexOf(existingModifiers.stream().filter(mod -> mod.getName().equals(data.getName())).findFirst().get());
+        ModifierData currentModifier = existingModifiers.get(existingModifierIndex);
+
+        //Log the data already on the Node.
+        LogManager.getLogger().info("addModifierData: oldData: ");
+        currentModifier.print();
+
+        //Merge the two modifier instances and log the result.
+        LogManager.getLogger().info("addModifierData: after adding together: ");
+        currentModifier.add(data);
+        currentModifier.print();
+        existingModifiers.add(existingModifierIndex, currentModifier);
+
+        //Log proving the data has been updated in the node successfully.
+        LogManager.getLogger().info("addModifierData: after setting on the node: ");
+        existingModifiers.get(existingModifierIndex).print();
     }
 }

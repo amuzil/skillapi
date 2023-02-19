@@ -1,4 +1,4 @@
-package com.amuzil.omegasource.magus.skill.modifiers.data;
+package com.amuzil.omegasource.magus.skill.modifiers.api;
 
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import net.minecraft.nbt.CompoundTag;
@@ -20,6 +20,11 @@ public abstract class BaseModifierData extends ModifierData {
     @Override
     public boolean isDirty() {
         return isDirty;
+    }
+
+    @Override
+    public boolean serversideOnly() {
+        return false;
     }
 
     @Override

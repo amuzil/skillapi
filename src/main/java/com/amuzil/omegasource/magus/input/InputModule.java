@@ -1,7 +1,5 @@
 package com.amuzil.omegasource.magus.input;
 
-import com.amuzil.omegasource.magus.network.MagusNetwork;
-import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.EventCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
@@ -36,13 +34,15 @@ public abstract class InputModule {
         _modifierListeners.add(listener);
     }
 
-    public void queueModifierData(ModifierData data) {
-        if(modifierQueue.get(data.getName()) != null) {
-            ModifierData existingData = modifierQueue.get(data.getName());
-            existingData.add(data);
-            modifierQueue.put(data.getName(), existingData);
-        } else {
-            modifierQueue.put(data.getName(), data);
+    public synchronized void queueModifierData(ModifierData data) {
+        synchronized (modifierQueue) {
+            if(modifierQueue.get(data.getName()) != null) {
+                ModifierData existingData = modifierQueue.get(data.getName());
+                existingData.add(data);
+                modifierQueue.put(data.getName(), existingData);
+            } else {
+                modifierQueue.put(data.getName(), data);
+            }
         }
     }
 
@@ -58,6 +58,7 @@ public abstract class InputModule {
     }
 
     public void resetLastActivated() {
+        LogManager.getLogger().info("RESETTING LAST ACTIVATED FORM");
         this.lastActivatedForm = null;
     }
 
