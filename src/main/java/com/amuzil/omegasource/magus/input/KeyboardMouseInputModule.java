@@ -17,7 +17,7 @@ public class KeyboardMouseInputModule extends InputModule {
         //generate condition from InputData.
         Runnable onSuccess = () -> {
             //todo pass formToExecute to the form queue.
-            LogManager.getLogger().info("FORM ACTIVATED :" + formToExecute.name());
+            LogManager.getLogger().info("FORM ACTIVATED: " + formToExecute.name());
             Magus.radixTree.moveDown(formToExecute);
             //reset condition?
         };
