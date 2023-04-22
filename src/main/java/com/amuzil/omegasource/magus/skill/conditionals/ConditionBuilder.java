@@ -24,6 +24,12 @@ public class ConditionBuilder {
         return this;
     }
 
+    public ConditionBuilder fromInputData(InputData formExecutionInput) {
+        conditionList.addAll(PathBuilder.buildPathFrom(formExecutionInput));
+
+        return this;
+    }
+
     public Condition build() {
         if(conditionList.size() == 0) return null;
         if(conditionList.size() == 1) return conditionList.get(0);

@@ -1,10 +1,11 @@
-package com.amuzil.omegasource.magus.skill.modifiers;
+package com.amuzil.omegasource.magus.skill.modifiers.api;
 
 import com.amuzil.omegasource.magus.skill.util.traits.DataTrait;
 
 
 // actually adding data is handled by sub-class implementations, this is just for generics.
 public abstract class ModifierData implements DataTrait {
+
 
     public ModifierData() {
     }
@@ -17,7 +18,16 @@ public abstract class ModifierData implements DataTrait {
         if(!modifierData.getClass().equals(this.getClass())) {
             //todo logging - tried to merge 2 different types of ModifierData together
         } else {
+            mergeFields(modifierData);
             markDirty();
         }
     }
+
+    protected abstract void mergeFields(ModifierData modifierData);
+    public abstract boolean serversideOnly();
+
+    public abstract void print();
+
+    public abstract void reset();
+    public abstract ModifierData copy();
 }

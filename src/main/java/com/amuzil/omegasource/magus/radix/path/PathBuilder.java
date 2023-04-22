@@ -31,8 +31,8 @@ public class PathBuilder {
 			// Any time less than this is just a key press.
 			// TODO: Adjust timeout to be per node.
 			conditions.add(keyInput.held() > HELD_THRESHOLD
-				? new KeyHoldCondition(keyInput.key(), keyInput.held(), TIMEOUT_THRESHOLD)
-				: new KeyPressCondition(keyInput.key(), TIMEOUT_THRESHOLD)
+				? new KeyHoldCondition(keyInput.key().getValue(), keyInput.held(), TIMEOUT_THRESHOLD)
+				: new KeyPressCondition(keyInput.key().getValue(), TIMEOUT_THRESHOLD)
 			);
 
 			if (keyInput.minDelay() > 0) {

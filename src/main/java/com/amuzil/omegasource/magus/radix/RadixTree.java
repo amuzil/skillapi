@@ -1,20 +1,27 @@
 package com.amuzil.omegasource.magus.radix;
 
+import com.amuzil.omegasource.magus.skill.elements.Element;
 import com.amuzil.omegasource.magus.skill.forms.Form;
+import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
+import com.amuzil.omegasource.magus.skill.modifiers.data.MultiModifierData;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import org.apache.logging.log4j.LogManager;
+
+import java.util.List;
 
 public class RadixTree {
     private final Node root;
     private Node active;
+    private Form lastActivated = null;
+    private Element activeElement = null;
+    private RadixPath path;
+    private Entity owner;
 
     public RadixTree(Node root) {
         this.root = root;
-//        this.branch = new Branch();
         this.active = root;
     }
-
-//    public <T> boolean registerLeaf(Class<Leaf<T>> type, Leaf<T> leaf) {
-//        return branch.registerLeaf(type, leaf);
-//    }
 
     public void burn() {
         if (active.terminateCondition() != null) {
@@ -22,21 +29,27 @@ public class RadixTree {
         }
 
         active = null;
-
-//        branch.burn();
+        activeElement = null;
     }
 
     public void start() {
-//        branch.reset(root);
         setActive(root);
+        path = new RadixPath();
+    }
+
+    private void setActive(Element element) {
+        this.activeElement = element;
     }
 
     private void setActive(Node node) {
         active = node;
 
-//        if (active.onEnter() != null) {
-//            active.onEnter().accept(branch);
-//        }
+        if(active.getModifiers().size() > 0 && owner instanceof ServerPlayer player)
+            active.registerModifierListeners(lastActivated, activeElement, player);
+
+        if (active.onEnter() != null) {
+            active.onEnter().accept(this);
+        }
 
         if (active.terminateCondition() != null) {
             active.terminateCondition().register(this::terminate, () -> {
@@ -46,9 +59,9 @@ public class RadixTree {
 
     // Called when either the node's terminate condition is fulfilled or all active child conditions have expired
     private void terminate() {
-//        if (active.onTerminate() != null) {
-//            active.onTerminate().accept(branch);
-//        }
+        if (active.onTerminate() != null) {
+            active.onTerminate().accept(this);
+        }
 
         if (active.terminateCondition() != null) {
             active.terminateCondition().unregister();
@@ -58,11 +71,33 @@ public class RadixTree {
     }
 
     public void moveDown(Form executedForm) {
-//        if (active.onLeave() != null) {
-//            active.onLeave().accept(branch);
-//        }
+        if(activeElement == null) {
+            LogManager.getLogger().info("NO ELEMENT SELECTED");
+            return;
+        }
+        //add the last Node to the activation Path and store its ModifierData's
+
+        if (this.lastActivated != null && active != null) {
+            if(this.lastActivated.name().equals(executedForm.name())) {
+                addModifierData(new MultiModifierData());
+                return;
+            }
+            path.addStep(this.lastActivated, active.getModifiers());
+        }
+        this.lastActivated = executedForm;
+
+        if(active.getModifiers().size() > 0 && owner instanceof ServerPlayer player) {
+            active.unregisterModifierListeners(player);
+            //todo remove this its just for testing
+            active.getModifiers().forEach(modifier -> modifier.print());
+        }
 
         if(active.children().size() == 0) return;
+
+        if (active.onLeave() != null) {
+            active.onLeave().accept(this);
+        }
+
 
         if (active.terminateCondition() != null) {
             active.terminateCondition().unregister();
@@ -73,5 +108,17 @@ public class RadixTree {
 
     public void expire() {
         terminate();
+    }
+
+    public void addModifierData(List<ModifierData> modifierData) {
+        active.addModifierData(modifierData);
+    }
+
+    public void addModifierData(ModifierData modifierData) {
+        active.addModifierData(modifierData);
+    }
+
+    public void setOwner(Entity entity) {
+        this.owner = entity;
     }
 }
