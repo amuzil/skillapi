@@ -17,11 +17,6 @@ public class FormDataRegistry {
     //Remember to see #InputConstants for the key names.
     public static void init() {
         formTypes = new HashMap<>();
-        List<InputData> inputs = new ArrayList<>();
-        inputs.add(new KeyInput(InputConstants.getKey("key.mouse.right"),
-                0, 0, 0));
-        Magus.inputModule.registerInputData(inputs, Forms.STRIKE);
-        formTypes.put(inputs, Forms.STRIKE);
     }
 
     public static Form getFormByName(String formName) {
@@ -30,6 +25,10 @@ public class FormDataRegistry {
 
     public static List<InputData> getInputsForForm(Form formToModify) {
         return formTypes.entrySet().stream().filter(form -> form.getValue().name().equals(formToModify.name())).findFirst().get().getKey();
+    }
 
+    public static void registerForm(List<InputData> inputs, Form form) {
+        Magus.inputModule.registerInputData(inputs, form);
+        formTypes.put(inputs, form);
     }
 }
