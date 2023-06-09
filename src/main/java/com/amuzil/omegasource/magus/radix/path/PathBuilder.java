@@ -20,6 +20,7 @@ public class PathBuilder {
 	private static final Map<Class<?>, Function<Object, LinkedList<Condition>>> CONDITION_BUILDERS = new HashMap<>();
 
 	static {
+		//TODO: Account for max delay
 		registerBuilder(KeyInput.class, keyInput -> {
 			// Minimum amount of ticks a key must be pressed for it to be considered a held condition.
 			//TODO: Adjust these

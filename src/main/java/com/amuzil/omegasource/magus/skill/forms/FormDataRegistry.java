@@ -31,4 +31,10 @@ public class FormDataRegistry {
         Magus.inputModule.registerInputData(inputs, form);
         formTypes.put(inputs, form);
     }
+
+    public static void registerForm(InputData input, Form form) {
+        List<InputData> singleton = new ArrayList<>();
+        singleton.add(input);
+        formTypes.remove(singleton, form);
+    }
 }

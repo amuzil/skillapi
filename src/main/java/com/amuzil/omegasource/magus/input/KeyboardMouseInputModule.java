@@ -162,7 +162,10 @@ public class KeyboardMouseInputModule extends InputModule {
                 movementKeys.put(keyMapping.getName(), keyMapping.getKey().getValue());
             }
         });
+    }
 
+    public static Map<String, Integer> getMovementKeys() {
+        return movementKeys;
     }
 
     public boolean isDirectionKey(int key) {
