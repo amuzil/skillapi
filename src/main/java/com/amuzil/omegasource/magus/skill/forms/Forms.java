@@ -28,13 +28,4 @@ public class Forms {
     //These two may not be necessary.
     public static final Form MENU = new Form("menu");
     public static final Form HOTKEY = new Form("hotkey");
-
-
-
-    public static void registerForms() {
-        List<InputData> inputs = new ArrayList<>();
-        inputs.add(new KeyInput(InputConstants.getKey("key.mouse.left"),
-                0, 0, 0));
-        FormDataRegistry.registerForm(inputs, STRIKE);
-    }
 }

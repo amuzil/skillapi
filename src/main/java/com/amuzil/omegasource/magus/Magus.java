@@ -7,6 +7,7 @@ import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
+import com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
@@ -58,7 +59,7 @@ public class Magus {
         //Assign input data to forms
         FormDataRegistry.init();
         ModifiersRegistry.init();
-        Forms.registerForms();
+        AvatarFormRegistry.registerForms();
 
         //todo call this anytime the key mappings are updated
         KeyboardMouseInputModule.determineMotionKeys();

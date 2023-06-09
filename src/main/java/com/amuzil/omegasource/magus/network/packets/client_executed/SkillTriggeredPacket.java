@@ -2,6 +2,7 @@ package com.amuzil.omegasource.magus.network.packets.client_executed;
 
 import com.amuzil.omegasource.magus.network.ClientPacketHandler;
 import com.amuzil.omegasource.magus.network.packets.api.MagusPacket;
+import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
@@ -17,14 +18,13 @@ public class SkillTriggeredPacket implements MagusPacket {
     }
 
     public void toBytes(FriendlyByteBuf buf) {
-        if(skill != null) {
-            //todo serialize skill
-        }
+        if(skill != null)
+            buf.writeResourceLocation(skill.getId());
+
     }
 
     public static SkillTriggeredPacket fromBytes(FriendlyByteBuf buf) {
-        //todo deserialise skill
-        return new SkillTriggeredPacket(null);
+        return new SkillTriggeredPacket(Registries.SKILLS.get().getValue(buf.readResourceLocation()));
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {
