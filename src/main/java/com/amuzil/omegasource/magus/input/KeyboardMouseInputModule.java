@@ -4,6 +4,7 @@ import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.server_executed.FormActivatedPacket;
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.radix.Condition;
+import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.forms.Form;
