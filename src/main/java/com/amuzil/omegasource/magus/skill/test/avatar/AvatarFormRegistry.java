@@ -2,6 +2,7 @@ package com.amuzil.omegasource.magus.skill.test.avatar;
 
 import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
+import com.amuzil.omegasource.magus.skill.conditionals.InputDataBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyCombination;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyDataBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
@@ -24,8 +25,7 @@ public class AvatarFormRegistry {
         KeyInput right = KeyDataBuilder.createInput(InputConstants.getKey("key.mouse.right"), 0,
                 0, 0);
         LinkedList<InputData> inputs = new LinkedList<>();
-        KeyPermutation permutation;
-        KeyCombination combination;
+
 
 
         //FormDataRegistry.registerForm(Forms.PUSH);
@@ -36,9 +36,9 @@ public class AvatarFormRegistry {
 
         //FormDataRegistry.registerForm(Forms.LOWER);
 
-        inputs.clear();
-        inputs.add(KeyDataBuilder.createPermutation(left, right));
-        FormDataRegistry.registerForm(inputs, Forms.BURST);
+        LinkedList<InputData> data = InputDataBuilder.toInputs(
+                KeyDataBuilder.createPermutation(left, right));
+        FormDataRegistry.registerForm(data, Forms.BURST);
 
       //  FormDataRegistry.registerForm(Forms.ARC);
 
@@ -48,13 +48,9 @@ public class AvatarFormRegistry {
 
 //        FormDataRegistry.registerForm(Forms.ROTATE);
 
-        inputs.clear();
-        inputs.add(left);
-        FormDataRegistry.registerForm(inputs, Forms.STRIKE);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE);
 
-        inputs.clear();
-        inputs.add(right);
-        FormDataRegistry.registerForm(inputs, Forms.FORCE);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE);
 
      //   FormDataRegistry.registerForm(Forms.BREATHE);
 
@@ -69,6 +65,5 @@ public class AvatarFormRegistry {
             inputs.add(KeyDataBuilder.createCombination(first, second));
             FormDataRegistry.registerForm(inputs, Forms.STEP);
         }
-
     }
 }
