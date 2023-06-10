@@ -3,6 +3,7 @@ package com.amuzil.omegasource.magus.radix;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.modifiers.api.Modifier;
+import com.mojang.datafixers.util.Pair;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -47,13 +48,26 @@ public class NodeBuilder {
 			children.put(form, child);
 			return this;
 		} else {
-			throw cannot("have children");
+			throw cannot("Have Children");
 		}
+	}
+
+	public NodeBuilder addChildren(Pair<Form, Node>... children) {
+		if (type.canHaveChildren) {
+			for (Pair<Form, Node> child : children)
+				addChild(child.getFirst(), child.getSecond());
+			return this;
+		}
+		else throw cannot("Have Children");
 	}
 
 	public NodeBuilder addModifiers(List<Modifier> modifiers) {
 		this.availableModifiers.addAll(modifiers);
+		return this;
+	}
 
+	public NodeBuilder addModifiers(Modifier... modifiers) {
+		Collections.addAll(this.availableModifiers, modifiers);
 		return this;
 	}
 

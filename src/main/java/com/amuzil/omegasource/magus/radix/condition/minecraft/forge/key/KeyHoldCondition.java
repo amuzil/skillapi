@@ -4,11 +4,8 @@ import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.RadixUtil;
-import com.mojang.blaze3d.platform.InputConstants.Key;
-import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.function.Consumer;
 
@@ -26,7 +23,7 @@ public class KeyHoldCondition extends Condition {
 
         this.clientTickListener = event -> {
             if (event.phase == ClientTickEvent.Phase.START) {
-                if (((KeyboardMouseInputModule) Magus.inputModule).keyPressed(key)) {
+                if (((KeyboardMouseInputModule) Magus.keyboardInputModule).keyPressed(key)) {
                     this.currentHolding++;
                 }
                 if (this.currentHolding >= duration) {

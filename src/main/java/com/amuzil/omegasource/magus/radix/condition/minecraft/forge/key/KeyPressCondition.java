@@ -3,8 +3,6 @@ package com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key;
 import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.radix.Condition;
-import com.amuzil.omegasource.magus.radix.RadixUtil;
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -21,7 +19,7 @@ public class KeyPressCondition extends Condition {
 
         this.clientTickListener = event -> {
             if (event.phase == TickEvent.ClientTickEvent.Phase.START && event.side == LogicalSide.CLIENT) {
-                if(((KeyboardMouseInputModule)Magus.inputModule).keyPressed(key))  {
+                if(((KeyboardMouseInputModule) Magus.keyboardInputModule).keyPressed(key))  {
                    // RadixUtil.getLogger().debug(InputConstants.getKey(key, -1).getName());
                     this.onSuccess.run();
                 } else if(current >= timeout) {

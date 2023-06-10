@@ -10,6 +10,8 @@ import com.amuzil.omegasource.magus.skill.conditionals.key.KeyPermutation;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
@@ -20,9 +22,9 @@ import java.util.Map;
 public class AvatarFormRegistry {
 
     public static void registerForms() {
-        KeyInput left = KeyDataBuilder.createInput(InputConstants.getKey("key.mouse.left"), 0,
+        KeyInput left = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyAttack.getKey(), 0,
                 0, 0);
-        KeyInput right = KeyDataBuilder.createInput(InputConstants.getKey("key.mouse.right"), 0,
+        KeyInput right = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyUse.getKey(), 0,
                 0, 0);
         LinkedList<InputData> inputs = new LinkedList<>();
 

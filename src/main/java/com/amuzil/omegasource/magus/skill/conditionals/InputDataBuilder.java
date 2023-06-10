@@ -1,7 +1,7 @@
 package com.amuzil.omegasource.magus.skill.conditionals;
 
+import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Designed as a factory class for taking InputDat and turning it into a linked list
@@ -10,6 +10,8 @@ import java.util.List;
 public class InputDataBuilder {
 
     public static LinkedList<InputData> toInputs(InputData... data) {
-        return (LinkedList<InputData>) List.of(data);
+        LinkedList<InputData> out = new LinkedList<>();
+        Collections.addAll(out, data);
+        return out;
     }
 }

@@ -19,6 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import org.apache.logging.log4j.LogManager;
 
 public class KeyboardMouseInputModule extends InputModule {
@@ -97,9 +98,9 @@ public class KeyboardMouseInputModule extends InputModule {
                 }
             }
         };
-        MinecraftForge.EVENT_BUS.addListener(keyboardListener);
-        MinecraftForge.EVENT_BUS.addListener(mouseListener);
-        MinecraftForge.EVENT_BUS.addListener(tickEventConsumer);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.Key.class, keyboardListener);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.MouseButton.class, mouseListener);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.class, tickEventConsumer);
     }
 
     private void sendModifierData() {
@@ -130,7 +131,7 @@ public class KeyboardMouseInputModule extends InputModule {
             //reset conditions?
            // Magus.radixTree.burn();
         };
-        Condition formCondition = new ConditionBuilder()
+        Condition formCondition = ConditionBuilder.instance()
                 .fromInputData(formExecutionInputs)
                 .build();
         if(formCondition != null) {

@@ -2,8 +2,6 @@ package com.amuzil.omegasource.magus.skill.forms;
 
 import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
-import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
-import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +26,7 @@ public class FormDataRegistry {
     }
 
     public static void registerForm(List<InputData> inputs, Form form) {
-        Magus.inputModule.registerInputData(inputs, form);
+        Magus.keyboardInputModule.registerInputData(inputs, form);
         formTypes.put(inputs, form);
     }
 

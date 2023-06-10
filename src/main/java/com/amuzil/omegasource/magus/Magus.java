@@ -5,7 +5,6 @@ import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
-import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
@@ -39,7 +38,8 @@ public class Magus {
     private static final Logger LOGGER = LogManager.getLogger();
 
     //todo: move these to a better place
-    public static InputModule inputModule = new KeyboardMouseInputModule();
+    //todo: make multiple input modules
+    public static InputModule keyboardInputModule = new KeyboardMouseInputModule();
 
     public Magus() {
         // Register ourselves for server and other game events we are interested in

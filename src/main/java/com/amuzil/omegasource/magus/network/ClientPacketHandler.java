@@ -27,7 +27,7 @@ public class ClientPacketHandler {
         ctx.get().enqueueWork(() -> {
             packet.modifierTypes.forEach(modifierType -> {
                 LogManager.getLogger().info("REGISTERING MODIFIER: " + modifierType);
-                Magus.inputModule.registerModifierListener(ModifiersRegistry.fromName(modifierType).listener(), packet.treeData);
+                Magus.keyboardInputModule.registerModifierListener(ModifiersRegistry.fromName(modifierType).listener(), packet.treeData);
             });
         });
 
@@ -37,7 +37,7 @@ public class ClientPacketHandler {
     public static boolean handlePacket(UnregisterModifierListenersPacket packet, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             LogManager.getLogger().info("UNREGISTERING MODIFIERS");
-            Magus.inputModule.unregisterModifiers();
+            Magus.keyboardInputModule.unregisterModifiers();
         });
 
         return true;

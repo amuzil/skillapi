@@ -48,7 +48,7 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
 
         this.clientTickListener = event -> {
             if (event.phase == TickEvent.ClientTickEvent.Phase.START) {
-                if (((KeyboardMouseInputModule)Magus.inputModule).keyPressed(keyToHold)) {
+                if (((KeyboardMouseInputModule)Magus.keyboardInputModule).keyPressed(keyToHold)) {
                     this.isHeld = true;
                     this.currentHolding++;
                 } else {
@@ -69,7 +69,7 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
         //so that we send a packet to say we've stopped holding(for continuous cast ability support)
         if(!this.isHeld && this.wasHeld) {
             this.wasHeld = false;
-            Magus.inputModule.resetLastActivated();
+            Magus.keyboardInputModule.resetLastActivated();
             return true;
         }
         return false;
