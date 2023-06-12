@@ -3,7 +3,6 @@ package com.amuzil.omegasource.magus.skill.conditionals;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.condition.ChainedCondition;
 import com.amuzil.omegasource.magus.radix.path.PathBuilder;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.LinkedList;
 import java.util.List;

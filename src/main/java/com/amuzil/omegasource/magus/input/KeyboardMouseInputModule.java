@@ -8,10 +8,6 @@ import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.forms.Form;
-
-import java.util.*;
-import java.util.function.Consumer;
-
 import com.amuzil.omegasource.magus.skill.util.data.KeyboardData;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
@@ -22,13 +18,22 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import org.apache.logging.log4j.LogManager;
 
+import java.util.*;
+import java.util.function.Consumer;
+
 public class KeyboardMouseInputModule extends InputModule {
 
     private final Consumer<TickEvent> tickEventConsumer;
-    private final List<Integer> glfwKeysDown;
+    private List<Integer> glfwKeysDown;
     private static final Map<String, Integer> movementKeys = new HashMap<>();
+
+    //How scroll delta works: every physical "tick" forwards on the mouse is 1.0, and backwards
+    // is -1.0. Therefore, you'd need a tracker over time, like a key held event, for the mouse wheel.
+    // Except you're not pressing it, you're spinning it....
+    private double mouseScrollDelta;
     private final Consumer<InputEvent.Key> keyboardListener;
     private final Consumer<InputEvent.MouseButton> mouseListener;
+    private final Consumer<InputEvent.MouseScrollingEvent> mouseScrollListener;
 
     private Form activeForm = null;
     private int ticksSinceActivated = 0;
@@ -82,6 +87,10 @@ public class KeyboardMouseInputModule extends InputModule {
             }
         };
 
+        this.mouseScrollListener = mouseScrollingEvent -> {
+          this.mouseScrollDelta = mouseScrollingEvent.getScrollDelta();
+        };
+
         tickEventConsumer = tickEvent -> {
             ticksSinceModifiersSent++;
             if(ticksSinceModifiersSent > modifierTickThreshold && !modifierQueue.isEmpty()) {
@@ -100,6 +109,7 @@ public class KeyboardMouseInputModule extends InputModule {
         };
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.Key.class, keyboardListener);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.MouseButton.class, mouseListener);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.MouseScrollingEvent.class, mouseScrollListener);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.class, tickEventConsumer);
     }
 

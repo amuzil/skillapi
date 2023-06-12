@@ -9,6 +9,8 @@ import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPress
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyCombination;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyPermutation;
+import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseInput;
+import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseWheelInput;
 import net.minecraftforge.event.TickEvent;
 
 import java.util.HashMap;
@@ -20,6 +22,7 @@ public class PathBuilder {
 	private static final Map<Class<?>, Function<Object, LinkedList<Condition>>> CONDITION_BUILDERS = new HashMap<>();
 
 	static {
+		/* Keys. */
 		//TODO: Account for max delay
 		registerBuilder(KeyInput.class, keyInput -> {
 			// Minimum amount of ticks a key must be pressed for it to be considered a held condition.
@@ -55,6 +58,12 @@ public class PathBuilder {
 			combination -> combination.keys().stream().map(PathBuilder::buildPathFrom)
 				.collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll)
 		);
+
+		/* Mouse */
+//		registerBuilder(MouseInput.class,
+//				mouseInput -> );
+//		registerBuilder(MouseWheelInput.class,
+//				mouseWheelInput -> );
 	}
 
 	@SuppressWarnings("unchecked")

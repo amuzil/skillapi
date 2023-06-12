@@ -7,6 +7,7 @@ import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import com.amuzil.omegasource.magus.skill.util.capability.entity.Data;
+import com.mojang.datafixers.util.Pair;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -30,7 +31,8 @@ public class ServerEvents {
                 //Resets the tree; for testing purposes.
                 if (capability.getTree() != null)
                     capability.getTree().burn();
-                RadixTree tree = new RadixTree(NodeBuilder.root().addChild(Forms.FORCE, secondNode).build());
+                RadixTree tree = new RadixTree(NodeBuilder.root().addChildren(new Pair<>(Forms.FORCE, secondNode),
+                        new Pair<>(Forms.STRIKE, secondNode)).build());
                 tree.setOwner(event.getEntity());
                 capability.setTree(tree);
 
