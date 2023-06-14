@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.skill.forms;
 
 import com.amuzil.omegasource.magus.Magus;
+import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 
 import java.util.ArrayList;
@@ -28,11 +29,12 @@ public class FormDataRegistry {
     public static void registerForm(List<InputData> inputs, Form form) {
         Magus.keyboardInputModule.registerInputData(inputs, form);
         formTypes.put(inputs, form);
+        Registries.registerForm(form);
     }
 
     public static void registerForm(InputData input, Form form) {
         List<InputData> singleton = new ArrayList<>();
         singleton.add(input);
-        formTypes.remove(singleton, form);
+        registerForm(singleton, form);
     }
 }

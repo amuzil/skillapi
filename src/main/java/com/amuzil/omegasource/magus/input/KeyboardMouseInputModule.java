@@ -159,6 +159,7 @@ public class KeyboardMouseInputModule extends InputModule {
     public void unregisterInputs() {
         MinecraftForge.EVENT_BUS.unregister(keyboardListener);
         MinecraftForge.EVENT_BUS.unregister(mouseListener);
+        MinecraftForge.EVENT_BUS.unregister(mouseScrollListener);
         MinecraftForge.EVENT_BUS.unregister(tickEventConsumer);
         _formInputs.forEach((condition, form) -> condition.unregister());
     }
