@@ -68,7 +68,7 @@ public class KeyboardMouseInputModule extends InputModule {
 
         this.mouseListener = mouseEvent -> {
             int keyPressed = mouseEvent.getButton();
-            if(!KeyboardData.ignore(keyPressed)) {
+         //   if(!KeyboardData.ignore(keyPressed)) {
                 switch (mouseEvent.getAction()) {
                     case InputConstants.PRESS -> {
                         glfwKeysDown.add(keyPressed);
@@ -83,7 +83,7 @@ public class KeyboardMouseInputModule extends InputModule {
                             glfwKeysDown.remove(glfwKeysDown.indexOf(keyPressed));
                         }
                     }
-                }
+            //    }
             }
         };
 

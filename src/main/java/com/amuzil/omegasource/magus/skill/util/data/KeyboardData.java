@@ -10,7 +10,9 @@ import static com.mojang.blaze3d.platform.InputConstants.*;
 public class KeyboardData {
     //Converts InputConstants key data into GLFW
 
-    //TODO: Configurable list of invalid keys
+    //TODO: Configurable list of invalid keys.
+
+    //This is adjustable; we want to be cancelling GUI keys, not these keys.
     public static boolean ignore(int keyCode) {
         List<Integer> invalidKeys = new ArrayList<>();
         invalidKeys.add(KEY_A);

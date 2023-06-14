@@ -39,11 +39,13 @@ public class Magus {
 
     //todo: move these to a better place
     //todo: make multiple input modules
-    public static InputModule keyboardInputModule = new KeyboardMouseInputModule();
+    public static InputModule keyboardInputModule;
 
     public Magus() {
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+        //Register the input module
+        keyboardInputModule = new KeyboardMouseInputModule();
         // Register capabilities
         FMLJavaModLoadingContext.get().getModEventBus().addListener(CapabilityHandler::registerCapabilities);
         // attach capabilities
@@ -59,10 +61,7 @@ public class Magus {
         //Assign input data to forms
         FormDataRegistry.init();
         ModifiersRegistry.init();
-        AvatarFormRegistry.registerForms();
 
-        //todo call this anytime the key mappings are updated
-        KeyboardMouseInputModule.determineMotionKeys();
 
     }
 
@@ -73,6 +72,9 @@ public class Magus {
         MagusNetwork.registerMessages();
         LOGGER.info("HELLO FROM PRE INIT");
         LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getName());
+
+        //todo call this anytime the key mappings are updated
+        KeyboardMouseInputModule.determineMotionKeys();
 
     }
 
@@ -100,6 +102,7 @@ public class Magus {
     public void onServerStarting(FMLDedicatedServerSetupEvent event) {
         // do something when the server starts
         LOGGER.info("HELLO from server starting");
+        AvatarFormRegistry.registerForms();
     }
 
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD

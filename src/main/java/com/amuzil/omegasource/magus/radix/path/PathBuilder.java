@@ -28,7 +28,8 @@ public class PathBuilder {
 			// Minimum amount of ticks a key must be pressed for it to be considered a held condition.
 			//TODO: Adjust these
 			final int HELD_THRESHOLD = 3;
-			final int TIMEOUT_THRESHOLD = 50;
+			// 50 by default
+			final int TIMEOUT_THRESHOLD = 50000;
 
 			LinkedList<Condition> conditions = new LinkedList<>();
 

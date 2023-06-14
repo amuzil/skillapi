@@ -13,6 +13,16 @@ import java.util.List;
  */
 public class KeyDataBuilder {
 
+    /* Look at #InputConstants for key names, codes, and types. */
+
+    public static KeyInput createInput(int key, int minDelay, int maxDelay, int held) {
+        return new KeyInput(InputConstants.getKey(key, -1), minDelay, maxDelay, held);
+    }
+
+    public static KeyInput createInput(String key, int minDelay, int maxDelay, int held) {
+        return new KeyInput(InputConstants.getKey(key), minDelay, maxDelay, held);
+    }
+
     public static KeyInput createInput(InputConstants.Key key, int minDelay, int maxDelay, int held) {
         return new KeyInput(key, minDelay, maxDelay, held);
     }

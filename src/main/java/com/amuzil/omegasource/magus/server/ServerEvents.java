@@ -31,7 +31,7 @@ public class ServerEvents {
                 //Resets the tree; for testing purposes.
                 if (capability.getTree() != null)
                     capability.getTree().burn();
-                RadixTree tree = new RadixTree(NodeBuilder.root().addChildren(//new Pair<>(Forms.FORCE, secondNode),
+                RadixTree tree = new RadixTree(NodeBuilder.root().addChildren(new Pair<>(Forms.ARC, secondNode),
                         new Pair<>(Forms.STRIKE, secondNode), new Pair<>(Forms.BURST, secondNode)).build());
                 tree.setOwner(event.getEntity());
                 capability.setTree(tree);

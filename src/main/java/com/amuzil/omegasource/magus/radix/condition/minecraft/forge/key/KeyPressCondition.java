@@ -20,6 +20,8 @@ public class KeyPressCondition extends Condition {
         this.clientTickListener = event -> {
             if (event.phase == TickEvent.ClientTickEvent.Phase.START && event.side == LogicalSide.CLIENT) {
                 if(((KeyboardMouseInputModule) Magus.keyboardInputModule).keyPressed(key))  {
+                    //What key is 0 hello???
+                    System.out.println(key);
                     this.onSuccess.run();
                 } else if(current >= timeout) {
                     this.onFailure.run();

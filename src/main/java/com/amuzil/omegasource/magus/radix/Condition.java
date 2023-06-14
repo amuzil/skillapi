@@ -1,5 +1,7 @@
 package com.amuzil.omegasource.magus.radix;
 
+import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressCondition;
+
 public abstract class Condition {
 	public enum Result {
 		SUCCESS,
@@ -14,6 +16,8 @@ public abstract class Condition {
 
 	public void register(Runnable onSuccess, Runnable onFailure) {
 		RadixUtil.getLogger().debug("Registering results");
+		if (this instanceof KeyPressCondition && ((KeyPressCondition) this).getKey() == 0)
+			Thread.dumpStack();
 		this.onSuccess = () -> {
 		//	RadixUtil.getLogger().debug("Result: success");
 			onSuccess.run();
@@ -25,6 +29,7 @@ public abstract class Condition {
 	}
 
 	public void unregister() {
+	//	Thread.dumpStack();
 		RadixUtil.getLogger().debug("Unregistering results");
 		// This should not cause any errors when called if the condition is
 		// already unregistered or was never registered in the first place

@@ -3,6 +3,7 @@ package com.amuzil.omegasource.magus.skill.forms;
 import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +30,9 @@ public class FormDataRegistry {
     public static void registerForm(List<InputData> inputs, Form form) {
         Magus.keyboardInputModule.registerInputData(inputs, form);
         formTypes.put(inputs, form);
-        Registries.registerForm(form);
+        if (Registries.FORMS != null)
+            if (!Registries.FORMS.get().getValue(new ResourceLocation(form.name())).equals(form))
+                Registries.registerForm(form);
     }
 
     public static void registerForm(InputData input, Form form) {

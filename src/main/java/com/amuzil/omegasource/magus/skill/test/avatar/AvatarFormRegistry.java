@@ -26,6 +26,7 @@ public class AvatarFormRegistry {
                 0, 0);
         KeyInput right = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyUse.getKey(), 0,
                 0, 0);
+        KeyInput initialiser = KeyDataBuilder.createInput("key.keyboard.left.alt", 0, 0, 0);
         LinkedList<InputData> inputs = new LinkedList<>();
 
 
@@ -42,7 +43,7 @@ public class AvatarFormRegistry {
                 KeyDataBuilder.createPermutation(left, right));
         FormDataRegistry.registerForm(data, Forms.BURST);
 
-      //  FormDataRegistry.registerForm(Forms.ARC);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(initialiser), Forms.ARC);
 
     //    FormDataRegistry.registerForm(Forms.COMPRESS);
 
