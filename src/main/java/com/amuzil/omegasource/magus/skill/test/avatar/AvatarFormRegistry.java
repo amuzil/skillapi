@@ -3,20 +3,14 @@ package com.amuzil.omegasource.magus.skill.test.avatar;
 import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.conditionals.InputDataBuilder;
-import com.amuzil.omegasource.magus.skill.conditionals.key.KeyCombination;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyDataBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
-import com.amuzil.omegasource.magus.skill.conditionals.key.KeyPermutation;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import org.checkerframework.checker.units.qual.A;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 public class AvatarFormRegistry {
@@ -41,7 +35,7 @@ public class AvatarFormRegistry {
 
         LinkedList<InputData> data = InputDataBuilder.toInputs(
                 KeyDataBuilder.createPermutation(left, right));
-        FormDataRegistry.registerForm(data, Forms.BURST);
+  //      FormDataRegistry.registerForm(data, Forms.BURST);
 
         FormDataRegistry.registerForm(InputDataBuilder.toInputs(initialiser), Forms.ARC);
 
@@ -51,9 +45,9 @@ public class AvatarFormRegistry {
 
 //        FormDataRegistry.registerForm(Forms.ROTATE);
 
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE);
+   //     FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE);
 
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE);
+ //       FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE);
 
      //   FormDataRegistry.registerForm(Forms.BREATHE);
 
