@@ -171,7 +171,6 @@ public class KeyboardMouseInputModule extends InputModule {
     public static void determineMotionKeys() {
         Arrays.stream(Minecraft.getInstance().options.keyMappings).toList().forEach(keyMapping -> {
             if(keyMapping.getCategory().equals(KeyMapping.CATEGORY_MOVEMENT)) {
-                LogManager.getLogger().info(keyMapping.getName());
                 movementKeys.put(keyMapping.getName(), keyMapping.getKey().getValue());
             }
         });

@@ -31,7 +31,7 @@ public class FormDataRegistry {
         Magus.keyboardInputModule.registerInputData(inputs, form);
         formTypes.put(inputs, form);
         if (Registries.FORMS != null)
-            if (!Registries.FORMS.get().getValue(new ResourceLocation(form.name())).equals(form))
+            if (Registries.FORMS.get().getValue(new ResourceLocation(form.name())) == null)
                 Registries.registerForm(form);
     }
 
