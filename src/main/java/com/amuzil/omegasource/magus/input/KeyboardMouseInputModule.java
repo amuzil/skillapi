@@ -4,6 +4,8 @@ import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.server_executed.FormActivatedPacket;
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.radix.Condition;
+import com.amuzil.omegasource.magus.radix.RadixUtil;
+import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.forms.Form;
@@ -96,6 +98,11 @@ public class KeyboardMouseInputModule extends InputModule {
             }
             if(activeForm != null) {
                 ticksSinceActivated++;
+//                _formInputs.forEach(((condition, form) -> {
+//                    RadixUtil.getLogger().debug(condition instanceof KeyPressCondition ?
+//                            "Condition: " + ((KeyPressCondition) condition).getKey() : "Ignored.");
+//                    RadixUtil.getLogger().debug("Form: " + form.name());
+//                }));
                 if(ticksSinceActivated >= tickActivationThreshold) {
                     LogManager.getLogger().info("FORM ACTIVATED :" + activeForm.name());
                     MagusNetwork.sendToServer(new FormActivatedPacket(activeForm));
@@ -127,9 +134,12 @@ public class KeyboardMouseInputModule extends InputModule {
             if(mc.level != null) {
                 //this section is to prevent re-activating
                 // single condition forms when you hold the activation key for Held modifiers
-                if(formToExecute != lastActivatedForm) {
+
+                //TODO: Fix an issue where it doesn't let players re-activate forms outside of the held modifier.
+              //  if(formToExecute != lastActivatedForm) {
                     activeForm = formToExecute;
-                }
+                //}
+
                 ticksSinceActivated = 0;
             }
             //reset condition?

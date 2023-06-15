@@ -1,7 +1,5 @@
 package com.amuzil.omegasource.magus.radix;
 
-import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressCondition;
-
 public abstract class Condition {
 	public enum Result {
 		SUCCESS,
@@ -16,8 +14,8 @@ public abstract class Condition {
 
 	public void register(Runnable onSuccess, Runnable onFailure) {
 		RadixUtil.getLogger().debug("Registering results");
-		if (this instanceof KeyPressCondition && ((KeyPressCondition) this).getKey() == 0)
-			Thread.dumpStack();
+//		if (this instanceof KeyPressCondition && ((KeyPressCondition) this).getKey() == 0)
+//			Thread.dumpStack();
 		this.onSuccess = () -> {
 		//	RadixUtil.getLogger().debug("Result: success");
 			onSuccess.run();

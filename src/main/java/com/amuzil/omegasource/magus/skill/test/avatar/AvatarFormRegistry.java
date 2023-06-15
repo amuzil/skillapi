@@ -47,7 +47,7 @@ public class AvatarFormRegistry {
 
    //     FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE);
 
- //       FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE);
+    //    FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE);
 
      //   FormDataRegistry.registerForm(Forms.BREATHE);
 
@@ -57,8 +57,8 @@ public class AvatarFormRegistry {
         for (Map.Entry<String, Integer> key : KeyboardMouseInputModule.getMovementKeys().entrySet()) {
             inputs.clear();
             KeyInput first, second;
-            first = KeyDataBuilder.createInput(InputConstants.getKey(key.getKey()), 0, 10, 0);
-            second = KeyDataBuilder.createInput(InputConstants.getKey(key.getKey()), 0, 0, 0);
+            first = KeyDataBuilder.createInput(key.getValue(), 0, 10, 0);
+            second = KeyDataBuilder.createInput(key.getValue(), 0, 0, 0);
             inputs.add(KeyDataBuilder.createCombination(first, second));
             FormDataRegistry.registerForm(inputs, Forms.STEP);
         }

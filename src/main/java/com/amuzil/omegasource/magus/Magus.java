@@ -75,6 +75,7 @@ public class Magus {
 
         //todo call this anytime the key mappings are updated
         KeyboardMouseInputModule.determineMotionKeys();
+        AvatarFormRegistry.registerForms();
 
     }
 
@@ -102,7 +103,6 @@ public class Magus {
     public void onServerStarting(FMLDedicatedServerSetupEvent event) {
         // do something when the server starts
         LOGGER.info("HELLO from server starting");
-        AvatarFormRegistry.registerForms();
     }
 
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
@@ -124,7 +124,6 @@ public class Magus {
             // Some client setup code
             LOGGER.info("HELLO FROM CLIENT SETUP");
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
-            AvatarFormRegistry.registerForms();
         }
     }
 }
