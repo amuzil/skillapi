@@ -35,7 +35,7 @@ public class AvatarFormRegistry {
 
         LinkedList<InputData> data = InputDataBuilder.toInputs(
                 KeyDataBuilder.createPermutation(left, right));
-  //      FormDataRegistry.registerForm(data, Forms.BURST);
+        FormDataRegistry.registerForm(data, Forms.BURST);
 
         FormDataRegistry.registerForm(InputDataBuilder.toInputs(initialiser), Forms.ARC);
 
@@ -45,9 +45,9 @@ public class AvatarFormRegistry {
 
 //        FormDataRegistry.registerForm(Forms.ROTATE);
 
-   //     FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE);
 
-    //    FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE);
 
      //   FormDataRegistry.registerForm(Forms.BREATHE);
 
