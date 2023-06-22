@@ -27,7 +27,7 @@ public abstract class Condition {
 	}
 
 	public void unregister() {
-	//	Thread.dumpStack();
+		Thread.dumpStack();
 		RadixUtil.getLogger().debug("Unregistering results");
 		// This should not cause any errors when called if the condition is
 		// already unregistered or was never registered in the first place

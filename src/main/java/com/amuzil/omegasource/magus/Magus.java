@@ -5,6 +5,7 @@ import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
+import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
@@ -59,9 +60,9 @@ public class Magus {
         // Register the doClientStuff method for mod loading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
         //Assign input data to forms
+        Forms.init();
         FormDataRegistry.init();
         ModifiersRegistry.init();
-
 
     }
 
@@ -73,14 +74,13 @@ public class Magus {
         LOGGER.info("HELLO FROM PRE INIT");
         LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getName());
 
-        //todo call this anytime the key mappings are updated
-        KeyboardMouseInputModule.determineMotionKeys();
-        AvatarFormRegistry.registerForms();
-
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
         // do something that can only be done on the client
+        //todo call this anytime the key mappings are updated
+        KeyboardMouseInputModule.determineMotionKeys();
+        AvatarFormRegistry.registerForms();
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {

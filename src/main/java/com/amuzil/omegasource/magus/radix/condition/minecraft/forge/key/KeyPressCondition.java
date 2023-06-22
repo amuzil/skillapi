@@ -5,6 +5,7 @@ import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.radix.Condition;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.LogicalSide;
 
 import java.util.function.Consumer;
@@ -16,12 +17,13 @@ public class KeyPressCondition extends Condition {
 
     public KeyPressCondition(int key, int timeout) {
         this.key = key;
+        System.out.println("Current Key: " + key);
 
         this.clientTickListener = event -> {
             if (event.phase == TickEvent.ClientTickEvent.Phase.START && event.side == LogicalSide.CLIENT) {
-                if(((KeyboardMouseInputModule) Magus.keyboardInputModule).keyPressed(key))  {
+                if(((KeyboardMouseInputModule) Magus.keyboardInputModule).keyPressed(getKey()))  {
                     //What key is 0 hello???
-                   // System.out.println(key);
+                    System.out.println(getKey());
                     this.onSuccess.run();
                 } else if(current >= timeout) {
                     this.onFailure.run();
@@ -39,7 +41,8 @@ public class KeyPressCondition extends Condition {
     @Override
     public void register(Runnable onSuccess, Runnable onFailure) {
         super.register(onSuccess, onFailure);
-        MinecraftForge.EVENT_BUS.addListener(clientTickListener);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ClientTickEvent.class,
+                clientTickListener);
     }
 
     @Override

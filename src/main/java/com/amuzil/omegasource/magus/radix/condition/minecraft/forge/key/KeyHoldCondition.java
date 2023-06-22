@@ -5,7 +5,9 @@ import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.RadixUtil;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 
 import java.util.function.Consumer;
 
@@ -41,7 +43,8 @@ public class KeyHoldCondition extends Condition {
     @Override
     public void register(Runnable onSuccess, Runnable onFailure) {
         super.register(onSuccess, onFailure);
-        MinecraftForge.EVENT_BUS.addListener(clientTickListener);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ClientTickEvent.class,
+                clientTickListener);
     }
 
     @Override

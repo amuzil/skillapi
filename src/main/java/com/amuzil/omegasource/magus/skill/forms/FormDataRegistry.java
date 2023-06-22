@@ -30,9 +30,6 @@ public class FormDataRegistry {
     public static void registerForm(List<InputData> inputs, Form form) {
         Magus.keyboardInputModule.registerInputData(inputs, form);
         formTypes.put(inputs, form);
-        if (Registries.FORMS != null)
-            if (Registries.FORMS.get().getValue(new ResourceLocation(form.name())) == null)
-                Registries.registerForm(form);
     }
 
     public static void registerForm(InputData input, Form form) {
