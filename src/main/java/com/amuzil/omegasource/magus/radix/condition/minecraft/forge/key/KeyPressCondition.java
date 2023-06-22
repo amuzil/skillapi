@@ -3,6 +3,7 @@ package com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key;
 import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.radix.Condition;
+import com.amuzil.omegasource.magus.radix.RadixUtil;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -17,7 +18,6 @@ public class KeyPressCondition extends Condition {
 
     public KeyPressCondition(int key, int timeout) {
         this.key = key;
-        System.out.println("Current Key: " + key);
 
         this.clientTickListener = event -> {
             if (event.phase == TickEvent.ClientTickEvent.Phase.START && event.side == LogicalSide.CLIENT) {
@@ -41,6 +41,7 @@ public class KeyPressCondition extends Condition {
     @Override
     public void register(Runnable onSuccess, Runnable onFailure) {
         super.register(onSuccess, onFailure);
+        RadixUtil.getLogger().debug("Current Key upon registration: " + getKey());
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ClientTickEvent.class,
                 clientTickListener);
     }
@@ -48,6 +49,7 @@ public class KeyPressCondition extends Condition {
     @Override
     public void unregister() {
         super.unregister();
+        RadixUtil.getLogger().debug("Current Key upon registration: " + getKey());
         MinecraftForge.EVENT_BUS.unregister(clientTickListener);
     }
 }
