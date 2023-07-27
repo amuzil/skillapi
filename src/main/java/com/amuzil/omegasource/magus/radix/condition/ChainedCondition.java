@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.radix.condition;
 
 import com.amuzil.omegasource.magus.radix.Condition;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class ChainedCondition extends Condition {
 
     public void finishCurrentCondition() {
         if(currentCondition == null) return;
+        LogManager.getLogger().info("UNREGISTERING CURRENT CONDITION");
         currentCondition.unregister();
         if(currentConditionIndex == (chainedConditions.size() - 1)) {
             onCompleteSuccess.run();

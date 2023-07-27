@@ -7,7 +7,6 @@ import com.amuzil.omegasource.magus.skill.conditionals.key.KeyDataBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 
 import java.util.LinkedList;

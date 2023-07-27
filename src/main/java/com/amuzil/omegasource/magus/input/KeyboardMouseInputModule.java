@@ -140,6 +140,7 @@ public class KeyboardMouseInputModule extends InputModule {
                 //TODO: Fix an issue where it doesn't let players re-activate forms outside of the held modifier.
                 // I.e account for modifiers here.
               //  if(formToExecute != lastActivatedForm) {
+                    LogManager.getLogger().info("FORM ACTIVATED: " + formToExecute.name());
                     activeForm = formToExecute;
                // }
 
