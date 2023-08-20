@@ -34,7 +34,7 @@ public class ChainedCondition extends Condition {
         }
         currentCondition = chainedConditions.get(currentConditionIndex);
         if(currentConditionIndex == chainedConditions.size() - 1) {
-            currentCondition.register(onPartialSuccess, () -> {
+            currentCondition.register(onCompleteSuccess, () -> {
                 onPartialFailure.run();
                 onCompleteFailure.run();
             });
