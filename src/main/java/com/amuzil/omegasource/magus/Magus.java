@@ -79,8 +79,6 @@ public class Magus {
     private void doClientStuff(final FMLClientSetupEvent event) {
         // do something that can only be done on the client
         //todo call this anytime the key mappings are updated
-        KeyboardMouseInputModule.determineMotionKeys();
-        AvatarFormRegistry.registerForms();
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
@@ -123,6 +121,9 @@ public class Magus {
         public static void onClientSetup(FMLClientSetupEvent event) {
             // Some client setup code
             LOGGER.info("HELLO FROM CLIENT SETUP");
+
+            KeyboardMouseInputModule.determineMotionKeys();
+
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }
     }

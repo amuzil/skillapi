@@ -17,17 +17,17 @@ public abstract class Condition {
 //		if (this instanceof KeyPressCondition && ((KeyPressCondition) this).getKey() == 0)
 //			Thread.dumpStack();
 		this.onSuccess = () -> {
-		//	RadixUtil.getLogger().debug("Result: success");
+			RadixUtil.getLogger().debug("Result: success");
 			onSuccess.run();
 		};
 		this.onFailure = () -> {
-			//RadixUtil.getLogger().debug("Result: failure");
+			RadixUtil.getLogger().debug("Result: failure");
 			onFailure.run();
 		};
 	}
 
 	public void unregister() {
-		Thread.dumpStack();
+//		Thread.dumpStack();
 		RadixUtil.getLogger().debug("Unregistering results");
 		// This should not cause any errors when called if the condition is
 		// already unregistered or was never registered in the first place
