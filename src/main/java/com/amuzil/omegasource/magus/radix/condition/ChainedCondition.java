@@ -17,6 +17,7 @@ public class ChainedCondition extends Condition {
     private final Runnable onPartialFailure;
 
     public ChainedCondition(List<Condition> chainedConditions) {
+        Thread.dumpStack();
         this.chainedConditions = chainedConditions;
         this.onPartialSuccess = this::finishCurrentCondition;
         this.onPartialFailure = this::reset;

@@ -1,6 +1,5 @@
 package com.amuzil.omegasource.magus.skill.test.avatar;
 
-import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.conditionals.InputDataBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyDataBuilder;
@@ -10,7 +9,6 @@ import com.amuzil.omegasource.magus.skill.forms.Forms;
 import net.minecraft.client.Minecraft;
 
 import java.util.LinkedList;
-import java.util.Map;
 
 public class AvatarFormRegistry {
 
@@ -23,7 +21,6 @@ public class AvatarFormRegistry {
         LinkedList<InputData> inputs = new LinkedList<>();
 
 
-
         //FormDataRegistry.registerForm(Forms.PUSH);
 
         //FormDataRegistry.registerForm(Forms.PULL);
@@ -34,13 +31,13 @@ public class AvatarFormRegistry {
 
         LinkedList<InputData> data = InputDataBuilder.toInputs(
                 KeyDataBuilder.createPermutation(left, right));
-        FormDataRegistry.registerForm(data, Forms.BURST);
+        //  FormDataRegistry.registerForm(data, Forms.BURST);
 
         FormDataRegistry.registerForm(InputDataBuilder.toInputs(initialiser), Forms.ARC);
 
-    //    FormDataRegistry.registerForm(Forms.COMPRESS);
+        //    FormDataRegistry.registerForm(Forms.COMPRESS);
 
-  //      FormDataRegistry.registerForm(Forms.EXPAND);
+        //      FormDataRegistry.registerForm(Forms.EXPAND);
 
 //        FormDataRegistry.registerForm(Forms.ROTATE);
 
@@ -48,18 +45,23 @@ public class AvatarFormRegistry {
 
         FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE);
 
-     //   FormDataRegistry.registerForm(Forms.BREATHE);
+        //   FormDataRegistry.registerForm(Forms.BREATHE);
 
 
         //Motion! 7 different movement options.
         // Left, right, up, down, jump, sneak, sprint.
-        for (Map.Entry<String, Integer> key : KeyboardMouseInputModule.getMovementKeys().entrySet()) {
-            inputs.clear();
-            KeyInput first, second;
-            first = KeyDataBuilder.createInput(key.getValue(), 0, 10, 0);
-            second = KeyDataBuilder.createInput(key.getValue(), 0, 0, 0);
-            inputs.add(KeyDataBuilder.createCombination(first, second));
-            FormDataRegistry.registerForm(inputs, Forms.STEP);
-        }
+//        for (Map.Entry<String, Integer> key : KeyboardMouseInputModule.getMovementKeys().entrySet()) {
+//            inputs.clear();
+//            KeyInput first, second;
+//            first = KeyDataBuilder.createInput(key.getValue(), 0, 10, 0);
+//            second = KeyDataBuilder.createInput(key.getValue(), 0, 0, 0);
+//            inputs.add(KeyDataBuilder.createCombination(first, second));
+//            FormDataRegistry.registerForm(inputs, Forms.STEP);
+//        }
+//        KeyInput first, second;
+//        first = KeyDataBuilder.createInput("key.keyboard.a", 0, 10, 0);
+//        second = KeyDataBuilder.createInput("key.keyboard.a", 0, 0, 0);
+//        inputs.add(KeyDataBuilder.createCombination(first, second));
+//        FormDataRegistry.registerForm(inputs, Forms.STEP);
     }
 }

@@ -41,8 +41,9 @@ public class KeyboardMouseInputModule extends InputModule {
     private int ticksSinceActivated = 0;
     private int ticksSinceModifiersSent = 0;
 
-    //todo make these thresholds configurable
+    //todo make these thresholds configurable and make them longer. Especially the timeout threshold.
     private final int tickActivationThreshold = 4;
+    private final int tickTimeoutThreshold = 60;
     private final int modifierTickThreshold = 10;
     Minecraft mc = Minecraft.getInstance();
 
@@ -113,6 +114,13 @@ public class KeyboardMouseInputModule extends InputModule {
                     ticksSinceActivated = 0;
                 }
             }
+            else {
+                ticksSinceActivated++;
+                if (ticksSinceActivated >= tickTimeoutThreshold) {
+                    lastActivatedForm = null;
+                    ticksSinceActivated = 0;
+                }
+            }
         };
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.Key.class, keyboardListener);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.MouseButton.class, mouseListener);
@@ -139,14 +147,14 @@ public class KeyboardMouseInputModule extends InputModule {
 
                 //TODO: Fix an issue where it doesn't let players re-activate forms outside of the held modifier.
                 // I.e account for modifiers here.
-              //  if(formToExecute != lastActivatedForm) {
+                if(formToExecute != lastActivatedForm) {
                     LogManager.getLogger().info("FORM ACTIVATED: " + formToExecute.name());
                     activeForm = formToExecute;
-               // }
+                }
 
                 ticksSinceActivated = 0;
             }
-            //reset condition?
+            //Reset condition
         };
         Runnable onFailure = () -> {
             activeForm = null;

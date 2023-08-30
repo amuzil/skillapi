@@ -36,9 +36,22 @@ public class ConditionBuilder {
     }
 
     public Condition build() {
-        if(conditionList.size() == 0) return null;
-        if(conditionList.size() == 1) return conditionList.get(0);
+        //Creates a copy of the list
 
-        return new ChainedCondition(conditionList);
+        List<Condition> conditions = conditionList.stream().toList();
+
+        //Resets the builder
+        reset();
+
+        if(conditions.size() == 0)
+            return null;
+        if(conditions.size() == 1)
+            return conditions.get(0);
+
+        return new ChainedCondition(conditions);
+    }
+
+    public void reset() {
+        conditionList = new LinkedList<>();
     }
 }

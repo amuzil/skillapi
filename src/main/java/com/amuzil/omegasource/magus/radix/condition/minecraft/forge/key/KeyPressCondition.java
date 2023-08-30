@@ -50,6 +50,7 @@ public class KeyPressCondition extends Condition {
     public void unregister() {
         super.unregister();
         RadixUtil.getLogger().debug("Current Key upon deregistration: " + getKey());
+        Thread.dumpStack();
         MinecraftForge.EVENT_BUS.unregister(clientTickListener);
     }
 }
