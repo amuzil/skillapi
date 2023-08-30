@@ -59,6 +59,9 @@ public class RadixTree {
 
     // Called when either the node's terminate condition is fulfilled or all active child conditions have expired
     private void terminate() {
+
+        System.out.println("Nice!");
+
         if (active.onTerminate() != null) {
             active.onTerminate().accept(this);
         }

@@ -33,7 +33,8 @@ public class AvatarFormRegistry {
 
         LinkedList<InputData> data = InputDataBuilder.toInputs(
                 KeyDataBuilder.createPermutation(left, right));
-        //  FormDataRegistry.registerForm(data, Forms.BURST);
+
+        FormDataRegistry.registerForm(data, Forms.BURST);
 
         FormDataRegistry.registerForm(InputDataBuilder.toInputs(initialiser), Forms.ARC);
 
@@ -52,6 +53,9 @@ public class AvatarFormRegistry {
 
         //Motion! 7 different movement options.
         // Left, right, up, down, jump, sneak, sprint.
+
+        //TODO: Add in a mandatory key release condition so you can't activate these by holding down a key.
+        // Also account for the direction modifier.
         for (Map.Entry<String, Integer> key : KeyboardMouseInputModule.getMovementKeys().entrySet()) {
             inputs.clear();
             KeyInput first, second;
