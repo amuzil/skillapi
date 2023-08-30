@@ -58,10 +58,10 @@ public class AvatarFormRegistry {
 //            inputs.add(KeyDataBuilder.createCombination(first, second));
 //            FormDataRegistry.registerForm(inputs, Forms.STEP);
 //        }
-//        KeyInput first, second;
-//        first = KeyDataBuilder.createInput("key.keyboard.a", 0, 10, 0);
-//        second = KeyDataBuilder.createInput("key.keyboard.a", 0, 0, 0);
-//        inputs.add(KeyDataBuilder.createCombination(first, second));
-//        FormDataRegistry.registerForm(inputs, Forms.STEP);
+        KeyInput first, second;
+        first = KeyDataBuilder.createInput("key.keyboard.a", 0, 10, 0);
+        second = KeyDataBuilder.createInput("key.keyboard.a", 0, 0, 0);
+        inputs.add(KeyDataBuilder.createCombination(first, second));
+        FormDataRegistry.registerForm(inputs, Forms.STEP);
     }
 }

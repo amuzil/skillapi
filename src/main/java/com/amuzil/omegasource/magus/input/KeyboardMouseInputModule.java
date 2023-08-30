@@ -83,7 +83,7 @@ public class KeyboardMouseInputModule extends InputModule {
                     }
                     case InputConstants.RELEASE -> {
                         if (glfwKeysDown.contains(keyPressed)) {
-                            glfwKeysDown.remove(glfwKeysDown.indexOf(keyPressed));
+                            glfwKeysDown.remove((Integer) keyPressed);
                         }
                     }
             //    }
@@ -96,9 +96,12 @@ public class KeyboardMouseInputModule extends InputModule {
 
         tickEventConsumer = tickEvent -> {
             ticksSinceModifiersSent++;
-            if(ticksSinceModifiersSent > modifierTickThreshold && !modifierQueue.isEmpty()) {
+            if (ticksSinceModifiersSent > modifierTickThreshold && !modifierQueue.isEmpty()) {
                 sendModifierData();
             }
+
+            cleanMCKeys();
+
             if(activeForm != null) {
                 ticksSinceActivated++;
                 _formInputs.forEach(((condition, form) -> {
@@ -134,6 +137,16 @@ public class KeyboardMouseInputModule extends InputModule {
             MagusNetwork.sendToServer(new SendModifierDataPacket(modifierQueue.values().stream().toList()));
             ticksSinceModifiersSent = 0;
             modifierQueue.clear();
+        }
+    }
+
+    public void cleanMCKeys() {
+        // Fixes some weird mouse and other key issues.
+        for (KeyMapping key : Minecraft.getInstance().options.keyMappings) {
+            if (!key.isDown()) {
+                if (glfwKeysDown.contains(key.getKey().getValue()))
+                    glfwKeysDown.remove((Integer) key.getKey().getValue());
+            }
         }
     }
 
