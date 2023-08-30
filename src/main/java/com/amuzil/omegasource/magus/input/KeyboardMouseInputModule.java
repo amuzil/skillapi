@@ -104,11 +104,11 @@ public class KeyboardMouseInputModule extends InputModule {
 
             if(activeForm != null) {
                 ticksSinceActivated++;
-                _formInputs.forEach(((condition, form) -> {
-                    RadixUtil.getLogger().debug(condition instanceof KeyPressCondition ?
-                            "Condition: " + ((KeyPressCondition) condition).getKey() : "Ignored.");
-                    RadixUtil.getLogger().debug("Form: " + form.name());
-                }));
+//                _formInputs.forEach(((condition, form) -> {
+//                    RadixUtil.getLogger().debug(condition instanceof KeyPressCondition ?
+//                            "Condition: " + ((KeyPressCondition) condition).getKey() : "Ignored.");
+//                    RadixUtil.getLogger().debug("Form: " + form.name());
+//                }));
                 if(ticksSinceActivated >= tickActivationThreshold) {
                     LogManager.getLogger().info("FORM ACTIVATED :" + activeForm.name());
                     MagusNetwork.sendToServer(new FormActivatedPacket(activeForm));
@@ -161,7 +161,7 @@ public class KeyboardMouseInputModule extends InputModule {
                 //TODO: Fix an issue where it doesn't let players re-activate forms outside of the held modifier.
                 // I.e account for modifiers here.
                 if(formToExecute != lastActivatedForm) {
-                    LogManager.getLogger().info("FORM ACTIVATED: " + formToExecute.name());
+                    //LogManager.getLogger().info("FORM ACTIVATED: " + formToExecute.name());
                     activeForm = formToExecute;
                 }
 

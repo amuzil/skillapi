@@ -23,7 +23,7 @@ public class KeyPressCondition extends Condition {
             if (event.phase == TickEvent.ClientTickEvent.Phase.START && event.side == LogicalSide.CLIENT) {
                 if(((KeyboardMouseInputModule) Magus.keyboardInputModule).keyPressed(getKey()))  {
                     //What key is 0 hello???
-                    System.out.println(getKey());
+                    //System.out.println(getKey());
                     this.onSuccess.run();
                 } else if(current >= timeout) {
                     this.onFailure.run();
@@ -41,7 +41,7 @@ public class KeyPressCondition extends Condition {
     @Override
     public void register(Runnable onSuccess, Runnable onFailure) {
         super.register(onSuccess, onFailure);
-        RadixUtil.getLogger().debug("Current Key upon registration: " + getKey());
+        //RadixUtil.getLogger().debug("Current Key upon registration: " + getKey());
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ClientTickEvent.class,
                 clientTickListener);
     }
@@ -49,8 +49,7 @@ public class KeyPressCondition extends Condition {
     @Override
     public void unregister() {
         super.unregister();
-        RadixUtil.getLogger().debug("Current Key upon deregistration: " + getKey());
-        Thread.dumpStack();
+        //RadixUtil.getLogger().debug("Current Key upon deregistration: " + getKey());
         MinecraftForge.EVENT_BUS.unregister(clientTickListener);
     }
 }
