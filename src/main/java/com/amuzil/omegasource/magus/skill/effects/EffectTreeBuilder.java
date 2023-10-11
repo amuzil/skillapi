@@ -1,11 +1,14 @@
 package com.amuzil.omegasource.magus.skill.effects;
 
+import com.amuzil.omegasource.magus.radix.Node;
+import com.amuzil.omegasource.magus.radix.NodeBuilder;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 
 public class EffectTreeBuilder {
 
-    private RadixTree tree;
+    private NodeBuilder tree;
+    private Node current;
     static EffectTreeBuilder builder;
     public static EffectTreeBuilder instance() {
         if (builder != null)
@@ -14,11 +17,19 @@ public class EffectTreeBuilder {
         return builder;
     }
 
-    //Creates an Effect runnable to add to the tree.
-    public EffectTreeBuilder addEffect(Form form, Effect effect) {
+    public EffectTreeBuilder start() {
+        tree = NodeBuilder.middle();
         return this;
     }
+
+    //Creates an Effect runnable to add to the tree.
+    public EffectTreeBuilder addEffect(Form form, Effect effect) {
+        tree.addChild(form, current);
+        return this;
+    }
+
+
     public RadixTree build() {
-        return tree;
+        return new RadixTree(tree.build());
     }
 }
