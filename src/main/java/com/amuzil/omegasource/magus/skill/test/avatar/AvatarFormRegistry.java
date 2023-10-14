@@ -20,6 +20,9 @@ public class AvatarFormRegistry {
         KeyInput right = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyUse.getKey(), 0,
                 0, 0);
         KeyInput initialiser = KeyDataBuilder.createInput("key.keyboard.left.alt", 0, 0, 0);
+        KeyInput held = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyShift.getKey(), 0, 0,
+                20);
+
         LinkedList<InputData> inputs = new LinkedList<>();
 
 
@@ -48,7 +51,7 @@ public class AvatarFormRegistry {
 
         FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE);
 
-        //   FormDataRegistry.registerForm(Forms.BREATHE);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(held), Forms.BREATHE);
 
 
         //Motion! 7 different movement options.
@@ -59,7 +62,7 @@ public class AvatarFormRegistry {
         for (Map.Entry<String, Integer> key : KeyboardMouseInputModule.getMovementKeys().entrySet()) {
             inputs.clear();
             KeyInput first, second;
-            first = KeyDataBuilder.createInput(key.getValue(), 0, 10, 0);
+            first = KeyDataBuilder.createInput(key.getValue(), 10, 20, 0);
             second = KeyDataBuilder.createInput(key.getValue(), 0, 0, 0);
             inputs.add(KeyDataBuilder.createCombination(first, second));
             FormDataRegistry.registerForm(inputs, Forms.STEP);

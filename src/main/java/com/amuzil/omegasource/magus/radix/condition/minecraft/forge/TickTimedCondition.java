@@ -34,8 +34,6 @@ public class TickTimedCondition extends Condition {
 				this.current++;
 				if (this.current >= timeout) {
 					runOn(onTimeout).run();
-					//Test:
-				//	System.out.println("Success?");
 				}
 			}
 		};
