@@ -4,8 +4,6 @@ import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.server_executed.FormActivatedPacket;
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.radix.Condition;
-import com.amuzil.omegasource.magus.radix.RadixUtil;
-import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.forms.Form;
@@ -34,9 +32,6 @@ public class KeyboardMouseInputModule extends InputModule {
     private final Consumer<InputEvent.Key> keyboardListener;
     private final Consumer<InputEvent.MouseButton> mouseListener;
     private final Consumer<InputEvent.MouseScrollingEvent> mouseScrollListener;
-
-    // List of fulfilled forms. activeForm is the most complex fulfilled form.
-    private List<Form> fulfilledForms = new ArrayList();
     private Form activeForm = null;
     private int ticksSinceActivated = 0;
     private int ticksSinceModifiersSent = 0;
@@ -54,7 +49,8 @@ public class KeyboardMouseInputModule extends InputModule {
             int keyPressed = keyboardEvent.getKey();
             switch (keyboardEvent.getAction()) {
                 case InputConstants.PRESS -> {
-                    glfwKeysDown.add(keyPressed);
+                    if (!glfwKeysDown.contains(keyPressed))
+                        glfwKeysDown.add(keyPressed);
                 }
                 case InputConstants.REPEAT -> {
                     if (!glfwKeysDown.contains(keyPressed)) {
@@ -63,7 +59,7 @@ public class KeyboardMouseInputModule extends InputModule {
                 }
                 case InputConstants.RELEASE -> {
                     if (glfwKeysDown.contains(keyPressed)) {
-                        glfwKeysDown.remove(glfwKeysDown.indexOf(keyPressed));
+                        glfwKeysDown.remove((Integer) keyPressed);
                     }
                 }
             }
@@ -74,7 +70,8 @@ public class KeyboardMouseInputModule extends InputModule {
          //   if(!KeyboardData.ignore(keyPressed)) {
                 switch (mouseEvent.getAction()) {
                     case InputConstants.PRESS -> {
-                        glfwKeysDown.add(keyPressed);
+                        if (!glfwKeysDown.contains(keyPressed))
+                            glfwKeysDown.add(keyPressed);
                     }
                     case InputConstants.REPEAT -> {
                         if (!glfwKeysDown.contains(keyPressed)) {
@@ -100,7 +97,7 @@ public class KeyboardMouseInputModule extends InputModule {
                 sendModifierData();
             }
 
-            cleanMCKeys();
+            //cleanMCKeys();
 
             if(activeForm != null) {
                 ticksSinceActivated++;

@@ -62,7 +62,7 @@ public class AvatarFormRegistry {
         for (Map.Entry<String, Integer> key : KeyboardMouseInputModule.getMovementKeys().entrySet()) {
             inputs.clear();
             KeyInput first, second;
-            first = KeyDataBuilder.createInput(key.getValue(), 10, 20, 0);
+            first = KeyDataBuilder.createInput(key.getValue(), 60, 70, 0);
             second = KeyDataBuilder.createInput(key.getValue(), 0, 0, 0);
             inputs.add(KeyDataBuilder.createCombination(first, second));
             FormDataRegistry.registerForm(inputs, Forms.STEP);
