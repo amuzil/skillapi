@@ -5,7 +5,7 @@ public class MouseDataBuilder {
     /**
      * Number corresponds to the MC mouse wheel direction.
      */
-    enum Direction {
+    public enum Direction {
 
         // Away from the user
         FORWARDS(1),
@@ -21,5 +21,9 @@ public class MouseDataBuilder {
         public int getDirection() {
             return this.dir;
         }
+    }
+
+    public static MouseWheelInput createWheelInput(Direction direction, int time) {
+        return new MouseWheelInput(direction, time);
     }
 }

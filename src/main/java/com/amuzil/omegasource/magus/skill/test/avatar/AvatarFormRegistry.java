@@ -5,6 +5,8 @@ import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.conditionals.InputDataBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyDataBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
+import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseDataBuilder;
+import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseWheelInput;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
 import net.minecraft.client.Minecraft;
@@ -24,6 +26,8 @@ public class AvatarFormRegistry {
                 20);
         KeyInput sneak = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyShift.getKey(), 0, 0,
                 0);
+        MouseWheelInput forwards = MouseDataBuilder.createWheelInput(MouseDataBuilder.Direction.FORWARDS, 1);
+        MouseWheelInput back = MouseDataBuilder.createWheelInput(MouseDataBuilder.Direction.BACK, 1);
 
         LinkedList<InputData> inputs = new LinkedList<>();
 
@@ -48,10 +52,10 @@ public class AvatarFormRegistry {
         FormDataRegistry.registerForm(InputDataBuilder.toInputs(initialiser), Forms.ARC);
 
         //TODO: Add mouse wheel input (once the input module supports it). Mouse wheel 1; forwards/away from the player.
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak), Forms.COMPRESS);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak, forwards), Forms.COMPRESS);
 
         //TODO: Add mouse wheel input (once the input module supports it). Mouse wheel -1; towards the player/backwards.
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak), Forms.EXPAND);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak, back), Forms.EXPAND);
 
         // TODO: Use mouse motion, but the input module currently does not support that.
 //        FormDataRegistry.registerForm(Forms.ROTATE);
