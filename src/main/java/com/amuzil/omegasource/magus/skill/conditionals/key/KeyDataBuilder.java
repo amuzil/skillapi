@@ -27,6 +27,9 @@ public class KeyDataBuilder {
         return new KeyInput(key, minDelay, maxDelay, held);
     }
 
+
+    //TODO: Remove these methods due to InputDataBuilder?
+
     public static KeyPermutation createPermutation(KeyInput... inputs) {
         LinkedList<KeyInput> data = new LinkedList<>(List.of(inputs));
         return new KeyPermutation(data);
