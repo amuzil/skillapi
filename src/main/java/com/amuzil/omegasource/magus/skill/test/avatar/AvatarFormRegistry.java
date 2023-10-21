@@ -22,9 +22,15 @@ public class AvatarFormRegistry {
         KeyInput initialiser = KeyDataBuilder.createInput("key.keyboard.left.alt", 0, 0, 0);
         KeyInput held = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyShift.getKey(), 0, 0,
                 20);
+        KeyInput sneak = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyShift.getKey(), 0, 0,
+                0);
 
         LinkedList<InputData> inputs = new LinkedList<>();
 
+
+        // UPDATE: Rather than having "push", "pull", "raise", and "lower" as Forms,
+        // why not make them Effects using the Force form and Direction modifier?
+        // TODO: Bring that up with other devs, seems like it makes more sense!
 
         //FormDataRegistry.registerForm(Forms.PUSH);
 
@@ -41,10 +47,13 @@ public class AvatarFormRegistry {
 
         FormDataRegistry.registerForm(InputDataBuilder.toInputs(initialiser), Forms.ARC);
 
-        //    FormDataRegistry.registerForm(Forms.COMPRESS);
+        //TODO: Add mouse wheel input (once the input module supports it). Mouse wheel 1; forwards/away from the player.
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak), Forms.COMPRESS);
 
-        //      FormDataRegistry.registerForm(Forms.EXPAND);
+        //TODO: Add mouse wheel input (once the input module supports it). Mouse wheel -1; towards the player/backwards.
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak), Forms.EXPAND);
 
+        // TODO: Use mouse motion, but the input module currently does not support that.
 //        FormDataRegistry.registerForm(Forms.ROTATE);
 
         FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE);
