@@ -1,5 +1,7 @@
 package com.amuzil.omegasource.magus.skill.conditionals.mouse;
 
+import com.amuzil.omegasource.magus.skill.conditionals.InputData;
+
 /**
  * How we're going to do this:
  * Mouse input is tracked 2D wise. If we need to track rotation, that's a separate thing for 3D.
@@ -11,5 +13,5 @@ package com.amuzil.omegasource.magus.skill.conditionals.mouse;
  *
  * Get a Bézier curve function working. This tracks input segments, then we path through the input segments.
  */
-public record MouseInput() {
+public record MouseInput() implements InputData {
 }
