@@ -25,7 +25,7 @@ public class XPTrait extends SkillTrait {
         xp = nbt.getDouble(getName());
     }
 
-    public void setXp(double xp) {
+    public void setXP(double xp) {
         this.xp = xp;
         markDirty();
     }
