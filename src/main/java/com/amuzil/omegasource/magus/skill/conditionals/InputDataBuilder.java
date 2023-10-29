@@ -17,8 +17,7 @@ public class InputDataBuilder {
     }
 
     public static InputPermutation createPermutation(InputData... inputs) {
-        LinkedList<InputData> data = new LinkedList<>(List.of(inputs));
-        return new InputPermutation(data);
+        return new InputPermutation(new LinkedList<>(List.of(inputs)));
     }
 
     //Creates a permutation based off of each individual key input
@@ -30,7 +29,6 @@ public class InputDataBuilder {
     }
 
     public static InputData createCombination(InputPermutation... inputs) {
-        LinkedList<InputPermutation> data = new LinkedList<>(List.of(inputs));
-        return new InputCombination(data);
+        return new InputCombination(new LinkedList<>(List.of(inputs)));
     }
 }
