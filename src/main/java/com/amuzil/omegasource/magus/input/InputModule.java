@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class InputModule {
-    protected final Map<Condition, Form> _formInputs = new HashMap<>();
-    protected final List<ModifierListener> _modifierListeners = new ArrayList<>();
+    protected final Map<Condition, Form> formInputs = new HashMap<>();
+    protected final List<ModifierListener> modifierListeners = new ArrayList<>();
     protected final Map<String, ModifierData> modifierQueue = new HashMap<>();
     protected Form lastActivatedForm = null;
 
@@ -31,7 +31,7 @@ public abstract class InputModule {
             queueModifierData(listener.getModifierData());
         });
 
-        _modifierListeners.add(listener);
+        modifierListeners.add(listener);
     }
 
     public synchronized void queueModifierData(ModifierData data) {
@@ -65,6 +65,6 @@ public abstract class InputModule {
     public abstract void unregisterInputs();
 
     public void unregisterModifiers() {
-        _modifierListeners.forEach(ModifierListener::unregister);
+        modifierListeners.forEach(ModifierListener::unregister);
     }
 }

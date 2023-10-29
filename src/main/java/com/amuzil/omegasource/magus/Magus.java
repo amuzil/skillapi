@@ -71,8 +71,6 @@ public class Magus {
         Registries.init();
         CapabilityHandler.initialiseCaps();
         MagusNetwork.registerMessages();
-        LOGGER.info("HELLO FROM PRE INIT");
-        LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getName());
 
     }
 
@@ -82,18 +80,9 @@ public class Magus {
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
-        // some example code to dispatch IMC to another mod
-        InterModComms.sendTo("magus", "helloworld", () -> {
-            LOGGER.info("Hello world from the MDK");
-            return "Hello world";
-        });
     }
 
     private void processIMC(final InterModProcessEvent event) {
-        // some example code to receive and process InterModComms from other mods
-        LOGGER.info("Got IMC {}",
-                event.getIMCStream().map(message -> message.messageSupplier().get()).collect(Collectors.toList())
-        );
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call

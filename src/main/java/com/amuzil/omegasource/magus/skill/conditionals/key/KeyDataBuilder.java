@@ -2,7 +2,6 @@ package com.amuzil.omegasource.magus.skill.conditionals.key;
 
 import com.mojang.blaze3d.platform.InputConstants;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 

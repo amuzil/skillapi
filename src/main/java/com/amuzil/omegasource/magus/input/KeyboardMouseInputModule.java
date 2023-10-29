@@ -178,7 +178,7 @@ public class KeyboardMouseInputModule extends InputModule {
             //Register listeners for condition created.
             formCondition.register(onSuccess, onFailure);
             //add condition to InputModule registry so that it can be tracked.
-            _formInputs.put(formCondition, formToExecute);
+            formInputs.put(formCondition, formToExecute);
         } else {
             //todo errors/logging
         }
@@ -191,7 +191,7 @@ public class KeyboardMouseInputModule extends InputModule {
         MinecraftForge.EVENT_BUS.unregister(mouseListener);
         MinecraftForge.EVENT_BUS.unregister(mouseScrollListener);
         MinecraftForge.EVENT_BUS.unregister(tickEventConsumer);
-        _formInputs.forEach((condition, form) -> condition.unregister());
+        formInputs.forEach((condition, form) -> condition.unregister());
     }
 
     public boolean keyPressed(int key) {
