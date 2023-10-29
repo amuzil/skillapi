@@ -1,2 +1,2 @@
-# Magus's Skill API
-Temporary code storage for the skill part of Magus.
+# Magus's Skills API
+Temporary code storage for the skills API part of Magus.
