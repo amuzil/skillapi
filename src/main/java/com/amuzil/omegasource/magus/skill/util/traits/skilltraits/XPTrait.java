@@ -37,6 +37,6 @@ public class XPTrait extends SkillTrait {
     @Override
     public void reset() {
         super.reset();
-        setXp(0);
+        setXP(0);
     }
 }

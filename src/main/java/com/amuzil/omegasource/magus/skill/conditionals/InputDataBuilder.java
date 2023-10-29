@@ -11,13 +11,11 @@ import java.util.List;
 public class InputDataBuilder {
 
     public static LinkedList<InputData> toInputs(InputData... data) {
-        LinkedList<InputData> out = new LinkedList<>();
-        Collections.addAll(out, data);
-        return out;
+        return new LinkedList<>(List.of(data));
     }
 
     public static InputPermutation createPermutation(InputData... inputs) {
-        return new InputPermutation(new LinkedList<>(List.of(inputs)));
+        return new InputPermutation(toInputs(inputs));
     }
 
     //Creates a permutation based off of each individual key input
