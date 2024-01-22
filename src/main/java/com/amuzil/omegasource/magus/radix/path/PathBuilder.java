@@ -38,6 +38,8 @@ public class PathBuilder {
                     : new KeyPressCondition(keyInput.key().getValue(), TIMEOUT_THRESHOLD)
             );
 
+            // TODO: Fix this being combined into a permutation with the key holds and presses.
+            // We do not want that happening.
             if (keyInput.minDelay() > 0) {
                 //TODO: Fix this to account for "action keys".
                 conditions.add(new TickTimedCondition(
@@ -55,7 +57,7 @@ public class PathBuilder {
                 permutation -> {
                     List<Condition> conditions = new LinkedList<>(permutation.keys().stream().map(PathBuilder::buildPathFrom)
                             .collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll));
-                    PermutationCondition cond = new PermutationCondition((conditions));
+                    PermutationCondition cond = new PermutationCondition(conditions);
                     return new LinkedList<>(List.of(cond));
                 }
         );
