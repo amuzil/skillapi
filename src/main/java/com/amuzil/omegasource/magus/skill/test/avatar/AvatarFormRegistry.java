@@ -44,27 +44,27 @@ public class AvatarFormRegistry {
 
         //FormDataRegistry.registerForm(Forms.LOWER);
 
-        LinkedList<InputData> data = InputDataBuilder.toInputs(
-                KeyDataBuilder.createPermutation(left, right));
-
-        FormDataRegistry.registerForm(data, Forms.BURST);
-
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(initialiser), Forms.ARC);
-
-        //TODO: Add mouse wheel input (once the input module supports it). Mouse wheel 1; forwards/away from the player.
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak, forwards), Forms.COMPRESS);
-
-        //TODO: Add mouse wheel input (once the input module supports it). Mouse wheel -1; towards the player/backwards.
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak, back), Forms.EXPAND);
-
-        // TODO: Use mouse motion, but the input module currently does not support that.
-//        FormDataRegistry.registerForm(Forms.ROTATE);
-
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE);
-
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE);
-
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(held), Forms.BREATHE);
+//        LinkedList<InputData> data = InputDataBuilder.toInputs(
+//                KeyDataBuilder.createPermutation(left, right));
+//
+//        FormDataRegistry.registerForm(data, Forms.BURST);
+//
+//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(initialiser), Forms.ARC);
+//
+//        //TODO: Add mouse wheel input (once the input module supports it). Mouse wheel 1; forwards/away from the player.
+//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak, forwards), Forms.COMPRESS);
+//
+//        //TODO: Add mouse wheel input (once the input module supports it). Mouse wheel -1; towards the player/backwards.
+//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak, back), Forms.EXPAND);
+//
+//        // TODO: Use mouse motion, but the input module currently does not support that.
+////        FormDataRegistry.registerForm(Forms.ROTATE);
+//
+//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE);
+//
+//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE);
+//
+//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(held), Forms.BREATHE);
 
 
         //Motion! 7 different movement options.
@@ -75,6 +75,8 @@ public class AvatarFormRegistry {
         for (Map.Entry<String, Integer> key : KeyboardMouseInputModule.getMovementKeys().entrySet()) {
             inputs.clear();
             KeyInput first, second;
+            // Problem: The tick delay is being combined with the key press into a simultaneous condition.
+            // Not good.
             first = KeyDataBuilder.createInput(key.getValue(), 60, 70, 0);
             second = KeyDataBuilder.createInput(key.getValue(), 0, 0, 0);
             inputs.add(KeyDataBuilder.createCombination(first, second));

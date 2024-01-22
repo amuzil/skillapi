@@ -22,6 +22,10 @@ public class PermutationCondition extends Condition {
         this.chainedConditions = chainedConditions;
         this.onPartialSuccess = this::finishCurrentCondition;
         this.onPartialFailure = this::reset;
+
+        for (Condition cond : chainedConditions) {
+            System.out.println("Permutation " + this + "Condition: " + cond);
+        }
     }
 
     private void finishCurrentCondition() {

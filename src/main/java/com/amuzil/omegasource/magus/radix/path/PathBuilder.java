@@ -2,6 +2,7 @@ package com.amuzil.omegasource.magus.radix.path;
 
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.Condition.Result;
+import com.amuzil.omegasource.magus.radix.condition.PermutationCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.TickTimedCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressCondition;
@@ -12,9 +13,7 @@ import com.amuzil.omegasource.magus.skill.conditionals.key.KeyPermutation;
 import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseWheelInput;
 import net.minecraftforge.event.TickEvent;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 public class PathBuilder {
@@ -53,8 +52,12 @@ public class PathBuilder {
         // TODO: Need to print these out and test how they work,
         // TODO: in order to finalise ConditionBuilder.java.
         registerBuilder(KeyPermutation.class,
-                permutation -> permutation.keys().stream().map(PathBuilder::buildPathFrom)
-                        .collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll)
+                permutation -> {
+                    List<Condition> conditions = new LinkedList<>(permutation.keys().stream().map(PathBuilder::buildPathFrom)
+                            .collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll));
+                    PermutationCondition cond = new PermutationCondition((conditions));
+                    return new LinkedList<>(List.of(cond));
+                }
         );
         registerBuilder(KeyCombination.class,
                 combination -> combination.keys().stream().map(PathBuilder::buildPathFrom)
