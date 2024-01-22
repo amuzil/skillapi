@@ -5,9 +5,10 @@ import org.apache.logging.log4j.LogManager;
 
 import java.util.List;
 
-public class ChainedCondition extends Condition {
+// TODO: Fix this so it properly accounts for simultaneous conditions
+public class CombinationCondition extends Condition {
 
-    private final List<Condition> chainedConditions;
+    private final List<PermutationCondition> chainedConditions;
     private Runnable onCompleteSuccess;
     private Runnable onCompleteFailure;
     private int currentConditionIndex = 0;
@@ -16,7 +17,7 @@ public class ChainedCondition extends Condition {
     private final Runnable onPartialSuccess;
     private final Runnable onPartialFailure;
 
-    public ChainedCondition(List<Condition> chainedConditions) {
+    public CombinationCondition(List<PermutationCondition> chainedConditions) {
         this.chainedConditions = chainedConditions;
         this.onPartialSuccess = this::finishCurrentCondition;
         this.onPartialFailure = this::reset;

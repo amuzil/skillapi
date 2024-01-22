@@ -1,7 +1,7 @@
 package com.amuzil.omegasource.magus.skill.conditionals;
 
 import com.amuzil.omegasource.magus.radix.Condition;
-import com.amuzil.omegasource.magus.radix.condition.ChainedCondition;
+import com.amuzil.omegasource.magus.radix.condition.CombinationCondition;
 import com.amuzil.omegasource.magus.radix.path.PathBuilder;
 
 import java.util.LinkedList;
@@ -35,6 +35,11 @@ public class ConditionBuilder {
         return this;
     }
 
+    /**
+     *
+     * @return A CombinationCondition combining all of the prequisite InputData
+     * for an input group.
+     */
     public Condition build() {
         //Creates a copy of the list
 
@@ -48,7 +53,7 @@ public class ConditionBuilder {
         if(conditions.size() == 1)
             return conditions.get(0);
 
-        return new ChainedCondition(conditions);
+        return new CombinationCondition(conditions);
     }
 
     public void reset() {

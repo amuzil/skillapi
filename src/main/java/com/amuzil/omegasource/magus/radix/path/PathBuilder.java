@@ -50,6 +50,8 @@ public class PathBuilder {
 
             return conditions;
         });
+        // TODO: Need to print these out and test how they work,
+        // TODO: in order to finalise ConditionBuilder.java.
         registerBuilder(KeyPermutation.class,
                 permutation -> permutation.keys().stream().map(PathBuilder::buildPathFrom)
                         .collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll)
