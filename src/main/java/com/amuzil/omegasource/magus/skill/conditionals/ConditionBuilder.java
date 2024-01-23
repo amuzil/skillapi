@@ -1,9 +1,8 @@
 package com.amuzil.omegasource.magus.skill.conditionals;
 
 import com.amuzil.omegasource.magus.radix.Condition;
+import com.amuzil.omegasource.magus.radix.condition.ChainedCondition;
 import com.amuzil.omegasource.magus.radix.condition.MultiCondition;
-import com.amuzil.omegasource.magus.radix.condition.SequenceCondition;
-import com.amuzil.omegasource.magus.radix.condition.SimpleCondition;
 import com.amuzil.omegasource.magus.radix.path.PathBuilder;
 
 import java.util.LinkedList;
@@ -38,12 +37,12 @@ public class ConditionBuilder {
     }
 
     // This is designed for simple conditions/singular.
-    public static SequenceCondition createSequentialCondition(Condition condition) {
-        return new SequenceCondition(createMultiCondition(condition));
+    public static ChainedCondition createSequentialCondition(Condition condition) {
+        return new ChainedCondition(createMultiCondition(condition));
     }
 
-    public static SequenceCondition createSequentialCondition(MultiCondition condition) {
-        return new SequenceCondition(condition);
+    public static ChainedCondition createSequentialCondition(MultiCondition condition) {
+        return new ChainedCondition(condition);
     }
 
     public ConditionBuilder fromInputData(List<InputData> formExecutionInputs) {
@@ -73,7 +72,7 @@ public class ConditionBuilder {
         if (conditions.size() == 1)
             return conditions.get(0);
 
-        return new SequenceCondition(conditions);
+        return new ChainedCondition(conditions);
     }
 
     public void reset() {
