@@ -69,13 +69,7 @@ public class ConditionBuilder {
         if (conditions.size() == 1)
             return conditions.get(0);
 
-        // Debugging
-        for (Condition condition : conditions) {
-            System.out.println(condition.getClass());
-        }
-        // return new CombinationCondition();
-
-        return conditions.get(0);
+        return new SequenceCondition(conditions);
     }
 
     public void reset() {

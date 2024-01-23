@@ -15,10 +15,6 @@ public class MultiCondition extends Condition {
     public MultiCondition(List<Condition> concurrentConditions) {
         this.concurrentConditions = concurrentConditions;
         this.onPartialSuccess = this::conditionMet;
-
-        for (Condition cond : concurrentConditions) {
-            System.out.println("Multi " + this + "Condition: " + cond);
-        }
     }
 
     public MultiCondition(Condition condition) {
