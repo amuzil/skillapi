@@ -1,6 +1,9 @@
 package com.amuzil.omegasource.magus.skill.conditionals;
 
 import com.amuzil.omegasource.magus.radix.Condition;
+import com.amuzil.omegasource.magus.radix.condition.MultiCondition;
+import com.amuzil.omegasource.magus.radix.condition.SequenceCondition;
+import com.amuzil.omegasource.magus.radix.condition.SimpleCondition;
 import com.amuzil.omegasource.magus.radix.path.PathBuilder;
 
 import java.util.LinkedList;
@@ -12,8 +15,11 @@ import java.util.List;
  */
 public class ConditionBuilder {
 
-    private List<Condition> conditionList = new LinkedList<>();
     private static ConditionBuilder builder;
+    private List<Condition> conditionList = new LinkedList<>();
+
+    public ConditionBuilder() {
+    }
 
     public static ConditionBuilder instance() {
         if (builder == null)
@@ -21,7 +27,23 @@ public class ConditionBuilder {
         return builder;
     }
 
-    public ConditionBuilder() {
+    // These methods are static because they are not building a Condition from data, they simply transform one type
+    // of condition into another.
+    public static MultiCondition createMultiCondition(Condition condition) {
+        return new MultiCondition(condition);
+    }
+
+    public static MultiCondition createMultiCondition(List<Condition> condition) {
+        return new MultiCondition(condition);
+    }
+
+    // This is designed for simple conditions/singular.
+    public static SequenceCondition createSequentialCondition(Condition condition) {
+        return new SequenceCondition(createMultiCondition(condition));
+    }
+
+    public static SequenceCondition createSequentialCondition(MultiCondition condition) {
+        return new SequenceCondition(condition);
     }
 
     public ConditionBuilder fromInputData(List<InputData> formExecutionInputs) {
@@ -35,7 +57,6 @@ public class ConditionBuilder {
     }
 
     /**
-     *
      * @return A CombinationCondition combining all of the prequisite InputData
      * for an input group.
      */
@@ -47,18 +68,12 @@ public class ConditionBuilder {
         //Resets the builder
         reset();
 
-        if(conditions.size() == 0)
+        if (conditions.size() == 0)
             return null;
-        if(conditions.size() == 1)
+        if (conditions.size() == 1)
             return conditions.get(0);
 
-        // Debugging
-        for (Condition condition : conditions) {
-            System.out.println(condition.getClass());
-        }
-        // return new CombinationCondition();
-
-        return conditions.get(0);
+        return new SequenceCondition(conditions);
     }
 
     public void reset() {

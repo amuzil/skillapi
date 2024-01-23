@@ -44,8 +44,8 @@ public class AvatarFormRegistry {
 
         //FormDataRegistry.registerForm(Forms.LOWER);
 
-//        LinkedList<InputData> data = InputDataBuilder.toInputs(
-//                KeyDataBuilder.createPermutation(left, right));
+        LinkedList<InputData> data = InputDataBuilder.toInputs(
+                KeyDataBuilder.createPermutation(left, right));
 //
 //        FormDataRegistry.registerForm(data, Forms.BURST);
 //
