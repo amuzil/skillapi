@@ -74,7 +74,9 @@ public class AvatarFormRegistry {
         // Also account for the direction modifier.
         for (Map.Entry<String, Integer> key : KeyboardMouseInputModule.getMovementKeys().entrySet()) {
             inputs.clear();
-            KeyInput first, second;
+            //TODO: Find a way to specify releasing a key is required.
+
+            KeyInput first, release, second;
             // Problem: The tick delay is being combined with the key press into a simultaneous condition.
             // Not good.
             first = KeyDataBuilder.createInput(key.getValue(), 60, 70, 0);
