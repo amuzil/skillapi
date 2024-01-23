@@ -24,14 +24,16 @@ public class SequenceCondition extends Condition {
 
     private void finishCurrentCondition() {
         if(currentCondition == null) return;
-        LogManager.getLogger().info("UNREGISTERING CURRENT CONDITION");
-        currentCondition.unregister();
         if (currentConditionIndex == (conditionSequence.size() - 1)) {
             onCompleteSuccess.run();
-            currentConditionIndex = 0;
+            reset();
+            return;
         } else {
             currentConditionIndex++;
         }
+        LogManager.getLogger().info("UNREGISTERING CURRENT CONDITION");
+        currentCondition.unregister();
+
         currentCondition = conditionSequence.get(currentConditionIndex);
         if(currentConditionIndex == conditionSequence.size() - 1) {
             currentCondition.register(onCompleteSuccess, () -> {

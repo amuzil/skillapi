@@ -13,7 +13,7 @@ public abstract class Condition {
 	protected Runnable onFailure;
 
 	public void register(Runnable onSuccess, Runnable onFailure) {
-		RadixUtil.getLogger().debug("Registering results");
+		//RadixUtil.getLogger().debug("Registering results");
 //		if (this instanceof KeyPressCondition && ((KeyPressCondition) this).getKey() == 0)
 //			Thread.dumpStack();
 		this.onSuccess = () -> {
@@ -28,7 +28,7 @@ public abstract class Condition {
 
 	public void unregister() {
 //		Thread.dumpStack();
-		RadixUtil.getLogger().debug("Unregistering results");
+		//RadixUtil.getLogger().debug("Unregistering results");
 		// This should not cause any errors when called if the condition is
 		// already unregistered or was never registered in the first place
 	}
