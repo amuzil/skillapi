@@ -29,21 +29,21 @@ public class KeyDataBuilder {
 
     //TODO: Remove these methods due to InputDataBuilder?
 
-    public static KeyPermutation createPermutation(KeyInput... inputs) {
+    public static MultiKeyInput createPermutation(KeyInput... inputs) {
         LinkedList<KeyInput> data = new LinkedList<>(List.of(inputs));
-        return new KeyPermutation(data);
+        return new MultiKeyInput(data);
     }
 
     //Creates a permutation based off of each individual key input
-    public static KeyCombination createCombination(KeyInput... inputs) {
-        LinkedList<KeyPermutation> data = new LinkedList<>();
+    public static ChainedKeyInput createCombination(KeyInput... inputs) {
+        LinkedList<MultiKeyInput> data = new LinkedList<>();
         for (KeyInput input : inputs)
             data.add(createPermutation(input));
-        return new KeyCombination(data);
+        return new ChainedKeyInput(data);
     }
 
-    public static KeyCombination createCombination(KeyPermutation... inputs) {
-        LinkedList<KeyPermutation> data = new LinkedList<>(List.of(inputs));
-        return new KeyCombination(data);
+    public static ChainedKeyInput createCombination(MultiKeyInput... inputs) {
+        LinkedList<MultiKeyInput> data = new LinkedList<>(List.of(inputs));
+        return new ChainedKeyInput(data);
     }
 }

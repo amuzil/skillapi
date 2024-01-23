@@ -11,4 +11,4 @@ import java.util.LinkedList;
  * ONLY SUPPORTS MULTIPLE KEYS AT ONCE. DELAY IS USELESS HERE. If multiple keys are passed with *different* delay,
  * the key with the most delay will be read.
  */
-public record KeyPermutation(LinkedList<KeyInput> keys) implements InputData {}
+public record MultiKeyInput(LinkedList<KeyInput> keys) implements InputData {}

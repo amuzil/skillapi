@@ -5,7 +5,7 @@ import org.apache.logging.log4j.LogManager;
 
 import java.util.List;
 
-public class SequenceCondition extends Condition {
+public class ChainedCondition extends Condition {
 
     private final List<Condition> conditionSequence;
     private Runnable onCompleteSuccess;
@@ -16,13 +16,13 @@ public class SequenceCondition extends Condition {
     private final Runnable onPartialSuccess;
     private final Runnable onPartialFailure;
 
-    public SequenceCondition(List<Condition> conditionSequence) {
+    public ChainedCondition(List<Condition> conditionSequence) {
         this.conditionSequence = conditionSequence;
         this.onPartialSuccess = this::finishCurrentCondition;
         this.onPartialFailure = this::reset;
     }
 
-    public SequenceCondition(Condition condition) {
+    public ChainedCondition(Condition condition) {
         this.conditionSequence = List.of(condition);
         this.onPartialSuccess = this::finishCurrentCondition;
         this.onPartialFailure = this::reset;

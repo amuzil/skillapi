@@ -7,5 +7,5 @@ import java.util.LinkedList;
 /**
  * Stores all possible permutations.
  */
-public record KeyCombination(LinkedList<KeyPermutation> keys) implements InputData {
+public record ChainedKeyInput(LinkedList<MultiKeyInput> keys) implements InputData {
 }

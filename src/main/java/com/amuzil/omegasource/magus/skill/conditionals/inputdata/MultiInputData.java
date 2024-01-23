@@ -1,4 +1,6 @@
-package com.amuzil.omegasource.magus.skill.conditionals;
+package com.amuzil.omegasource.magus.skill.conditionals.inputdata;
+
+import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 
 import java.util.List;
 

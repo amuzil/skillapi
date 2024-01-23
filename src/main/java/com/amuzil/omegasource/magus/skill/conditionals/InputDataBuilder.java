@@ -1,5 +1,8 @@
 package com.amuzil.omegasource.magus.skill.conditionals;
 
+import com.amuzil.omegasource.magus.skill.conditionals.inputdata.ChainedInputData;
+import com.amuzil.omegasource.magus.skill.conditionals.inputdata.MultiInputData;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,14 +21,14 @@ public class InputDataBuilder {
     }
 
     //Creates a permutation based off of each individual key input
-    public static SequenceInputData createCombination(InputData... inputs) {
+    public static ChainedInputData createCombination(InputData... inputs) {
         LinkedList<MultiInputData> data = new LinkedList<>();
         for (InputData input : inputs)
             data.add(createPermutation(input));
-        return new SequenceInputData(data);
+        return new ChainedInputData(data);
     }
 
     public static InputData createCombination(MultiInputData... inputs) {
-        return new SequenceInputData(new LinkedList<>(List.of(inputs)));
+        return new ChainedInputData(new LinkedList<>(List.of(inputs)));
     }
 }
