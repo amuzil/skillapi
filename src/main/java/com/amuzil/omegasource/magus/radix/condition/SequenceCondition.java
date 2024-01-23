@@ -22,6 +22,12 @@ public class SequenceCondition extends Condition {
         this.onPartialFailure = this::reset;
     }
 
+    public SequenceCondition(Condition condition) {
+        this.conditionSequence = List.of(condition);
+        this.onPartialSuccess = this::finishCurrentCondition;
+        this.onPartialFailure = this::reset;
+    }
+
     private void finishCurrentCondition() {
         if(currentCondition == null) return;
         LogManager.getLogger().info("UNREGISTERING CURRENT CONDITION");

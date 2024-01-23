@@ -1,6 +1,8 @@
 package com.amuzil.omegasource.magus.skill.conditionals;
 
 import com.amuzil.omegasource.magus.radix.Condition;
+import com.amuzil.omegasource.magus.radix.condition.MultiCondition;
+import com.amuzil.omegasource.magus.radix.condition.SequenceCondition;
 import com.amuzil.omegasource.magus.radix.path.PathBuilder;
 
 import java.util.LinkedList;
@@ -22,6 +24,14 @@ public class ConditionBuilder {
     }
 
     public ConditionBuilder() {
+    }
+
+    public static MultiCondition createMultiCondition(Condition condition) {
+        return new MultiCondition(condition);
+    }
+
+    public static SequenceCondition createSequentialCondition(Condition condition) {
+        return new SequenceCondition(createMultiCondition(condition));
     }
 
     public ConditionBuilder fromInputData(List<InputData> formExecutionInputs) {

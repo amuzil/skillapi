@@ -7,27 +7,32 @@ import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.TickTimedCon
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressedCondition;
+import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyCombination;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyPermutation;
 import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseWheelInput;
 import net.minecraftforge.event.TickEvent;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 public class PathBuilder {
     private static final Map<Class<?>, Function<Object, LinkedList<Condition>>> CONDITION_BUILDERS = new HashMap<>();
 
     static {
+        // Minimum amount of ticks a key must be pressed for it to be considered a held condition.
+        //TODO: Adjust these
+        final int HELD_THRESHOLD = 3;
+        // 50 by default
+        final int TIMEOUT_THRESHOLD = 6000;
+
         /* Keys. */
         //TODO: Account for max delay
         registerBuilder(KeyInput.class, keyInput -> {
-            // Minimum amount of ticks a key must be pressed for it to be considered a held condition.
-            //TODO: Adjust these
-            final int HELD_THRESHOLD = 3;
-            // 50 by default
-            final int TIMEOUT_THRESHOLD = 6000;
 
             LinkedList<Condition> conditions = new LinkedList<>();
 
@@ -38,17 +43,6 @@ public class PathBuilder {
                     : new KeyPressCondition(keyInput.key().getValue(), TIMEOUT_THRESHOLD)
             );
 
-            // TODO: Fix this being combined into a permutation with the key holds and presses.
-            // We do not want that happening.
-            if (keyInput.minDelay() > 0) {
-                //TODO: Fix this to account for "action keys".
-                conditions.add(new TickTimedCondition(
-                        TickEvent.Type.CLIENT, TickEvent.Phase.START,
-                        keyInput.maxDelay(), Result.SUCCESS,
-                        new KeyPressedCondition(TIMEOUT_THRESHOLD), Result.FAILURE, Result.SUCCESS
-                ));
-            }
-
             return conditions;
         });
         // TODO: Need to print these out and test how they work,
@@ -57,8 +51,35 @@ public class PathBuilder {
                 permutation -> {
                     List<Condition> conditions = new LinkedList<>(permutation.keys().stream().map(PathBuilder::buildPathFrom)
                             .collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll));
-                    MultiCondition cond = new MultiCondition(conditions);
-                    return new LinkedList<>(List.of(cond));
+
+
+                    // List of multiconditions
+                    List<MultiCondition> allConditions = new LinkedList<>();
+
+
+                    MultiCondition timedCondition;
+                    Condition timed;
+
+                    // Moved the time delay code from the input path to here so it is not combined.
+                    for (int i = 0; i < conditions.size(); i++) {
+                        KeyInput input = permutation.keys().get(i);
+                        Condition cond = conditions.get(i);
+
+                        // Ensures the timed conditiosn are added in the right sequential order
+                        allConditions.add(ConditionBuilder.createMultiCondition(cond));
+                        if (input.minDelay() > 0) {
+                            //TODO: Fix this to account for "action keys".
+                            timed = new TickTimedCondition(
+                                    TickEvent.Type.CLIENT, TickEvent.Phase.START,
+                                    input.maxDelay(), Result.SUCCESS,
+                                    new KeyPressedCondition(TIMEOUT_THRESHOLD), Result.FAILURE, Result.SUCCESS
+                            );
+                            timedCondition = ConditionBuilder.createMultiCondition(timed);
+                            allConditions.add(timedCondition);
+
+                        }
+                    }
+                    return new LinkedList<>(allConditions);
                 }
         );
         registerBuilder(KeyCombination.class,
@@ -71,12 +92,12 @@ public class PathBuilder {
 //				mouseInput -> );
         registerBuilder(MouseWheelInput.class,
                 mouseWheelInput -> {
-					final int TIMEOUT_THRESHOLD = 6000;
+
                     LinkedList<Condition> conditions = new LinkedList<>();
                     // Placeholder for now
-					conditions.add(new KeyPressCondition(0, TIMEOUT_THRESHOLD));
+                    conditions.add(new KeyPressCondition(0, TIMEOUT_THRESHOLD));
 
-					return conditions;
+                    return conditions;
 
                 }
         );

@@ -21,6 +21,11 @@ public class MultiCondition extends Condition {
         }
     }
 
+    public MultiCondition(Condition condition) {
+        this.concurrentConditions = List.of(condition);
+        this.onPartialSuccess = this::conditionMet;
+    }
+
     private void conditionMet() {
         this.conditionsMet++;
 
