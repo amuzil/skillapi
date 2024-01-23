@@ -33,6 +33,10 @@ public class ConditionBuilder {
         return new MultiCondition(condition);
     }
 
+    public static MultiCondition createMultiCondition(List<Condition> condition) {
+        return new MultiCondition(condition);
+    }
+
     // This is designed for simple conditions/singular.
     public static SequenceCondition createSequentialCondition(Condition condition) {
         return new SequenceCondition(createMultiCondition(condition));

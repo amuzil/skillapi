@@ -55,7 +55,7 @@ public class PathBuilder {
 
                     // List of multiconditions
                     List<MultiCondition> allConditions = new LinkedList<>();
-
+                    allConditions.add(ConditionBuilder.createMultiCondition(conditions));
 
                     MultiCondition timedCondition;
                     Condition timed;
@@ -63,10 +63,7 @@ public class PathBuilder {
                     // Moved the time delay code from the input path to here so it is not combined.
                     for (int i = 0; i < conditions.size(); i++) {
                         KeyInput input = permutation.keys().get(i);
-                        Condition cond = conditions.get(i);
 
-                        // Ensures the timed conditiosn are added in the right sequential order
-                        allConditions.add(ConditionBuilder.createMultiCondition(cond));
                         if (input.minDelay() > 0) {
                             //TODO: Fix this to account for "action keys".
                             timed = new TickTimedCondition(

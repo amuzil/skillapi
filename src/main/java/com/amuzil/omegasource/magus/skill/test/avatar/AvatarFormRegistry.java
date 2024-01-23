@@ -46,25 +46,25 @@ public class AvatarFormRegistry {
 
         LinkedList<InputData> data = InputDataBuilder.toInputs(
                 KeyDataBuilder.createPermutation(left, right));
-
-        FormDataRegistry.registerForm(data, Forms.BURST);
-
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(initialiser), Forms.ARC);
-
-        //TODO: Add mouse wheel input (once the input module supports it). Mouse wheel 1; forwards/away from the player.
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak, forwards), Forms.COMPRESS);
-
-        //TODO: Add mouse wheel input (once the input module supports it). Mouse wheel -1; towards the player/backwards.
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak, back), Forms.EXPAND);
-
-        // TODO: Use mouse motion, but the input module currently does not support that.
-//        FormDataRegistry.registerForm(Forms.ROTATE);
-
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE);
-
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE);
-
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(held), Forms.BREATHE);
+//
+//        FormDataRegistry.registerForm(data, Forms.BURST);
+//
+//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(initialiser), Forms.ARC);
+//
+//        //TODO: Add mouse wheel input (once the input module supports it). Mouse wheel 1; forwards/away from the player.
+//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak, forwards), Forms.COMPRESS);
+//
+//        //TODO: Add mouse wheel input (once the input module supports it). Mouse wheel -1; towards the player/backwards.
+//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak, back), Forms.EXPAND);
+//
+//        // TODO: Use mouse motion, but the input module currently does not support that.
+////        FormDataRegistry.registerForm(Forms.ROTATE);
+//
+//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE);
+//
+//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE);
+//
+//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(held), Forms.BREATHE);
 
 
         //Motion! 7 different movement options.
