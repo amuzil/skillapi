@@ -2,7 +2,7 @@ package com.amuzil.omegasource.magus.radix.path;
 
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.Condition.Result;
-import com.amuzil.omegasource.magus.radix.condition.PermutationCondition;
+import com.amuzil.omegasource.magus.radix.condition.MultiCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.TickTimedCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressCondition;
@@ -57,7 +57,7 @@ public class PathBuilder {
                 permutation -> {
                     List<Condition> conditions = new LinkedList<>(permutation.keys().stream().map(PathBuilder::buildPathFrom)
                             .collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll));
-                    PermutationCondition cond = new PermutationCondition(conditions);
+                    MultiCondition cond = new MultiCondition(conditions);
                     return new LinkedList<>(List.of(cond));
                 }
         );

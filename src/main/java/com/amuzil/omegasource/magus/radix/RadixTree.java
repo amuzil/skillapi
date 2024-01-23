@@ -1,6 +1,6 @@
 package com.amuzil.omegasource.magus.radix;
 
-import com.amuzil.omegasource.magus.skill.elements.Element;
+import com.amuzil.omegasource.magus.skill.elements.Discipline;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.data.MultiModifierData;
@@ -14,7 +14,7 @@ public class RadixTree {
     private final Node root;
     private Node active;
     private Form lastActivated = null;
-    private Element activeElement = null;
+    private Discipline activeDiscipline = null;
     private RadixPath path;
     private Entity owner;
 
@@ -29,7 +29,7 @@ public class RadixTree {
         }
 
         active = null;
-        activeElement = null;
+        activeDiscipline = null;
     }
 
     public void start() {
@@ -37,15 +37,15 @@ public class RadixTree {
         path = new RadixPath();
     }
 
-    private void setActive(Element element) {
-        this.activeElement = element;
+    private void setActive(Discipline discipline) {
+        this.activeDiscipline = discipline;
     }
 
     private void setActive(Node node) {
         active = node;
 
         if(active.getModifiers().size() > 0 && owner instanceof ServerPlayer player)
-            active.registerModifierListeners(lastActivated, activeElement, player);
+            active.registerModifierListeners(lastActivated, activeDiscipline, player);
 
         if (active.onEnter() != null) {
             active.onEnter().accept(this);
@@ -74,7 +74,7 @@ public class RadixTree {
     }
 
     public void moveDown(Form executedForm) {
-        if(activeElement == null) {
+        if(activeDiscipline == null) {
             LogManager.getLogger().info("NO ELEMENT SELECTED");
             return;
         }

@@ -3,12 +3,12 @@ package com.amuzil.omegasource.magus.skill.elements;
 import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.skill.SkillCategory;
 
-public class Element extends SkillCategory {
+public class Discipline extends SkillCategory {
     private final String name;
 
-    public Element(String name) {
+    public Discipline(String name) {
         this.name = name;
-        Registries.registerElement(this);
+        Registries.registerDiscipline(this);
     }
 
     public String name() {

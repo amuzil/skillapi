@@ -1,7 +1,6 @@
 package com.amuzil.omegasource.magus.skill.conditionals;
 
 import com.amuzil.omegasource.magus.radix.Condition;
-import com.amuzil.omegasource.magus.radix.condition.CombinationCondition;
 import com.amuzil.omegasource.magus.radix.path.PathBuilder;
 
 import java.util.LinkedList;

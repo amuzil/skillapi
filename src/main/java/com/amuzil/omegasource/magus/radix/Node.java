@@ -3,7 +3,7 @@ package com.amuzil.omegasource.magus.radix;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.client_executed.RegisterModifierListenersPacket;
 import com.amuzil.omegasource.magus.network.packets.client_executed.UnregisterModifierListenersPacket;
-import com.amuzil.omegasource.magus.skill.elements.Element;
+import com.amuzil.omegasource.magus.skill.elements.Discipline;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.modifiers.api.Modifier;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
@@ -75,12 +75,12 @@ public class Node {
         return modifiers;
     }
 
-    public void registerModifierListeners(Form lastActivatedForm, Element activeElement, ServerPlayer player) {
+    public void registerModifierListeners(Form lastActivatedForm, Discipline activeDiscipline, ServerPlayer player) {
         CompoundTag listenerInstanceData = new CompoundTag();
 
         //here we can send information to the client to help build the Modifier Listeners appropriately.
         listenerInstanceData.putString("lastFormActivated", lastActivatedForm.name());
-        listenerInstanceData.putString("activeElement", activeElement.name());
+        listenerInstanceData.putString("activeElement", activeDiscipline.name());
 
         List<String> modifierTypes = new ArrayList<>();
         List<ModifierData> modifiers = getModifiers();

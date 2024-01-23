@@ -1,8 +1,8 @@
 package com.amuzil.omegasource.magus.registry;
 
 import com.amuzil.omegasource.magus.Magus;
-import com.amuzil.omegasource.magus.skill.elements.Element;
-import com.amuzil.omegasource.magus.skill.elements.Elements;
+import com.amuzil.omegasource.magus.skill.elements.Discipline;
+import com.amuzil.omegasource.magus.skill.elements.Disciplines;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
 import com.amuzil.omegasource.magus.skill.skill.SkillActive;
@@ -82,9 +82,9 @@ public class Registries {
         forms.add(registryForm);
     }
 
-    public static void registerElement(Element element) {
-        categories.add(element);
-        Elements.ELEMENTS.add(element);
+    public static void registerDiscipline(Discipline discipline) {
+        categories.add(discipline);
+        Disciplines.DISCIPLINES.add(discipline);
     }
 
     //How registering will work:

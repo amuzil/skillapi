@@ -13,19 +13,19 @@ public class InputDataBuilder {
         return new LinkedList<>(List.of(data));
     }
 
-    public static InputPermutation createPermutation(InputData... inputs) {
-        return new InputPermutation(toInputs(inputs));
+    public static MultiInputData createPermutation(InputData... inputs) {
+        return new MultiInputData(toInputs(inputs));
     }
 
     //Creates a permutation based off of each individual key input
-    public static InputCombination createCombination(InputData... inputs) {
-        LinkedList<InputPermutation> data = new LinkedList<>();
+    public static SequenceInputData createCombination(InputData... inputs) {
+        LinkedList<MultiInputData> data = new LinkedList<>();
         for (InputData input : inputs)
             data.add(createPermutation(input));
-        return new InputCombination(data);
+        return new SequenceInputData(data);
     }
 
-    public static InputData createCombination(InputPermutation... inputs) {
-        return new InputCombination(new LinkedList<>(List.of(inputs)));
+    public static InputData createCombination(MultiInputData... inputs) {
+        return new SequenceInputData(new LinkedList<>(List.of(inputs)));
     }
 }

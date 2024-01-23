@@ -3,13 +3,11 @@ package com.amuzil.omegasource.magus.radix.condition;
 import com.amuzil.omegasource.magus.radix.Condition;
 import org.apache.logging.log4j.LogManager;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
-// TODO: Fix this class so that all of its sub-conditions run in parallel.
+public class SequenceCondition extends Condition {
 
-public class PermutationCondition extends Condition {
-    private final List<Condition> chainedConditions;
+    private final List<Condition> conditionSequence;
     private Runnable onCompleteSuccess;
     private Runnable onCompleteFailure;
     private int currentConditionIndex = 0;
@@ -18,28 +16,24 @@ public class PermutationCondition extends Condition {
     private final Runnable onPartialSuccess;
     private final Runnable onPartialFailure;
 
-    public PermutationCondition(List<Condition> chainedConditions) {
-        this.chainedConditions = chainedConditions;
+    public SequenceCondition(List<Condition> conditionSequence) {
+        this.conditionSequence = conditionSequence;
         this.onPartialSuccess = this::finishCurrentCondition;
         this.onPartialFailure = this::reset;
-
-        for (Condition cond : chainedConditions) {
-            System.out.println("Permutation " + this + "Condition: " + cond);
-        }
     }
 
     private void finishCurrentCondition() {
         if(currentCondition == null) return;
         LogManager.getLogger().info("UNREGISTERING CURRENT CONDITION");
         currentCondition.unregister();
-        if (currentConditionIndex == (chainedConditions.size() - 1)) {
+        if (currentConditionIndex == (conditionSequence.size() - 1)) {
             onCompleteSuccess.run();
             currentConditionIndex = 0;
         } else {
             currentConditionIndex++;
         }
-        currentCondition = chainedConditions.get(currentConditionIndex);
-        if(currentConditionIndex == chainedConditions.size() - 1) {
+        currentCondition = conditionSequence.get(currentConditionIndex);
+        if(currentConditionIndex == conditionSequence.size() - 1) {
             currentCondition.register(onCompleteSuccess, () -> {
                 onPartialFailure.run();
                 onCompleteFailure.run();
@@ -53,7 +47,7 @@ public class PermutationCondition extends Condition {
     private void reset() {
         currentConditionIndex = 0;
         currentCondition.unregister();
-        currentCondition = chainedConditions.get(currentConditionIndex);
+        currentCondition = conditionSequence.get(currentConditionIndex);
         currentCondition.register(onPartialSuccess, onPartialFailure);
     }
 
@@ -61,7 +55,7 @@ public class PermutationCondition extends Condition {
     public void register(Runnable onSuccess, Runnable onFailure) {
         this.onCompleteSuccess = onSuccess;
         this.onCompleteFailure = onFailure;
-        currentCondition = chainedConditions.get(currentConditionIndex);
+        currentCondition = conditionSequence.get(currentConditionIndex);
         currentCondition.register(onPartialSuccess, onPartialFailure);
     }
 
@@ -70,6 +64,3 @@ public class PermutationCondition extends Condition {
         currentCondition.unregister();
     }
 }
-
-
-
