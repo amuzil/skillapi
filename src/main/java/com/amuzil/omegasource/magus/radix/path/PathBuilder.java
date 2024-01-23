@@ -3,7 +3,6 @@ package com.amuzil.omegasource.magus.radix.path;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.Condition.Result;
 import com.amuzil.omegasource.magus.radix.condition.MultiCondition;
-import com.amuzil.omegasource.magus.radix.condition.SequenceCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.TickTimedCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressCondition;
