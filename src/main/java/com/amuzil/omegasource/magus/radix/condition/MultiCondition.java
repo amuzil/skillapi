@@ -25,7 +25,10 @@ public class MultiCondition extends Condition {
     private void conditionMet() {
         this.conditionsMet++;
 
-        if(this.conditionsMet == concurrentConditions.size()) this.onCompleteSuccess.run();
+        if(this.conditionsMet == concurrentConditions.size()) {
+            this.onCompleteSuccess.run();
+            this.conditionsMet = 0;
+        }
     }
 
     @Override
