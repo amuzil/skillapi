@@ -7,6 +7,7 @@ import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.TickTimedCon
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressedCondition;
+import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyReleaseCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.key.ChainedKeyInput;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
@@ -57,13 +58,21 @@ public class PathBuilder {
                     List<MultiCondition> allConditions = new LinkedList<>();
                     allConditions.add(ConditionBuilder.createMultiCondition(conditions));
 
-                    MultiCondition timedCondition;
-                    Condition timed;
+                    MultiCondition timedCondition, releaseCondition;
+                    Condition timed, release;
 
                     // Moved the time delay code from the input path to here so it is not combined.
                     for (int i = 0; i < conditions.size(); i++) {
                         KeyInput input = permutation.keys().get(i);
 
+                        //Adding a release condition.
+                        if (input.release()) {
+                            int timeout = 6;
+                            release = new KeyReleaseCondition(input.key(), timeout);
+                            releaseCondition = ConditionBuilder.createMultiCondition(release);
+                            allConditions.add(releaseCondition);
+                        }
+                        
                         if (input.minDelay() > 0) {
                             //TODO: Fix this to account for "action keys".
                             timed = new TickTimedCondition(
@@ -73,7 +82,6 @@ public class PathBuilder {
                             );
                             timedCondition = ConditionBuilder.createMultiCondition(timed);
                             allConditions.add(timedCondition);
-
                         }
                     }
                     return new LinkedList<>(allConditions);

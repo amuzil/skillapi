@@ -45,7 +45,7 @@ public class AvatarFormRegistry {
         //FormDataRegistry.registerForm(Forms.LOWER);
 
         LinkedList<InputData> data = InputDataBuilder.toInputs(
-                KeyDataBuilder.createPermutation(left, right));
+                KeyDataBuilder.createMultiInput(left, right));
 //
         FormDataRegistry.registerForm(data, Forms.BURST);
 //
@@ -79,9 +79,9 @@ public class AvatarFormRegistry {
             KeyInput first, release, second;
             // Problem: The tick delay is being combined with the key press into a simultaneous condition.
             // Not good.
-            first = KeyDataBuilder.createInput(key.getValue(), 60, 70, 0);
+            first = KeyDataBuilder.createInput(key.getValue(), true,60, 70, 0);
             second = KeyDataBuilder.createInput(key.getValue(), 0, 0, 0);
-            inputs.add(KeyDataBuilder.createCombination(first, second));
+            inputs.add(KeyDataBuilder.createChainedInput(first, second));
             FormDataRegistry.registerForm(inputs, Forms.STEP);
         }
     }
