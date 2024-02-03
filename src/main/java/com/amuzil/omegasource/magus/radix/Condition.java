@@ -22,6 +22,7 @@ public abstract class Condition {
 		};
 		this.onFailure = () -> {
 //			RadixUtil.getLogger().debug("Result: failure: " + getClass());
+			Thread.dumpStack();
 			onFailure.run();
 		};
 	}

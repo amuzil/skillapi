@@ -16,7 +16,7 @@ public class RadixTree {
     private Node active;
     private Form lastActivated = null;
     // Fire is a test
-    private Discipline activeDiscipline = Disciplines.FIRE;
+    private Discipline activeDiscipline = null;//Disciplines.FIRE;
     private RadixPath path;
     private Entity owner;
 

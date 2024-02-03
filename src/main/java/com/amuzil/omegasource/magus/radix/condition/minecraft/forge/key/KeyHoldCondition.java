@@ -18,7 +18,7 @@ public class KeyHoldCondition extends Condition {
     private int key;
 
     // False by default.
-    private boolean release = false;
+    private boolean release;
 
     //TODO: Make this configurable
     public static final int KEY_PRESS_TIMEOUT = 3;
@@ -38,7 +38,7 @@ public class KeyHoldCondition extends Condition {
                     this.currentHolding++;
                 } else {
                     if (pressed(this.currentHolding, duration)) {
-                        // If the Condition doesn't require the key being released....
+                        // If the Condition requires the key being released....
                         if (release)
                             this.onSuccess.run();
                     }
