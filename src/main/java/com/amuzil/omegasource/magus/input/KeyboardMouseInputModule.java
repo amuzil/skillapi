@@ -37,7 +37,7 @@ public class KeyboardMouseInputModule extends InputModule {
     private int ticksSinceModifiersSent = 0;
 
     //todo make these thresholds configurable and make them longer. Especially the timeout threshold.
-    private final int tickActivationThreshold = 4;
+    private final int tickActivationThreshold = 15;
     private final int tickTimeoutThreshold = 60;
     private final int modifierTickThreshold = 10;
     Minecraft mc = Minecraft.getInstance();
