@@ -2,7 +2,7 @@ package com.amuzil.omegasource.magus.skill.modifiers.listeners;
 
 import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
-import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressCondition;
+import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.forms.Form;
@@ -44,7 +44,7 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
         Form formToModify = FormDataRegistry.getFormByName(compoundTag.getString("lastFormActivated"));
         List<InputData> formConditions = FormDataRegistry.getInputsForForm(formToModify);
 
-        int keyToHold = ((KeyPressCondition)new ConditionBuilder().fromInputData(formConditions.get(formConditions.size() - 1)).build()).getKey();
+        int keyToHold = ((KeyHoldCondition) new ConditionBuilder().fromInputData(formConditions.get(formConditions.size() - 1)).build()).getKey();
 
         this.clientTickListener = event -> {
             if (event.phase == TickEvent.ClientTickEvent.Phase.START) {

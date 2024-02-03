@@ -15,21 +15,39 @@ public class KeyHoldCondition extends Condition {
     private final Consumer<ClientTickEvent> clientTickListener;
     private int currentTotal;
     private int currentHolding;
+    private int key;
 
-    public KeyHoldCondition(int key, int duration, int timeout) {
+    // False by default.
+    private boolean release = false;
+
+    //TODO: Make this configurable
+    public static final int KEY_PRESS_TIMEOUT = 3;
+
+    public KeyHoldCondition(int key, int duration, int timeout, boolean release) {
         RadixUtil.assertTrue(duration >= 0, "duration must be >= 0");
         RadixUtil.assertTrue(timeout >= 0, "timeout must be >= 0");
 
         this.currentTotal = 0;
         this.currentHolding = 0;
+        this.release = release;
+        this.key = key;
 
         this.clientTickListener = event -> {
             if (event.phase == ClientTickEvent.Phase.START) {
                 if (((KeyboardMouseInputModule) Magus.keyboardInputModule).keyPressed(key)) {
                     this.currentHolding++;
+                } else {
+                    if (pressed(this.currentHolding, duration)) {
+                        // If the Condition doesn't require the key being released....
+                        if (release)
+                            this.onSuccess.run();
+                    }
                 }
-                if (this.currentHolding >= duration) {
-                    this.onSuccess.run();
+                // If the duration is <= 3, then we want the Condition to act as a key press, rather than a hold.
+                if (pressed(this.currentHolding, duration)) {
+                    // If the Condition doesn't require the key being released....
+                    if (!release)
+                        this.onSuccess.run();
                 }
 
                 if (this.currentTotal >= timeout) {
@@ -38,6 +56,14 @@ public class KeyHoldCondition extends Condition {
                 this.currentTotal++;
             }
         };
+    }
+
+    public boolean pressed(int held, int duration) {
+        return held >= duration || held > 0 && duration <= KEY_PRESS_TIMEOUT;
+    }
+
+    public int getKey() {
+        return this.key;
     }
 
     @Override

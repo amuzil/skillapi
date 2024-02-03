@@ -6,6 +6,9 @@ import com.amuzil.omegasource.magus.skill.util.data.KeyboardData;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.TickEvent;
 
+/**
+ * Used to determine whether any key was pressed during a time period. 
+ */
 public class KeyPressedCondition extends TickTimedCondition {
     //Upon *any* key (not including modifiers or wasd) being pressed, return true
     public KeyPressedCondition(int timeout) {

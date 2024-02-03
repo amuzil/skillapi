@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.radix;
 
 import com.amuzil.omegasource.magus.skill.elements.Discipline;
+import com.amuzil.omegasource.magus.skill.elements.Disciplines;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.data.MultiModifierData;
@@ -14,7 +15,8 @@ public class RadixTree {
     private final Node root;
     private Node active;
     private Form lastActivated = null;
-    private Discipline activeDiscipline = null;
+    // Fire is a test
+    private Discipline activeDiscipline = Disciplines.FIRE;
     private RadixPath path;
     private Entity owner;
 

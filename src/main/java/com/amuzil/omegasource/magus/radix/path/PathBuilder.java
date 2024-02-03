@@ -5,9 +5,7 @@ import com.amuzil.omegasource.magus.radix.Condition.Result;
 import com.amuzil.omegasource.magus.radix.condition.MultiCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.TickTimedCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
-import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressedCondition;
-import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyReleaseCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.key.ChainedKeyInput;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
@@ -39,10 +37,8 @@ public class PathBuilder {
 
             // Any time less than this is just a key press.
             // TODO: Adjust timeout to be per node.
-            conditions.add(keyInput.held() > HELD_THRESHOLD
-                    ? new KeyHoldCondition(keyInput.key().getValue(), keyInput.held(), TIMEOUT_THRESHOLD)
-                    : new KeyPressCondition(keyInput.key().getValue(), TIMEOUT_THRESHOLD)
-            );
+            conditions.add(new KeyHoldCondition(keyInput.key().getValue(),
+                    keyInput.held(), TIMEOUT_THRESHOLD, keyInput.release()));
 
             return conditions;
         });
@@ -64,14 +60,6 @@ public class PathBuilder {
                     // Moved the time delay code from the input path to here so it is not combined.
                     for (int i = 0; i < conditions.size(); i++) {
                         KeyInput input = permutation.keys().get(i);
-
-                        //Adding a release condition.
-                        if (input.release()) {
-                            int timeout = 6;
-                            release = new KeyReleaseCondition(input.key(), timeout);
-                            releaseCondition = ConditionBuilder.createMultiCondition(release);
-                            allConditions.add(releaseCondition);
-                        }
                         
                         if (input.minDelay() > 0) {
                             //TODO: Fix this to account for "action keys".
@@ -100,7 +88,7 @@ public class PathBuilder {
 
                     LinkedList<Condition> conditions = new LinkedList<>();
                     // Placeholder for now
-                    conditions.add(new KeyPressCondition(0, TIMEOUT_THRESHOLD));
+                    //conditions.add(new KeyPressCondition(0, TIMEOUT_THRESHOLD));
 
                     return conditions;
 
