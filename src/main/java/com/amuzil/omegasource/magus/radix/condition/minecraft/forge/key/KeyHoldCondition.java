@@ -8,6 +8,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.function.Consumer;
 
@@ -24,7 +25,7 @@ public class KeyHoldCondition extends Condition {
     public static final int KEY_PRESS_TIMEOUT = 3;
 
     public KeyHoldCondition(int key, int duration, int timeout, boolean release) {
-        RadixUtil.assertTrue(duration >= 0, "duration must be >= 0");
+        RadixUtil.assertTrue(duration > 0, "duration must be >= 0");
         RadixUtil.assertTrue(timeout >= 0, "timeout must be >= 0");
 
         this.currentTotal = 0;
@@ -35,19 +36,24 @@ public class KeyHoldCondition extends Condition {
         this.clientTickListener = event -> {
             if (event.phase == ClientTickEvent.Phase.START) {
                 if (((KeyboardMouseInputModule) Magus.keyboardInputModule).keyPressed(key)) {
+                    LogManager.getLogger().info("KEY PRESSED: " + key);
                     this.currentHolding++;
                 } else {
                     if (pressed(this.currentHolding, duration)) {
                         // If the Condition requires the key being released....
-                        if (release)
+                        if (release) {
+                            LogManager.getLogger().info("ONSUCCESS RUNNING 1");
                             this.onSuccess.run();
+                        }
                     }
                 }
                 // If the duration is <= 3, then we want the Condition to act as a key press, rather than a hold.
                 if (pressed(this.currentHolding, duration)) {
                     // If the Condition doesn't require the key being released....
-                    if (!release)
+                    if (!release) {
+                        LogManager.getLogger().info("ONSUCCESS RUNNING 2");
                         this.onSuccess.run();
+                    }
                 }
 
                 if (this.currentTotal >= timeout) {
@@ -59,6 +65,7 @@ public class KeyHoldCondition extends Condition {
     }
 
     public boolean pressed(int held, int duration) {
+        LogManager.getLogger().info("Checking pressed. held:" + held + ", duration: " + duration);
         return held >= duration || held > 0 && duration <= KEY_PRESS_TIMEOUT;
     }
 

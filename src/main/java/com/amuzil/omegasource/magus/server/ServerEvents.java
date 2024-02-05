@@ -1,6 +1,6 @@
 package com.amuzil.omegasource.magus.server;
 
-import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
+import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.radix.Node;
 import com.amuzil.omegasource.magus.radix.NodeBuilder;
 import com.amuzil.omegasource.magus.radix.RadixTree;
@@ -9,9 +9,9 @@ import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import com.amuzil.omegasource.magus.skill.util.capability.entity.Data;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -54,8 +54,18 @@ public class ServerEvents {
         }
         else {
             if(event.getEntity() instanceof Player) {
+                Magus.keyboardInputModule.registerListeners();
                 AvatarFormRegistry.registerForms();
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void OnPlayerLeaveWorld(EntityLeaveLevelEvent event)
+    {
+        if(event.getLevel().isClientSide())
+        {
+            Magus.keyboardInputModule.unregisterInputs();
         }
     }
 }
