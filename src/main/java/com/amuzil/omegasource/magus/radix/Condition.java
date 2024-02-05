@@ -22,14 +22,14 @@ public abstract class Condition {
 		};
 		this.onFailure = () -> {
 //			RadixUtil.getLogger().debug("Result: failure: " + getClass());
-			Thread.dumpStack();
+//			Thread.dumpStack();
 			onFailure.run();
 		};
 	}
 
 	public void unregister() {
 //		Thread.dumpStack();
-		//RadixUtil.getLogger().debug("Unregistering results");
+		RadixUtil.getLogger().debug("Unregistering condition:" + getClass());
 		// This should not cause any errors when called if the condition is
 		// already unregistered or was never registered in the first place
 	}

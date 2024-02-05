@@ -62,6 +62,8 @@ public abstract class InputModule {
         this.lastActivatedForm = null;
     }
 
+    public abstract void registerListeners();
+
     public abstract void unregisterInputs();
 
     public void unregisterModifiers() {
