@@ -24,8 +24,8 @@ public class KeyHoldCondition extends Condition {
     public static final int KEY_PRESS_TIMEOUT = 3;
 
     public KeyHoldCondition(int key, int duration, int timeout, boolean release) {
-        RadixUtil.assertTrue(duration >= 0, "duration must be >= 0");
-        RadixUtil.assertTrue(timeout >= 0, "timeout must be >= 0");
+        RadixUtil.assertTrue(duration >= 1, "duration must be >= 0");
+        RadixUtil.assertTrue(timeout >= 1, "timeout must be >= 0");
 
         this.currentTotal = 0;
         this.currentHolding = 0;

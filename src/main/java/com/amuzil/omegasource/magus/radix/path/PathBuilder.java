@@ -27,7 +27,7 @@ public class PathBuilder {
         //TODO: Adjust these
         final int HELD_THRESHOLD = 3;
         // 50 by default
-        final int TIMEOUT_THRESHOLD = 6000;
+        final int TIMEOUT_THRESHOLD = 60000000;
 
         /* Keys. */
         //TODO: Account for max delay
@@ -38,7 +38,7 @@ public class PathBuilder {
             // Any time less than this is just a key press.
             // TODO: Adjust timeout to be per node.
             conditions.add(new KeyHoldCondition(keyInput.key().getValue(),
-                    keyInput.held(), TIMEOUT_THRESHOLD, keyInput.release()));
+                    keyInput.held() + KeyHoldCondition.KEY_PRESS_TIMEOUT, TIMEOUT_THRESHOLD, keyInput.release()));
 
             return conditions;
         });
