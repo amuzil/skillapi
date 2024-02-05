@@ -3,7 +3,10 @@ package com.amuzil.omegasource.magus.radix.condition;
 import com.amuzil.omegasource.magus.radix.Condition;
 import org.apache.logging.log4j.LogManager;
 
-import java.util.*;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MultiCondition extends Condition {
@@ -23,7 +26,7 @@ public class MultiCondition extends Condition {
     private void checkConditionMet() {
         for (Iterator<Boolean> it = conditionsMet.elements().asIterator(); it.hasNext(); ) {
             // none/not all conditions have been met yet, exit loop and dont execute.
-            if (it.next() == false) return;
+            if (!it.next()) return;
         }
         this.onCompleteSuccess.run();
         this.reset();
@@ -42,8 +45,10 @@ public class MultiCondition extends Condition {
         concurrentConditions.forEach(condition -> {
             int id = counter.getAndIncrement();
             condition.register(() -> {
-                synchronized (conditionsMet){
-//                    LogManager.getLogger().info("MARKING CONDITION MET: " + concurrentConditions.get(id).getClass());
+                synchronized (conditionsMet) {
+                    // Debugging statement:
+                    LogManager.getLogger().info("MARKING CONDITION MET: " + concurrentConditions.get(id).getClass());
+
                     conditionsMet.put(id, true);
                     condition.unregister();
                 }

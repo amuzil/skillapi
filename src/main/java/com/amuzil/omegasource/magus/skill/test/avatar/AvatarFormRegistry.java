@@ -60,7 +60,7 @@ public class AvatarFormRegistry {
 //        // TODO: Use mouse motion, but the input module currently does not support that.
 ////        FormDataRegistry.registerForm(Forms.ROTATE);
 //
-//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE);
 
 //        FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE);
 //
