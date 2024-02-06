@@ -62,7 +62,7 @@ public class AvatarFormRegistry {
 //
         FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE);
 
-//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE);
 //
 //        FormDataRegistry.registerForm(InputDataBuilder.toInputs(held), Forms.BREATHE);
 

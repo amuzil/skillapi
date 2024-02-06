@@ -27,7 +27,7 @@ public class PathBuilder {
         //TODO: Adjust these
         final int HELD_THRESHOLD = 3;
         // 50 by default
-        final int TIMEOUT_THRESHOLD = 60000000;
+        final int TIMEOUT_THRESHOLD = 200;
 
         /* Keys. */
         //TODO: Account for max delay
