@@ -4,6 +4,7 @@ import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.RadixUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
@@ -21,6 +22,7 @@ public class KeyHoldCondition extends Condition {
     private final int key;
     // False by default.
     private final boolean release;
+    private boolean started = false;
 
     public KeyHoldCondition(int key, int duration, int timeout, boolean release) {
         RadixUtil.assertTrue(duration >= 1, "duration must be >= 1");
@@ -30,10 +32,12 @@ public class KeyHoldCondition extends Condition {
         this.currentHolding = 0;
         this.release = release;
         this.key = key;
+        this.started = false;
 
         this.clientTickListener = event -> {
-            if (event.phase == ClientTickEvent.Phase.START) {
+            if (event.phase == ClientTickEvent.Phase.START && Minecraft.getInstance().getOverlay() == null) {
                 if (((KeyboardMouseInputModule) Magus.keyboardInputModule).keyPressed(key)) {
+                    this.started = true;
 //                    LogManager.getLogger().info("KEY PRESSED: " + key);
                     this.currentHolding++;
                 } else {
@@ -47,7 +51,7 @@ public class KeyHoldCondition extends Condition {
                     } else {
                         // Not held for long enough
                         if (this.currentHolding > 0) {
-//                            LogManager.getLogger().info("ONFAILURE RUNNING 1");
+                            LogManager.getLogger().info("ONFAILURE RUNNING 1");
                             this.onFailure.run();
                             reset();
                         }
@@ -62,13 +66,15 @@ public class KeyHoldCondition extends Condition {
                         reset();
                     }
                 }
-
-                if (this.currentTotal >= timeout) {
-//                    LogManager.getLogger().info("ONFAILURE RUNNING 2");
-                    this.onFailure.run();
-                    reset();
+                if(this.started || !release) {
+                    if (this.currentTotal >= timeout) {
+                        LogManager.getLogger().info("ONFAILURE RUNNING 2");
+                        this.onFailure.run();
+                        reset();
+                    }
+                    this.currentTotal++;
                 }
-                this.currentTotal++;
+
             }
         };
     }
@@ -82,6 +88,7 @@ public class KeyHoldCondition extends Condition {
     public void reset() {
         this.currentTotal = 0;
         this.currentHolding = 0;
+        this.started = false;
     }
 
     public int getKey() {
