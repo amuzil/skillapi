@@ -58,6 +58,7 @@ public class ServerEvents {
             }
         } else {
             if (event.getEntity() instanceof Player) {
+                ((KeyboardMouseInputModule) Magus.keyboardInputModule).resetKeys();
                 Magus.keyboardInputModule.registerListeners();
                 AvatarFormRegistry.registerForms();
             }
