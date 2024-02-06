@@ -63,7 +63,7 @@ public class ServerEvents {
     @SubscribeEvent
     public static void OnPlayerLeaveWorld(EntityLeaveLevelEvent event)
     {
-        if(event.getLevel().isClientSide())
+        if(event.getLevel().isClientSide() && event.getEntity() instanceof Player)
         {
             Magus.keyboardInputModule.unregisterInputs();
         }

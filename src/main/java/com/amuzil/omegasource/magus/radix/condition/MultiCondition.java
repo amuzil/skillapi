@@ -48,7 +48,6 @@ public class MultiCondition extends Condition {
                 synchronized (conditionsMet) {
                     // Debugging statement:
                     LogManager.getLogger().info("MARKING CONDITION MET: " + concurrentConditions.get(id).getClass());
-
                     conditionsMet.put(id, true);
                     condition.unregister();
                 }
