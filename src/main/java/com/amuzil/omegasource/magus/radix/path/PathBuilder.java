@@ -63,13 +63,13 @@ public class PathBuilder {
                         
                         if (input.minDelay() > 0) {
                             //TODO: Fix this to account for "action keys".
-                            timed = new TickTimedCondition(
-                                    TickEvent.Type.CLIENT, TickEvent.Phase.START,
-                                    input.maxDelay(), Result.SUCCESS,
-                                    new KeyPressedCondition(TIMEOUT_THRESHOLD), Result.FAILURE, Result.SUCCESS
-                            );
-                            timedCondition = ConditionBuilder.createMultiCondition(timed);
-                            allConditions.add(timedCondition);
+//                            timed = new TickTimedCondition(
+//                                    TickEvent.Type.CLIENT, TickEvent.Phase.START,
+//                                    input.maxDelay(), Result.SUCCESS,
+//                                    new KeyPressedCondition(TIMEOUT_THRESHOLD), Result.FAILURE, Result.SUCCESS
+//                            );
+//                            timedCondition = ConditionBuilder.createMultiCondition(timed);
+//                            allConditions.add(timedCondition);
                         }
                     }
                     return new LinkedList<>(allConditions);
