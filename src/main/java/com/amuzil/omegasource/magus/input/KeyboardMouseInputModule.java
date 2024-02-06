@@ -44,7 +44,6 @@ public class KeyboardMouseInputModule extends InputModule {
 
     public KeyboardMouseInputModule() {
         this.glfwKeysDown = new ArrayList<>();
-
         this.keyboardListener = keyboardEvent -> {
             int keyPressed = keyboardEvent.getKey();
             switch (keyboardEvent.getAction()) {

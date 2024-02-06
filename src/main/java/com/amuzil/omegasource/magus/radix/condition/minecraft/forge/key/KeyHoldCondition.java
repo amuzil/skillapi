@@ -66,7 +66,7 @@ public class KeyHoldCondition extends Condition {
                         reset();
                     }
                 }
-                if(this.started || !release) {
+                if(this.started) {
                     if (this.currentTotal >= timeout) {
                         LogManager.getLogger().info("ONFAILURE RUNNING 2");
                         this.onFailure.run();
