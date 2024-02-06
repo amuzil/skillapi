@@ -44,6 +44,13 @@ public class KeyHoldCondition extends Condition {
                         if (release) {
                             LogManager.getLogger().info("ONSUCCESS RUNNING 1");
                             this.onSuccess.run();
+                            reset();
+                        }
+                    } else {
+                        if(this.currentHolding > 0) {
+                            LogManager.getLogger().info("ONFAILURE RUNNING 1");
+                            this.onFailure.run();
+                            reset();
                         }
                     }
                 }
@@ -53,11 +60,14 @@ public class KeyHoldCondition extends Condition {
                     if (!release) {
                         LogManager.getLogger().info("ONSUCCESS RUNNING 2");
                         this.onSuccess.run();
+                        reset();
                     }
                 }
 
                 if (this.currentTotal >= timeout) {
+                    LogManager.getLogger().info("ONFAILURE RUNNING 2");
                     this.onFailure.run();
+                    reset();
                 }
                 this.currentTotal++;
             }
@@ -65,8 +75,14 @@ public class KeyHoldCondition extends Condition {
     }
 
     public boolean pressed(int held, int duration) {
-        LogManager.getLogger().info("Checking pressed. held:" + held + ", duration: " + duration);
-        return held >= duration || held > 0 && duration <= KEY_PRESS_TIMEOUT;
+        boolean pressed = held >= duration || held > 0 && duration <= KEY_PRESS_TIMEOUT;
+        LogManager.getLogger().info("Checking pressed. held:" + held + ", duration: " + duration + ", result: " + pressed);
+        return pressed;
+    }
+
+    public void reset() {
+        this.currentTotal = 0;
+        this.currentHolding = 0;
     }
 
     public int getKey() {

@@ -43,7 +43,7 @@ public class MultiCondition extends Condition {
             int id = counter.getAndIncrement();
             condition.register(() -> {
                 synchronized (conditionsMet){
-//                    LogManager.getLogger().info("MARKING CONDITION MET: " + concurrentConditions.get(id).getClass());
+                    LogManager.getLogger().info("MARKING CONDITION MET: " + concurrentConditions.get(id).getClass());
                     conditionsMet.put(id, true);
                     condition.unregister();
                 }
