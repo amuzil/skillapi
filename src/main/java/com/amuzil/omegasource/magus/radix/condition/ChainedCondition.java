@@ -38,7 +38,7 @@ public class ChainedCondition extends Condition {
             currentConditionIndex++;
         }
         //Debugging statement
-        LogManager.getLogger().info("UNREGISTERING CURRENT CONDITION: " + currentCondition.getClass());
+      //  LogManager.getLogger().info("UNREGISTERING CURRENT CONDITION: " + currentCondition.getClass());
 
         currentCondition.unregister();
 

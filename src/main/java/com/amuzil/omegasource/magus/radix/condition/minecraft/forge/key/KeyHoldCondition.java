@@ -40,13 +40,14 @@ public class KeyHoldCondition extends Condition {
                     if (pressed(this.currentHolding, duration)) {
                         // If the Condition requires the key being released....
                         if (release) {
-                            LogManager.getLogger().info("ONSUCCESS RUNNING 1");
+//                            LogManager.getLogger().info("ONSUCCESS RUNNING 1");
                             this.onSuccess.run();
                             reset();
                         }
                     } else {
+                        // Not held for long enough
                         if (this.currentHolding > 0) {
-                            LogManager.getLogger().info("ONFAILURE RUNNING 1");
+//                            LogManager.getLogger().info("ONFAILURE RUNNING 1");
                             this.onFailure.run();
                             reset();
                         }
@@ -56,14 +57,14 @@ public class KeyHoldCondition extends Condition {
                 if (pressed(this.currentHolding, duration)) {
                     // If the Condition doesn't require the key being released....
                     if (!release) {
-                        LogManager.getLogger().info("ONSUCCESS RUNNING 2");
+//                        LogManager.getLogger().info("ONSUCCESS RUNNING 2");
                         this.onSuccess.run();
                         reset();
                     }
                 }
 
                 if (this.currentTotal >= timeout) {
-                    LogManager.getLogger().info("ONFAILURE RUNNING 2");
+//                    LogManager.getLogger().info("ONFAILURE RUNNING 2");
                     this.onFailure.run();
                     reset();
                 }
@@ -74,7 +75,7 @@ public class KeyHoldCondition extends Condition {
 
     public boolean pressed(int held, int duration) {
         boolean pressed = held >= duration || held > 0 && duration <= KEY_PRESS_TIMEOUT;
-        LogManager.getLogger().info("Checking pressed. held:" + held + ", duration: " + duration + ", result: " + pressed);
+//        LogManager.getLogger().info("Checking pressed. held:" + held + ", duration: " + duration + ", result: " + pressed);
         return pressed;
     }
 
