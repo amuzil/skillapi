@@ -133,6 +133,9 @@ public class KeyboardMouseInputModule extends InputModule {
         }
     }
 
+    public void resetKeys() {
+        glfwKeysDown = new ArrayList<>();
+    }
     public void cleanMCKeys() {
         // Fixes some weird mouse and other key issues.
         for (KeyMapping key : Minecraft.getInstance().options.keyMappings) {

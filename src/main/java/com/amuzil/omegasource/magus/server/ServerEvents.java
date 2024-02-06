@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.server;
 
 import com.amuzil.omegasource.magus.Magus;
+import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.radix.Node;
 import com.amuzil.omegasource.magus.radix.NodeBuilder;
 import com.amuzil.omegasource.magus.radix.RadixTree;
@@ -57,6 +58,7 @@ public class ServerEvents {
             }
         } else {
             if (event.getEntity() instanceof Player) {
+                ((KeyboardMouseInputModule) Magus.keyboardInputModule).resetKeys();
                 Magus.keyboardInputModule.registerListeners();
                 AvatarFormRegistry.registerForms();
             }
@@ -67,6 +69,7 @@ public class ServerEvents {
     public static void OnPlayerLeaveWorld(EntityLeaveLevelEvent event) {
         if (event.getLevel().isClientSide() && event.getEntity() instanceof Player) {
             Magus.keyboardInputModule.unregisterInputs();
+            ((KeyboardMouseInputModule) Magus.keyboardInputModule).resetKeys();
         }
     }
 }
