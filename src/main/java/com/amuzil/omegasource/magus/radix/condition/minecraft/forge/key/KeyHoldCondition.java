@@ -34,7 +34,7 @@ public class KeyHoldCondition extends Condition {
         this.clientTickListener = event -> {
             if (event.phase == ClientTickEvent.Phase.START) {
                 if (((KeyboardMouseInputModule) Magus.keyboardInputModule).keyPressed(key)) {
-                    LogManager.getLogger().info("KEY PRESSED: " + key);
+//                    LogManager.getLogger().info("KEY PRESSED: " + key);
                     this.currentHolding++;
                 } else {
                     if (pressed(this.currentHolding, duration)) {

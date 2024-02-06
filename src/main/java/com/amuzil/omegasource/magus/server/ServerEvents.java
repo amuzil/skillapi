@@ -4,11 +4,13 @@ import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.radix.Node;
 import com.amuzil.omegasource.magus.radix.NodeBuilder;
 import com.amuzil.omegasource.magus.radix.RadixTree;
+import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import com.amuzil.omegasource.magus.skill.util.capability.entity.Data;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
@@ -23,6 +25,7 @@ public class ServerEvents {
     public static void worldStart(LevelEvent event) {
 
     }
+
     @SubscribeEvent
     public static void onEntityJoinLevel(EntityJoinLevelEvent event) {
 
@@ -41,7 +44,8 @@ public class ServerEvents {
                 //Resets the tree; for testing purposes.
                 if (capability.getTree() != null)
                     capability.getTree().burn();
-                RadixTree tree = new RadixTree(NodeBuilder.root().addChild(Forms.ARC, secondNode).build());
+                RadixTree tree = new RadixTree(NodeBuilder.root().addChildren(new Pair<>(Forms.ARC, secondNode),
+                        new Pair<>(Forms.STEP, secondNode)).build());
                 // new Pair<>(Forms.FORCE, secondNode),
 //                        new Pair<>(Forms.BURST, secondNode)).build());
                 tree.setOwner(event.getEntity());
@@ -51,9 +55,8 @@ public class ServerEvents {
                 // we have a key for activating the bending state
                 capability.getTree().start();
             }
-        }
-        else {
-            if(event.getEntity() instanceof Player) {
+        } else {
+            if (event.getEntity() instanceof Player) {
                 Magus.keyboardInputModule.registerListeners();
                 AvatarFormRegistry.registerForms();
             }
@@ -61,10 +64,8 @@ public class ServerEvents {
     }
 
     @SubscribeEvent
-    public static void OnPlayerLeaveWorld(EntityLeaveLevelEvent event)
-    {
-        if(event.getLevel().isClientSide() && event.getEntity() instanceof Player)
-        {
+    public static void OnPlayerLeaveWorld(EntityLeaveLevelEvent event) {
+        if (event.getLevel().isClientSide() && event.getEntity() instanceof Player) {
             Magus.keyboardInputModule.unregisterInputs();
         }
     }
