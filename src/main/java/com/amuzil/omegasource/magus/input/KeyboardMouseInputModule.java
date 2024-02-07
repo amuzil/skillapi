@@ -40,11 +40,12 @@ public class KeyboardMouseInputModule extends InputModule {
     private final int tickActivationThreshold = 15;
     private final int tickTimeoutThreshold = 60;
     private final int modifierTickThreshold = 10;
-    private boolean listen = false;
+    private boolean listen;
     Minecraft mc = Minecraft.getInstance();
 
     public KeyboardMouseInputModule() {
         this.glfwKeysDown = new ArrayList<>();
+        this.listen = true;
         this.keyboardListener = keyboardEvent -> {
             int keyPressed = keyboardEvent.getKey();
             switch (keyboardEvent.getAction()) {

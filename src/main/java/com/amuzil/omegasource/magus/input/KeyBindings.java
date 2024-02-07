@@ -2,14 +2,16 @@ package com.amuzil.omegasource.magus.input;
 
 import com.amuzil.omegasource.magus.Magus;
 import net.minecraft.client.KeyMapping;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.lwjgl.glfw.GLFW;
 
 
 // Need to denote this as client-side only
-@Mod.EventBusSubscriber(modid = Magus.MOD_ID)
+@Mod.EventBusSubscriber(modid = Magus.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class KeyBindings {
 
     // Grave. Found the key # in InputConstants.
@@ -23,7 +25,10 @@ public class KeyBindings {
     @SubscribeEvent
     public static void keyBindPress(InputEvent.Key press) {
         if (press.getKey() == keyToggleTree.getKey().getValue()) {
-            Magus.keyboardInputModule.toggleListeners();
+            if (press.getAction() == GLFW.GLFW_RELEASE) {
+                Magus.keyboardInputModule.toggleListeners();
+                System.out.println("Toggled!");
+            }
         }
     }
 
