@@ -40,6 +40,7 @@ public class KeyboardMouseInputModule extends InputModule {
     private final int tickActivationThreshold = 15;
     private final int tickTimeoutThreshold = 60;
     private final int modifierTickThreshold = 10;
+    private boolean listen = false;
     Minecraft mc = Minecraft.getInstance();
 
     public KeyboardMouseInputModule() {
@@ -91,6 +92,7 @@ public class KeyboardMouseInputModule extends InputModule {
         };
 
         tickEventConsumer = tickEvent -> {
+
             ticksSinceModifiersSent++;
             if (ticksSinceModifiersSent > modifierTickThreshold && !modifierQueue.isEmpty()) {
                 sendModifierData();
@@ -198,6 +200,18 @@ public class KeyboardMouseInputModule extends InputModule {
         MinecraftForge.EVENT_BUS.unregister(mouseScrollListener);
         MinecraftForge.EVENT_BUS.unregister(tickEventConsumer);
         formInputs.forEach((condition, form) -> condition.unregister());
+    }
+
+    @Override
+    public void toggleListeners() {
+        if (!listen) {
+            registerListeners();
+            listen = true;
+        }
+        else {
+            unregisterInputs();
+            listen = false;
+        }
     }
 
     public boolean keyPressed(int key) {

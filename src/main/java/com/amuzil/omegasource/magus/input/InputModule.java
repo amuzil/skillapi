@@ -69,4 +69,6 @@ public abstract class InputModule {
     public void unregisterModifiers() {
         modifierListeners.forEach(ModifierListener::unregister);
     }
+
+    public abstract void toggleListeners();
 }

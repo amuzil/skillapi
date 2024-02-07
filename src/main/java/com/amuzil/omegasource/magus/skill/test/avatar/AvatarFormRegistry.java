@@ -76,7 +76,7 @@ public class AvatarFormRegistry {
             inputs.clear();
             //TODO: Find a way to specify releasing a key is required.
 
-            KeyInput first, release, second;
+            KeyInput first, second;
             // Problem: The tick delay is being combined with the key press into a simultaneous condition.
             // Not good.
             first = KeyDataBuilder.createInput(key.getValue(), true, 0, 70, 0);
