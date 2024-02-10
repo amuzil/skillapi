@@ -89,6 +89,11 @@ public class MultiCondition extends Condition {
     }
 
     @Override
+    public void register() {
+        this.reset();
+    }
+
+    @Override
     public void unregister() {
         concurrentConditions.forEach(Condition::unregister);
     }

@@ -65,6 +65,11 @@ public class ChainedCondition extends Condition {
     public void register(Runnable onSuccess, Runnable onFailure) {
         this.onCompleteSuccess = onSuccess;
         this.onCompleteFailure = onFailure;
+        this.register();
+    }
+
+    @Override
+    public void register() {
         currentCondition = conditionSequence.get(currentConditionIndex);
         currentCondition.register(onPartialSuccess, onPartialFailure);
     }

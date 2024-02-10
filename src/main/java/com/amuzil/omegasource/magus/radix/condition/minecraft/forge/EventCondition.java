@@ -28,6 +28,11 @@ public class EventCondition<E extends Event> extends Condition {
     @Override
     public void register(Runnable onSuccess, Runnable onFailure) {
         super.register(onSuccess, onFailure);
+        this.register();
+    }
+
+    @Override
+    public void register() {
         //This is required because a class type check isn't inbuilt, for some reason.
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, eventType, listener);
     }
