@@ -5,6 +5,10 @@ import com.amuzil.omegasource.magus.radix.NodeBuilder;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 
+/**
+ * Creates Effects given a set of Forms.
+ * To use Effects together, check out SkillBuilder
+ */
 public class EffectTreeBuilder {
 
     private NodeBuilder tree;
@@ -22,8 +26,8 @@ public class EffectTreeBuilder {
         return this;
     }
 
-    //Creates an Effect runnable to add to the tree.
-    public EffectTreeBuilder addEffect(Form form, Effect effect) {
+    //Adds a required Form to the tree.
+    public EffectTreeBuilder addForm(Form form) {
         tree.addChild(form, current);
         return this;
     }
