@@ -42,6 +42,12 @@ public class TickTimedCondition extends Condition {
 	@Override
 	public void register(Runnable onSuccess, Runnable onFailure) {
 		super.register(onSuccess, onFailure);
+		this.register();
+	}
+
+	@Override
+	public void register() {
+		super.register();
 		// TODO is this the correct approach?
 		this.subCondition.register(runOn(this.onSubSuccess), runOn(this.onSubFailure));
 		//Ensures no cast errors occur (blame forge)

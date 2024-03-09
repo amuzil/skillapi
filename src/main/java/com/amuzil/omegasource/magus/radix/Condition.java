@@ -27,6 +27,10 @@ public abstract class Condition {
 		};
 	}
 
+	public void register() {
+
+	}
+
 	public void unregister() {
 //		Thread.dumpStack();
 		RadixUtil.getLogger().debug("Unregistering condition:" + getClass());

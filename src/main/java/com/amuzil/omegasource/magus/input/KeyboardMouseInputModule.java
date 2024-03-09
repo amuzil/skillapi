@@ -203,6 +203,10 @@ public class KeyboardMouseInputModule extends InputModule {
         formInputs.forEach((condition, form) -> condition.unregister());
     }
 
+    public void registerInputs() {
+        formInputs.forEach((condition, form) -> condition.register());
+    }
+
     @Override
     public void toggleListeners() {
         if (!listen) {
