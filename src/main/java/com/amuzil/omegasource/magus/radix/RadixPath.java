@@ -15,14 +15,14 @@ import java.util.List;
 
 public class RadixPath implements INBTSerializable<CompoundTag> {
 
-    private LinkedList<Pair<Form, List<ModifierData>>> activationPath;
+    private LinkedList<Pair<Condition, List<ModifierData>>> activationPath;
 
     public RadixPath() {
         activationPath = new LinkedList<>();
     }
 
-    public void addStep(Form activatedForm, List<ModifierData> modifierData) {
-        activationPath.add(Pair.of(activatedForm, modifierData));
+    public void addStep(Condition activatedCondition, List<ModifierData> modifierData) {
+        activationPath.add(Pair.of(activatedCondition, modifierData));
     }
 
     @Override
@@ -33,16 +33,16 @@ public class RadixPath implements INBTSerializable<CompoundTag> {
 
         CompoundTag pairTag;
         for (int i = 0; i < activationPath.size(); i++) {
-            Pair<Form, List<ModifierData>> formListPair = activationPath.get(i);
-            Form activeForm = formListPair.first;
-            List<ModifierData> modifierData = formListPair.second;
+            Pair<Condition, List<ModifierData>> conditionListPair = activationPath.get(i);
+            Condition activeCondition = conditionListPair.first;
+            List<ModifierData> modifierData = conditionListPair.second;
 
             pairTag = new CompoundTag();
             ListTag modifierDataListTag = new ListTag();
 
             modifierData.forEach(modifierDataInstance -> modifierDataListTag.add(modifierDataInstance.serializeNBT()));
 
-            pairTag.putString("form", activeForm.name());
+            pairTag.putString("condition", activeCondition.toString());
             pairTag.put("modifiers", modifierDataListTag);
             listOfPairsTag.add(i, pairTag);
         }
@@ -57,6 +57,8 @@ public class RadixPath implements INBTSerializable<CompoundTag> {
         ListTag listOfPairsTag = (ListTag)compoundTag.get("activationPath");
         activationPath = new LinkedList<>();
         listOfPairsTag.forEach(pairTag -> {
+            // Need to figure out how to convert this into conditions.
+            // Going to go over capability data to check for every active listener and use those in the path.
             if(pairTag instanceof CompoundTag pairTagCompound) {
                 Pair<Form, List<ModifierData>> stepPair;
                 Form formActivated = FormDataRegistry.getFormByName(pairTagCompound.getString("form"));
@@ -67,7 +69,7 @@ public class RadixPath implements INBTSerializable<CompoundTag> {
                 modifiersListTag.forEach(tag -> modifierData.add(ModifiersRegistry.fromCompoundTag(compoundTag)));
 
                 stepPair = Pair.of(formActivated, modifierData);
-                activationPath.add(stepPair);
+//                activationPath.add(stepPair);
             }
         });
     }

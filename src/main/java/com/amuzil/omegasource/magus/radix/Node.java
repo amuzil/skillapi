@@ -21,7 +21,8 @@ import java.util.function.Consumer;
  *
  */
 public class Node {
-    private final Map<Form, Node> children;
+    //This needs to be changed to <Condition, Node>
+    private final Map<Condition, Node> children;
     private final Consumer<RadixTree> onEnter;
     private final Consumer<RadixTree> onLeave;
     private final Consumer<RadixTree> onTerminate;
@@ -36,7 +37,7 @@ public class Node {
      * @param terminateCondition If this condition is fulfilled, the active node will be terminated. If it expires, nothing special happens. It doesn't have to expire for the branch to terminate
      */
     public Node(
-            Map<Form, Node> children,
+            Map<Condition, Node> children,
             Consumer<RadixTree> onEnter,
             Consumer<RadixTree> onLeave,
             Consumer<RadixTree> onTerminate,
@@ -51,7 +52,7 @@ public class Node {
         this.modifiers = Collections.synchronizedList(modifiers.stream().map(Modifier::data).toList());
     }
 
-    public Map<Form, Node> children() {
+    public Map<Condition, Node> children() {
         return children;
     }
 

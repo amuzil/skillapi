@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 
 public class NodeBuilder {
 	private final Type type;
-	private final Map<Form, Node> children;
+	private final Map<Condition, Node> children;
 	private Consumer<RadixTree> onEnter;
 	private Consumer<RadixTree> onLeave;
 	private Consumer<RadixTree> onTerminate;
@@ -43,18 +43,18 @@ public class NodeBuilder {
 		return new IllegalStateException("A " + type.name().toLowerCase(Locale.ROOT) + " node cannot " + message);
 	}
 
-	public NodeBuilder addChild(Form form, Node child) {
+	public NodeBuilder addChild(Condition condition, Node child) {
 		if (type.canHaveChildren) {
-			children.put(form, child);
+			children.put(condition, child);
 			return this;
 		} else {
 			throw cannot("Have Children");
 		}
 	}
 
-	public NodeBuilder addChildren(Pair<Form, Node>... children) {
+	public NodeBuilder addChildren(Pair<Condition, Node>... children) {
 		if (type.canHaveChildren) {
-			for (Pair<Form, Node> child : children)
+			for (Pair<Condition, Node> child : children)
 				addChild(child.getFirst(), child.getSecond());
 			return this;
 		}

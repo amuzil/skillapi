@@ -1,5 +1,6 @@
 package com.amuzil.omegasource.magus.skill.effects;
 
+import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.Node;
 import com.amuzil.omegasource.magus.radix.NodeBuilder;
 import com.amuzil.omegasource.magus.radix.RadixTree;
@@ -27,7 +28,7 @@ public class EffectTreeBuilder {
     }
 
     //Adds a required Form to the tree.
-    public EffectTreeBuilder addForm(Form form) {
+    public EffectTreeBuilder addCondition(Condition form) {
         tree.addChild(form, current);
         return this;
     }
