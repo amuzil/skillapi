@@ -45,16 +45,17 @@ public class ServerEvents {
                 //Resets the tree; for testing purposes.
                 if (capability.getTree() != null)
                     capability.getTree().burn();
-                RadixTree tree = new RadixTree(NodeBuilder.root().addChildren(new Pair<>(Forms.ARC, secondNode),
-                        new Pair<>(Forms.STEP, secondNode)).build());
-                // new Pair<>(Forms.FORCE, secondNode),
-//                        new Pair<>(Forms.BURST, secondNode)).build());
-                tree.setOwner(event.getEntity());
-                capability.setTree(tree);
-
-                //todo this is not be where we should call start, but for now it'll stop us crashing until
-                // we have a key for activating the bending state
-                capability.getTree().start();
+                // TODO: Need a way to convert forms into conditions
+//                RadixTree tree = new RadixTree(NodeBuilder.root().addChildren(new Pair<>(Forms.ARC, secondNode),
+//                        new Pair<>(Forms.STEP, secondNode)).build());
+//                // new Pair<>(Forms.FORCE, secondNode),
+////                        new Pair<>(Forms.BURST, secondNode)).build());
+//                tree.setOwner(event.getEntity());
+//                capability.setTree(tree);
+//
+//                //todo this is not be where we should call start, but for now it'll stop us crashing until
+//                // we have a key for activating the bending state
+//                capability.getTree().start();
             }
         } else {
             if (event.getEntity() instanceof Player) {

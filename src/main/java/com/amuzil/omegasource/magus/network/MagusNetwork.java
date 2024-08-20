@@ -5,7 +5,7 @@ import com.amuzil.omegasource.magus.network.packets.api.MagusPacket;
 import com.amuzil.omegasource.magus.network.packets.client_executed.RegisterModifierListenersPacket;
 import com.amuzil.omegasource.magus.network.packets.client_executed.SkillTriggeredPacket;
 import com.amuzil.omegasource.magus.network.packets.client_executed.UnregisterModifierListenersPacket;
-import com.amuzil.omegasource.magus.network.packets.server_executed.FormActivatedPacket;
+import com.amuzil.omegasource.magus.network.packets.server_executed.ConditionActivatedPacket;
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.network.packets.server_executed.StartBendingPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -29,10 +29,10 @@ public class MagusNetwork {
     }
 
     public static void registerMessages() {
-        CHANNEL.messageBuilder(FormActivatedPacket.class, nextID())
-                .encoder(FormActivatedPacket::toBytes)
-                .decoder(FormActivatedPacket::fromBytes)
-                .consumerMainThread(FormActivatedPacket::handle)
+        CHANNEL.messageBuilder(ConditionActivatedPacket.class, nextID())
+                .encoder(ConditionActivatedPacket::toBytes)
+                .decoder(ConditionActivatedPacket::fromBytes)
+                .consumerMainThread(ConditionActivatedPacket::handle)
                 .add();
 
         CHANNEL.messageBuilder(SkillTriggeredPacket.class, nextID())
@@ -71,7 +71,7 @@ public class MagusNetwork {
         CHANNEL.sendTo(packet, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 
-    public static void sendToServer(MagusPacket packet) {
+    public static void  sendToServer(MagusPacket packet) {
         CHANNEL.sendToServer(packet);
     }
 }

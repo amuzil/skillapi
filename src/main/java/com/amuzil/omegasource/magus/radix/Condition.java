@@ -45,4 +45,7 @@ public abstract class Condition {
 			case NONE -> NO_OPERATION;
 		};
 	}
+
+	// Need to log each condition's id too
+	public abstract String name();
 }

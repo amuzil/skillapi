@@ -97,4 +97,9 @@ public class MultiCondition extends Condition {
     public void unregister() {
         concurrentConditions.forEach(Condition::unregister);
     }
+
+    @Override
+    public String name() {
+        return "multi_condition";
+    }
 }

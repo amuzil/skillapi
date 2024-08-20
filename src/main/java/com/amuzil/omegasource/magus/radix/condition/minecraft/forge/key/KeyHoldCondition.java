@@ -112,4 +112,9 @@ public class KeyHoldCondition extends Condition {
     public void unregister() {
         MinecraftForge.EVENT_BUS.unregister(clientTickListener);
     }
+
+    @Override
+    public String name() {
+        return "key_hold";
+    }
 }

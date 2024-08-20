@@ -19,4 +19,9 @@ public class SimpleCondition extends Condition {
 			onFailure.run();
 		}
 	}
+
+	@Override
+	public String name() {
+		return "simple_condition";
+	}
 }

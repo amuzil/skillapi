@@ -43,5 +43,8 @@ public class EventCondition<E extends Event> extends Condition {
         MinecraftForge.EVENT_BUS.unregister(listener);
     }
 
-
+    @Override
+    public String name() {
+        return "event";
+    }
 }

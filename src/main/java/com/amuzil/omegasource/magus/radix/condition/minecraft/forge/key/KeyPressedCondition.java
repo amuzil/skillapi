@@ -16,4 +16,9 @@ public class KeyPressedCondition extends TickTimedCondition {
                 InputEvent.Key.class, event -> !KeyboardData.ignore(event.getKey())
         ), Result.SUCCESS, Result.FAILURE);
     }
+
+    @Override
+    public String name() {
+        return "key_pressed";
+    }
 }

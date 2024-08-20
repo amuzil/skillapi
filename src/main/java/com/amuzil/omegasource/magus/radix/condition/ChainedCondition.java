@@ -78,4 +78,9 @@ public class ChainedCondition extends Condition {
     public void unregister() {
         currentCondition.unregister();
     }
+
+    @Override
+    public String name() {
+        return "chained_condition";
+    }
 }

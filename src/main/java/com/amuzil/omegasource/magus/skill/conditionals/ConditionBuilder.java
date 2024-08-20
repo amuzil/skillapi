@@ -72,6 +72,7 @@ public class ConditionBuilder {
         if (conditions.size() == 1)
             return conditions.get(0);
 
+        // This is bad. We want to just return a list of conditions.
         return new ChainedCondition(conditions);
     }
 

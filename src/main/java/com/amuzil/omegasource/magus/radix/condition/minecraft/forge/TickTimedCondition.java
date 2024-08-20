@@ -59,4 +59,9 @@ public class TickTimedCondition extends Condition {
 		MinecraftForge.EVENT_BUS.unregister(listener);
 		subCondition.unregister();
 	}
+
+	@Override
+	public String name() {
+		return "tick_timed_condition";
+	}
 }

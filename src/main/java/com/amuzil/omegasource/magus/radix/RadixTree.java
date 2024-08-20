@@ -1,7 +1,6 @@
 package com.amuzil.omegasource.magus.radix;
 
 import com.amuzil.omegasource.magus.skill.elements.Discipline;
-import com.amuzil.omegasource.magus.skill.elements.Disciplines;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.data.MultiModifierData;
@@ -14,7 +13,7 @@ import java.util.List;
 public class RadixTree {
     private final Node root;
     private Node active;
-    private Form lastActivated = null;
+    private Condition lastActivated = null;
     // Fire is a test
     private Discipline activeDiscipline = null;//Disciplines.FIRE;
     private RadixPath path;
@@ -47,7 +46,7 @@ public class RadixTree {
         active = node;
 
         if(active.getModifiers().size() > 0 && owner instanceof ServerPlayer player)
-            active.registerModifierListeners(lastActivated, activeDiscipline, player);
+            active.registerModifierListeners(activeDiscipline, player);
 
         if (active.onEnter() != null) {
             active.onEnter().accept(this);
@@ -75,7 +74,7 @@ public class RadixTree {
         start();
     }
 
-    public void moveDown(Form executedForm) {
+    public void moveDown(Condition executedCondition) {
         if(activeDiscipline == null) {
             LogManager.getLogger().info("NO ELEMENT SELECTED");
             return;
@@ -83,13 +82,15 @@ public class RadixTree {
         //add the last Node to the activation Path and store its ModifierData's
 
         if (this.lastActivated != null && active != null) {
-            if(this.lastActivated.name().equals(executedForm.name())) {
+            //TODO: 
+            // Need a better way to ensure the conditions are equivalent
+            if(this.lastActivated.name().equals(executedCondition.name())) {
                 addModifierData(new MultiModifierData());
                 return;
             }
             path.addStep(this.lastActivated, active.getModifiers());
         }
-        this.lastActivated = executedForm;
+        this.lastActivated = executedCondition;
 
         if(active.getModifiers().size() > 0 && owner instanceof ServerPlayer player) {
             active.unregisterModifierListeners(player);
@@ -108,7 +109,7 @@ public class RadixTree {
             active.terminateCondition().unregister();
         }
 
-        setActive(active.children().get(executedForm));
+        setActive(active.children().get(executedCondition));
     }
 
     public void expire() {

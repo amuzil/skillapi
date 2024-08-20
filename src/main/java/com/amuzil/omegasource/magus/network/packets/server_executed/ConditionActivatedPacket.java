@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.network.packets.server_executed;
 
 import com.amuzil.omegasource.magus.network.packets.api.MagusPacket;
+import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
@@ -10,23 +11,23 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class FormActivatedPacket implements MagusPacket {
+public class ConditionActivatedPacket implements MagusPacket {
 
-    private final Form form;
+    private final Condition condition;
 
-    public FormActivatedPacket(Form form) {
-        this.form = form;
+    public ConditionActivatedPacket(Condition condition) {
+        this.condition = condition;
     }
 
     public void toBytes(FriendlyByteBuf buf) {
-        if(form != null) {
-            buf.writeUtf(form.name());
-        }
+//        if(condition != null) {
+//            buf.writeUtf(form.name());
+//        }
     }
 
-    public static FormActivatedPacket fromBytes(FriendlyByteBuf buf) {
+    public static ConditionActivatedPacket fromBytes(FriendlyByteBuf buf) {
         String form = buf.readUtf();
-        return new FormActivatedPacket(FormDataRegistry.getFormByName(form));
+        return new ConditionActivatedPacket(FormDataRegistry.getFormByName(form));
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {

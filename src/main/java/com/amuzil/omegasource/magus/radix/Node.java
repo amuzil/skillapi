@@ -76,11 +76,10 @@ public class Node {
         return modifiers;
     }
 
-    public void registerModifierListeners(Form lastActivatedForm, Discipline activeDiscipline, ServerPlayer player) {
+    public void registerModifierListeners(Discipline activeDiscipline, ServerPlayer player) {
         CompoundTag listenerInstanceData = new CompoundTag();
 
         //here we can send information to the client to help build the Modifier Listeners appropriately.
-        listenerInstanceData.putString("lastFormActivated", lastActivatedForm.name());
         listenerInstanceData.putString("activeElement", activeDiscipline.name());
 
         List<String> modifierTypes = new ArrayList<>();
