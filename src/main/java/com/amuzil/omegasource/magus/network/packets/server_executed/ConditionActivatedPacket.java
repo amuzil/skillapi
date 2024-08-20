@@ -33,7 +33,7 @@ public class ConditionActivatedPacket implements MagusPacket {
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             Player player = ctx.get().getSender();
-            CapabilityHandler.getCapability(player, CapabilityHandler.LIVING_DATA).getTree().moveDown(form);
+            CapabilityHandler.getCapability(player, CapabilityHandler.LIVING_DATA).getTree().moveDown(condition);
         });
         return true;
     }

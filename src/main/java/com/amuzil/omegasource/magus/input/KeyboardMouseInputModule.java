@@ -110,7 +110,7 @@ public class KeyboardMouseInputModule extends InputModule {
 //                }));
                 if(ticksSinceActivated >= tickActivationThreshold) {
                     LogManager.getLogger().info("FORM ACTIVATED :" + activeForm.name());
-                    MagusNetwork.sendToServer(new ConditionActivatedPacket(activeForm));
+//                    MagusNetwork.sendToServer(new ConditionActivatedPacket(activeForm));
                     lastActivatedForm = activeForm;
                     activeForm = null;
                     ticksSinceActivated = 0;
