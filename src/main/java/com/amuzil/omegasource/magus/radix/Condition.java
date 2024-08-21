@@ -1,5 +1,7 @@
 package com.amuzil.omegasource.magus.radix;
 
+import com.amuzil.omegasource.magus.registry.Registries;
+
 public abstract class Condition {
 	public enum Result {
 		SUCCESS,
@@ -24,7 +26,7 @@ public abstract class Condition {
 	}
 
 	public void register() {
-
+		Registries.registerCondition(this);
 	}
 
 	public void unregister() {

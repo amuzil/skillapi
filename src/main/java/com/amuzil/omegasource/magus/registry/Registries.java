@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.registry;
 
 import com.amuzil.omegasource.magus.Magus;
+import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.skill.elements.Discipline;
 import com.amuzil.omegasource.magus.skill.elements.Disciplines;
 import com.amuzil.omegasource.magus.skill.forms.Form;
@@ -30,12 +31,14 @@ public class Registries {
     public static Supplier<IForgeRegistry<SkillCategory>> SKILL_CATEGORIES;
     public static Supplier<IForgeRegistry<Skill>> SKILLS;
     public static Supplier<IForgeRegistry<Form>> FORMS;
+    public static Supplier<IForgeRegistry<Condition>> CONDITIONS;
 
 
     public static List<DataTrait> traits = new ArrayList<>();
     public static List<SkillCategory> categories = new ArrayList<>();
     public static List<Skill> skills = new ArrayList<>();
     public static List<Form> forms = new ArrayList<>();
+    public static List<Condition> conditions = new ArrayList<>();
 
     // SKILLS
     // this is a placeholder skill for testing purposes.
@@ -78,10 +81,17 @@ public class Registries {
         forms.addAll(registryForms);
     }
 
+    public static void registerConditions(List<Condition> registryConditions) {
+        conditions.addAll(registryConditions);
+    }
+
     public static void registerForm(Form registryForm) {
         forms.add(registryForm);
     }
 
+    public static void registerCondition(Condition registryCondition) {
+        conditions.add(registryCondition);
+    }
     public static void registerDiscipline(Discipline discipline) {
         categories.add(discipline);
         Disciplines.DISCIPLINES.add(discipline);
@@ -114,6 +124,11 @@ public class Registries {
         RegistryBuilder<Form> forms = new RegistryBuilder<>();
         forms.setName(new ResourceLocation(Magus.MOD_ID, "forms"));
         FORMS = event.create(forms);
+
+        //Conditions
+        RegistryBuilder<Condition> conditions = new RegistryBuilder<>();
+        conditions.setName(new ResourceLocation(Magus.MOD_ID, "conditions"));
+        CONDITIONS = event.create(conditions);
 
         //Modifiers
     }
@@ -186,6 +201,20 @@ public class Registries {
             event.register(resKey, helper -> {
                 for (DataTrait trait : traits)
                     registry.register(trait.getName(), trait);
+            });
+        }
+
+
+        /* Conditions. */
+        /* Registered last because they can hold any conditional data value. */
+        if (event.getRegistryKey().equals(CONDITIONS.get().getRegistryKey())) {
+            IForgeRegistry<Condition> registry = CONDITIONS.get();
+            ResourceKey<Registry<Condition>> resKey = registry.getRegistryKey();
+
+
+            event.register(resKey, helper -> {
+                for (Condition condition : conditions)
+                    registry.register(condition.name(), condition);
             });
         }
     }
