@@ -15,6 +15,7 @@ public abstract class Condition {
 	protected Runnable onSuccess;
 	protected Runnable onFailure;
 
+	// TODO: Change to registerRunnables()
 	public void register(Runnable onSuccess, Runnable onFailure) {
 		//RadixUtil.getLogger().debug("Registering results");
 //		if (this instanceof KeyPressCondition && ((KeyPressCondition) this).getKey() == 0)
@@ -26,7 +27,13 @@ public abstract class Condition {
 		this.onFailure = onFailure::run;
 	}
 
+	// TODO: Change this to registerListeners()
 	public void register() {
+
+	}
+
+	// Every Condition needs to call this in their constructor
+	public void registerEntry() {
 		Registries.registerCondition(this);
 	}
 
