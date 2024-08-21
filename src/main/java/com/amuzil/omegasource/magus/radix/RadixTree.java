@@ -52,7 +52,17 @@ public class RadixTree {
         /**
          * Automatically handles making conditions move down the tree when satisfied.
          * Need to adjust because it's moving down the tree based on its terminating condition, rather than for each child condition.
+         * We only want to do this once per active node.
          */
+        // Current Node
+        Condition currentCondition = active.terminateCondition();
+        if (currentCondition != null) {
+            currentCondition.register(() -> {
+                currentCondition.onSuccess.run();
+                MagusNetwork.sendToServer(new ConditionActivatedPacket(currentCondition));
+            }, currentCondition.onFailure);
+        }
+        // Child Nodes
         for (Map.Entry<Condition, Node> child : active.children().entrySet()) {
             //TODO: Find way to prevent overwriting but also prevent doubly sending packets.
             Condition condition = child.getKey();
