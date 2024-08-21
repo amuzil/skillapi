@@ -1,5 +1,6 @@
 package com.amuzil.omegasource.magus.radix;
 
+import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.registry.Registries;
 
 public abstract class Condition {
@@ -46,4 +47,9 @@ public abstract class Condition {
 
 	// Need to log each condition's id too
 	public abstract String name();
+
+	// Change this for custom conditions/conditions you want registered in your own mod
+	public String modID() {
+		return Magus.MOD_ID;
+	}
 }

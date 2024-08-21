@@ -2,8 +2,7 @@ package com.amuzil.omegasource.magus.network.packets.server_executed;
 
 import com.amuzil.omegasource.magus.network.packets.api.MagusPacket;
 import com.amuzil.omegasource.magus.radix.Condition;
-import com.amuzil.omegasource.magus.skill.forms.Form;
-import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
+import com.amuzil.omegasource.magus.radix.condition.ConditionRegistry;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
@@ -20,15 +19,17 @@ public class ConditionActivatedPacket implements MagusPacket {
     }
 
     public void toBytes(FriendlyByteBuf buf) {
-//        if(condition != null) {
-//            buf.writeUtf(form.name());
-//        }
+        if(condition != null) {
+            buf.writeUtf(condition.modID());
+            buf.writeUtf(condition.name());
+        }
     }
 
     public static ConditionActivatedPacket fromBytes(FriendlyByteBuf buf) {
-        String form = buf.readUtf();
+        String modID = buf.readUtf();
+        String condition = buf.readUtf();
         // Need to add a way to store forms...
-        return new ConditionActivatedPacket(FormDataRegistry.getFormByName(form));
+        return new ConditionActivatedPacket(ConditionRegistry.getConditionByName(modID, condition));
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {

@@ -10,10 +10,10 @@ public class ConditionRegistry {
 
 
     public static Condition getConditionByName(String formName) {
-        return Registries.CONDITIONS.get().getValue(new ResourceLocation(Magus.MOD_ID, formName));
+        return Registries.CONDITIONS.get().getValue(new ResourceLocation(Magus.MOD_ID, ":" + formName));
     }
 
     public static Condition getConditionByName(String modID, String formName) {
-        return Registries.CONDITIONS.get().getValue(new ResourceLocation(modID, formName));
+        return Registries.CONDITIONS.get().getValue(new ResourceLocation(modID, ":" + formName));
     }
 }

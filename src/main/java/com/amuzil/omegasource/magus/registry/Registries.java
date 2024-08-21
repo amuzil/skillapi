@@ -214,7 +214,7 @@ public class Registries {
 
             event.register(resKey, helper -> {
                 for (Condition condition : conditions)
-                    registry.register(condition.name(), condition);
+                    registry.register(condition.modID() + ":" + condition.name(), condition);
             });
         }
     }
