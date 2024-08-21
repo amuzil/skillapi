@@ -27,6 +27,7 @@ public class ConditionActivatedPacket implements MagusPacket {
 
     public static ConditionActivatedPacket fromBytes(FriendlyByteBuf buf) {
         String form = buf.readUtf();
+        // Need to add a way to store forms...
         return new ConditionActivatedPacket(FormDataRegistry.getFormByName(form));
     }
 

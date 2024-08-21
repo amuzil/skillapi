@@ -16,15 +16,11 @@ public abstract class Condition {
 		//RadixUtil.getLogger().debug("Registering results");
 //		if (this instanceof KeyPressCondition && ((KeyPressCondition) this).getKey() == 0)
 //			Thread.dumpStack();
-		this.onSuccess = () -> {
-			//RadixUtil.getLogger().debug("Result: success");
-			onSuccess.run();
-		};
-		this.onFailure = () -> {
-//			RadixUtil.getLogger().debug("Result: failure: " + getClass());
-//			Thread.dumpStack();
-			onFailure.run();
-		};
+		//RadixUtil.getLogger().debug("Result: success");
+		this.onSuccess = onSuccess::run;
+		//			RadixUtil.getLogger().debug("Result: failure: " + getClass());
+		//			Thread.dumpStack();
+		this.onFailure = onFailure::run;
 	}
 
 	public void register() {
