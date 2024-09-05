@@ -4,9 +4,9 @@ import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.client_executed.RegisterModifierListenersPacket;
 import com.amuzil.omegasource.magus.network.packets.client_executed.UnregisterModifierListenersPacket;
 import com.amuzil.omegasource.magus.skill.elements.Discipline;
-import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.modifiers.api.Modifier;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -23,6 +24,7 @@ import java.util.function.Consumer;
 public class Node {
     //This needs to be changed to <Condition, Node>
     private final Map<Condition, Node> children;
+    private final Pair<Condition, Node> parent;
     private final Consumer<RadixTree> onEnter;
     private final Consumer<RadixTree> onLeave;
     private final Consumer<RadixTree> onTerminate;
@@ -37,6 +39,7 @@ public class Node {
      * @param terminateCondition If this condition is fulfilled, the active node will be terminated. If it expires, nothing special happens. It doesn't have to expire for the branch to terminate
      */
     public Node(
+            Pair<Condition, Node> parent,
             Map<Condition, Node> children,
             Consumer<RadixTree> onEnter,
             Consumer<RadixTree> onLeave,
@@ -44,6 +47,7 @@ public class Node {
             Condition terminateCondition,
             List<Modifier> modifiers
     ) {
+        this.parent = parent;
         this.children = children;
         this.onEnter = onEnter;
         this.onLeave = onLeave;
@@ -64,6 +68,18 @@ public class Node {
         return onLeave;
     }
 
+    public Pair<Condition, Node> parent() {
+        return this.parent;
+    }
+
+    public Map<Condition, Node> getImmediateChildren() {
+        return children().entrySet().stream()
+                .filter(entry ->
+                    entry.getValue().parent().getSecond().equals(this)
+                            && entry.getValue().parent().getSecond()
+                            .terminateCondition().equals(this.terminateCondition())) // Ensure the child's parent is the current node
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
     public Consumer<RadixTree> onTerminate() {
         return onTerminate;
     }
