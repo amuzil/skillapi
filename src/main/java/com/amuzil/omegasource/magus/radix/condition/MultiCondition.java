@@ -25,10 +25,11 @@ public class MultiCondition extends Condition {
 
     public MultiCondition(List<Condition> concurrentConditions) {
         this.concurrentConditions = concurrentConditions;
+        this.registerEntry();
     }
 
     public MultiCondition(Condition condition) {
-        this.concurrentConditions = List.of(condition);
+        this(List.of(condition));
     }
 
     private void checkConditionMet() {
@@ -96,10 +97,5 @@ public class MultiCondition extends Condition {
     @Override
     public void unregister() {
         concurrentConditions.forEach(Condition::unregister);
-    }
-
-    @Override
-    public String name() {
-        return "multi_condition";
     }
 }

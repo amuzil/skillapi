@@ -9,6 +9,7 @@ public class SimpleCondition extends Condition {
 
 	public SimpleCondition(Supplier<Boolean> condition) {
 		this.condition = condition;
+		this.registerEntry();
 	}
 
 	@Override
@@ -18,10 +19,5 @@ public class SimpleCondition extends Condition {
 		} else {
 			onFailure.run();
 		}
-	}
-
-	@Override
-	public String name() {
-		return "simple_condition";
 	}
 }

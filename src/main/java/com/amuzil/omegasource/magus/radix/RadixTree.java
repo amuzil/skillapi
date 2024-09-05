@@ -3,8 +3,6 @@ package com.amuzil.omegasource.magus.radix;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.server_executed.ConditionActivatedPacket;
 import com.amuzil.omegasource.magus.skill.elements.Discipline;
-import com.amuzil.omegasource.magus.skill.event.SkillTickEvent;
-import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.data.MultiModifierData;
 import net.minecraft.server.level.ServerPlayer;
@@ -66,15 +64,18 @@ public class RadixTree {
         for (Map.Entry<Condition, Node> child : active.children().entrySet()) {
             //TODO: Find way to prevent overwriting but also prevent doubly sending packets.
             Condition condition = child.getKey();
-            Runnable success;
-            success = () -> {
-                condition.onSuccess.run();
-                MagusNetwork.sendToServer(new ConditionActivatedPacket(condition));
-            };
-            condition.register(success, condition.onFailure);
+            if (condition != null) {
+                Runnable success;
+                success = () -> {
+                    if (condition.onSuccess != null)
+                        condition.onSuccess.run();
+                    MagusNetwork.sendToServer(new ConditionActivatedPacket(condition));
+                };
+                condition.register(success, condition.onFailure);
+            }
         }
 
-        if(active.getModifiers().size() > 0 && owner instanceof ServerPlayer player)
+        if (active.getModifiers().size() > 0 && owner instanceof ServerPlayer player)
             active.registerModifierListeners(activeDiscipline, player);
 
         if (active.onEnter() != null) {
@@ -84,8 +85,8 @@ public class RadixTree {
         // Should run the original condition and terminate the tree
         if (active.terminateCondition() != null) {
             Runnable onSuccess = () -> {
-               active.terminateCondition().onSuccess.run();
-               terminate();
+                active.terminateCondition().onSuccess.run();
+                terminate();
             };
             active.terminateCondition().register(onSuccess, () -> {
             });
@@ -110,7 +111,7 @@ public class RadixTree {
     // TODO:
     // Rather than relying on the input module to send packets, handle everything in the condition runnables?
     public void moveDown(Condition executedCondition) {
-        if(activeDiscipline == null) {
+        if (activeDiscipline == null) {
             LogManager.getLogger().info("NO ELEMENT SELECTED");
             return;
         }
@@ -119,7 +120,7 @@ public class RadixTree {
         if (this.lastActivated != null && active != null) {
             //TODO:
             // Need a better way to ensure the conditions are equivalent
-            if(this.lastActivated.name().equals(executedCondition.name())) {
+            if (this.lastActivated.name().equals(executedCondition.name())) {
                 addModifierData(new MultiModifierData());
                 return;
             }
@@ -127,13 +128,13 @@ public class RadixTree {
         }
         this.lastActivated = executedCondition;
 
-        if(active.getModifiers().size() > 0 && owner instanceof ServerPlayer player) {
+        if (active.getModifiers().size() > 0 && owner instanceof ServerPlayer player) {
             active.unregisterModifierListeners(player);
             //todo remove this its just for testing
             active.getModifiers().forEach(modifier -> modifier.print());
         }
 
-        if(active.children().size() == 0) return;
+        if (active.children().size() == 0) return;
 
         if (active.onLeave() != null) {
             active.onLeave().accept(this);

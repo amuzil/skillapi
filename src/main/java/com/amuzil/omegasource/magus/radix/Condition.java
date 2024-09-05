@@ -14,6 +14,7 @@ public abstract class Condition {
 
 	protected Runnable onSuccess;
 	protected Runnable onFailure;
+	private String name;
 
 	// TODO: Change to registerRunnables()
 	public void register(Runnable onSuccess, Runnable onFailure) {
@@ -21,10 +22,10 @@ public abstract class Condition {
 //		if (this instanceof KeyPressCondition && ((KeyPressCondition) this).getKey() == 0)
 //			Thread.dumpStack();
 		//RadixUtil.getLogger().debug("Result: success");
-		this.onSuccess = onSuccess::run;
+		this.onSuccess = onSuccess;
 		//			RadixUtil.getLogger().debug("Result: failure: " + getClass());
 		//			Thread.dumpStack();
-		this.onFailure = onFailure::run;
+		this.onFailure = onFailure;
 	}
 
 	// TODO: Change this to registerListeners()
@@ -52,8 +53,14 @@ public abstract class Condition {
 		};
 	}
 
-	// Need to log each condition's id too
-	public abstract String name();
+	// Method for naming and retrieving the name of a Condition
+	public void name(String name) {
+		this.name = name;
+	}
+
+	public String name() {
+		return this.name;
+	}
 
 	// Change this for custom conditions/conditions you want registered in your own mod
 	public String modID() {

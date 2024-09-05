@@ -20,12 +20,11 @@ public class ChainedCondition extends Condition {
         this.conditionSequence = conditionSequence;
         this.onPartialSuccess = this::finishCurrentCondition;
         this.onPartialFailure = this::reset;
+        this.registerEntry();
     }
 
     public ChainedCondition(Condition condition) {
-        this.conditionSequence = List.of(condition);
-        this.onPartialSuccess = this::finishCurrentCondition;
-        this.onPartialFailure = this::reset;
+        this(List.of(condition));
     }
 
     private void finishCurrentCondition() {
@@ -77,10 +76,5 @@ public class ChainedCondition extends Condition {
     @Override
     public void unregister() {
         currentCondition.unregister();
-    }
-
-    @Override
-    public String name() {
-        return "chained_condition";
     }
 }
