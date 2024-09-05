@@ -71,6 +71,7 @@ public class RadixTree {
                         if (condition.onSuccess != null)
                             condition.onSuccess.run();
                         MagusNetwork.sendToServer(new ConditionActivatedPacket(condition));
+                        RadixUtil.getLogger().debug("Packet sent.");
                     };
                     condition.register(success, condition.onFailure);
                 }
@@ -147,6 +148,7 @@ public class RadixTree {
             active.terminateCondition().unregister();
         }
 
+        //TODO: THis should not jump levels of the tree!!!!!!
         setActive(active.children().get(executedCondition));
     }
 

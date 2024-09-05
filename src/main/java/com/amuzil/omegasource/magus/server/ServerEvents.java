@@ -63,9 +63,9 @@ public class ServerEvents {
                 // Need to test out the condition tree. use left alt/arc > strike (left click).
                 // While this test code will directly use conditions, Skills will reference Forms
                 // that get automatically turned into conditions.
-                KeyInput initialiser = KeyDataBuilder.createInput("key.keyboard.left.alt", 0, 0, 1);
+                KeyInput initialiser = KeyDataBuilder.createInput("key.keyboard.left.alt", 0, 0, 4);
                 KeyInput left = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyAttack.getKey(), 0,
-                        0, 1);
+                        0, 4);
 
                 Condition arc = new KeyHoldCondition(initialiser.key().getValue(), initialiser.held(), 20000, false);
                 arc.register(() -> {}, () -> {});
@@ -75,7 +75,6 @@ public class ServerEvents {
                 Condition strike = new KeyHoldCondition(left.key().getValue(), left.held(), 2000000, false);
                 strike.register(() -> {
                     Entity eventEntity = event.getEntity();
-                    RadixUtil.getLogger().debug("Working strike??");
 
                     Level level = event.getLevel();
                     LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(level);

@@ -2,6 +2,7 @@ package com.amuzil.omegasource.magus.network.packets.server_executed;
 
 import com.amuzil.omegasource.magus.network.packets.api.MagusPacket;
 import com.amuzil.omegasource.magus.radix.Condition;
+import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.amuzil.omegasource.magus.radix.condition.ConditionRegistry;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import net.minecraft.network.FriendlyByteBuf;
@@ -33,6 +34,7 @@ public class ConditionActivatedPacket implements MagusPacket {
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {
+        RadixUtil.getLogger().debug("Condition: " + condition.name());
         ctx.get().enqueueWork(() -> {
             Player player = ctx.get().getSender();
             CapabilityHandler.getCapability(player, CapabilityHandler.LIVING_DATA).getTree().moveDown(condition);

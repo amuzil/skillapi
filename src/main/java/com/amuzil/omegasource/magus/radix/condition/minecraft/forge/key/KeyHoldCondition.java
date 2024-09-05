@@ -51,7 +51,7 @@ public class KeyHoldCondition extends Condition {
                     } else {
                         // Not held for long enough
                         if (this.currentHolding > 0) {
-                            LogManager.getLogger().info("ONFAILURE RUNNING 1");
+//                            LogManager.getLogger().info("ONFAILURE RUNNING 1");
                             this.onFailure.run();
                             reset();
                         }
@@ -68,7 +68,7 @@ public class KeyHoldCondition extends Condition {
                 }
                 if(this.started) {
                     if (this.currentTotal >= timeout) {
-                        LogManager.getLogger().info("ONFAILURE RUNNING 2");
+//                        LogManager.getLogger().info("ONFAILURE RUNNING 2");
                         this.onFailure.run();
                         reset();
                     }
