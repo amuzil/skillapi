@@ -68,6 +68,10 @@ public class ServerEvents {
                         0, 1);
 
                 Condition arc = new KeyHoldCondition(initialiser.key().getValue(), initialiser.held(), 20000, false);
+                arc.register(() -> {}, () -> {});
+                arc.name("arc");
+                arc.registerEntry();
+
                 Condition strike = new KeyHoldCondition(left.key().getValue(), left.held(), 2000000, false);
                 strike.register(() -> {
                     Entity eventEntity = event.getEntity();
@@ -85,6 +89,8 @@ public class ServerEvents {
                     }
 
                     }, () -> {});
+                strike.name("strike");
+                strike.registerEntry();
                 Node node2 = NodeBuilder.middle().addChild(strike, NodeBuilder.end().build()).build();
 
                 RadixTree tree = new RadixTree(NodeBuilder.root().addChild(arc, node2).build());

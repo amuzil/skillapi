@@ -60,18 +60,20 @@ public class RadixTree {
                 MagusNetwork.sendToServer(new ConditionActivatedPacket(currentCondition));
             }, currentCondition.onFailure);
         }
-        // Child Nodes
-        for (Map.Entry<Condition, Node> child : active.children().entrySet()) {
-            //TODO: Find way to prevent overwriting but also prevent doubly sending packets.
-            Condition condition = child.getKey();
-            if (condition != null) {
-                Runnable success;
-                success = () -> {
-                    if (condition.onSuccess != null)
-                        condition.onSuccess.run();
-                    MagusNetwork.sendToServer(new ConditionActivatedPacket(condition));
-                };
-                condition.register(success, condition.onFailure);
+        if (active == root) {
+            // Child Nodes
+            for (Map.Entry<Condition, Node> child : active.children().entrySet()) {
+                //TODO: Find way to prevent overwriting but also prevent doubly sending packets.
+                Condition condition = child.getKey();
+                if (condition != null) {
+                    Runnable success;
+                    success = () -> {
+                        if (condition.onSuccess != null)
+                            condition.onSuccess.run();
+                        MagusNetwork.sendToServer(new ConditionActivatedPacket(condition));
+                    };
+                    condition.register(success, condition.onFailure);
+                }
             }
         }
 
