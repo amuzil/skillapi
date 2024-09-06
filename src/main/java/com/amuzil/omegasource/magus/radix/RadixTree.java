@@ -53,16 +53,17 @@ public class RadixTree {
          * We only want to do this once per active node.
          */
         // Current Node
-        Condition currentCondition = active.terminateCondition();
-        if (currentCondition != null) {
-            currentCondition.register(() -> {
-                currentCondition.onSuccess.run();
-                MagusNetwork.sendToServer(new ConditionActivatedPacket(currentCondition));
-            }, currentCondition.onFailure);
-        }
-        if (active == root) {
+        if (active != null && active == root) {
+            Condition currentCondition = active.terminateCondition();
+            if (currentCondition != null) {
+                currentCondition.register(() -> {
+                    currentCondition.onSuccess.run();
+                    MagusNetwork.sendToServer(new ConditionActivatedPacket(currentCondition));
+                }, currentCondition.onFailure);
+            }
+
             // Child Nodes
-            for (Map.Entry<Condition, Node> child : active.children().entrySet()) {
+            for (Map.Entry<Condition, Node> child : active.getImmediateChildren().entrySet()) {
                 //TODO: Find way to prevent overwriting but also prevent doubly sending packets.
                 Condition condition = child.getKey();
                 if (condition != null) {
@@ -72,27 +73,29 @@ public class RadixTree {
                             condition.onSuccess.run();
                         MagusNetwork.sendToServer(new ConditionActivatedPacket(condition));
                         RadixUtil.getLogger().debug("Packet sent.");
+                        condition.unregister();
                     };
                     condition.register(success, condition.onFailure);
                 }
             }
-        }
 
-        if (active.getModifiers().size() > 0 && owner instanceof ServerPlayer player)
-            active.registerModifierListeners(activeDiscipline, player);
 
-        if (active.onEnter() != null) {
-            active.onEnter().accept(this);
-        }
+            if (active.getModifiers().size() > 0 && owner instanceof ServerPlayer player)
+                active.registerModifierListeners(activeDiscipline, player);
 
-        // Should run the original condition and terminate the tree
-        if (active.terminateCondition() != null) {
-            Runnable onSuccess = () -> {
-                active.terminateCondition().onSuccess.run();
-                terminate();
-            };
-            active.terminateCondition().register(onSuccess, () -> {
-            });
+            if (active.onEnter() != null) {
+                active.onEnter().accept(this);
+            }
+
+            // Should run the original condition and terminate the tree
+            if (active.terminateCondition() != null) {
+                Runnable onSuccess = () -> {
+                    active.terminateCondition().onSuccess.run();
+                    terminate();
+                };
+                active.terminateCondition().register(onSuccess, () -> {
+                });
+            }
         }
     }
 
@@ -118,8 +121,15 @@ public class RadixTree {
             LogManager.getLogger().info("NO ELEMENT SELECTED");
             return;
         }
+        if (active == null) {
+            LogManager.getLogger().info("No currently active node to traverse from.");
+            return;
+        }
         //add the last Node to the activation Path and store its ModifierData's
-
+        if (active.getImmediateChildren().get(executedCondition) == null) {
+            LogManager.getLogger().info("Condition met not valid for tree traversal.");
+            return;
+        }
         if (this.lastActivated != null && active != null) {
             //TODO:
             // Need a better way to ensure the conditions are equivalent
@@ -127,6 +137,7 @@ public class RadixTree {
                 addModifierData(new MultiModifierData());
                 return;
             }
+            this.lastActivated.unregister();
             path.addStep(this.lastActivated, active.getModifiers());
         }
         this.lastActivated = executedCondition;

@@ -1,7 +1,6 @@
 package com.amuzil.omegasource.magus.radix;
 
 import com.amuzil.omegasource.magus.skill.forms.Form;
-import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.modifiers.api.Modifier;
 import com.mojang.datafixers.util.Pair;
 
@@ -15,6 +14,7 @@ public class NodeBuilder {
 	private Consumer<RadixTree> onLeave;
 	private Consumer<RadixTree> onTerminate;
 	private Condition terminateCondition;
+	private Pair<Condition, Node> parent;
 	private final List<Modifier> availableModifiers;
 
 	private NodeBuilder(Type type) {
@@ -43,6 +43,10 @@ public class NodeBuilder {
 		return new IllegalStateException("A " + type.name().toLowerCase(Locale.ROOT) + " node cannot " + message);
 	}
 
+	public NodeBuilder addParent(Pair<Condition, Node> parent) {
+		this.parent = parent;
+		return this;
+	}
 	public NodeBuilder addChild(Condition condition, Node child) {
 		if (type.canHaveChildren) {
 			children.put(condition, child);
@@ -123,7 +127,7 @@ public class NodeBuilder {
 	}
 
 	public Node build() {
-		return new Node(children, onEnter, onLeave, onTerminate, terminateCondition, availableModifiers);
+		return new Node(parent, children, onEnter, onLeave, onTerminate, terminateCondition, availableModifiers);
 	}
 
 	private enum Type {

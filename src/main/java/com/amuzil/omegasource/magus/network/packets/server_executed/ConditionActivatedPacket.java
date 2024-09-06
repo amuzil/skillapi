@@ -4,8 +4,12 @@ import com.amuzil.omegasource.magus.network.packets.api.MagusPacket;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.amuzil.omegasource.magus.radix.condition.ConditionRegistry;
+import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -21,23 +25,21 @@ public class ConditionActivatedPacket implements MagusPacket {
 
     public void toBytes(FriendlyByteBuf buf) {
         if(condition != null) {
-            buf.writeUtf(condition.modID());
-            buf.writeUtf(condition.name());
+            buf.writeResourceLocation(new ResourceLocation(condition.modID() + ":" + condition.name()));
         }
     }
 
     public static ConditionActivatedPacket fromBytes(FriendlyByteBuf buf) {
-        String modID = buf.readUtf();
-        String condition = buf.readUtf();
         // Need to add a way to store forms...
-        return new ConditionActivatedPacket(ConditionRegistry.getConditionByName(modID, condition));
+        return new ConditionActivatedPacket(Registries.CONDITIONS.get().getValue(buf.readResourceLocation()));
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {
-        RadixUtil.getLogger().debug("Condition: " + condition.name());
+        RadixUtil.getLogger().debug("Condition Activated By Packet: " + condition.name());
         ctx.get().enqueueWork(() -> {
-            Player player = ctx.get().getSender();
-            CapabilityHandler.getCapability(player, CapabilityHandler.LIVING_DATA).getTree().moveDown(condition);
+            // Intentional crashing because I want to know why my packet isn't being received correctly...
+//            CapabilityHandler.getCapability(player, CapabilityHandler.LIVING_DATA).getTree().moveDown(condition);
+            RadixUtil.getLogger().debug("Condition Activated By Packet: " + condition.name());
         });
         return true;
     }

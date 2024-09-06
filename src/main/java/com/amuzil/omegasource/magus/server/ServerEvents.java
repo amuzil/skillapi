@@ -2,25 +2,27 @@ package com.amuzil.omegasource.magus.server;
 
 import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
-import com.amuzil.omegasource.magus.radix.*;
+import com.amuzil.omegasource.magus.network.MagusNetwork;
+import com.amuzil.omegasource.magus.network.packets.server_executed.ConditionActivatedPacket;
+import com.amuzil.omegasource.magus.radix.Condition;
+import com.amuzil.omegasource.magus.radix.Node;
+import com.amuzil.omegasource.magus.radix.NodeBuilder;
+import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyDataBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
-import com.amuzil.omegasource.magus.skill.forms.Form;
-import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import com.amuzil.omegasource.magus.skill.util.capability.entity.Data;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
 import net.minecraftforge.event.level.LevelEvent;
@@ -68,11 +70,16 @@ public class ServerEvents {
                         0, 4);
 
                 Condition arc = new KeyHoldCondition(initialiser.key().getValue(), initialiser.held(), 20000, false);
-                arc.register(() -> {}, () -> {});
+                arc.register(() -> {
+                }, () -> {
+                });
+                arc.unregister();
                 arc.name("arc");
                 arc.registerEntry();
 
                 Condition strike = new KeyHoldCondition(left.key().getValue(), left.held(), 2000000, false);
+                // TODO: Fix the tree to only change immediate children's conditions,
+                // and only register/unregister them in the tree itself
                 strike.register(() -> {
                     Entity eventEntity = event.getEntity();
 
@@ -85,20 +92,30 @@ public class ServerEvents {
 
                         // Spawn the lightning bolt in the world
                         level.addFreshEntity(lightningBolt);
+                        if (eventEntity instanceof ServerPlayer)
+                            MagusNetwork.sendToClient(new ConditionActivatedPacket(strike), (ServerPlayer) eventEntity);
+                        RadixUtil.getLogger().debug("Packet sent.");
+                        strike.unregister();
                     }
 
-                    }, () -> {});
+                }, () -> {
+                });
+//                strike.unregister();
                 strike.name("strike");
                 strike.registerEntry();
-                Node node2 = NodeBuilder.middle().addChild(strike, NodeBuilder.end().build()).build();
-
-                RadixTree tree = new RadixTree(NodeBuilder.root().addChild(arc, node2).build());
+                Node root = NodeBuilder.root().build();
+                Node middle = NodeBuilder.middle().addParent(new Pair<>(root.terminateCondition(), root)).build();
+                Node end = NodeBuilder.end().addParent(new Pair<>(arc, middle)).build();
+                middle = middle.children().put(strike, end);
+                root = root.children().put(arc, middle);
+//
+//                RadixTree tree = new RadixTree(root);
 //
 //                //todo this is not be where we should call start, but for now it'll stop us crashing until
 //                // we have a key for activating the bending state
-                tree.setOwner(event.getEntity());
-                capability.setTree(tree);
-                capability.getTree().start();
+//                tree.setOwner(event.getEntity());
+//                capability.setTree(tree);
+//                capability.getTree().start();
             }
         } else {
             if (event.getEntity() instanceof Player) {
