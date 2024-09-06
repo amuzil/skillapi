@@ -22,5 +22,6 @@ public class Forms {
     public static final Form MENU = new Form("menu");
     public static final Form HOTKEY = new Form("hotkey");
 
-    public static void init(){}
+    public static void init() {
+    }
 }

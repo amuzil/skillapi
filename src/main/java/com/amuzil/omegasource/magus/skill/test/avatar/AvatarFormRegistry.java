@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.skill.test.avatar;
 
 import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
+import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.conditionals.InputDataBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyDataBuilder;

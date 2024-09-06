@@ -3,6 +3,7 @@ package com.amuzil.omegasource.magus.network.packets.server_executed;
 import com.amuzil.omegasource.magus.network.packets.api.MagusPacket;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.RadixUtil;
+import com.amuzil.omegasource.magus.radix.condition.ConditionRegistry;
 import com.amuzil.omegasource.magus.registry.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -29,7 +30,8 @@ public class ConditionActivatedPacket implements MagusPacket {
     public static ConditionActivatedPacket fromBytes(FriendlyByteBuf buf) {
         ResourceLocation id = buf.readResourceLocation();
         RadixUtil.getLogger().debug("Attempted Condition Pass: " + id);
-        Condition cond = Registries.CONDITIONS.get().getValue(id);
+        RadixUtil.getLogger().debug("Test Form Registry: " + Registries.FORMS.get().getValue(new ResourceLocation("magus:arc")));
+        Condition cond = ConditionRegistry.getConditionByName(id.toString());
         RadixUtil.getLogger().debug("Condition Passed: " + cond.name());
         return new ConditionActivatedPacket(cond);
     }

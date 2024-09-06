@@ -31,7 +31,6 @@ public class Registries {
     public static Supplier<IForgeRegistry<SkillCategory>> SKILL_CATEGORIES;
     public static Supplier<IForgeRegistry<Skill>> SKILLS;
     public static Supplier<IForgeRegistry<Form>> FORMS;
-    public static Supplier<IForgeRegistry<Condition>> CONDITIONS;
 
 
     public static List<DataTrait> traits = new ArrayList<>();
@@ -43,7 +42,6 @@ public class Registries {
     // SKILLS
     // this is a placeholder skill for testing purposes.
     public static final Skill FIREBALL = new SkillActive("fireball", null);
-
 
     public static void init() {
     }
@@ -125,11 +123,6 @@ public class Registries {
         forms.setName(new ResourceLocation(Magus.MOD_ID, "forms"));
         FORMS = event.create(forms);
 
-        //Conditions
-        RegistryBuilder<Condition> conditions = new RegistryBuilder<>();
-        conditions.setName(new ResourceLocation(Magus.MOD_ID, "conditions"));
-        CONDITIONS = event.create(conditions);
-
         //Modifiers
     }
 
@@ -201,20 +194,6 @@ public class Registries {
             event.register(resKey, helper -> {
                 for (DataTrait trait : traits)
                     registry.register(trait.getName(), trait);
-            });
-        }
-
-
-        /* Conditions. */
-        /* Registered last because they can hold any conditional data value. */
-        if (event.getRegistryKey().equals(CONDITIONS.get().getRegistryKey())) {
-            IForgeRegistry<Condition> registry = CONDITIONS.get();
-            ResourceKey<Registry<Condition>> resKey = registry.getRegistryKey();
-
-
-            event.register(resKey, helper -> {
-                for (Condition condition : conditions)
-                    registry.register(condition.modID() + ":" + condition.name(), condition);
             });
         }
     }
