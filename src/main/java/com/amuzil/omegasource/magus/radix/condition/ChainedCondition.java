@@ -1,7 +1,6 @@
 package com.amuzil.omegasource.magus.radix.condition;
 
 import com.amuzil.omegasource.magus.radix.Condition;
-import org.apache.logging.log4j.LogManager;
 
 import java.util.List;
 

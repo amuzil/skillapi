@@ -41,7 +41,7 @@ public class ServerEvents {
 
         if (!event.getLevel().isClientSide()) {
             Data capability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.LIVING_DATA);
-            if (capability != null) {
+            if (capability != null && event.getEntity() instanceof Player) {
 
 
                 // initialise the radix tree and set the player as an instance property for sending packets.

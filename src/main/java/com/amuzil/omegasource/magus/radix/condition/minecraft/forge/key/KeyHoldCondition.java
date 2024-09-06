@@ -9,7 +9,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
-import org.apache.logging.log4j.LogManager;
 
 import java.util.function.Consumer;
 
@@ -38,20 +37,17 @@ public class KeyHoldCondition extends Condition {
             if (event.phase == ClientTickEvent.Phase.START && Minecraft.getInstance().getOverlay() == null) {
                 if (((KeyboardMouseInputModule) Magus.keyboardInputModule).keyPressed(key)) {
                     this.started = true;
-//                    LogManager.getLogger().info("KEY PRESSED: " + key);
                     this.currentHolding++;
                 } else {
                     if (pressed(this.currentHolding, duration)) {
                         // If the Condition requires the key being released....
                         if (release) {
-//                            LogManager.getLogger().info("ONSUCCESS RUNNING 1");
                             this.onSuccess.run();
                             reset();
                         }
                     } else {
                         // Not held for long enough
                         if (this.currentHolding > 0) {
-//                            LogManager.getLogger().info("ONFAILURE RUNNING 1");
                             this.onFailure.run();
                             reset();
                         }
@@ -112,7 +108,6 @@ public class KeyHoldCondition extends Condition {
     @Override
     public void unregister() {
         MinecraftForge.EVENT_BUS.unregister(clientTickListener);
-        RadixUtil.getLogger().debug("Key hold condition meant to unregister now.");
     }
 
     @Override
