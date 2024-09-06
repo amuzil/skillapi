@@ -80,6 +80,8 @@ public class ServerEvents {
                 Condition strike = new KeyHoldCondition(left.key().getValue(), left.held(), 2000000, false);
                 // TODO: Fix the tree to only change immediate children's conditions,
                 // and only register/unregister them in the tree itself
+//                strike.name("strike");
+//                strike.registerEntry();
                 strike.register(() -> {
                     Entity eventEntity = event.getEntity();
 
@@ -92,17 +94,15 @@ public class ServerEvents {
 
                         // Spawn the lightning bolt in the world
                         level.addFreshEntity(lightningBolt);
-                        if (eventEntity instanceof ServerPlayer)
-                            MagusNetwork.sendToClient(new ConditionActivatedPacket(strike), (ServerPlayer) eventEntity);
-                        RadixUtil.getLogger().debug("Packet sent.");
+//                        if (eventEntity instanceof ServerPlayer)
+                            MagusNetwork.sendToServer(new ConditionActivatedPacket(strike));//, (ServerPlayer) eventEntity);
                         strike.unregister();
                     }
 
                 }, () -> {
                 });
 //                strike.unregister();
-                strike.name("strike");
-                strike.registerEntry();
+
                 Node root = NodeBuilder.root().build();
                 Node middle = NodeBuilder.middle().addParent(new Pair<>(root.terminateCondition(), root)).build();
                 Node end = NodeBuilder.end().addParent(new Pair<>(arc, middle)).build();

@@ -77,6 +77,7 @@ public class KeyHoldCondition extends Condition {
 
             }
         };
+        this.registerEntry();
     }
 
     public boolean pressed(int held, int duration) {
