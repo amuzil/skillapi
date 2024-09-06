@@ -112,6 +112,7 @@ public class KeyHoldCondition extends Condition {
     @Override
     public void unregister() {
         MinecraftForge.EVENT_BUS.unregister(clientTickListener);
+        RadixUtil.getLogger().debug("Key hold condition meant to unregister now.");
     }
 
     @Override

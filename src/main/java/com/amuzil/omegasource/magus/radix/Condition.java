@@ -53,11 +53,6 @@ public abstract class Condition {
 		};
 	}
 
-	// Method for naming and retrieving the name of a Condition
-	public void name(String name) {
-		this.name = name;
-	}
-
 	public String name() {
 		return this.name;
 	}

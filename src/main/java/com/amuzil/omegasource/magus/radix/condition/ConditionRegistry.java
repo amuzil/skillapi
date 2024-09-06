@@ -12,8 +12,8 @@ import java.util.Map;
 public class ConditionRegistry {
 
     // Id, Condition. Stuff is put into this map when registering.
-    private static HashMap<Integer, Condition> conditions = new HashMap<>();
-    private static Map<Condition, Integer> conditionIDs = new HashMap<>();
+    private static final HashMap<Integer, Condition> conditions = new HashMap<>();
+    private static final Map<Condition, Integer> conditionIDs = new HashMap<>();
 
     static int id = 0;
     public static void register(Condition condition) {

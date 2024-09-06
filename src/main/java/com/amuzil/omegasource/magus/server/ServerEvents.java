@@ -69,16 +69,15 @@ public class ServerEvents {
                         0, 4);
 
                 Condition arc = new KeyHoldCondition(initialiser.key().getValue(), initialiser.held(), 20000, false);
-                arc.register(() -> {arc.unregister();
-                }, () -> {
+                arc.register(arc::unregister, () -> {
                 });
                 ConditionRegistry.register(arc);
 
                 Condition strike = new KeyHoldCondition(left.key().getValue(), left.held(), 2000000, false);
                 // TODO: Fix the tree to only change immediate children's conditions,
                 // and only register/unregister them in the tree itself
-//                strike.name("strike");
                 strike.register(() -> {
+                    strike.unregister();
                     Entity eventEntity = event.getEntity();
 
                     Level level = event.getLevel();
@@ -92,7 +91,7 @@ public class ServerEvents {
                         level.addFreshEntity(lightningBolt);
 //                        if (eventEntity instanceof ServerPlayer)
                             MagusNetwork.sendToServer(new ConditionActivatedPacket(strike));//, (ServerPlayer) eventEntity);
-                        strike.unregister();
+
                     }
 
                 }, () -> {

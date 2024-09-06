@@ -29,21 +29,15 @@ public class ConditionActivatedPacket implements MagusPacket {
 
     public static ConditionActivatedPacket fromBytes(FriendlyByteBuf buf) {
         int id = buf.readInt();
-        RadixUtil.getLogger().debug("Attempted Condition Pass ID: " + id);
-        RadixUtil.getLogger().debug("Test Form Registry: " + Registries.FORMS.get().getValue(new ResourceLocation("magus:arc")));
         Condition cond = ConditionRegistry.getCondition(id);
-        RadixUtil.getLogger().debug("Condition Passed: " + cond.name());
         return new ConditionActivatedPacket(cond);
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {
-        RadixUtil.getLogger().debug("Condition Activated By Packet: " + condition.name());
         ctx.get().enqueueWork(() -> {
             Player player = ctx.get().getSender();
-            player.addDeltaMovement(new Vec3(0, 2, 0));
             // Intentional crashing because I want to know why my packet isn't being received correctly...
 //            CapabilityHandler.getCapability(player, CapabilityHandler.LIVING_DATA).getTree().moveDown(condition);
-            RadixUtil.getLogger().debug("Condition Activated By Packet: " + condition.name());
         });
         return true;
     }
