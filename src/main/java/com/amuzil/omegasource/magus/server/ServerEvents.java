@@ -7,7 +7,7 @@ import com.amuzil.omegasource.magus.network.packets.server_executed.ConditionAct
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.Node;
 import com.amuzil.omegasource.magus.radix.NodeBuilder;
-import com.amuzil.omegasource.magus.radix.RadixUtil;
+import com.amuzil.omegasource.magus.radix.condition.ConditionRegistry;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyDataBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
@@ -17,7 +17,6 @@ import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import com.amuzil.omegasource.magus.skill.util.capability.entity.Data;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
@@ -70,18 +69,15 @@ public class ServerEvents {
                         0, 4);
 
                 Condition arc = new KeyHoldCondition(initialiser.key().getValue(), initialiser.held(), 20000, false);
-                arc.register(() -> {
+                arc.register(() -> {arc.unregister();
                 }, () -> {
                 });
-                arc.unregister();
-                arc.name("arc");
-                arc.registerEntry();
+                ConditionRegistry.register(arc);
 
                 Condition strike = new KeyHoldCondition(left.key().getValue(), left.held(), 2000000, false);
                 // TODO: Fix the tree to only change immediate children's conditions,
                 // and only register/unregister them in the tree itself
 //                strike.name("strike");
-//                strike.registerEntry();
                 strike.register(() -> {
                     Entity eventEntity = event.getEntity();
 
@@ -101,7 +97,7 @@ public class ServerEvents {
 
                 }, () -> {
                 });
-//                strike.unregister();
+                ConditionRegistry.register(strike);
 
                 Node root = NodeBuilder.root().build();
                 Node middle = NodeBuilder.middle().addParent(new Pair<>(root.terminateCondition(), root)).build();

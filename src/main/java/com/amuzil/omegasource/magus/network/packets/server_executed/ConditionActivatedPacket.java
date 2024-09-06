@@ -22,16 +22,16 @@ public class ConditionActivatedPacket implements MagusPacket {
     }
 
     public void toBytes(FriendlyByteBuf buf) {
-        if(condition != null) {
-            buf.writeResourceLocation(new ResourceLocation(condition.modID() + ":" + condition.name()));
+        if (condition != null) {
+            buf.writeInt(ConditionRegistry.getID(condition));
         }
     }
 
     public static ConditionActivatedPacket fromBytes(FriendlyByteBuf buf) {
-        ResourceLocation id = buf.readResourceLocation();
-        RadixUtil.getLogger().debug("Attempted Condition Pass: " + id);
+        int id = buf.readInt();
+        RadixUtil.getLogger().debug("Attempted Condition Pass ID: " + id);
         RadixUtil.getLogger().debug("Test Form Registry: " + Registries.FORMS.get().getValue(new ResourceLocation("magus:arc")));
-        Condition cond = ConditionRegistry.getConditionByName(id.toString());
+        Condition cond = ConditionRegistry.getCondition(id);
         RadixUtil.getLogger().debug("Condition Passed: " + cond.name());
         return new ConditionActivatedPacket(cond);
     }

@@ -6,14 +6,27 @@ import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ConditionRegistry {
 
+    // Id, Condition. Stuff is put into this map when registering.
+    private static HashMap<Integer, Condition> conditions = new HashMap<>();
+    private static Map<Condition, Integer> conditionIDs = new HashMap<>();
 
-    public static Condition getConditionByName(String formName) {
-        return Registries.CONDITIONS.get().getValue(new ResourceLocation(Magus.MOD_ID, ":" + formName));
+    static int id = 0;
+    public static void register(Condition condition) {
+        conditions.put(id, condition);
+        conditionIDs.put(condition, id);
+        id++;
     }
 
-    public static Condition getConditionByName(String modID, String formName) {
-        return Registries.CONDITIONS.get().getValue(new ResourceLocation(modID, ":" + formName));
+    public static Condition getCondition(int id) {
+        return conditions.get(id);
+    }
+
+    public static int getID(Condition condition) {
+        return conditionIDs.get(condition);
     }
 }
