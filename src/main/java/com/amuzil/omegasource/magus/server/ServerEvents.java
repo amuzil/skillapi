@@ -89,8 +89,7 @@ public class ServerEvents {
 
                         // Spawn the lightning bolt in the world
                         level.addFreshEntity(lightningBolt);
-//                        if (eventEntity instanceof ServerPlayer)
-                            MagusNetwork.sendToServer(new ConditionActivatedPacket(strike));//, (ServerPlayer) eventEntity);
+                        MagusNetwork.sendToServer(new ConditionActivatedPacket(strike));//, (ServerPlayer) eventEntity);
 
                     }
 

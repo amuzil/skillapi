@@ -11,10 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -24,6 +21,8 @@ import java.util.stream.Collectors;
 public class Node {
     //This needs to be changed to <Condition, Node>
     private final Map<Condition, Node> children;
+    // Need to figure this out...
+    private final HashMap<Condition, RadixBranch> branches;
     private final Pair<Condition, Node> parent;
     private final Consumer<RadixTree> onEnter;
     private final Consumer<RadixTree> onLeave;
