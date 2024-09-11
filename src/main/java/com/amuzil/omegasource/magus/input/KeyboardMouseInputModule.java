@@ -43,6 +43,11 @@ public class KeyboardMouseInputModule extends InputModule {
     private boolean listen;
     Minecraft mc = Minecraft.getInstance();
 
+    // TODO: Fix this such that any tree requiring a form relies on the input
+    // module activating a form rather than relying on the raw input data for those forms.
+    // This way, the trees for different complex methods (such as VR and multikey)
+    // remain functionally the same, they just check different input modules for whether the same
+    // forms are activated.
     public KeyboardMouseInputModule() {
         this.glfwKeysDown = new ArrayList<>();
         this.listen = true;
