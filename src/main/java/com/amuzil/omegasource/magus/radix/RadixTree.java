@@ -41,7 +41,7 @@ public class RadixTree {
         return NO_MISMATCH;
     }
 
-    // Helpful method to debug and to see all the gestures
+    // Helpful method to debug and to see all the conditions
     public void printAllConditions() {
         printAllConditions(root, new ArrayList<>());
     }
@@ -55,7 +55,7 @@ public class RadixTree {
         }
     }
 
-    // Helpful method to debug and to see all the gestures' paths in tree format
+    // Helpful method to debug and to see all the branches in tree format
     public void printAllBranches() {
         printAllBranches(root, "");
     }
@@ -76,58 +76,83 @@ public class RadixTree {
         }
     }
 
+    // Add conditions to RadixTree - O(n)
     public void insert(List<Condition> conditions) {
         Node current = root;
         int currIndex = 0;
 
-        //Iterative approach
         while (currIndex < conditions.size()) {
             Condition transitionCondition = conditions.get(currIndex);
-            RadixBranch currentPath = current.getTransition(transitionCondition);
-            //Updated version of the input gesture
-            List<Condition> currGesture = conditions.subList(currIndex, conditions.size());
+            RadixBranch currentBranch = current.getTransition(transitionCondition);
+            // Iterate forward as we move through the conditions and either sprout a node or move down an existing node
+            List<Condition> currCondition = conditions.subList(currIndex, conditions.size());
 
-            //There is no associated edge with the first character of the current string
-            //so simply add the rest of the string and finish
-            if (currentPath == null) {
-                current.branches.put(transitionCondition, new RadixBranch(new ConditionPath(currGesture)));
+            // There is no associated branch with the first condition of the current path
+            // so simply add the rest of the conditions and finish
+            if (currentBranch == null) {
+                current.branches.put(transitionCondition, new RadixBranch(new ConditionPath(currCondition)));
                 break;
             }
 
-            int splitIndex = getFirstMismatchCondition(currGesture, currentPath.path.conditions);
+            int splitIndex = getFirstMismatchCondition(currCondition, currentBranch.path.conditions);
             if (splitIndex == NO_MISMATCH) {
-                //The edge and leftover string are the same length
-                //so finish and update the next node as a gesture node
-                if (currGesture.size() == currentPath.path.conditions.size()) {
-                    currentPath.next.isComplete = true;
+                // The branch and leftover conditions are the same length
+                // so finish and update the next node as a complete node
+                if (currCondition.size() == currentBranch.path.conditions.size()) {
+                    currentBranch.next.isComplete = true;
                     break;
-                } else if (currGesture.size() < currentPath.path.conditions.size()) {
-                    //The leftover gesture is a prefix to the edge string, so split
-                    List<Condition> suffix = currentPath.path.conditions.subList(currGesture.size()-1, currGesture.size());
-                    currentPath.path.conditions = currGesture;
+                } else if (currCondition.size() < currentBranch.path.conditions.size()) {
+                    // The leftover condition is a prefix to the edge string, so split
+                    List<Condition> suffix = currentBranch.path.conditions.subList(currCondition.size()-1, currCondition.size());
+                    currentBranch.path.conditions = currCondition;
                     Node newNext = new Node(true);
-                    Node afterNewNext = currentPath.next;
-                    currentPath.next = newNext;
+                    Node afterNewNext = currentBranch.next;
+                    currentBranch.next = newNext;
 
                     newNext.addCondition(new ConditionPath(suffix), afterNewNext);
                     break;
-                } else { //currStr.length() > currentEdge.label.length()
-                    //There is leftover string after a perfect match
-                    splitIndex = currentPath.path.conditions.size();
+                } else { // currStr.length() > currentEdge.label.length()
+                    // There are leftover conditions after a perfect match
+                    splitIndex = currentBranch.path.conditions.size();
                 }
             } else {
-                //The leftover string and edge string differed, so split at point
-                List<Condition> suffix = currentPath.path.conditions.subList(splitIndex, currentPath.path.conditions.size());
-                currentPath.path.conditions = currentPath.path.conditions.subList(0, splitIndex);
-                Node prevNext = currentPath.next;
-                currentPath.next = new Node(false);
-                currentPath.next.addCondition(new ConditionPath(suffix), prevNext);
+                // The leftover conditions and branch conditions differed, so split at point
+                List<Condition> suffix = currentBranch.path.conditions.subList(splitIndex, currentBranch.path.conditions.size());
+                currentBranch.path.conditions = currentBranch.path.conditions.subList(0, splitIndex);
+                Node prevNext = currentBranch.next;
+                currentBranch.next = new Node(false);
+                currentBranch.next.addCondition(new ConditionPath(suffix), prevNext);
             }
 
-            //Traverse the tree
-            current = currentPath.next;
+            // Traverse the tree
+            current = currentBranch.next;
             currIndex += splitIndex;
         }
+    }
+
+    // Returns matched condition path if found and null if not found - O(n)
+    public List<Condition> search(List<Condition> conditions) {
+        List<Condition> ret = null;
+        Node current = root;
+        int currIndex = 0;
+        while (currIndex < conditions.size()) {
+            Condition currentCondition = conditions.get(currIndex);
+            RadixBranch branch = current.getTransition(currentCondition);
+//            RadixBranch branch = current.getMatchedPath(currentCondition);
+            if (branch == null)
+                return null;
+
+            List<Condition> currSubCondition = conditions.subList(currIndex, conditions.size());
+            if (!Condition.startsWith(currSubCondition, branch.path.conditions))
+                return null;
+
+            currIndex += branch.path.conditions.size();
+            current = branch.next;
+            if(ret == null)
+                ret = new ArrayList<>();
+            ret = Stream.concat(ret.stream(), branch.path.conditions.stream()).toList();
+        }
+        return ret;
     }
 
     // ---------- Cali's RadixTree Impl ----------

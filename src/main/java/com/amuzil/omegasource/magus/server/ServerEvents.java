@@ -126,8 +126,14 @@ public class ServerEvents {
                     conditionPath.add(strike);
                     tree.insert(conditionPath);
                 }
+                System.out.println("FormConditions List:");
                 tree.printAllConditions();
+                System.out.println("FormConditions Tree:");
                 tree.printAllBranches();
+                List<Condition> conditionPath = new ArrayList<>();
+                conditionPath.add(strike);
+                conditionPath.add(arc);
+                System.out.println("RadixTree.search result:\n" + tree.search(conditionPath));
             }
         } else {
             if (event.getEntity() instanceof Player) {

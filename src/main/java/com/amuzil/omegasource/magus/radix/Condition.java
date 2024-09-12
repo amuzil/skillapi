@@ -3,7 +3,10 @@ package com.amuzil.omegasource.magus.radix;
 import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.registry.Registries;
 
+import java.util.List;
+
 public abstract class Condition {
+
 	public enum Result {
 		SUCCESS,
 		FAILURE,
@@ -12,9 +15,9 @@ public abstract class Condition {
 
 	protected static final Runnable NO_OPERATION = () -> RadixUtil.getLogger().debug("Result: No Operation");
 
+	private String name;
 	protected Runnable onSuccess;
 	protected Runnable onFailure;
-	private String name;
 
 	// TODO: Change to registerRunnables()
 	public void register(String name, Runnable onSuccess, Runnable onFailure) {
@@ -62,6 +65,20 @@ public abstract class Condition {
 	public String modID() {
 		return Magus.MOD_ID;
 	}
+
+	public static boolean startsWith(List<Condition> conditions, List<Condition> subConditions) {
+		try {
+			return conditions.subList(0, subConditions.size()).equals(subConditions);
+		} catch (IndexOutOfBoundsException e) {
+			return false;
+		}
+	}
+
+	// TODO - May need to override the equals or create a new method to check if conditions have matching prefixes
+//	@Override
+//	public boolean equals(Object obj) {
+//		return super.equals(obj);
+//	}
 
 	@Override
 	public String toString() {
