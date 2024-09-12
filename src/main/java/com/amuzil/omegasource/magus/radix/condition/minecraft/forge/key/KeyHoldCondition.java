@@ -95,7 +95,6 @@ public class KeyHoldCondition extends Condition {
     @Override
     public void register(Runnable onSuccess, Runnable onFailure) {
         super.register(onSuccess, onFailure);
-        this.register();
     }
 
     @Override

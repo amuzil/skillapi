@@ -63,13 +63,16 @@ public class ChainedCondition extends Condition {
     public void register(Runnable onSuccess, Runnable onFailure) {
         this.onCompleteSuccess = onSuccess;
         this.onCompleteFailure = onFailure;
-        this.register();
     }
 
     @Override
     public void register() {
         currentCondition = conditionSequence.get(currentConditionIndex);
         currentCondition.register(onPartialSuccess, onPartialFailure);
+        // Divorce register(runnable, runnable) from the regular register method.
+        // This method should add requisite listeners to the forge event bus.
+        // The other method should just adjust runnables as needed.
+        currentCondition.register();
     }
 
     @Override
