@@ -7,6 +7,7 @@ import com.amuzil.omegasource.magus.network.packets.server_executed.ConditionAct
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.Node;
 import com.amuzil.omegasource.magus.radix.NodeBuilder;
+import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.radix.condition.ConditionRegistry;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyDataBuilder;
@@ -15,7 +16,6 @@ import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import com.amuzil.omegasource.magus.skill.util.capability.entity.Data;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -27,6 +27,10 @@ import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Mod.EventBusSubscriber
 public class ServerEvents {
@@ -97,19 +101,26 @@ public class ServerEvents {
                 });
                 ConditionRegistry.register(strike);
 
-                Node root = NodeBuilder.root().build();
-                Node middle = NodeBuilder.middle().addParent(new Pair<>(root.terminateCondition(), root)).build();
-                Node end = NodeBuilder.end().addParent(new Pair<>(arc, middle)).build();
-                middle = middle.children().put(strike, end);
-                root = root.children().put(arc, middle);
-//
-//                RadixTree tree = new RadixTree(root);
+//                Node root = NodeBuilder.root().build();
+//                Node middle = NodeBuilder.middle().addParent(new Pair<>(root.terminateCondition(), root)).build();
+//                Node end = NodeBuilder.end().addParent(new Pair<>(arc, middle)).build();
+//                middle = middle.children().put(strike, end);
+//                root = root.children().put(arc, middle);
 //
 //                //todo this is not be where we should call start, but for now it'll stop us crashing until
 //                // we have a key for activating the bending state
 //                tree.setOwner(event.getEntity());
 //                capability.setTree(tree);
 //                capability.getTree().start();
+
+                System.out.println("Test Populating RadixTree");
+                RadixTree tree = new RadixTree();
+                for (Condition condition: ConditionRegistry.getConditions()) {
+                    List<Condition> conditionPath = Arrays.asList(condition);
+                    tree.insert(conditionPath);
+                }
+                tree.printAllConditions();
+                tree.printAllBranches();
             }
         } else {
             if (event.getEntity() instanceof Player) {

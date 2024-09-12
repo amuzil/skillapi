@@ -93,6 +93,11 @@ public class KeyHoldCondition extends Condition {
     }
 
     @Override
+    public String toString() {
+        return "Condition[ key=" + key + " ]";
+    }
+
+    @Override
     public void register(Runnable onSuccess, Runnable onFailure) {
         super.register(onSuccess, onFailure);
     }

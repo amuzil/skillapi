@@ -20,15 +20,16 @@ import java.util.stream.Collectors;
  */
 public class Node {
     //This needs to be changed to <Condition, Node>
-    private final Map<Condition, Node> children;
+    private Map<Condition, Node> children;
     // Need to figure this out...
-    private final HashMap<Condition, RadixBranch> branches;
-    private final Pair<Condition, Node> parent;
+    private Pair<Condition, Node> parent;
     private final Consumer<RadixTree> onEnter;
     private final Consumer<RadixTree> onLeave;
     private final Consumer<RadixTree> onTerminate;
     private final Condition terminateCondition;
     private final List<ModifierData> modifiers;
+    public final HashMap<Condition, RadixBranch> branches;
+    public boolean isComplete;
 
     /**
      * @param children           If a condition is fulfilled, the active node moves down to the mapped child node
@@ -54,7 +55,37 @@ public class Node {
         this.terminateCondition = terminateCondition;
         this.modifiers = Collections.synchronizedList(modifiers.stream().map(Modifier::data).toList());
         branches = new HashMap<>();
+        this.isComplete = false; // Temporary
     }
+
+    public Node (boolean isComplete) {
+        this.onEnter = null;
+        this.onLeave = null;
+        this.onTerminate = null;
+        this.terminateCondition = null;
+        this.modifiers = new ArrayList<>();
+        this.branches = new HashMap<>();
+        this.isComplete = isComplete;
+    }
+
+    public RadixBranch getTransition(Condition transitionCondition) {
+        return branches.get(transitionCondition);
+    }
+
+    public void addCondition(ConditionPath conditionPath, Node next) {
+        branches.put(conditionPath.conditions.get(0), new RadixBranch(conditionPath, next));
+    }
+
+    public int totalConditions() {
+        return branches.size();
+    }
+
+    @Override
+    public String toString() {
+        return "Node[ isComplete=" + isComplete + ", branches=" + branches + "]";
+    }
+
+    // ---------- Cali's RadixTree Impl ----------
 
     public Map<Condition, Node> children() {
         return children;
@@ -80,6 +111,7 @@ public class Node {
                             .terminateCondition().equals(this.terminateCondition())) // Ensure the child's parent is the current node
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
+
     public Consumer<RadixTree> onTerminate() {
         return onTerminate;
     }

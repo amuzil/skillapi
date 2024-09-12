@@ -13,16 +13,32 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class RadixPath implements INBTSerializable<CompoundTag> {
+public class ConditionPath implements INBTSerializable<CompoundTag> {
 
-    private LinkedList<Pair<Condition, List<ModifierData>>> activationPath;
+    public LinkedList<Pair<Condition, List<ModifierData>>> activationPath;
+    public List<Condition> conditions;
 
-    public RadixPath() {
+    public ConditionPath() {
         activationPath = new LinkedList<>();
     }
 
+    public ConditionPath(List<Condition> activatedConditions) {
+        conditions = activatedConditions;
+        activationPath = new LinkedList<>();
+        List<ModifierData> emptyModifier = new ArrayList<>();
+        for (Condition activatedCondition: activatedConditions) {
+            activationPath.add(Pair.of(activatedCondition, emptyModifier));
+        }
+    }
+
     public void addStep(Condition activatedCondition, List<ModifierData> modifierData) {
+        conditions.add(activatedCondition);
         activationPath.add(Pair.of(activatedCondition, modifierData));
+    }
+
+    @Override
+    public String toString() {
+        return conditions.toString();
     }
 
     @Override
