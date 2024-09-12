@@ -29,7 +29,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Mod.EventBusSubscriber
@@ -73,14 +72,14 @@ public class ServerEvents {
                         0, 4);
 
                 Condition arc = new KeyHoldCondition(initialiser.key().getValue(), initialiser.held(), 20000, false);
-                arc.register(arc::unregister, () -> {
+                arc.register("Arc", arc::unregister, () -> {
                 });
                 ConditionRegistry.register(arc);
 
                 Condition strike = new KeyHoldCondition(left.key().getValue(), left.held(), 2000000, false);
                 // TODO: Fix the tree to only change immediate children's conditions,
                 // and only register/unregister them in the tree itself
-                strike.register(() -> {
+                strike.register("Strike", () -> {
                     strike.unregister();
                     Entity eventEntity = event.getEntity();
 
@@ -116,7 +115,15 @@ public class ServerEvents {
                 System.out.println("Test Populating RadixTree");
                 RadixTree tree = new RadixTree();
                 for (Condition condition: ConditionRegistry.getConditions()) {
-                    List<Condition> conditionPath = Arrays.asList(condition);
+                    List<Condition> conditionPath = new ArrayList<>();
+                    conditionPath.add(condition);
+                    conditionPath.add(arc);
+                    tree.insert(conditionPath);
+                }
+                for (Condition condition: ConditionRegistry.getConditions()) {
+                    List<Condition> conditionPath = new ArrayList<>();
+                    conditionPath.add(condition);
+                    conditionPath.add(strike);
                     tree.insert(conditionPath);
                 }
                 tree.printAllConditions();

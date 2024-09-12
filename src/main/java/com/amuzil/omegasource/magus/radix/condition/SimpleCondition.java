@@ -13,7 +13,7 @@ public class SimpleCondition extends Condition {
 	}
 
 	@Override
-	public void register(Runnable onSuccess, Runnable onFailure) {
+	public void register(String name, Runnable onSuccess, Runnable onFailure) {
 		if (condition.get()) {
 			onSuccess.run();
 		} else {

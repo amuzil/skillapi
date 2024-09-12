@@ -40,10 +40,16 @@ public class TickTimedCondition extends Condition {
 	}
 
 	@Override
+	public void register(String name, Runnable onSuccess, Runnable onFailure) {
+		super.register(name, onSuccess, onFailure);
+		this.register();
+	}
+
+	@Override
 	public void register() {
 		super.register();
 		// TODO is this the correct approach?
-		this.subCondition.register(runOn(this.onSubSuccess), runOn(this.onSubFailure));
+		this.subCondition.register("", runOn(this.onSubSuccess), runOn(this.onSubFailure));
 		//Ensures no cast errors occur (blame forge)
 		MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.class, listener);
 	}

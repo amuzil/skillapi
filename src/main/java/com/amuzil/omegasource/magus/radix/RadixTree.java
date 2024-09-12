@@ -162,7 +162,7 @@ public class RadixTree {
         if (active != null && active == root) {
             Condition currentCondition = active.terminateCondition();
             if (currentCondition != null) {
-                currentCondition.register(() -> {
+                currentCondition.register("", () -> {
                     currentCondition.onSuccess.run();
                     MagusNetwork.sendToServer(new ConditionActivatedPacket(currentCondition));
                 }, currentCondition.onFailure);
@@ -181,7 +181,7 @@ public class RadixTree {
                         RadixUtil.getLogger().debug("Packet sent.");
                         condition.unregister();
                     };
-                    condition.register(success, condition.onFailure);
+                    condition.register("", success, condition.onFailure);
                 }
             }
 
@@ -199,7 +199,7 @@ public class RadixTree {
                     active.terminateCondition().onSuccess.run();
                     terminate();
                 };
-                active.terminateCondition().register(onSuccess, () -> {
+                active.terminateCondition().register("", onSuccess, () -> {
                 });
             }
         }

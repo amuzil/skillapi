@@ -17,7 +17,8 @@ public abstract class Condition {
 	private String name;
 
 	// TODO: Change to registerRunnables()
-	public void register(Runnable onSuccess, Runnable onFailure) {
+	public void register(String name, Runnable onSuccess, Runnable onFailure) {
+		this.name = name;
 		//RadixUtil.getLogger().debug("Registering results");
 //		if (this instanceof KeyPressCondition && ((KeyPressCondition) this).getKey() == 0)
 //			Thread.dumpStack();
@@ -60,5 +61,10 @@ public abstract class Condition {
 	// Change this for custom conditions/conditions you want registered in your own mod
 	public String modID() {
 		return Magus.MOD_ID;
+	}
+
+	@Override
+	public String toString() {
+		return "Condition[ " + name + " ]";
 	}
 }
