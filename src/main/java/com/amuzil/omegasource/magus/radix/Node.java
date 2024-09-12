@@ -53,6 +53,7 @@ public class Node {
         this.onTerminate = onTerminate;
         this.terminateCondition = terminateCondition;
         this.modifiers = Collections.synchronizedList(modifiers.stream().map(Modifier::data).toList());
+        branches = new HashMap<>();
     }
 
     public Map<Condition, Node> children() {
