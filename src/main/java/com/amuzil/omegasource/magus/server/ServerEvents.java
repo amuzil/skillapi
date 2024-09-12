@@ -133,7 +133,10 @@ public class ServerEvents {
                 List<Condition> conditionPath = new ArrayList<>();
                 conditionPath.add(strike);
                 conditionPath.add(arc);
-                System.out.println("RadixTree.search result:\n" + tree.search(conditionPath));
+                System.out.println("RadixTree.search passing result:\n" + tree.search(conditionPath));
+                conditionPath.clear();
+                conditionPath.add(strike);
+                System.out.println("RadixTree.search failed result:\n" + tree.search(conditionPath));
             }
         } else {
             if (event.getEntity() instanceof Player) {
