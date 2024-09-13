@@ -75,7 +75,13 @@ public class RadixTree {
                         RadixUtil.getLogger().debug("Packet sent.");
                         condition.unregister();
                     };
-                    condition.register(success, condition.onFailure);
+                    Runnable failure;
+                    failure = () -> {
+                        condition.onFailure.run();
+                        condition.unregister();
+                    };
+                    condition.register(success, failure);
+                    condition.register();
                 }
             }
 
