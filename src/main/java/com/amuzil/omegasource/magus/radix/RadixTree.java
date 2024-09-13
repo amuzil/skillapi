@@ -9,12 +9,13 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.LogManager;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class RadixTree {
-    private Node root;
     private static final int NO_MISMATCH = -1;
+    private Node root;
     private Node active;
     private Condition lastActivated = null;
     // Fire is a test
@@ -47,10 +48,10 @@ public class RadixTree {
 
     private void deactivateAllConditions(Node current, List<Condition> result) {
         if (current.isComplete)
-            for (Condition condition: result)
+            for (Condition condition : result)
                 condition.unregister();
 
-        for (RadixBranch branch: current.branches.values())
+        for (RadixBranch branch : current.branches.values())
             deactivateAllConditions(branch.next, Stream.concat(result.stream(), branch.path.conditions.stream()).toList());
     }
 
@@ -63,7 +64,7 @@ public class RadixTree {
         if (current.isComplete)
             System.out.println("Condition: " + result);
 
-        for (RadixBranch branch: current.branches.values())
+        for (RadixBranch branch : current.branches.values())
             printAllConditions(branch.next, Stream.concat(result.stream(), branch.path.conditions.stream()).toList());
     }
 
@@ -73,8 +74,9 @@ public class RadixTree {
     }
 
     private void printAllBranches(Node current, String indent) {
-        int lastValue = current.totalConditions()-1; int i = 0;
-        for (RadixBranch branch: current.branches.values()) {
+        int lastValue = current.totalConditions() - 1;
+        int i = 0;
+        for (RadixBranch branch : current.branches.values()) {
             if (i == lastValue)
                 System.out.println(indent.replace("+", "L") + branch.path);
             else
@@ -83,7 +85,8 @@ public class RadixTree {
             int length2 = branch.path.toString().length() / 3;
             String oldIndent = new String(new char[length1]).replace("\0", " ");
             String lineIndent = new String(new char[length2]).replace("\0", "-");
-            String newIndent = oldIndent + "+" + lineIndent + "->"; i++;
+            String newIndent = oldIndent + "+" + lineIndent + "->";
+            i++;
             printAllBranches(branch.next, newIndent);
         }
     }
@@ -115,7 +118,7 @@ public class RadixTree {
                     break;
                 } else if (currCondition.size() < currentBranch.path.conditions.size()) {
                     // The leftover condition is a prefix to the edge string, so split
-                    List<Condition> suffix = currentBranch.path.conditions.subList(currCondition.size()-1, currCondition.size());
+                    List<Condition> suffix = currentBranch.path.conditions.subList(currCondition.size() - 1, currCondition.size());
                     currentBranch.path.conditions = currCondition;
                     Node newNext = new Node(true);
                     Node afterNewNext = currentBranch.next;
@@ -143,7 +146,7 @@ public class RadixTree {
 
         // Only register immediate children conditions
         deactivateAllConditions();
-        for (Condition condition: root.getImmediateBranches())
+        for (Condition condition : root.getImmediateBranches())
             condition.register();
     }
 
@@ -165,7 +168,7 @@ public class RadixTree {
 
             currIndex += branch.path.conditions.size();
             current = branch.next;
-            if(ret == null)
+            if (ret == null)
                 ret = new ArrayList<>();
             ret = Stream.concat(ret.stream(), branch.path.conditions.stream()).toList();
         }
@@ -204,16 +207,16 @@ public class RadixTree {
         if (active != null && active == root) {
             Condition currentCondition = active.terminateCondition();
             if (currentCondition != null) {
-                currentCondition.register("", () -> {
+                currentCondition.register(currentCondition.name(), () -> {
                     currentCondition.onSuccess.run();
+                    currentCondition.unregister();
                     MagusNetwork.sendToServer(new ConditionActivatedPacket(currentCondition));
                 }, currentCondition.onFailure);
+                currentCondition.register();
             }
 
             // Child Nodes
-            for (Map.Entry<Condition, Node> child : active.getImmediateChildren().entrySet()) {
-                //TODO: Find way to prevent overwriting but also prevent doubly sending packets.
-                Condition condition = child.getKey();
+            for (Condition condition : active.getImmediateBranches()) {
                 if (condition != null) {
                     Runnable success;
                     success = () -> {
