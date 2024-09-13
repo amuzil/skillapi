@@ -100,7 +100,6 @@ public class KeyHoldCondition extends Condition {
     @Override
     public void register(String name, Runnable onSuccess, Runnable onFailure) {
         super.register(name, onSuccess, onFailure);
-        this.register();
     }
 
     @Override

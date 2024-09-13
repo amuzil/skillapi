@@ -41,6 +41,19 @@ public class RadixTree {
         return NO_MISMATCH;
     }
 
+    private void deactivateAllConditions() {
+        deactivateAllConditions(root, new ArrayList<>());
+    }
+
+    private void deactivateAllConditions(Node current, List<Condition> result) {
+        if (current.isComplete)
+            for (Condition condition: result)
+                condition.unregister();
+
+        for (RadixBranch branch: current.branches.values())
+            deactivateAllConditions(branch.next, Stream.concat(result.stream(), branch.path.conditions.stream()).toList());
+    }
+
     // Helpful method to debug and to see all the conditions
     public void printAllConditions() {
         printAllConditions(root, new ArrayList<>());
@@ -50,9 +63,8 @@ public class RadixTree {
         if (current.isComplete)
             System.out.println("Condition: " + result);
 
-        for (RadixBranch branch: current.branches.values()) {
+        for (RadixBranch branch: current.branches.values())
             printAllConditions(branch.next, Stream.concat(result.stream(), branch.path.conditions.stream()).toList());
-        }
     }
 
     // Helpful method to debug and to see all the branches in tree format
@@ -128,6 +140,11 @@ public class RadixTree {
             current = currentBranch.next;
             currIndex += splitIndex;
         }
+
+        // Only register immediate children conditions
+        deactivateAllConditions();
+        for (Condition condition: root.getImmediateBranches())
+            condition.register();
     }
 
     // Returns matched condition path if found and null if not found - O(n)

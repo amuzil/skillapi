@@ -80,6 +80,10 @@ public class Node {
         return branches.size();
     }
 
+    public Set<Condition> getImmediateBranches() {
+        return branches.keySet();
+    }
+
     @Override
     public String toString() {
         return "Node[ isComplete=" + isComplete + ", branches=" + branches + "]";
