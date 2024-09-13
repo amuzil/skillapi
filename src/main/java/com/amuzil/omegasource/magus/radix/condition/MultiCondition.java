@@ -1,7 +1,5 @@
 package com.amuzil.omegasource.magus.radix.condition;
 
-import com.amuzil.omegasource.magus.Magus;
-import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.radix.Condition;
 import net.minecraftforge.event.TickEvent;
 import org.apache.logging.log4j.LogManager;
@@ -42,7 +40,7 @@ public class MultiCondition extends Condition {
     }
 
     @Override
-    public void register(Runnable onSuccess, Runnable onFailure) {
+    public void register(String name, Runnable onSuccess, Runnable onFailure) {
         this.clientTickListener = event -> {
             if (event.phase == TickEvent.ClientTickEvent.Phase.START) {
                 if(startedExecuting)
@@ -69,7 +67,7 @@ public class MultiCondition extends Condition {
         this.executionTime = 0;
         concurrentConditions.forEach(condition -> {
             int id = counter.getAndIncrement();
-            condition.register(() -> {
+            condition.register("", () -> {
                 synchronized (conditionsMet) {
                     // Debugging statement:
 //                    LogManager.getLogger().info("MARKING CONDITION MET: " + concurrentConditions.get(id).getClass());

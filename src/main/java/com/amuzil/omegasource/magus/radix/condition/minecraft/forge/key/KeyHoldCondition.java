@@ -92,9 +92,14 @@ public class KeyHoldCondition extends Condition {
         return this.key;
     }
 
+//    @Override
+//    public String toString() {
+//        return "KeyHoldCondition[ key=" + key + " ]";
+//    }
+
     @Override
-    public void register(Runnable onSuccess, Runnable onFailure) {
-        super.register(onSuccess, onFailure);
+    public void register(String name, Runnable onSuccess, Runnable onFailure) {
+        super.register(name, onSuccess, onFailure);
     }
 
     @Override

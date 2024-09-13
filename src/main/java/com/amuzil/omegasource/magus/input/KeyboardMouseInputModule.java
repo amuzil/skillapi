@@ -1,7 +1,6 @@
 package com.amuzil.omegasource.magus.input;
 
 import com.amuzil.omegasource.magus.network.MagusNetwork;
-import com.amuzil.omegasource.magus.network.packets.server_executed.ConditionActivatedPacket;
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
@@ -182,7 +181,7 @@ public class KeyboardMouseInputModule extends InputModule {
                 .build();
         if(formCondition != null) {
             //Register listeners for condition created.
-            formCondition.register(onSuccess, onFailure);
+            formCondition.register(formToExecute.name(), onSuccess, onFailure);
             //add condition to InputModule registry so that it can be tracked.
             formInputs.put(formCondition, formToExecute);
         } else {

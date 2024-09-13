@@ -1,8 +1,6 @@
 package com.amuzil.omegasource.magus.radix.condition.minecraft.forge;
 
 import com.amuzil.omegasource.magus.radix.Condition;
-import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -26,8 +24,9 @@ public class EventCondition<E extends Event> extends Condition {
     }
 
     @Override
-    public void register(Runnable onSuccess, Runnable onFailure) {
-        super.register(onSuccess, onFailure);
+    public void register(String name, Runnable onSuccess, Runnable onFailure) {
+        super.register(name, onSuccess, onFailure);
+        this.register();
     }
 
     @Override

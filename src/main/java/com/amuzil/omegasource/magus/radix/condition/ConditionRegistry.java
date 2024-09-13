@@ -6,8 +6,7 @@ import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ConditionRegistry {
 
@@ -24,6 +23,10 @@ public class ConditionRegistry {
 
     public static Condition getCondition(int id) {
         return conditions.get(id);
+    }
+
+    public static List<Condition> getConditions() {
+        return new ArrayList<>(conditions.values());
     }
 
     public static int getID(Condition condition) {
