@@ -5,6 +5,7 @@ import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.amuzil.omegasource.magus.radix.condition.ConditionRegistry;
 import com.amuzil.omegasource.magus.registry.Registries;
+import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -37,7 +38,7 @@ public class ConditionActivatedPacket implements MagusPacket {
         ctx.get().enqueueWork(() -> {
             Player player = ctx.get().getSender();
             // Intentional crashing because I want to know why my packet isn't being received correctly...
-//            CapabilityHandler.getCapability(player, CapabilityHandler.LIVING_DATA).getTree().moveDown(condition);
+            CapabilityHandler.getCapability(player, CapabilityHandler.LIVING_DATA).getTree().moveDown(condition);
         });
         return true;
     }

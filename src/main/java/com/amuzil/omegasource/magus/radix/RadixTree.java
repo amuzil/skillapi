@@ -319,7 +319,7 @@ public class RadixTree {
         }
 
         //TODO: THis should not jump levels of the tree!!!!!!
-        setActive(active.children().get(executedCondition));
+        setActive(active.branches.get(executedCondition).next);
     }
 
     public void expire() {
