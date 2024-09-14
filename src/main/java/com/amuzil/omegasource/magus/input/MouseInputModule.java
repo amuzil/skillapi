@@ -18,7 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class KeyboardMouseInputModule extends InputModule {
+public class MouseInputModule extends InputModule {
 
     private final Consumer<TickEvent> tickEventConsumer;
     private List<Integer> glfwKeysDown;
@@ -28,7 +28,6 @@ public class KeyboardMouseInputModule extends InputModule {
     // is -1.0. Therefore, you'd need a tracker over time, like a key held event, for the mouse wheel.
     // Except you're not pressing it, you're spinning it....
     private double mouseScrollDelta;
-    private final Consumer<InputEvent.Key> keyboardListener;
     private final Consumer<InputEvent.MouseButton> mouseListener;
     private final Consumer<InputEvent.MouseScrollingEvent> mouseScrollListener;
     private Form activeForm = null;
@@ -47,28 +46,9 @@ public class KeyboardMouseInputModule extends InputModule {
     // This way, the trees for different complex methods (such as VR and multikey)
     // remain functionally the same, they just check different input modules for whether the same
     // forms are activated.
-    public KeyboardMouseInputModule() {
+    public MouseInputModule() {
         this.glfwKeysDown = new ArrayList<>();
         this.listen = true;
-        this.keyboardListener = keyboardEvent -> {
-            int keyPressed = keyboardEvent.getKey();
-            switch (keyboardEvent.getAction()) {
-                case InputConstants.PRESS -> {
-                    if (!glfwKeysDown.contains(keyPressed))
-                        glfwKeysDown.add(keyPressed);
-                }
-                case InputConstants.REPEAT -> {
-                    if (!glfwKeysDown.contains(keyPressed)) {
-                        glfwKeysDown.add(keyPressed);
-                    }
-                }
-                case InputConstants.RELEASE -> {
-                    if (glfwKeysDown.contains(keyPressed)) {
-                        glfwKeysDown.remove((Integer) keyPressed);
-                    }
-                }
-            }
-        };
 
         this.mouseListener = mouseEvent -> {
             int keyPressed = mouseEvent.getButton();
@@ -192,7 +172,6 @@ public class KeyboardMouseInputModule extends InputModule {
 
     @Override
     public void registerListeners() {
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.Key.class, keyboardListener);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.MouseButton.class, mouseListener);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.MouseScrollingEvent.class, mouseScrollListener);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.class, tickEventConsumer);
@@ -200,7 +179,6 @@ public class KeyboardMouseInputModule extends InputModule {
 
     @Override
     public void unregisterInputs() {
-        MinecraftForge.EVENT_BUS.unregister(keyboardListener);
         MinecraftForge.EVENT_BUS.unregister(mouseListener);
         MinecraftForge.EVENT_BUS.unregister(mouseScrollListener);
         MinecraftForge.EVENT_BUS.unregister(tickEventConsumer);

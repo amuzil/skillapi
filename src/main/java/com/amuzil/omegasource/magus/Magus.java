@@ -1,7 +1,7 @@
 package com.amuzil.omegasource.magus;
 
 import com.amuzil.omegasource.magus.input.InputModule;
-import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
+import com.amuzil.omegasource.magus.input.KeyboardInputModule;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
@@ -43,7 +43,7 @@ public class Magus {
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
         //Register the input module
-        keyboardInputModule = new KeyboardMouseInputModule();
+        keyboardInputModule = new KeyboardInputModule();
         // Register capabilities
         FMLJavaModLoadingContext.get().getModEventBus().addListener(CapabilityHandler::registerCapabilities);
         // attach capabilities
@@ -108,6 +108,7 @@ public class Magus {
             // Some client setup code
             LOGGER.info("HELLO FROM CLIENT SETUP");
 
+            KeyboardInputModule.determineMotionKeys();
 
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }

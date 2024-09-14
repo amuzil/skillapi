@@ -1,7 +1,6 @@
 package com.amuzil.omegasource.magus.skill.test.avatar;
 
-import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
-import com.amuzil.omegasource.magus.registry.Registries;
+import com.amuzil.omegasource.magus.input.KeyboardInputModule;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.conditionals.InputDataBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyDataBuilder;
@@ -73,7 +72,7 @@ public class AvatarFormRegistry {
 
         //TODO: Add in a mandatory key release condition so you can't activate these by holding down a key.
         // Also account for the direction modifier.
-        for (Map.Entry<String, Integer> key : KeyboardMouseInputModule.getMovementKeys().entrySet()) {
+        for (Map.Entry<String, Integer> key : KeyboardInputModule.getMovementKeys().entrySet()) {
             inputs.clear();
             //TODO: Find a way to specify releasing a key is required.
 

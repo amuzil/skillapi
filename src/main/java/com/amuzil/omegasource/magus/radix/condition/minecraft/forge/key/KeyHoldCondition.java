@@ -1,7 +1,7 @@
 package com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key;
 
 import com.amuzil.omegasource.magus.Magus;
-import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
+import com.amuzil.omegasource.magus.input.KeyboardInputModule;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.RadixUtil;
 import net.minecraft.client.Minecraft;
@@ -26,7 +26,6 @@ public class KeyHoldCondition extends Condition {
     public KeyHoldCondition(int key, int duration, int timeout, boolean release) {
         RadixUtil.assertTrue(duration >= 1, "duration must be >= 1");
         RadixUtil.assertTrue(timeout >= 1, "timeout must be >= 1");
-
         this.currentTotal = 0;
         this.currentHolding = 0;
         this.release = release;
@@ -35,7 +34,7 @@ public class KeyHoldCondition extends Condition {
 
         this.clientTickListener = event -> {
             if (event.phase == ClientTickEvent.Phase.START && Minecraft.getInstance().getOverlay() == null) {
-                if (((KeyboardMouseInputModule) Magus.keyboardInputModule).keyPressed(key)) {
+                if (((KeyboardInputModule) Magus.keyboardInputModule).keyPressed(key)) {
                     this.started = true;
                     this.currentHolding++;
                 } else {
