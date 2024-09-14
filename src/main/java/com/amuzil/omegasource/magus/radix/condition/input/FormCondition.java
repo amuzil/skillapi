@@ -17,6 +17,7 @@ public class FormCondition extends Condition {
     int ticksWaiting;
 
     public FormCondition(Form form, int timeout, InputModule module) {
+        this.setName(form.name());
         this.form = form;
         this.timeout = timeout;
         this.module = module;
