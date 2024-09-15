@@ -97,12 +97,16 @@ public class MouseMotionShapeComparator {
         return circle;
     }
 
+    private double getAngle(int i, double increment, double rotation) {
+        return i * increment + Math.toRadians(rotation);
+    }
+
     private List<Point2D> generatePolygon(Point2D center, double sideLength, int sides, double rotation) {
         List<Point2D> polygon = new ArrayList<>();
         double angleIncrement = 2 * Math.PI / sides;
 
         for (int i = 0; i < sides; i++) {
-            double angle = i * angleIncrement + Math.toRadians(rotation);
+            double angle = getAngle(i, angleIncrement, rotation);
             double x = center.getX() + sideLength * Math.cos(angle);
             double y = center.getY() + sideLength * Math.sin(angle);
             polygon.add(new Point2D.Double(x, y));
@@ -116,7 +120,7 @@ public class MouseMotionShapeComparator {
 
         for (int i = 0; i < 2 * points; i++) {
             double radius = (i % 2 == 0) ? outerRadius : innerRadius;
-            double angle = i * angleIncrement + Math.toRadians(rotation);
+            double angle = getAngle(i, angleIncrement, rotation);
             double x = center.getX() + radius * Math.cos(angle);
             double y = center.getY() + radius * Math.sin(angle);
             star.add(new Point2D.Double(x, y));
