@@ -77,6 +77,7 @@ public class ChainedCondition extends Condition {
 
     @Override
     public void unregister() {
-        currentCondition.unregister();
+        if (currentCondition != null)
+            currentCondition.unregister();
     }
 }

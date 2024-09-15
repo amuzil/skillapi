@@ -1,27 +1,24 @@
 package com.amuzil.omegasource.magus;
 
 import com.amuzil.omegasource.magus.input.InputModule;
-import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
+import com.amuzil.omegasource.magus.input.KeyboardInputModule;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
-import com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.stream.Collectors;
 
 // The value here should match an entry in the META-INF/mods.toml file
 
@@ -46,7 +43,7 @@ public class Magus {
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
         //Register the input module
-        keyboardInputModule = new KeyboardMouseInputModule();
+        keyboardInputModule = new KeyboardInputModule();
         // Register capabilities
         FMLJavaModLoadingContext.get().getModEventBus().addListener(CapabilityHandler::registerCapabilities);
         // attach capabilities
@@ -111,9 +108,17 @@ public class Magus {
             // Some client setup code
             LOGGER.info("HELLO FROM CLIENT SETUP");
 
-            KeyboardMouseInputModule.determineMotionKeys();
+            KeyboardInputModule.determineMotionKeys();
 
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }
+    }
+
+    // Send a message to in-game chat
+    public static void sendDebugMsg(String msg) {
+        LocalPlayer player = Minecraft.getInstance().player;
+        Component text = Component.literal(msg);
+        assert player != null;
+        player.sendSystemMessage(text);
     }
 }

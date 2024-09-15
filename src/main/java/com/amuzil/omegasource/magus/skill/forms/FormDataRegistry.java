@@ -49,6 +49,7 @@ public class FormDataRegistry {
     public static List<Condition> getConditionsFrom(Form form) {
         return formConditions.get(form);
     }
+
     public static void registerForm(InputData input, Form form) {
         List<InputData> singleton = new ArrayList<>();
         singleton.add(input);

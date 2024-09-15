@@ -61,6 +61,10 @@ public abstract class Condition {
 		return this.name;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	// Change this for custom conditions/conditions you want registered in your own mod
 	public String modID() {
 		return Magus.MOD_ID;
@@ -82,6 +86,6 @@ public abstract class Condition {
 
 	@Override
 	public String toString() {
-		return "Condition[ " + name + " ]";
+		return this.getClass().getSimpleName() + "[ " + name + " ]";
 	}
 }

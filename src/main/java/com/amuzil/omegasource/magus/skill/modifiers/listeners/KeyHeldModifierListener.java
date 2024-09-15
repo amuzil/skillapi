@@ -1,7 +1,7 @@
 package com.amuzil.omegasource.magus.skill.modifiers.listeners;
 
 import com.amuzil.omegasource.magus.Magus;
-import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
+import com.amuzil.omegasource.magus.input.KeyboardInputModule;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
@@ -48,7 +48,7 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
 
         this.clientTickListener = event -> {
             if (event.phase == TickEvent.ClientTickEvent.Phase.START) {
-                if (((KeyboardMouseInputModule)Magus.keyboardInputModule).keyPressed(keyToHold)) {
+                if (((KeyboardInputModule)Magus.keyboardInputModule).keyPressed(keyToHold)) {
                     this.isHeld = true;
                     this.currentHolding++;
                 } else {

@@ -1,7 +1,7 @@
 package com.amuzil.omegasource.magus.server;
 
 import com.amuzil.omegasource.magus.Magus;
-import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
+import com.amuzil.omegasource.magus.input.KeyboardInputModule;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.server_executed.ConditionActivatedPacket;
 import com.amuzil.omegasource.magus.radix.Condition;
@@ -9,9 +9,11 @@ import com.amuzil.omegasource.magus.radix.Node;
 import com.amuzil.omegasource.magus.radix.NodeBuilder;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.radix.condition.ConditionRegistry;
+import com.amuzil.omegasource.magus.radix.condition.input.FormCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyDataBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
+import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
@@ -59,12 +61,6 @@ public class ServerEvents {
                 if (capability.getTree() != null)
                     capability.getTree().burn();
                 // TODO: Need a way to convert forms into conditions
-//                RadixTree tree = new RadixTree(NodeBuilder.root().addChildren(new Pair<>(Forms.ARC, secondNode),
-//                        new Pair<>(Forms.STEP, secondNode)).build());
-//                // new Pair<>(Forms.FORCE, secondNode),
-////                        new Pair<>(Forms.BURST, secondNode)).build());
-//                tree.setOwner(event.getEntity());
-//                capability.setTree(tree);
                 // Need to test out the condition tree. use left alt/arc > strike (left click).
                 // While this test code will directly use conditions, Skills will reference Forms
                 // that get automatically turned into conditions.
@@ -101,19 +97,13 @@ public class ServerEvents {
                 });
                 ConditionRegistry.register(strike);
 
-//                Node root = NodeBuilder.root().build();
-//                Node middle = NodeBuilder.middle().addParent(new Pair<>(root.terminateCondition(), root)).build();
-//                Node end = NodeBuilder.end().addParent(new Pair<>(arc, middle)).build();
-//                middle = middle.children().put(strike, end);
-//                root = root.children().put(arc, middle);
-//
-//                //todo this is not be where we should call start, but for now it'll stop us crashing until
-//                // we have a key for activating the bending state
-//                tree.setOwner(event.getEntity());
-//                capability.setTree(tree);
-//                capability.getTree().start();
 
-                System.out.println("Test Populating RadixTree");
+                Condition arc2 = new FormCondition(Forms.ARC, -1, Magus.keyboardInputModule);
+                arc2.register("ARC", () -> {
+                    Magus.sendDebugMsg("ARC FORM TRIGGERED");
+                }, () -> {});
+
+                System.out.println("Test RadixTree");
                 RadixTree tree = new RadixTree();
                 for (Condition condition : ConditionRegistry.getConditions()) {
                     List<Condition> conditionPath = new ArrayList<>();
@@ -141,7 +131,8 @@ public class ServerEvents {
             }
         } else {
             if (event.getEntity() instanceof Player) {
-                ((KeyboardMouseInputModule) Magus.keyboardInputModule).resetKeys();
+                System.out.println("MADE IT TO CLIENT SIDE?");
+                ((KeyboardInputModule) Magus.keyboardInputModule).resetKeys();
                 Magus.keyboardInputModule.registerListeners();
                 AvatarFormRegistry.registerForms();
             }
@@ -167,7 +158,7 @@ public class ServerEvents {
     public static void OnPlayerLeaveWorld(EntityLeaveLevelEvent event) {
         if (event.getLevel().isClientSide() && event.getEntity() instanceof Player) {
             Magus.keyboardInputModule.unregisterInputs();
-            ((KeyboardMouseInputModule) Magus.keyboardInputModule).resetKeys();
+            ((KeyboardInputModule) Magus.keyboardInputModule).resetKeys();
         }
     }
 }

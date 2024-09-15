@@ -42,6 +42,12 @@ public class RadixTree {
         return NO_MISMATCH;
     }
 
+    private void activateBranchConditions(List<Condition> conditions) {
+        for (Condition condition: conditions) {
+            condition.register();
+        }
+    }
+
     private void deactivateAllConditions() {
         deactivateAllConditions(root, new ArrayList<>());
     }
