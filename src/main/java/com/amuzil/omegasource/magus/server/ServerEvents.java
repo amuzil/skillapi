@@ -130,6 +130,7 @@ public class ServerEvents {
             }
         } else {
             if (event.getEntity() instanceof Player) {
+                System.out.println("MADE IT TO CLIENT SIDE?");
                 ((KeyboardInputModule) Magus.keyboardInputModule).resetKeys();
                 Magus.keyboardInputModule.registerListeners();
                 AvatarFormRegistry.registerForms();
