@@ -67,7 +67,7 @@ public class MultiCondition extends Condition {
         this.executionTime = 0;
         concurrentConditions.forEach(condition -> {
             int id = counter.getAndIncrement();
-            condition.register("", () -> {
+            condition.register(condition.name(), () -> {
                 synchronized (conditionsMet) {
                     // Debugging statement:
 //                    LogManager.getLogger().info("MARKING CONDITION MET: " + concurrentConditions.get(id).getClass());

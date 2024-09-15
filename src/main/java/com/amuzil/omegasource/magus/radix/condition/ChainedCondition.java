@@ -42,12 +42,12 @@ public class ChainedCondition extends Condition {
 
         currentCondition = conditionSequence.get(currentConditionIndex);
         if(currentConditionIndex == conditionSequence.size() - 1) {
-            currentCondition.register("", onCompleteSuccess, () -> {
+            currentCondition.register(currentCondition.name(), onCompleteSuccess, () -> {
                 onPartialFailure.run();
                 onCompleteFailure.run();
             });
         } else {
-            currentCondition.register("", onPartialSuccess, onPartialFailure);
+            currentCondition.register(currentCondition.name(), onPartialSuccess, onPartialFailure);
         }
 
     }
@@ -56,7 +56,7 @@ public class ChainedCondition extends Condition {
         currentConditionIndex = 0;
         currentCondition.unregister();
         currentCondition = conditionSequence.get(currentConditionIndex);
-        currentCondition.register("", onPartialSuccess, onPartialFailure);
+        currentCondition.register(currentCondition.name(), onPartialSuccess, onPartialFailure);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class ChainedCondition extends Condition {
     @Override
     public void register() {
         currentCondition = conditionSequence.get(currentConditionIndex);
-        currentCondition.register("", onPartialSuccess, onPartialFailure);
+        currentCondition.register(currentCondition.name(), onPartialSuccess, onPartialFailure);
         // Divorce register(runnable, runnable) from the regular register method.
         // This method should add requisite listeners to the forge event bus.
         // The other method should just adjust runnables as needed.

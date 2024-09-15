@@ -22,6 +22,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
 import net.minecraftforge.event.level.LevelEvent;
@@ -114,13 +115,13 @@ public class ServerEvents {
 
                 System.out.println("Test Populating RadixTree");
                 RadixTree tree = new RadixTree();
-                for (Condition condition: ConditionRegistry.getConditions()) {
+                for (Condition condition : ConditionRegistry.getConditions()) {
                     List<Condition> conditionPath = new ArrayList<>();
                     conditionPath.add(condition);
                     conditionPath.add(arc);
                     tree.insert(conditionPath);
                 }
-                for (Condition condition: ConditionRegistry.getConditions()) {
+                for (Condition condition : ConditionRegistry.getConditions()) {
                     List<Condition> conditionPath = new ArrayList<>();
                     conditionPath.add(condition);
                     conditionPath.add(strike);
@@ -145,6 +146,21 @@ public class ServerEvents {
                 AvatarFormRegistry.registerForms();
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void tickEvent(TickEvent.ClientTickEvent event) {
+        Minecraft minecraft = Minecraft.getInstance();
+
+
+        // Get the current mouse X and Y positions
+        double mouseX = minecraft.mouseHandler.xpos();
+        double mouseY = minecraft.mouseHandler.ypos();
+
+
+        // Print the mouse coordinates
+        System.out.println("Mouse X: " + mouseX + ", Mouse Y: " + mouseY);
+
     }
 
     @SubscribeEvent
