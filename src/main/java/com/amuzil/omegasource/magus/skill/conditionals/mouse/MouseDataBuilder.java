@@ -30,7 +30,7 @@ public class MouseDataBuilder {
         return new MouseWheelInput(direction, time);
     }
 
-    public static SegmentMouseInput createSegmentMouseInput(MouseMotionInput... inputs) {
+    public static SegmentMouseInput createSegmentMouseInput(PointMouseInput... inputs) {
         return new SegmentMouseInput(List.of(inputs));
     }
 
@@ -39,24 +39,46 @@ public class MouseDataBuilder {
     }
 
     // Utility to create a line from a start to an end with linear interpolation
-    public static SegmentMouseInput createLine(MouseMotionInput start, MouseMotionInput end, int numPoints) {
-        List<MouseMotionInput> points = new LinkedList<>();
+    public static SegmentMouseInput createLine(PointMouseInput start, PointMouseInput end, int numPoints) {
+        List<PointMouseInput> points = new LinkedList<>();
         for (int i = 0; i <= numPoints; i++) {
             double t = i / (double) numPoints;
             double x = (1 - t) * start.x() + t * end.x();
             double y = (1 - t) * start.y() + t * end.y();
-            points.add(new MouseMotionInput(x, y));
+            points.add(new PointMouseInput(x, y));
         }
         return new SegmentMouseInput(points);
     }
 
     // Utility to create a polygon from a list of vertices
-    public static ShapeMouseInput createPolygon(List<MouseMotionInput> vertices) {
+    public static ShapeMouseInput createPolygon(List<PointMouseInput> vertices) {
         List<SegmentMouseInput> segments = new LinkedList<>();
         for (int i = 0; i < vertices.size(); i++) {
-            MouseMotionInput start = vertices.get(i);
-            MouseMotionInput end = vertices.get((i + 1) % vertices.size()); // Wrap around to close the shape
+            PointMouseInput start = vertices.get(i);
+            PointMouseInput end = vertices.get((i + 1) % vertices.size()); // Wrap around to close the shape
             segments.add(createLine(start, end, 10)); // Adjust numPoints as needed
+        }
+        return new ShapeMouseInput(segments);
+    }
+
+    // Create a polygon with interpolated points between vertices based on distanceBetweenPoints
+    public static ShapeMouseInput createPolygonWithInterpolation(List<PointMouseInput> vertices, double distanceBetweenPoints) {
+        List<SegmentMouseInput> segments = new LinkedList<>();
+
+        for (int i = 0; i < vertices.size(); i++) {
+            PointMouseInput start = vertices.get(i);
+            PointMouseInput end = vertices.get((i + 1) % vertices.size()); // Wrap around to close the shape
+
+            // Calculate distance between start and end
+            double dx = end.x() - start.x();
+            double dy = end.y() - start.y();
+            double segmentLength = Math.hypot(dx, dy);
+
+            // Calculate number of points based on distanceBetweenPoints
+            int numPoints = Math.max(2, (int) (segmentLength / distanceBetweenPoints));
+
+            // Create line segment with interpolated points
+            segments.add(createLine(start, end, numPoints));
         }
         return new ShapeMouseInput(segments);
     }
