@@ -5,8 +5,8 @@ import java.util.List;
 
 public record ShapeMouseInput(List<SegmentMouseInput> mouseInputs) {
 
-    public List<MouseMotionInput> getFullPath() {
-        List<MouseMotionInput> path = new LinkedList<>();
+    public List<PointMouseInput> getFullPath() {
+        List<PointMouseInput> path = new LinkedList<>();
         for (SegmentMouseInput segment : mouseInputs()) {
             path.addAll(segment.mouseInputs());
         }

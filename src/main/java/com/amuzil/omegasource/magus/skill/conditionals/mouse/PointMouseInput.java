@@ -13,5 +13,5 @@ import com.amuzil.omegasource.magus.skill.conditionals.InputData;
  *
  * Get a Bézier curve function working. This tracks input segments, then we path through the input segments.
  */
-public record MouseMotionInput(double x, double y) implements InputData {
+public record PointMouseInput(double x, double y) implements InputData {
 }
