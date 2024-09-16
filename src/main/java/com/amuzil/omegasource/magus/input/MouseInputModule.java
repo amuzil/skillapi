@@ -52,7 +52,6 @@ public class MouseInputModule extends InputModule {
 
         this.mouseListener = mouseEvent -> {
             int keyPressed = mouseEvent.getButton();
-         //   if(!KeyboardData.ignore(keyPressed)) {
                 switch (mouseEvent.getAction()) {
                     case InputConstants.PRESS -> {
                         if (!glfwKeysDown.contains(keyPressed))
@@ -87,7 +86,7 @@ public class MouseInputModule extends InputModule {
 
             if(activeForm != null) {
                 ticksSinceActivated++;
-//                _formInputs.forEach(((condition, form) -> {
+//                formInputs.forEach(((condition, form) -> {
 //                    RadixUtil.getLogger().debug(condition instanceof KeyPressCondition ?
 //                            "Condition: " + ((KeyPressCondition) condition).getKey() : "Ignored.");
 //                    RadixUtil.getLogger().debug("Form: " + form.name());
@@ -122,6 +121,7 @@ public class MouseInputModule extends InputModule {
     public void resetKeys() {
         glfwKeysDown = new ArrayList<>();
     }
+
     public void cleanMCKeys() {
         // Fixes some weird mouse and other key issues.
         for (KeyMapping key : Minecraft.getInstance().options.keyMappings) {
@@ -133,7 +133,7 @@ public class MouseInputModule extends InputModule {
     }
 
     @Override
-    public void registerInputData(List<InputData> formExecutionInputs, Form formToExecute) {
+    public void registerInputData(List<InputData> formExecutionInputs, Form formToExecute, Condition condition) {
         //generate condition from InputData.
         Runnable onSuccess = () -> {
             if(mc.level != null) {
@@ -185,18 +185,22 @@ public class MouseInputModule extends InputModule {
     }
 
     public void registerInputs() {
-        formInputs.forEach((condition, form) -> condition.register());
+        formInputs.forEach((condition, form) -> {
+            condition.register();
+        });
     }
 
     @Override
     public void toggleListeners() {
         if (!listen) {
             registerListeners();
+            registerInputs();
             listen = true;
-        }
-        else {
+            System.out.println("Enabled!");
+        } else {
             unregisterInputs();
             listen = false;
+            System.out.println("Disabled!");
         }
     }
 

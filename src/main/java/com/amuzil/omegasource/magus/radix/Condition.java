@@ -33,9 +33,7 @@ public abstract class Condition {
 	}
 
 	// TODO: Change this to registerListeners()
-	public void register() {
-
-	}
+	public void register() {}
 
 	// Every Condition needs to call this in their constructor
 	public void registerEntry() {

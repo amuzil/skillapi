@@ -27,7 +27,7 @@ public class KeyBindings {
         if (press.getKey() == keyToggleTree.getKey().getValue()) {
             if (press.getAction() == GLFW.GLFW_RELEASE) {
                 Magus.keyboardInputModule.toggleListeners();
-                System.out.println("Toggled!");
+                Magus.mouseInputModule.toggleListeners();
             }
         }
     }

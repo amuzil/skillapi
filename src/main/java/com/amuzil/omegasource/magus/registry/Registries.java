@@ -66,7 +66,6 @@ public class Registries {
         categories.add(skillCategory);
     }
 
-
     public static void registerSkills(List<Skill> registrySkills) {
         skills.addAll(registrySkills);
     }
@@ -90,10 +89,12 @@ public class Registries {
     public static void registerCondition(Condition registryCondition) {
         conditions.add(registryCondition);
     }
+
     public static void registerDiscipline(Discipline discipline) {
         categories.add(discipline);
         Disciplines.DISCIPLINES.add(discipline);
     }
+
 
     //How registering will work:
     /*
@@ -125,7 +126,6 @@ public class Registries {
 
         //Modifiers
     }
-
 
     //What to do in the case of missing registry entries for each type of registry.
 

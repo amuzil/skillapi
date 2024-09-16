@@ -3,6 +3,7 @@ package com.amuzil.omegasource.magus.input;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.radix.Condition;
+import com.amuzil.omegasource.magus.radix.condition.ChainedCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.forms.Form;
@@ -74,13 +75,16 @@ public class KeyboardInputModule extends InputModule {
 
             if(activeForm != null) {
                 ticksSinceActivated++;
-//                _formInputs.forEach(((condition, form) -> {
+//                formInputs.forEach(((condition, form) -> {
 //                    RadixUtil.getLogger().debug(condition instanceof KeyPressCondition ?
 //                            "Condition: " + ((KeyPressCondition) condition).getKey() : "Ignored.");
 //                    RadixUtil.getLogger().debug("Form: " + form.name());
 //                }));
                 if(ticksSinceActivated >= tickActivationThreshold) {
-                    LogManager.getLogger().info("FORM ACTIVATED :" + activeForm.name());
+                    if (lastActivatedForm != null)
+                        LogManager.getLogger().info("LAST FORM ACTIVATED: " + lastActivatedForm.name() + " | FORM ACTIVATED: " + activeForm.name());
+                    else
+                        LogManager.getLogger().info("FORM ACTIVATED: " + activeForm.name());
 //                    MagusNetwork.sendToServer(new ConditionActivatedPacket(activeForm));
                     lastActivatedForm = activeForm;
                     activeForm = null;
@@ -121,7 +125,7 @@ public class KeyboardInputModule extends InputModule {
     }
 
     @Override
-    public void registerInputData(List<InputData> formExecutionInputs, Form formToExecute) {
+    public void registerInputData(List<InputData> formExecutionInputs, Form formToExecute, Condition formCondition) {
         //generate condition from InputData.
         Runnable onSuccess = () -> {
             if(mc.level != null) {
@@ -144,12 +148,11 @@ public class KeyboardInputModule extends InputModule {
             //reset conditions?
            // Magus.radixTree.burn();
         };
-        Condition formCondition = ConditionBuilder.instance()
-                .fromInputData(formExecutionInputs)
-                .build();
+
         if(formCondition != null) {
             //Register listeners for condition created.
             formCondition.register(formToExecute.name(), onSuccess, onFailure);
+            System.out.println("MADE IT KEY " + formCondition);
             //add condition to InputModule registry so that it can be tracked.
             formInputs.put(formCondition, formToExecute);
         } else {
@@ -171,14 +174,18 @@ public class KeyboardInputModule extends InputModule {
         formInputs.forEach((condition, form) -> condition.unregister());
     }
 
+    @Override
     public void registerInputs() {
-        formInputs.forEach((condition, form) -> condition.register());
+        formInputs.forEach((condition, form) -> {
+            condition.register();
+        });
     }
 
     @Override
     public void toggleListeners() {
         if (!listen) {
             registerListeners();
+            registerInputs();
             listen = true;
         } else {
             unregisterInputs();

@@ -2,10 +2,9 @@ package com.amuzil.omegasource.magus.skill.forms;
 
 import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.radix.Condition;
-import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
-import net.minecraft.resources.ResourceLocation;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,11 +31,9 @@ public class FormDataRegistry {
         return formTypes.entrySet().stream().filter(form -> form.getValue().name().equals(formToModify.name())).findFirst().get().getKey();
     }
 
-    public static void registerForm(List<InputData> inputs, Form form) {
-        // First, we register the raw input data
-        Magus.keyboardInputModule.registerInputData(inputs, form);
+    public static void registerForm(List<InputData> inputs, Form form, InputConstants.Type inputType) {
         formTypes.put(inputs, form);
-        // Then, we register the requisite conditions
+        // Register the requisite conditions
         List<Condition> conditions = new ArrayList<>();
         if (formConditions.containsKey(form)) {
             conditions = formConditions.get(form);
@@ -44,6 +41,11 @@ public class FormDataRegistry {
         Condition condition = ConditionBuilder.instance().fromInputData(inputs).build();
         conditions.add(condition);
         formConditions.put(form, conditions);
+        // Register the raw input data
+        if (inputType == InputConstants.Type.KEYSYM)
+            Magus.keyboardInputModule.registerInputData(inputs, form, condition);
+        else
+            Magus.mouseInputModule.registerInputData(inputs, form, condition);
     }
 
     public static List<Condition> getConditionsFrom(Form form) {
@@ -53,6 +55,6 @@ public class FormDataRegistry {
     public static void registerForm(InputData input, Form form) {
         List<InputData> singleton = new ArrayList<>();
         singleton.add(input);
-        registerForm(singleton, form);
+        registerForm(singleton, form, InputConstants.Type.KEYSYM);
     }
 }

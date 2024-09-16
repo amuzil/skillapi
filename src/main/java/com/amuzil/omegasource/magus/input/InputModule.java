@@ -22,7 +22,7 @@ public abstract class InputModule {
     protected final Map<String, ModifierData> modifierQueue = new HashMap<>();
     protected Form lastActivatedForm = null;
 
-    public abstract void registerInputData(List<InputData> formExecutionInputs, Form formToExecute);
+    public abstract void registerInputData(List<InputData> formExecutionInputs, Form formToExecute, Condition condition);
 
     public void registerModifierListener(ModifierListener listener, CompoundTag treeData) {
         listener.setupListener(treeData);
@@ -68,6 +68,8 @@ public abstract class InputModule {
 
     public abstract void registerListeners();
 
+    public abstract void registerInputs();
+
     public abstract void unregisterInputs();
 
     public void unregisterModifiers() {
@@ -75,4 +77,8 @@ public abstract class InputModule {
     }
 
     public abstract void toggleListeners();
+
+    public abstract void resetKeys();
+
+    public abstract boolean keyPressed(int key);
 }

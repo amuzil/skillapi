@@ -61,7 +61,6 @@ public class ConditionBuilder {
      */
     public Condition build() {
         //Creates a copy of the list
-
         List<Condition> conditions = conditionList.stream().toList();
 
         //Resets the builder

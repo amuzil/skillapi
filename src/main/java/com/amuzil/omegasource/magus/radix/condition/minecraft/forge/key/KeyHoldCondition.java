@@ -34,7 +34,7 @@ public class KeyHoldCondition extends Condition {
 
         this.clientTickListener = event -> {
             if (event.phase == ClientTickEvent.Phase.START && Minecraft.getInstance().getOverlay() == null) {
-                if (((KeyboardInputModule) Magus.keyboardInputModule).keyPressed(key)) {
+                if (Magus.keyboardInputModule.keyPressed(key) || Magus.mouseInputModule.keyPressed(key)) {
                     this.started = true;
                     this.currentHolding++;
                 } else {
@@ -61,7 +61,7 @@ public class KeyHoldCondition extends Condition {
                         reset();
                     }
                 }
-                if(this.started) {
+                if (this.started) {
                     if (this.currentTotal >= timeout) {
 //                        LogManager.getLogger().info("ONFAILURE RUNNING 2");
                         this.onFailure.run();
@@ -90,11 +90,6 @@ public class KeyHoldCondition extends Condition {
     public int getKey() {
         return this.key;
     }
-
-//    @Override
-//    public String toString() {
-//        return "KeyHoldCondition[ key=" + key + " ]";
-//    }
 
     @Override
     public void register(String name, Runnable onSuccess, Runnable onFailure) {

@@ -2,6 +2,7 @@ package com.amuzil.omegasource.magus;
 
 import com.amuzil.omegasource.magus.input.InputModule;
 import com.amuzil.omegasource.magus.input.KeyboardInputModule;
+import com.amuzil.omegasource.magus.input.MouseInputModule;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
@@ -38,12 +39,14 @@ public class Magus {
     //todo: move these to a better place
     //todo: make multiple input modules
     public static InputModule keyboardInputModule;
+    public static InputModule mouseInputModule;
 
     public Magus() {
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
-        //Register the input module
+        //Register the input modules
         keyboardInputModule = new KeyboardInputModule();
+        mouseInputModule = new MouseInputModule();
         // Register capabilities
         FMLJavaModLoadingContext.get().getModEventBus().addListener(CapabilityHandler::registerCapabilities);
         // attach capabilities
