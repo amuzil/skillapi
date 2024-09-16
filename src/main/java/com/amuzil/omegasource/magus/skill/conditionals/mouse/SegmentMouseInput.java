@@ -1,16 +1,14 @@
 package com.amuzil.omegasource.magus.skill.conditionals.mouse;
 
-import com.amuzil.omegasource.magus.input.MouseInputModule;
-
 import java.util.List;
 
-public record MultiMouseInput(List<MouseInput> mouseInputs) {
+public record SegmentMouseInput(List<MouseMotionInput> mouseInputs) {
 
-    public MouseInput start() {
+    public MouseMotionInput start() {
         return mouseInputs.get(0);
     }
 
-    public MouseInput end() {
+    public MouseMotionInput end() {
         return mouseInputs().get(mouseInputs().size() - 1);
     }
 }
