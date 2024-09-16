@@ -118,29 +118,134 @@ public class MousePathComparator {
         return new ShapeMouseInput(List.of(segmentInput));
     }
 
-    // Compare two mouse inputs for similarity within an error margin
     public static boolean compare(ShapeMouseInput playerInput, ShapeMouseInput targetShape, double errorMargin) {
-        // Implement a proper comparison algorithm here
-        // Placeholder implementation: Check if the average distance between corresponding points is within errorMargin
+        // Resample the player's input to have a fixed number of points
+        List<PointMouseInput> resampledPlayerPoints = resamplePoints(playerInput.getFullPath(), 64);
 
-        List<PointMouseInput> playerPoints = playerInput.getFullPath();
-        List<PointMouseInput> targetPoints = targetShape.getFullPath();
+        // Rotate to align with the target shape
+        List<PointMouseInput> rotatedPlayerPoints = rotateToZero(resampledPlayerPoints);
 
-        if (playerPoints.size() != targetPoints.size()) {
-            // Normalize the number of points
-            playerPoints = normalizePoints(playerPoints, targetPoints.size());
+        // Scale to a reference square
+        List<PointMouseInput> scaledPlayerPoints = scaleToSquare(rotatedPlayerPoints, 250);
+
+        // Translate to origin
+        List<PointMouseInput> normalizedPlayerPoints = translateToOrigin(scaledPlayerPoints);
+
+        // Prepare the target shape in the same way
+        List<PointMouseInput> resampledTargetPoints = resamplePoints(targetShape.getFullPath(), 64);
+        List<PointMouseInput> rotatedTargetPoints = rotateToZero(resampledTargetPoints);
+        List<PointMouseInput> scaledTargetPoints = scaleToSquare(rotatedTargetPoints, 250);
+        List<PointMouseInput> normalizedTargetPoints = translateToOrigin(scaledTargetPoints);
+
+        // Compute the path distance between the two point paths
+        double distance = pathDistance(normalizedPlayerPoints, normalizedTargetPoints);
+
+        return distance <= errorMargin;
+    }
+
+    // Resample the points to a fixed number
+    private static List<PointMouseInput> resamplePoints(List<PointMouseInput> points, int n) {
+        double pathLength = getPathLength(points);
+        double interval = pathLength / (n - 1);
+        double D = 0.0;
+        List<PointMouseInput> newPoints = new ArrayList<>();
+        newPoints.add(points.get(0));
+
+        for (int i = 1; i < points.size(); i++) {
+            double d = euclideanDistance(points.get(i - 1), points.get(i));
+            if ((D + d) >= interval) {
+                double t = (interval - D) / d;
+                double x = points.get(i - 1).x() + t * (points.get(i).x() - points.get(i - 1).x());
+                double y = points.get(i - 1).y() + t * (points.get(i).y() - points.get(i - 1).y());
+                PointMouseInput newPoint = new PointMouseInput(x, y);
+                newPoints.add(newPoint);
+                points.add(i, newPoint);
+                D = 0.0;
+            } else {
+                D += d;
+            }
         }
-
-        double totalDistance = 0;
-        for (int i = 0; i < targetPoints.size(); i++) {
-            PointMouseInput playerPoint = playerPoints.get(i);
-            PointMouseInput targetPoint = targetPoints.get(i);
-            double distance = Math.hypot(playerPoint.x() - targetPoint.x(), playerPoint.y() - targetPoint.y());
-            totalDistance += distance;
+        if (newPoints.size() == n - 1) {
+            newPoints.add(points.get(points.size() - 1));
         }
+        return newPoints;
+    }
 
-        double averageDistance = totalDistance / targetPoints.size();
-        return averageDistance <= errorMargin;
+    // Rotate the points so that the indicative angle is at zero
+    private static List<PointMouseInput> rotateToZero(List<PointMouseInput> points) {
+        PointMouseInput centroid = getCentroid(points);
+        double theta = Math.atan2(points.get(0).y() - centroid.y(), points.get(0).x() - centroid.x());
+        return rotateBy(points, -theta);
+    }
+
+    private static List<PointMouseInput> rotateBy(List<PointMouseInput> points, double angle) {
+        PointMouseInput centroid = getCentroid(points);
+        List<PointMouseInput> newPoints = new ArrayList<>();
+        for (PointMouseInput point : points) {
+            double x = (point.x() - centroid.x()) * Math.cos(angle) - (point.y() - centroid.y()) * Math.sin(angle) + centroid.x();
+            double y = (point.x() - centroid.x()) * Math.sin(angle) + (point.y() - centroid.y()) * Math.cos(angle) + centroid.y();
+            newPoints.add(new PointMouseInput(x, y));
+        }
+        return newPoints;
+    }
+
+    // Scale the points to a reference square
+    private static List<PointMouseInput> scaleToSquare(List<PointMouseInput> points, double size) {
+        double minX = points.stream().mapToDouble(PointMouseInput::x).min().orElse(0);
+        double maxX = points.stream().mapToDouble(PointMouseInput::x).max().orElse(0);
+        double minY = points.stream().mapToDouble(PointMouseInput::y).min().orElse(0);
+        double maxY = points.stream().mapToDouble(PointMouseInput::y).max().orElse(0);
+
+        double width = maxX - minX;
+        double height = maxY - minY;
+
+        List<PointMouseInput> newPoints = new ArrayList<>();
+        for (PointMouseInput point : points) {
+            double x = (point.x() - minX) * (size / width);
+            double y = (point.y() - minY) * (size / height);
+            newPoints.add(new PointMouseInput(x, y));
+        }
+        return newPoints;
+    }
+
+    // Translate the points so that the centroid is at the origin
+    private static List<PointMouseInput> translateToOrigin(List<PointMouseInput> points) {
+        PointMouseInput centroid = getCentroid(points);
+        List<PointMouseInput> newPoints = new ArrayList<>();
+        for (PointMouseInput point : points) {
+            double x = point.x() - centroid.x();
+            double y = point.y() - centroid.y();
+            newPoints.add(new PointMouseInput(x, y));
+        }
+        return newPoints;
+    }
+
+    // Calculate the path distance between two point paths
+    private static double pathDistance(List<PointMouseInput> path1, List<PointMouseInput> path2) {
+        double distance = 0.0;
+        for (int i = 0; i < path1.size(); i++) {
+            distance += euclideanDistance(path1.get(i), path2.get(i));
+        }
+        return distance / path1.size();
+    }
+
+    // Helper methods
+    private static double euclideanDistance(PointMouseInput p1, PointMouseInput p2) {
+        return Math.hypot(p1.x() - p2.x(), p1.y() - p2.y());
+    }
+
+    private static double getPathLength(List<PointMouseInput> points) {
+        double length = 0.0;
+        for (int i = 1; i < points.size(); i++) {
+            length += euclideanDistance(points.get(i - 1), points.get(i));
+        }
+        return length;
+    }
+
+    private static PointMouseInput getCentroid(List<PointMouseInput> points) {
+        double xSum = points.stream().mapToDouble(PointMouseInput::x).sum();
+        double ySum = points.stream().mapToDouble(PointMouseInput::y).sum();
+        return new PointMouseInput(xSum / points.size(), ySum / points.size());
     }
 
     // Helper method to normalize the number of points
