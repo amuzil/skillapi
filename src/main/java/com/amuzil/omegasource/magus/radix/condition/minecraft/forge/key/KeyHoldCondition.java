@@ -1,7 +1,6 @@
 package com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key;
 
 import com.amuzil.omegasource.magus.Magus;
-import com.amuzil.omegasource.magus.input.KeyboardInputModule;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.RadixUtil;
 import net.minecraft.client.Minecraft;
