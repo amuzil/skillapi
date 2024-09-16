@@ -18,6 +18,7 @@ import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import com.amuzil.omegasource.magus.skill.util.capability.entity.Data;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -143,10 +144,10 @@ public class ServerEvents {
     }
 
     @SubscribeEvent
-    public static void tickEvent(TickEvent.ClientTickEvent event) {
+    public static void tickEvent(TickEvent.PlayerTickEvent event) {
         Minecraft minecraft = Minecraft.getInstance();
 
-
+        Player player = event.player;
         // Get the current mouse X and Y positions
         double mouseX = minecraft.mouseHandler.xpos();
         double mouseY = minecraft.mouseHandler.ypos();
@@ -154,6 +155,9 @@ public class ServerEvents {
 
         // Print the mouse coordinates
 //        System.out.println("Mouse X: " + mouseX + ", Mouse Y: " + mouseY);
+        if (player.tickCount % 10 == 0) {
+            System.out.println("Mouse X : " + mouseX + ", Mouse Y: " + mouseY);
+        }
 
     }
 
