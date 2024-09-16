@@ -75,7 +75,7 @@ public class MouseInputModule extends InputModule {
           this.mouseScrollDelta = mouseScrollingEvent.getScrollDelta();
         };
 
-        tickEventConsumer = tickEvent -> {
+        this.tickEventConsumer = tickEvent -> {
 
             ticksSinceModifiersSent++;
             if (ticksSinceModifiersSent > modifierTickThreshold && !modifierQueue.isEmpty()) {
@@ -86,13 +86,11 @@ public class MouseInputModule extends InputModule {
 
             if(activeForm != null) {
                 ticksSinceActivated++;
-//                formInputs.forEach(((condition, form) -> {
-//                    RadixUtil.getLogger().debug(condition instanceof KeyPressCondition ?
-//                            "Condition: " + ((KeyPressCondition) condition).getKey() : "Ignored.");
-//                    RadixUtil.getLogger().debug("Form: " + form.name());
-//                }));
                 if(ticksSinceActivated >= tickActivationThreshold) {
-                    LogManager.getLogger().info("FORM ACTIVATED :" + activeForm.name());
+                    if (lastActivatedForm != null)
+                        LogManager.getLogger().info("LAST FORM ACTIVATED: " + lastActivatedForm.name() + " | FORM ACTIVATED: " + activeForm.name());
+                    else
+                        LogManager.getLogger().info("FORM ACTIVATED: " + activeForm.name());
 //                    MagusNetwork.sendToServer(new ConditionActivatedPacket(activeForm));
                     lastActivatedForm = activeForm;
                     activeForm = null;

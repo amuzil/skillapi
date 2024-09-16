@@ -75,11 +75,6 @@ public class KeyboardInputModule extends InputModule {
 
             if(activeForm != null) {
                 ticksSinceActivated++;
-//                formInputs.forEach(((condition, form) -> {
-//                    RadixUtil.getLogger().debug(condition instanceof KeyPressCondition ?
-//                            "Condition: " + ((KeyPressCondition) condition).getKey() : "Ignored.");
-//                    RadixUtil.getLogger().debug("Form: " + form.name());
-//                }));
                 if(ticksSinceActivated >= tickActivationThreshold) {
                     if (lastActivatedForm != null)
                         LogManager.getLogger().info("LAST FORM ACTIVATED: " + lastActivatedForm.name() + " | FORM ACTIVATED: " + activeForm.name());
@@ -152,7 +147,6 @@ public class KeyboardInputModule extends InputModule {
         if(formCondition != null) {
             //Register listeners for condition created.
             formCondition.register(formToExecute.name(), onSuccess, onFailure);
-            System.out.println("MADE IT KEY " + formCondition);
             //add condition to InputModule registry so that it can be tracked.
             formInputs.put(formCondition, formToExecute);
         } else {
