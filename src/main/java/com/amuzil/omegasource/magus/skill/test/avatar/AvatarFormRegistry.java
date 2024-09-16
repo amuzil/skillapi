@@ -6,7 +6,6 @@ import com.amuzil.omegasource.magus.skill.conditionals.InputDataBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyDataBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
 import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseDataBuilder;
-import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseMotionInput;
 import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseWheelInput;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.forms.Forms;

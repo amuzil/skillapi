@@ -146,12 +146,10 @@ public class ServerEvents {
     @SubscribeEvent
     public static void tickEvent(TickEvent.PlayerTickEvent event) {
         Minecraft minecraft = Minecraft.getInstance();
-
         Player player = event.player;
         // Get the current mouse X and Y positions
         double mouseX = minecraft.mouseHandler.xpos();
         double mouseY = minecraft.mouseHandler.ypos();
-
 
         // Print the mouse coordinates
 //        System.out.println("Mouse X: " + mouseX + ", Mouse Y: " + mouseY);
