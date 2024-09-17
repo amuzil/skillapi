@@ -27,7 +27,7 @@ public class KeyboardInputModule extends InputModule {
     private static final Map<String, Integer> movementKeys = new HashMap<>();
     private final Consumer<InputEvent.Key> keyboardListener;
     private final Consumer<TickEvent> tickEventConsumer;
-    private Form activeForm = null;
+    private Form activeForm = new Form();
     private int ticksSinceActivated = 0;
     private int ticksSinceModifiersSent = 0;
 
@@ -75,7 +75,7 @@ public class KeyboardInputModule extends InputModule {
 
             //cleanMCKeys();
 
-            if(activeForm != null) {
+            if(activeForm.name() != null) {
                 ticksSinceActivated++;
                 if(ticksSinceActivated >= tickActivationThreshold) {
                     if (lastActivatedForm != null)
@@ -84,7 +84,7 @@ public class KeyboardInputModule extends InputModule {
                         LogManager.getLogger().info("FORM ACTIVATED: " + activeForm.name());
 //                    MagusNetwork.sendToServer(new ConditionActivatedPacket(activeForm));
                     lastActivatedForm = activeForm;
-                    activeForm = null;
+                    activeForm = new Form();
                     ticksSinceActivated = 0;
                 }
             }
@@ -141,7 +141,7 @@ public class KeyboardInputModule extends InputModule {
             //Reset condition
         };
         Runnable onFailure = () -> {
-            activeForm = null;
+            activeForm = new Form();
             //reset conditions?
            // Magus.radixTree.burn();
         };

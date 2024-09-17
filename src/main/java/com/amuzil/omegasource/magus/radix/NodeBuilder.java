@@ -56,7 +56,8 @@ public class NodeBuilder {
 		}
 	}
 
-	public NodeBuilder addChildren(Pair<Condition, Node>... children) {
+	@SafeVarargs // Suppressing unsafe variable number of arguments
+	public final NodeBuilder addChildren(Pair<Condition, Node>... children) {
 		if (type.canHaveChildren) {
 			for (Pair<Condition, Node> child : children)
 				addChild(child.getFirst(), child.getSecond());

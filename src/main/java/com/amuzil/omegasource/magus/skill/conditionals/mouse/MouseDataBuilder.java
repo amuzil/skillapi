@@ -1,5 +1,7 @@
 package com.amuzil.omegasource.magus.skill.conditionals.mouse;
 
+import net.minecraft.client.Minecraft;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -45,7 +47,8 @@ public class MouseDataBuilder {
             double t = i / (double) numPoints;
             double x = (1 - t) * start.x() + t * end.x();
             double y = (1 - t) * start.y() + t * end.y();
-            points.add(new PointMouseInput(x, y));
+            if(Minecraft.getInstance().player != null)
+                points.add(new PointMouseInput(x, y, Minecraft.getInstance().player.getLookAngle()));
         }
         return new SegmentMouseInput(points);
     }

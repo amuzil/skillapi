@@ -10,6 +10,10 @@ public class Form {
         Registries.registerForm(this);
     }
 
+    public Form() { // Create null Form to fix random NullPointerException
+        this.name = null;
+    }
+
     /**
      * Just in case. I don't think we care about the MOD_ID as forge handles that.
      * @param name
