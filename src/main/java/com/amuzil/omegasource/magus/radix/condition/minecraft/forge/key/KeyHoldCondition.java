@@ -54,7 +54,8 @@ public class KeyHoldCondition extends Condition {
                     if (!mouseInputs.isEmpty()) {
                         List<PointMouseInput> inputs = new ArrayList<>(mouseInputs);
                         SegmentMouseInput segment = new SegmentMouseInput(inputs);
-                        System.out.println("SEGMENT DIRECTION: " + segment.getDirection() + " SLASH!");
+//                        System.out.println("SEGMENT MOTION DIRECTION: " + segment.getMotionDirection());
+//                        System.out.println("SEGMENT AIM DIRECTION: " + segment.getAimDirection());
                         mouseInputs.clear();
                     }
                     if (pressed(this.currentHolding, duration)) {
