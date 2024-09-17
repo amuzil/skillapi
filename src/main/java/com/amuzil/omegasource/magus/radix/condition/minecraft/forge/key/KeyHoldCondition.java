@@ -55,14 +55,12 @@ public class KeyHoldCondition extends Condition {
                 if (pressed(this.currentHolding, duration)) {
                     // If the Condition doesn't require the key being released....
                     if (!release) {
-//                        LogManager.getLogger().info("ONSUCCESS RUNNING 2");
                         this.onSuccess.run();
                         reset();
                     }
                 }
                 if (this.started) {
                     if (this.currentTotal >= timeout) {
-//                        LogManager.getLogger().info("ONFAILURE RUNNING 2");
                         this.onFailure.run();
                         reset();
                     }

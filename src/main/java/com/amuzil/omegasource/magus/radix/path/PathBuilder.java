@@ -1,17 +1,13 @@
 package com.amuzil.omegasource.magus.radix.path;
 
 import com.amuzil.omegasource.magus.radix.Condition;
-import com.amuzil.omegasource.magus.radix.Condition.Result;
 import com.amuzil.omegasource.magus.radix.condition.MultiCondition;
-import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.TickTimedCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
-import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyPressedCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.key.ChainedKeyInput;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
 import com.amuzil.omegasource.magus.skill.conditionals.key.MultiKeyInput;
 import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseWheelInput;
-import net.minecraftforge.event.TickEvent;
 
 import java.util.HashMap;
 import java.util.LinkedList;
