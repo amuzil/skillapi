@@ -1,7 +1,7 @@
 package com.amuzil.omegasource.magus.radix.condition.minecraft.forge.mouse;
 
 import com.amuzil.omegasource.magus.radix.Condition;
-import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseMotionShapeComparator;
+import com.amuzil.omegasource.magus.skill.conditionals.mouse.MousePathComparator;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 
 public class MouseMotionCondition extends Condition {
     private final Consumer<TickEvent.ClientTickEvent> clientTickListener;
-    private final MouseMotionShapeComparator shapeComparator;
+    private final MousePathComparator shapeComparator;
     private final List<Point2D> mousePath;
     private boolean tracking;
     private final double speedThreshold;
@@ -25,7 +25,7 @@ public class MouseMotionCondition extends Condition {
 
     public MouseMotionCondition(double speedThreshold, double errorMargin, int key, Form requiredForm) {
         this.mousePath = new ArrayList<>();
-        this.shapeComparator = new MouseMotionShapeComparator(errorMargin);
+        this.shapeComparator = new MousePathComparator(errorMargin);
         this.speedThreshold = speedThreshold;
         this.key = key;
         this.requiredForm = requiredForm;

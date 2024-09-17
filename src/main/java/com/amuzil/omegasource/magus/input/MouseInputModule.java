@@ -30,7 +30,7 @@ public class MouseInputModule extends InputModule {
     private double mouseScrollDelta;
     private final Consumer<InputEvent.MouseButton> mouseListener;
     private final Consumer<InputEvent.MouseScrollingEvent> mouseScrollListener;
-    private Form activeForm = null;
+    private Form activeForm = new Form();
     private int ticksSinceActivated = 0;
     private int ticksSinceModifiersSent = 0;
 
@@ -84,7 +84,7 @@ public class MouseInputModule extends InputModule {
 
             //cleanMCKeys();
 
-            if(activeForm != null) {
+            if(activeForm.name() != null) {
                 ticksSinceActivated++;
                 if(ticksSinceActivated >= tickActivationThreshold) {
                     if (lastActivatedForm != null)
@@ -93,7 +93,7 @@ public class MouseInputModule extends InputModule {
                         LogManager.getLogger().info("FORM ACTIVATED: " + activeForm.name());
 //                    MagusNetwork.sendToServer(new ConditionActivatedPacket(activeForm));
                     lastActivatedForm = activeForm;
-                    activeForm = null;
+                    activeForm = new Form();
                     ticksSinceActivated = 0;
                 }
             }
@@ -150,7 +150,7 @@ public class MouseInputModule extends InputModule {
             //Reset condition
         };
         Runnable onFailure = () -> {
-            activeForm = null;
+            activeForm = new Form();
             //reset conditions?
         };
         Condition formCondition = ConditionBuilder.instance()

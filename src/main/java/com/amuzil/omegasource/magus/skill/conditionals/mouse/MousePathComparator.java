@@ -1,9 +1,15 @@
 package com.amuzil.omegasource.magus.skill.conditionals.mouse;
 
+import net.minecraft.client.Minecraft;
+
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MousePathComparator {
+
+    public MousePathComparator(double errorMargin) {
+    }
 
     // Generate a circular shape centered at the player's mouse position with rotation and scaling
     public static ShapeMouseInput generateCircle(PointMouseInput center, double scale, double rotationDegrees, double distanceBetweenPoints) {
@@ -20,7 +26,8 @@ public class MousePathComparator {
             double angle = 2 * Math.PI * i / numPoints;
             double x = center.x() + scale * Math.cos(angle + rotationRadians);
             double y = center.y() - scale * Math.sin(angle + rotationRadians); // Flip y-axis
-            points.add(new PointMouseInput(x, y));
+            if(Minecraft.getInstance().player != null)
+                points.add(new PointMouseInput(x, y, Minecraft.getInstance().player.getLookAngle()));
         }
         SegmentMouseInput segmentInput = new SegmentMouseInput(points);
         return new ShapeMouseInput(List.of(segmentInput));
@@ -42,7 +49,8 @@ public class MousePathComparator {
             double t = i / (double) numPoints;
             double x = start.x() + t * (endX - start.x());
             double y = start.y() + t * (endY - start.y());
-            points.add(new PointMouseInput(x, y));
+            if (Minecraft.getInstance().player != null)
+                points.add(new PointMouseInput(x, y, Minecraft.getInstance().player.getLookAngle()));
         }
         SegmentMouseInput line = new SegmentMouseInput(points);
         return new ShapeMouseInput(List.of(line));
@@ -64,7 +72,8 @@ public class MousePathComparator {
             double angle = angleIncrement * i + rotationRadians;
             double x = center.x() + scale * Math.cos(angle);
             double y = center.y() - scale * Math.sin(angle); // Flip y-axis
-            vertices.add(new PointMouseInput(x, y));
+            if (Minecraft.getInstance().player != null)
+                vertices.add(new PointMouseInput(x, y, Minecraft.getInstance().player.getLookAngle()));
         }
 
         // Interpolate points between vertices based on distanceBetweenPoints
@@ -86,7 +95,8 @@ public class MousePathComparator {
             double angle = angleIncrement * i + rotationRadians;
             double x = center.x() + radius * Math.cos(angle);
             double y = center.y() - radius * Math.sin(angle); // Flip y-axis
-            vertices.add(new PointMouseInput(x, y));
+            if (Minecraft.getInstance().player != null)
+                vertices.add(new PointMouseInput(x, y, Minecraft.getInstance().player.getLookAngle()));
         }
 
         // Interpolate points between vertices based on distanceBetweenPoints
@@ -108,7 +118,8 @@ public class MousePathComparator {
         while (angle <= totalAngle) {
             double x = center.x() + radius * Math.cos(angle + rotationRadians);
             double y = center.y() - radius * Math.sin(angle + rotationRadians); // Flip y-axis
-            points.add(new PointMouseInput(x, y));
+            if (Minecraft.getInstance().player != null)
+                points.add(new PointMouseInput(x, y, Minecraft.getInstance().player.getLookAngle()));
 
             angle += angleIncrement;
             radius += radiusIncrement * angleIncrement;
@@ -157,7 +168,9 @@ public class MousePathComparator {
                 double t = (interval - D) / d;
                 double x = points.get(i - 1).x() + t * (points.get(i).x() - points.get(i - 1).x());
                 double y = points.get(i - 1).y() + t * (points.get(i).y() - points.get(i - 1).y());
-                PointMouseInput newPoint = new PointMouseInput(x, y);
+                PointMouseInput newPoint = null;
+                if (Minecraft.getInstance().player != null)
+                    newPoint = new PointMouseInput(x, y, Minecraft.getInstance().player.getLookAngle());
                 newPoints.add(newPoint);
                 points.add(i, newPoint);
                 D = 0.0;
@@ -184,7 +197,8 @@ public class MousePathComparator {
         for (PointMouseInput point : points) {
             double x = (point.x() - centroid.x()) * Math.cos(angle) - (point.y() - centroid.y()) * Math.sin(angle) + centroid.x();
             double y = (point.x() - centroid.x()) * Math.sin(angle) + (point.y() - centroid.y()) * Math.cos(angle) + centroid.y();
-            newPoints.add(new PointMouseInput(x, y));
+            if (Minecraft.getInstance().player != null)
+                newPoints.add(new PointMouseInput(x, y, Minecraft.getInstance().player.getLookAngle()));
         }
         return newPoints;
     }
@@ -203,7 +217,8 @@ public class MousePathComparator {
         for (PointMouseInput point : points) {
             double x = (point.x() - minX) * (size / width);
             double y = (point.y() - minY) * (size / height);
-            newPoints.add(new PointMouseInput(x, y));
+            if (Minecraft.getInstance().player != null)
+                newPoints.add(new PointMouseInput(x, y, Minecraft.getInstance().player.getLookAngle()));
         }
         return newPoints;
     }
@@ -215,7 +230,8 @@ public class MousePathComparator {
         for (PointMouseInput point : points) {
             double x = point.x() - centroid.x();
             double y = point.y() - centroid.y();
-            newPoints.add(new PointMouseInput(x, y));
+            if (Minecraft.getInstance().player != null)
+                newPoints.add(new PointMouseInput(x, y, Minecraft.getInstance().player.getLookAngle()));
         }
         return newPoints;
     }
@@ -245,7 +261,8 @@ public class MousePathComparator {
     private static PointMouseInput getCentroid(List<PointMouseInput> points) {
         double xSum = points.stream().mapToDouble(PointMouseInput::x).sum();
         double ySum = points.stream().mapToDouble(PointMouseInput::y).sum();
-        return new PointMouseInput(xSum / points.size(), ySum / points.size());
+        assert Minecraft.getInstance().player != null;
+        return new PointMouseInput(xSum / points.size(), ySum / points.size(), Minecraft.getInstance().player.getLookAngle());
     }
 
     // Helper method to normalize the number of points
@@ -257,5 +274,9 @@ public class MousePathComparator {
             normalizedPoints.add(points.get(Math.min(index, points.size() - 1)));
         }
         return normalizedPoints;
+    }
+
+    public boolean compareToPath(List<Point2D> mousePath, List<Point2D> point2DS) {
+        return true;
     }
 }

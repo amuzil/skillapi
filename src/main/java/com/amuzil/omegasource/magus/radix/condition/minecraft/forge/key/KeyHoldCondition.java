@@ -3,12 +3,17 @@ package com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key;
 import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.RadixUtil;
+import com.amuzil.omegasource.magus.skill.conditionals.mouse.PointMouseInput;
+import com.amuzil.omegasource.magus.skill.conditionals.mouse.SegmentMouseInput;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class KeyHoldCondition extends Condition {
@@ -21,6 +26,7 @@ public class KeyHoldCondition extends Condition {
     // False by default.
     private final boolean release;
     private boolean started = false;
+    public List<PointMouseInput> mouseInputs = new ArrayList<>();
 
     public KeyHoldCondition(int key, int duration, int timeout, boolean release) {
         RadixUtil.assertTrue(duration >= 1, "duration must be >= 1");
@@ -36,7 +42,21 @@ public class KeyHoldCondition extends Condition {
                 if (Magus.keyboardInputModule.keyPressed(key) || Magus.mouseInputModule.keyPressed(key)) {
                     this.started = true;
                     this.currentHolding++;
+                    Minecraft mci = Minecraft.getInstance();
+                    if (mci.player != null) {
+                        double x = mci.mouseHandler.xpos();
+                        double y = mci.mouseHandler.ypos();
+                        Vec3 lookAngle = mci.player.getLookAngle();
+                        PointMouseInput pointMouseInput = new PointMouseInput(x, y, lookAngle);
+                        mouseInputs.add(pointMouseInput);
+                    }
                 } else {
+                    if (!mouseInputs.isEmpty()) {
+                        List<PointMouseInput> inputs = new ArrayList<>(mouseInputs);
+                        SegmentMouseInput segment = new SegmentMouseInput(inputs);
+                        System.out.println("SEGMENT DIRECTION: " + segment.getDirection() + " SLASH!");
+                        mouseInputs.clear();
+                    }
                     if (pressed(this.currentHolding, duration)) {
                         // If the Condition requires the key being released....
                         if (release) {

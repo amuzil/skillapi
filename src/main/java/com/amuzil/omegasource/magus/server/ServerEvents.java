@@ -153,9 +153,9 @@ public class ServerEvents {
 
         // Print the mouse coordinates
 //        System.out.println("Mouse X: " + mouseX + ", Mouse Y: " + mouseY);
-        if (player.tickCount % 10 == 0) {
-            System.out.println("Mouse X : " + mouseX + ", Mouse Y: " + mouseY);
-        }
+//        if (player.tickCount % 10 == 0) {
+//            System.out.println("Mouse X : " + mouseX + ", Mouse Y: " + mouseY);
+//        }
 
     }
 
