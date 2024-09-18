@@ -11,22 +11,19 @@ import java.util.List;
 
 // Creates a path for a given object.
 public class PathBuilder {
+    public static PathBuilder instance;
     private ConditionPath path;
     private RadixTree.ActivationType type;
-    private HashMap<RadixTree.ActivationType, ConditionPath> finalPath;
 
-    public static PathBuilder instance;
     public static PathBuilder getInstance() {
-        if (instance == null)
-            instance = new PathBuilder();
+        if (instance == null) instance = new PathBuilder();
         instance.reset();
         return instance;
     }
 
     public PathBuilder path(Condition... conditions) {
         List<ModifierData> emptyData = new ArrayList<>();
-        if (path == null)
-            path = new ConditionPath(List.of(conditions));
+        if (path == null) path = new ConditionPath(List.of(conditions));
         else {
             for (Condition condition : conditions) {
                 path.addStep(condition, emptyData);
@@ -39,11 +36,12 @@ public class PathBuilder {
         this.type = type;
         return this;
     }
+
     public HashMap<RadixTree.ActivationType, ConditionPath> build() {
-        finalPath = new HashMap<>();
+        HashMap<RadixTree.ActivationType, ConditionPath> finalPath = new HashMap<>();
         finalPath.put(type, path);
         reset();
-        return this.finalPath;
+        return finalPath;
     }
 
     public void reset() {
