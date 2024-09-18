@@ -12,12 +12,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public class MultiCondition extends Condition {
+    private static final int TIMEOUT_IN_TICKS = 15;
     private final List<Condition> concurrentConditions;
     private Runnable onCompleteSuccess;
     private Runnable onCompleteFailure;
     private Dictionary<Integer, Boolean> conditionsMet;
     private Consumer<TickEvent.ClientTickEvent> clientTickListener;
-    private static int TIMEOUT_IN_TICKS = 15;
     private int executionTime = 0;
     private boolean startedExecuting = false;
 
@@ -39,14 +39,17 @@ public class MultiCondition extends Condition {
         this.reset();
     }
 
+    public List<Condition> getSubConditions() {
+        return concurrentConditions;
+    }
+
     @Override
     public void register(String name, Runnable onSuccess, Runnable onFailure) {
         this.clientTickListener = event -> {
             if (event.phase == TickEvent.ClientTickEvent.Phase.START) {
-                if(startedExecuting)
-                {
+                if (startedExecuting) {
                     executionTime++;
-                    if(executionTime > TIMEOUT_IN_TICKS) {
+                    if (executionTime > TIMEOUT_IN_TICKS) {
                         this.onCompleteFailure.run();
 
                         LogManager.getLogger().info("MULTI CONDITION TIMED OUT");

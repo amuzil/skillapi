@@ -61,32 +61,18 @@ public class InputConverter {
                     // List of multiconditions
                     List<MultiCondition> allConditions = new LinkedList<>();
                     allConditions.add(ConditionBuilder.createMultiCondition(conditions));
-
-                    MultiCondition timedCondition, releaseCondition;
-                    Condition timed, release;
-
-                    // Moved the time delay code from the input path to here so it is not combined.
-                    for (int i = 0; i < conditions.size(); i++) {
-                        KeyInput input = permutation.keys().get(i);
-                        
-                        if (input.minDelay() > 0) {
-                            //TODO: Fix this to account for "action keys".
-//                            timed = new TickTimedCondition(
-//                                    TickEvent.Type.CLIENT, TickEvent.Phase.START,
-//                                    input.maxDelay(), Result.SUCCESS,
-//                                    new KeyPressedCondition(TIMEOUT_THRESHOLD), Result.FAILURE, Result.SUCCESS
-//                            );
-//                            timedCondition = ConditionBuilder.createMultiCondition(timed);
-//                            allConditions.add(timedCondition);
-                        }
-
-                    }
                     return new LinkedList<>(allConditions);
                 }
         );
         registerBuilder(ChainedKeyInput.class,
-                combination -> combination.keys().stream().map(InputConverter::buildPathFrom)
-                        .collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll)
+                combination -> {
+                    LinkedList<Condition> allConditions = new LinkedList<>();
+                    int minDelay = 0, maxDelay = 0;
+                    for (MultiKeyInput multi : combination.keys()) {
+
+                    }
+                    return (LinkedList<Condition>) multiConditions;
+                }
         );
 
         /* Mouse */
