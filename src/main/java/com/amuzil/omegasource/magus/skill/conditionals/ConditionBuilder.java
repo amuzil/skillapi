@@ -3,7 +3,7 @@ package com.amuzil.omegasource.magus.skill.conditionals;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.condition.ChainedCondition;
 import com.amuzil.omegasource.magus.radix.condition.MultiCondition;
-import com.amuzil.omegasource.magus.radix.path.PathBuilder;
+import com.amuzil.omegasource.magus.radix.path.InputConverter;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -46,12 +46,12 @@ public class ConditionBuilder {
     }
 
     public ConditionBuilder fromInputData(List<InputData> formExecutionInputs) {
-        formExecutionInputs.forEach(inputData -> conditionList.addAll(PathBuilder.buildPathFrom(inputData)));
+        formExecutionInputs.forEach(inputData -> conditionList.addAll(InputConverter.buildPathFrom(inputData)));
         return this;
     }
 
     public ConditionBuilder fromInputData(InputData formExecutionInput) {
-        conditionList.addAll(PathBuilder.buildPathFrom(formExecutionInput));
+        conditionList.addAll(InputConverter.buildPathFrom(formExecutionInput));
         return this;
     }
 

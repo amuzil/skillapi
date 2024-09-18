@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 
 public class RadixTree {
     private static final int NO_MISMATCH = -1;
-    private Node root;
+    private final Node root;
     private Node active;
     private Condition lastActivated = null;
     // Fire is a test
@@ -43,7 +43,7 @@ public class RadixTree {
     }
 
     private void activateBranchConditions(List<Condition> conditions) {
-        for (Condition condition: conditions) {
+        for (Condition condition : conditions) {
             condition.register();
         }
     }
@@ -53,9 +53,8 @@ public class RadixTree {
     }
 
     private void deactivateAllConditions(Node current, List<Condition> result) {
-        if (current.isComplete)
-            for (Condition condition : result)
-                condition.unregister();
+        if (current.isComplete) for (Condition condition : result)
+            condition.unregister();
 
         for (RadixBranch branch : current.branches.values())
             deactivateAllConditions(branch.next, Stream.concat(result.stream(), branch.path.conditions.stream()).toList());
@@ -67,8 +66,7 @@ public class RadixTree {
     }
 
     private void printAllConditions(Node current, List<Condition> result) {
-        if (current.isComplete)
-            System.out.println("Condition: " + result);
+        if (current.isComplete) System.out.println("Condition: " + result);
 
         for (RadixBranch branch : current.branches.values())
             printAllConditions(branch.next, Stream.concat(result.stream(), branch.path.conditions.stream()).toList());
@@ -83,10 +81,8 @@ public class RadixTree {
         int lastValue = current.totalConditions() - 1;
         int i = 0;
         for (RadixBranch branch : current.branches.values()) {
-            if (i == lastValue)
-                System.out.println(indent.replace("+", "L") + branch.path);
-            else
-                System.out.println(indent.replace("+", "|") + branch.path);
+            if (i == lastValue) System.out.println(indent.replace("+", "L") + branch.path);
+            else System.out.println(indent.replace("+", "|") + branch.path);
             int length1 = indent.length() / 2 == 0 ? 4 : indent.length() / 2;
             int length2 = branch.path.toString().length() / 3;
             String oldIndent = new String(new char[length1]).replace("\0", " ");
@@ -165,17 +161,14 @@ public class RadixTree {
             Condition currentCondition = conditions.get(currIndex);
             RadixBranch branch = current.getTransition(currentCondition);
 //            RadixBranch branch = current.getMatchedPath(currentCondition);
-            if (branch == null)
-                return null;
+            if (branch == null) return null;
 
             List<Condition> currSubCondition = conditions.subList(currIndex, conditions.size());
-            if (!Condition.startsWith(currSubCondition, branch.path.conditions))
-                return null;
+            if (!Condition.startsWith(currSubCondition, branch.path.conditions)) return null;
 
             currIndex += branch.path.conditions.size();
             current = branch.next;
-            if (ret == null)
-                ret = new ArrayList<>();
+            if (ret == null) ret = new ArrayList<>();
             ret = Stream.concat(ret.stream(), branch.path.conditions.stream()).toList();
         }
         return ret;
@@ -226,8 +219,7 @@ public class RadixTree {
                 if (condition != null) {
                     Runnable success;
                     success = () -> {
-                        if (condition.onSuccess != null)
-                            condition.onSuccess.run();
+                        if (condition.onSuccess != null) condition.onSuccess.run();
                         MagusNetwork.sendToServer(new ConditionActivatedPacket(condition));
                         RadixUtil.getLogger().debug("Packet sent.");
                         condition.unregister();
@@ -342,5 +334,10 @@ public class RadixTree {
 
     public void setOwner(Entity entity) {
         this.owner = entity;
+    }
+
+    // Menu = radial menu or a HUD. Other activation types are self explanatory.
+    public enum ActivationType {
+        MULTIKEY, MENU, HOTKEY, VR
     }
 }

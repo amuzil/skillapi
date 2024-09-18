@@ -1,118 +1,42 @@
 package com.amuzil.omegasource.magus.radix.path;
 
 import com.amuzil.omegasource.magus.radix.Condition;
-import com.amuzil.omegasource.magus.radix.condition.MultiCondition;
-import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
-import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
-import com.amuzil.omegasource.magus.skill.conditionals.key.ChainedKeyInput;
-import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
-import com.amuzil.omegasource.magus.skill.conditionals.key.MultiKeyInput;
-import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseWheelInput;
+import com.amuzil.omegasource.magus.radix.ConditionPath;
+import com.amuzil.omegasource.magus.radix.RadixTree;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 
+// Creates a path for a given object.
 public class PathBuilder {
-    private static final Map<Class<?>, Function<Object, LinkedList<Condition>>> CONDITION_BUILDERS = new HashMap<>();
+    private ConditionPath path;
+    private RadixTree.ActivationType type;
+    private HashMap<RadixTree.ActivationType, ConditionPath> finalPath;
 
-    static {
-        // Minimum amount of ticks a key must be pressed for it to be considered a held condition.
-        // This value is used in the condition class for how to check validity. Not used here.
-        final int HELD_THRESHOLD = 3;
-        // 50 by default
-        final int TIMEOUT_THRESHOLD = 10;
-
-        /* Keys. */
-        //TODO: Account for max delay
-        registerBuilder(KeyInput.class, keyInput -> {
-
-            LinkedList<Condition> conditions = new LinkedList<>();
-
-            // Any time less than this is just a key press.
-            // TODO: Adjust timeout to be per node.
-            // Use a configurable value to be our default timeout. If the condition should never time out,
-            // dont add the threshold value.
-            int timeout = TIMEOUT_THRESHOLD + keyInput.timeout();
-            if (keyInput.timeout() < 0)
-                timeout = keyInput.timeout();
-
-            // Default is about 0 ticks.
-
-            KeyHoldCondition keyPress = new KeyHoldCondition(keyInput.key().getValue(),
-                    keyInput.held(), timeout, keyInput.release());
-            // We can change these runnables later if need be.
-            keyPress.register("key_press", keyPress::reset, keyPress::reset);
-            conditions.add(keyPress);
-
-
-            return conditions;
-        });
-        // TODO: Need to print these out and test how they work,
-        // TODO: in order to finalise ConditionBuilder.java.
-        registerBuilder(MultiKeyInput.class,
-                permutation -> {
-                    List<Condition> conditions = new LinkedList<>(permutation.keys().stream().map(PathBuilder::buildPathFrom)
-                            .collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll));
-
-
-                    // List of multiconditions
-                    List<MultiCondition> allConditions = new LinkedList<>();
-                    allConditions.add(ConditionBuilder.createMultiCondition(conditions));
-
-                    MultiCondition timedCondition, releaseCondition;
-                    Condition timed, release;
-
-                    // Moved the time delay code from the input path to here so it is not combined.
-                    for (int i = 0; i < conditions.size(); i++) {
-                        KeyInput input = permutation.keys().get(i);
-                        
-                        if (input.minDelay() > 0) {
-                            //TODO: Fix this to account for "action keys".
-//                            timed = new TickTimedCondition(
-//                                    TickEvent.Type.CLIENT, TickEvent.Phase.START,
-//                                    input.maxDelay(), Result.SUCCESS,
-//                                    new KeyPressedCondition(TIMEOUT_THRESHOLD), Result.FAILURE, Result.SUCCESS
-//                            );
-//                            timedCondition = ConditionBuilder.createMultiCondition(timed);
-//                            allConditions.add(timedCondition);
-                        }
-
-                    }
-                    return new LinkedList<>(allConditions);
-                }
-        );
-        registerBuilder(ChainedKeyInput.class,
-                combination -> combination.keys().stream().map(PathBuilder::buildPathFrom)
-                        .collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll)
-        );
-
-        /* Mouse */
-//		registerBuilder(MouseInput.class,
-//				mouseInput -> );
-        registerBuilder(MouseWheelInput.class,
-                mouseWheelInput -> {
-
-                    LinkedList<Condition> conditions = new LinkedList<>();
-                    // Placeholder for now
-                    //conditions.add(new KeyPressCondition(0, TIMEOUT_THRESHOLD));
-
-                    return conditions;
-
-                }
-        );
+    public static PathBuilder instance;
+    public static PathBuilder getInstance() {
+        if (instance == null)
+            instance = new PathBuilder();
+        instance.reset();
+        return instance;
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> void registerBuilder(Class<T> type, Function<T, LinkedList<Condition>> builder) {
-        CONDITION_BUILDERS.put(type, (Function<Object, LinkedList<Condition>>) builder);
+    public PathBuilder path(Condition... conditions) {
+
+        return this;
+    }
+    public PathBuilder type(RadixTree.ActivationType type) {
+        this.type = type;
+        return this;
+    }
+    public HashMap<RadixTree.ActivationType, ConditionPath> build() {
+        finalPath = new HashMap<>();
+        finalPath.put(type, path);
+        reset();
+        return this.finalPath;
     }
 
-    // TODO turn a linked list of conditions into a connected node tree.
-
-    public static <T> LinkedList<Condition> buildPathFrom(T data) {
-        return CONDITION_BUILDERS.get(data.getClass()).apply(data);
+    public void reset() {
+        this.type = null;
+        this.path = null;
     }
 }
