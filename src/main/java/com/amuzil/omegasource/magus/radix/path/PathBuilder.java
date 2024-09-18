@@ -20,10 +20,10 @@ public class PathBuilder {
 
     static {
         // Minimum amount of ticks a key must be pressed for it to be considered a held condition.
-        //TODO: Adjust these
+        // This value is used in the condition class for how to check validity. Not used here.
         final int HELD_THRESHOLD = 3;
         // 50 by default
-        final int TIMEOUT_THRESHOLD = 15;
+        final int TIMEOUT_THRESHOLD = 10;
 
         /* Keys. */
         //TODO: Account for max delay
@@ -33,8 +33,20 @@ public class PathBuilder {
 
             // Any time less than this is just a key press.
             // TODO: Adjust timeout to be per node.
-            conditions.add(new KeyHoldCondition(keyInput.key().getValue(),
-                    keyInput.held() + KeyHoldCondition.KEY_PRESS_TIMEOUT, TIMEOUT_THRESHOLD, keyInput.release()));
+            // Use a configurable value to be our default timeout. If the condition should never time out,
+            // dont add the threshold value.
+            int timeout = TIMEOUT_THRESHOLD + keyInput.timeout();
+            if (keyInput.timeout() < 0)
+                timeout = keyInput.timeout();
+
+            // Default is about 0 ticks.
+
+            KeyHoldCondition keyPress = new KeyHoldCondition(keyInput.key().getValue(),
+                    keyInput.held(), timeout, keyInput.release());
+            // We can change these runnables later if need be.
+            keyPress.register("key_press", keyPress::reset, keyPress::reset);
+            conditions.add(keyPress);
+
 
             return conditions;
         });
@@ -67,6 +79,7 @@ public class PathBuilder {
 //                            timedCondition = ConditionBuilder.createMultiCondition(timed);
 //                            allConditions.add(timedCondition);
                         }
+
                     }
                     return new LinkedList<>(allConditions);
                 }

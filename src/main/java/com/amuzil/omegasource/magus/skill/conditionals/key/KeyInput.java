@@ -13,4 +13,4 @@ import com.mojang.blaze3d.platform.InputConstants;
  *                 the current key input, and the next.
  * @param held How long the key should be held for.
  */
-public record KeyInput(InputConstants.Key key, boolean release, int minDelay, int maxDelay, int held) implements InputData {}
+public record KeyInput(InputConstants.Key key, boolean release, int minDelay, int maxDelay, int held, int timeout) implements InputData {}

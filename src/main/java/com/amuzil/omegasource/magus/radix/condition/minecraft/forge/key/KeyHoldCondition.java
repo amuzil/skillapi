@@ -29,8 +29,9 @@ public class KeyHoldCondition extends Condition {
     public List<PointMouseInput> mouseInputs = new ArrayList<>();
 
     public KeyHoldCondition(int key, int duration, int timeout, boolean release) {
-        RadixUtil.assertTrue(duration >= 1, "duration must be >= 1");
-        RadixUtil.assertTrue(timeout >= 1, "timeout must be >= 1");
+        if (duration < 0)
+            RadixUtil.getLogger().warn("You should not be defining a key press duration of less than 0.");
+
         this.currentTotal = 0;
         this.currentHolding = 0;
         this.release = release;
@@ -62,13 +63,11 @@ public class KeyHoldCondition extends Condition {
                         // If the Condition requires the key being released....
                         if (release) {
                             this.onSuccess.run();
-                            reset();
                         }
                     } else {
                         // Not held for long enough
                         if (this.currentHolding > 0) {
                             this.onFailure.run();
-                            reset();
                         }
                     }
                 }
@@ -77,13 +76,12 @@ public class KeyHoldCondition extends Condition {
                     // If the Condition doesn't require the key being released....
                     if (!release) {
                         this.onSuccess.run();
-                        reset();
                     }
                 }
                 if (this.started) {
-                    if (this.currentTotal >= timeout) {
+                    // Timeout of -1 means that this should wait forever.
+                    if (timeout > -1 && this.currentTotal >= timeout) {
                         this.onFailure.run();
-                        reset();
                     }
                     this.currentTotal++;
                 }
@@ -99,6 +97,8 @@ public class KeyHoldCondition extends Condition {
         return pressed;
     }
 
+    // Should be called in either runnable by other methods, rather than manually here. Calling it manually in the class can lead
+    // to race conditions and other weird bugs, none of which are ideal.
     public void reset() {
         this.currentTotal = 0;
         this.currentHolding = 0;

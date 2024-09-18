@@ -31,6 +31,7 @@ public class FormDataRegistry {
         return formTypes.entrySet().stream().filter(form -> form.getValue().name().equals(formToModify.name())).findFirst().get().getKey();
     }
 
+
     public static void registerForm(List<InputData> inputs, Form form, InputConstants.Type inputType) {
         formTypes.put(inputs, form);
         // Register the requisite conditions
