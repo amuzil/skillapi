@@ -3,7 +3,7 @@ package com.amuzil.omegasource.magus.skill.conditionals;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.condition.ChainedCondition;
 import com.amuzil.omegasource.magus.radix.condition.MultiCondition;
-import com.amuzil.omegasource.magus.radix.path.InputConverter;
+import com.amuzil.omegasource.magus.radix.builders.InputConverter;
 
 import java.util.LinkedList;
 import java.util.List;

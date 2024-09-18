@@ -1,4 +1,4 @@
-package com.amuzil.omegasource.magus.radix.path;
+package com.amuzil.omegasource.magus.radix.builders;
 
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.ConditionPath;
@@ -9,11 +9,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-// Creates a path for a given object.
+// Creates a path for a given object. Designed for things which directly require raw input.
+
+/**
+ * Creates a path for a given objecct. Uses different activation types to denote what kind of tree to use these conditions for.
+ * If using raw input, use InputPathBuilder instead.
+ */
 public class PathBuilder {
     public static PathBuilder instance;
     private ConditionPath path;
+    // Todo: Change this to input type? Skills should use the activation type, forms input type?
     private RadixTree.ActivationType type;
+
+    protected static void addSteps(ConditionPath path, Condition... conditions) {
+        List<ModifierData> emptyData = new ArrayList<>();
+        if (path == null) path = new ConditionPath(List.of(conditions));
+        for (Condition condition : conditions) {
+            path.addStep(condition, emptyData);
+        }
+    }
 
     public static PathBuilder getInstance() {
         if (instance == null) instance = new PathBuilder();
@@ -22,13 +36,7 @@ public class PathBuilder {
     }
 
     public PathBuilder path(Condition... conditions) {
-        List<ModifierData> emptyData = new ArrayList<>();
-        if (path == null) path = new ConditionPath(List.of(conditions));
-        else {
-            for (Condition condition : conditions) {
-                path.addStep(condition, emptyData);
-            }
-        }
+        addSteps(path, conditions);
         return this;
     }
 

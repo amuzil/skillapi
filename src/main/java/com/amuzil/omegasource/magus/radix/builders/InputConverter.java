@@ -1,4 +1,4 @@
-package com.amuzil.omegasource.magus.radix.path;
+package com.amuzil.omegasource.magus.radix.builders;
 
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.condition.MultiCondition;
