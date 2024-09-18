@@ -3,8 +3,11 @@ package com.amuzil.omegasource.magus.radix.path;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.ConditionPath;
 import com.amuzil.omegasource.magus.radix.RadixTree;
+import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 // Creates a path for a given object.
 public class PathBuilder {
@@ -21,9 +24,17 @@ public class PathBuilder {
     }
 
     public PathBuilder path(Condition... conditions) {
-
+        List<ModifierData> emptyData = new ArrayList<>();
+        if (path == null)
+            path = new ConditionPath(List.of(conditions));
+        else {
+            for (Condition condition : conditions) {
+                path.addStep(condition, emptyData);
+            }
+        }
         return this;
     }
+
     public PathBuilder type(RadixTree.ActivationType type) {
         this.type = type;
         return this;
