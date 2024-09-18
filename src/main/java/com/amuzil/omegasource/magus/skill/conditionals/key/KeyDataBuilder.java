@@ -15,26 +15,30 @@ public class KeyDataBuilder {
     /* Look at #InputConstants for key names, codes, and types. */
 
     public static KeyInput createInput(int key, int minDelay, int maxDelay, int held) {
-        return new KeyInput(InputConstants.getKey(key, -1), false, minDelay, maxDelay, held);
+        return new KeyInput(InputConstants.getKey(key, -1), false, minDelay, maxDelay, held, -1);
     }
 
     public static KeyInput createInput(int key, boolean released, int minDelay, int maxDelay, int held) {
-        return new KeyInput(InputConstants.getKey(key, -1), released, minDelay, maxDelay, held);
+        return new KeyInput(InputConstants.getKey(key, -1), released, minDelay, maxDelay, held, -1);
     }
 
     public static KeyInput createInput(String key, int minDelay, int maxDelay, int held) {
-        return new KeyInput(InputConstants.getKey(key), false, minDelay, maxDelay, held);
+        return new KeyInput(InputConstants.getKey(key), false, minDelay, maxDelay, held, -1);
     }
 
     public static KeyInput createInput(String key, boolean released, int minDelay, int maxDelay, int held) {
-        return new KeyInput(InputConstants.getKey(key), released, minDelay, maxDelay, held);
+        return new KeyInput(InputConstants.getKey(key), released, minDelay, maxDelay, held, -1);
     }
     public static KeyInput createInput(InputConstants.Key key, boolean released, int minDelay, int maxDelay, int held) {
-        return new KeyInput(key, released, minDelay, maxDelay, held);
+        return new KeyInput(key, released, minDelay, maxDelay, held, -1);
     }
 
     public static KeyInput createInput(InputConstants.Key key, int minDelay, int maxDelay, int held) {
-        return new KeyInput(key, false, minDelay, maxDelay, held);
+        return new KeyInput(key, false, minDelay, maxDelay, held, -1);
+    }
+
+    public static KeyInput createInput(InputConstants.Key key, int minDelay, int maxDelay, int held, int timeout) {
+        return new KeyInput(key, false, minDelay, maxDelay, held, timeout);
     }
 
     //TODO: Remove these methods due to InputDataBuilder?
