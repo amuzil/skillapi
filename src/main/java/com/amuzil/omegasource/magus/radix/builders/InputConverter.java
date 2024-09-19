@@ -57,21 +57,31 @@ public class InputConverter {
                     List<Condition> conditions = new LinkedList<>(permutation.keys().stream().map(InputConverter::buildPathFrom)
                             .collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll));
 
+                    // Create a MultiCondition from the flattened conditions
+                    MultiCondition multiCondition = ConditionBuilder.createMultiCondition(conditions);
+                    LinkedList<Condition> multiConditions = new LinkedList<>();
+                    multiConditions.add(multiCondition);
 
-                    // List of multiconditions
-                    List<MultiCondition> allConditions = new LinkedList<>();
-                    allConditions.add(ConditionBuilder.createMultiCondition(conditions));
-                    return new LinkedList<>(allConditions);
+                    // Return a list containing the MultiCondition
+                    return multiConditions;
                 }
         );
         registerBuilder(ChainedKeyInput.class,
                 combination -> {
-                    LinkedList<Condition> allConditions = new LinkedList<>();
-                    int minDelay = 0, maxDelay = 0;
-                    for (MultiKeyInput multi : combination.keys()) {
+                    List<Condition> conditions = new LinkedList<>(combination.keys().stream().map(InputConverter::buildPathFrom)
+                            .collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll));
 
+
+
+                    LinkedList<Condition> chained = new LinkedList<>();
+                    for (Condition condition : conditions) {
+                        if (condition instanceof MultiCondition)
+                            chained.add(ConditionBuilder.createSequentialCondition((MultiCondition) condition));
+                        else chained.add(ConditionBuilder.createSequentialCondition(condition));
                     }
-                    return (LinkedList<Condition>) multiConditions;
+
+                    // Return a list containing the ChainedCondition
+                    return chained;
                 }
         );
 

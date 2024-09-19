@@ -18,11 +18,11 @@ import java.util.Map;
 public class AvatarFormRegistry {
 
     public static void registerForms() {
-        KeyInput left = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyAttack.getKey(), 0, 0, 0);
-        KeyInput right = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyUse.getKey(), 0, 0, 0);
-        KeyInput initializer = KeyDataBuilder.createInput("key.keyboard.left.alt", 0, 0, 0);
-        KeyInput held = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyShift.getKey(), 0, 0, 20);
-        KeyInput sneak = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyShift.getKey(), 0, 0, 0);
+        KeyInput left = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyAttack.getKey(), 0);
+        KeyInput right = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyUse.getKey(), 0);
+        KeyInput initializer = KeyDataBuilder.createInput("key.keyboard.left.alt", 0);
+        KeyInput held = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyShift.getKey(), 20);
+        KeyInput sneak = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyShift.getKey(), 0);
         MouseWheelInput forwards = MouseDataBuilder.createWheelInput(MouseDataBuilder.Direction.FORWARDS, 1);
         MouseWheelInput back = MouseDataBuilder.createWheelInput(MouseDataBuilder.Direction.BACK, 1);
 
@@ -58,8 +58,9 @@ public class AvatarFormRegistry {
             KeyInput first, second;
             // Problem: The tick delay is being combined with the key press into a simultaneous condition.
             // Not good.
-            first = KeyDataBuilder.createInput(key.getValue(), true, 0, 70, 0);
-            second = KeyDataBuilder.createInput(key.getValue(), 0, 0, 0);
+            first = KeyDataBuilder.createInput(key.getValue(), true, 0);
+            // Has to be a relatively quick input.
+            second = KeyDataBuilder.createInput(key.getValue(), 0, 15);
             inputs.add(KeyDataBuilder.createChainedInput(first, second));
             FormDataRegistry.registerForm(inputs, Forms.STEP, InputConstants.Type.KEYSYM);
         }

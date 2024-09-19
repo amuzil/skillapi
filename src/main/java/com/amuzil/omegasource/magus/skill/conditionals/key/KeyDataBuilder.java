@@ -14,31 +14,51 @@ public class KeyDataBuilder {
 
     /* Look at #InputConstants for key names, codes, and types. */
 
-    public static KeyInput createInput(int key, int minDelay, int maxDelay, int held) {
-        return new KeyInput(InputConstants.getKey(key, -1), false, minDelay, maxDelay, held, -1);
+    /* Integers */
+    public static KeyInput createInput(int key, int held) {
+        return new KeyInput(InputConstants.getKey(key, -1), false,  held, -1);
     }
 
-    public static KeyInput createInput(int key, boolean released, int minDelay, int maxDelay, int held) {
-        return new KeyInput(InputConstants.getKey(key, -1), released, minDelay, maxDelay, held, -1);
+    public static KeyInput createInput(int key, int held, int timeout) {
+        return new KeyInput(InputConstants.getKey(key, -1), false, held, timeout);
     }
 
-    public static KeyInput createInput(String key, int minDelay, int maxDelay, int held) {
-        return new KeyInput(InputConstants.getKey(key), false, minDelay, maxDelay, held, -1);
+    public static KeyInput createInput(int key, boolean released, int held) {
+        return new KeyInput(InputConstants.getKey(key, -1), released, held, -1);
     }
 
-    public static KeyInput createInput(String key, boolean released, int minDelay, int maxDelay, int held) {
-        return new KeyInput(InputConstants.getKey(key), released, minDelay, maxDelay, held, -1);
-    }
-    public static KeyInput createInput(InputConstants.Key key, boolean released, int minDelay, int maxDelay, int held) {
-        return new KeyInput(key, released, minDelay, maxDelay, held, -1);
+    public static KeyInput createInput(int key, boolean released, int held, int timeout) {
+        return new KeyInput(InputConstants.getKey(key, -1), released, held, timeout);
     }
 
-    public static KeyInput createInput(InputConstants.Key key, int minDelay, int maxDelay, int held) {
-        return new KeyInput(key, false, minDelay, maxDelay, held, -1);
+    /* Strings */
+    public static KeyInput createInput(String key, int held) {
+        return new KeyInput(InputConstants.getKey(key), false, held, -1);
     }
 
-    public static KeyInput createInput(InputConstants.Key key, int minDelay, int maxDelay, int held, int timeout) {
-        return new KeyInput(key, false, minDelay, maxDelay, held, timeout);
+    public static KeyInput createInput(String key, boolean released, int held) {
+        return new KeyInput(InputConstants.getKey(key), released, held, -1);
+    }
+
+    public static KeyInput createInput(String key, boolean released, int held, int timeout) {
+        return new KeyInput(InputConstants.getKey(key), released, held, timeout);
+    }
+
+    public static KeyInput createInput(String key,  int held, int timeout) {
+        return new KeyInput(InputConstants.getKey(key), false, held, timeout);
+    }
+
+    /* Input Constants */
+    public static KeyInput createInput(InputConstants.Key key, boolean released,int held) {
+        return new KeyInput(key, released, held, -1);
+    }
+
+    public static KeyInput createInput(InputConstants.Key key, int held) {
+        return new KeyInput(key, false, held, -1);
+    }
+
+    public static KeyInput createInput(InputConstants.Key key, int held, int timeout) {
+        return new KeyInput(key, false, held, timeout);
     }
 
     //TODO: Remove these methods due to InputDataBuilder?
