@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public abstract class InputModule {
     protected final Map<Condition, Form> formInputs = new HashMap<>();
     protected final List<ModifierListener> modifierListeners = new ArrayList<>();
@@ -64,6 +65,12 @@ public abstract class InputModule {
 
     public Form getLastActivatedForm() {
         return this.lastActivatedForm;
+    }
+
+    public void init() {
+        resetKeys();
+        registerInputs();
+        registerListeners();
     }
 
     public abstract void registerListeners();
