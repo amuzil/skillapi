@@ -33,11 +33,11 @@ public class AvatarFormRegistry {
         FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE, InputConstants.Type.MOUSE);
         FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE, InputConstants.Type.MOUSE);
         FormDataRegistry.registerForm(InputDataBuilder.toInputs(initializer), Forms.ARC, InputConstants.Type.KEYSYM);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak), Forms.BREATHE, InputConstants.Type.KEYSYM);
         FormDataRegistry.registerForm(InputDataBuilder.toInputs(KeyDataBuilder.createMultiInput(left, right)), Forms.BURST, InputConstants.Type.MOUSE);
 
 //        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak, forwards), Forms.COMPRESS);
 //        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak, back), Forms.EXPAND);
-//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(held), Forms.BREATHE);
 //        FormDataRegistry.registerForm(Forms.PUSH);
 //        FormDataRegistry.registerForm(Forms.PULL);
 //        FormDataRegistry.registerForm(Forms.RAISE);

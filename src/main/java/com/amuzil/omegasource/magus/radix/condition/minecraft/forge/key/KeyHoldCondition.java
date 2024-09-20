@@ -3,8 +3,8 @@ package com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key;
 import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.RadixUtil;
-import com.amuzil.omegasource.magus.skill.conditionals.mouse.PointMouseInput;
-import com.amuzil.omegasource.magus.skill.conditionals.mouse.SegmentMouseInput;
+import com.amuzil.omegasource.magus.skill.conditionals.mouse.MousePointInput;
+import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseMotionInput;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
@@ -26,7 +26,7 @@ public class KeyHoldCondition extends Condition {
     // False by default.
     private final boolean release;
     private boolean started = false;
-    public List<PointMouseInput> mouseInputs = new ArrayList<>();
+    public List<MousePointInput> mouseInputs = new ArrayList<>();
 
     public KeyHoldCondition(int key, int duration, int timeout, boolean release) {
         if (duration < 0)
@@ -44,21 +44,7 @@ public class KeyHoldCondition extends Condition {
                     this.started = true;
                     this.currentHolding++;
                     Minecraft mci = Minecraft.getInstance();
-                    if (mci.player != null) {
-                        double x = mci.mouseHandler.xpos();
-                        double y = mci.mouseHandler.ypos();
-                        Vec3 lookAngle = mci.player.getLookAngle();
-                        PointMouseInput pointMouseInput = new PointMouseInput(x, y, lookAngle);
-                        mouseInputs.add(pointMouseInput);
-                    }
                 } else {
-                    if (!mouseInputs.isEmpty()) {
-                        List<PointMouseInput> inputs = new ArrayList<>(mouseInputs);
-                        SegmentMouseInput segment = new SegmentMouseInput(inputs);
-//                        System.out.println("SEGMENT MOTION DIRECTION: " + segment.getMotionDirection());
-//                        System.out.println("SEGMENT AIM DIRECTION: " + segment.getAimDirection());
-                        mouseInputs.clear();
-                    }
                     if (pressed(this.currentHolding, duration)) {
                         // If the Condition requires the key being released....
                         if (release) {
@@ -72,12 +58,12 @@ public class KeyHoldCondition extends Condition {
                     }
                 }
                 // If the duration is <= 3, then we want the Condition to act as a key press, rather than a hold.
-                if (pressed(this.currentHolding, duration)) {
-                    // If the Condition doesn't require the key being released....
-                    if (!release) {
-                        this.onSuccess.run();
-                    }
-                }
+//                if (pressed(this.currentHolding, duration)) {
+//                    // If the Condition doesn't require the key being released....
+//                    if (!release) {
+//                        this.onSuccess.run();
+//                    }
+//                }
                 if (this.started) {
                     // Timeout of -1 means that this should wait forever.
                     if (timeout > -1 && this.currentTotal >= timeout) {

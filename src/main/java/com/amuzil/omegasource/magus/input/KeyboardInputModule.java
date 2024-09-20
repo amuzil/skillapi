@@ -3,8 +3,6 @@ package com.amuzil.omegasource.magus.input;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.radix.Condition;
-import com.amuzil.omegasource.magus.radix.condition.ChainedCondition;
-import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -18,7 +16,6 @@ import org.apache.logging.log4j.LogManager;
 
 import java.util.*;
 import java.util.function.Consumer;
-
 
 
 public class KeyboardInputModule extends InputModule {
@@ -164,7 +161,7 @@ public class KeyboardInputModule extends InputModule {
     }
 
     @Override
-    public void unregisterInputs() {
+    public void unRegisterInputs() {
         MinecraftForge.EVENT_BUS.unregister(keyboardListener);
         MinecraftForge.EVENT_BUS.unregister(tickEventConsumer);
         formInputs.forEach((condition, form) -> condition.unregister());
@@ -184,7 +181,7 @@ public class KeyboardInputModule extends InputModule {
             registerInputs();
             listen = true;
         } else {
-            unregisterInputs();
+            unRegisterInputs();
             listen = false;
         }
     }

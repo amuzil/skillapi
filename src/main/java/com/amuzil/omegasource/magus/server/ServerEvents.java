@@ -1,39 +1,20 @@
 package com.amuzil.omegasource.magus.server;
 
 import com.amuzil.omegasource.magus.Magus;
-import com.amuzil.omegasource.magus.input.KeyboardInputModule;
-import com.amuzil.omegasource.magus.network.MagusNetwork;
-import com.amuzil.omegasource.magus.network.packets.server_executed.ConditionActivatedPacket;
-import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.Node;
 import com.amuzil.omegasource.magus.radix.NodeBuilder;
-import com.amuzil.omegasource.magus.radix.RadixTree;
-import com.amuzil.omegasource.magus.radix.condition.ConditionRegistry;
-import com.amuzil.omegasource.magus.radix.condition.input.FormCondition;
-import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
-import com.amuzil.omegasource.magus.skill.conditionals.key.KeyDataBuilder;
-import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
-import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import com.amuzil.omegasource.magus.skill.util.capability.entity.Data;
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Mod.EventBusSubscriber
 public class ServerEvents {
@@ -159,8 +140,9 @@ public class ServerEvents {
     @SubscribeEvent
     public static void OnPlayerLeaveWorld(EntityLeaveLevelEvent event) {
         if (event.getLevel().isClientSide() && event.getEntity() instanceof Player) {
-            Magus.keyboardInputModule.unregisterInputs();
-            Magus.keyboardInputModule.resetKeys();
+            Magus.keyboardInputModule.terminate();
+            Magus.mouseInputModule.terminate();
+            Magus.mouseMotionModule.terminate();
         }
     }
 }
