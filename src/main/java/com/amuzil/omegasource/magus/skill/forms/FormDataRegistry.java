@@ -34,7 +34,6 @@ public class FormDataRegistry {
 
 
     public static void registerForm(List<InputData> inputs, Form form, RadixTree.InputType type) {
-        formTypes.put(inputs, form);
         // Register the requisite conditions
         List<Condition> conditions = new ArrayList<>();
         if (formConditions.containsKey(form)) {
@@ -50,11 +49,9 @@ public class FormDataRegistry {
             }
             case KEYBOARD -> Magus.keyboardInputModule.registerInputData(inputs, form, condition);
             case MOUSE -> Magus.mouseInputModule.registerInputData(inputs, form, condition);
+            case MOUSE_MOTION -> Magus.mouseMotionModule.registerInputData(inputs, form, condition);
 
         }
-        Magus.keyboardInputModule.registerInputData(inputs, form, condition);
-//        else
-//        Magus.mouseInputModule.registerInputData(inputs, form, condition);
     }
 
     public static List<Condition> getConditionsFrom(Form form) {
@@ -64,6 +61,6 @@ public class FormDataRegistry {
     public static void registerForm(InputData input, Form form) {
         List<InputData> singleton = new ArrayList<>();
         singleton.add(input);
-        registerForm(singleton, form, InputConstants.Type.KEYSYM);
+        registerForm(singleton, form, RadixTree.InputType.KEYBOARD);
     }
 }

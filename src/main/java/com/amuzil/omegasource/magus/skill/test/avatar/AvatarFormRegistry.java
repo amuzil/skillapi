@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.skill.test.avatar;
 
 import com.amuzil.omegasource.magus.input.KeyboardInputModule;
+import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.conditionals.InputDataBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyDataBuilder;
@@ -9,7 +10,6 @@ import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseDataBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseWheelInput;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 
 import java.util.LinkedList;
@@ -30,11 +30,11 @@ public class AvatarFormRegistry {
         // TODO: Rather than having "push", "pull", "raise", and "lower" as Forms,
         //  make them Effects using the Force Form, Direction modifier & Target Modifier
 
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE, InputConstants.Type.MOUSE);
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE, InputConstants.Type.MOUSE);
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(initializer), Forms.ARC, InputConstants.Type.KEYSYM);
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak), Forms.BREATHE, InputConstants.Type.KEYSYM);
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(KeyDataBuilder.createMultiInput(left, right)), Forms.BURST, InputConstants.Type.MOUSE);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE, RadixTree.InputType.MOUSE);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE, RadixTree.InputType.MOUSE);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(initializer), Forms.ARC, RadixTree.InputType.KEYBOARD);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak), Forms.BREATHE, RadixTree.InputType.KEYBOARD);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(KeyDataBuilder.createMultiInput(left, right)), Forms.BURST, RadixTree.InputType.MOUSE);
 
 //        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak, forwards), Forms.COMPRESS);
 //        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak, back), Forms.EXPAND);
@@ -62,7 +62,7 @@ public class AvatarFormRegistry {
             // Has to be a relatively quick input.
             second = KeyDataBuilder.createInput(key.getValue(), 0, 15);
             inputs.add(KeyDataBuilder.createChainedInput(first, second));
-            FormDataRegistry.registerForm(inputs, Forms.STEP, InputConstants.Type.KEYSYM);
+            FormDataRegistry.registerForm(inputs, Forms.STEP, RadixTree.InputType.KEYBOARD);
         }
     }
 }
