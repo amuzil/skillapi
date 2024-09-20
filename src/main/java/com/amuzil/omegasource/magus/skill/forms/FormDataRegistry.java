@@ -2,6 +2,7 @@ package com.amuzil.omegasource.magus.skill.forms;
 
 import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.radix.Condition;
+import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -13,7 +14,7 @@ import java.util.Map;
 
 public class FormDataRegistry {
 
-    //TODO: Change this to use Conditions rather than a list of input data
+    //TODO: Change this to use Conditions rather than a list of input data, and use a hashmap of input types
     private static Map<List<InputData>, Form> formTypes;
     private static Map<Form, List<Condition>> formConditions;
 
@@ -32,7 +33,7 @@ public class FormDataRegistry {
     }
 
 
-    public static void registerForm(List<InputData> inputs, Form form, InputConstants.Type inputType) {
+    public static void registerForm(List<InputData> inputs, Form form, RadixTree.InputType type) {
         formTypes.put(inputs, form);
         // Register the requisite conditions
         List<Condition> conditions = new ArrayList<>();
@@ -43,10 +44,17 @@ public class FormDataRegistry {
         conditions.add(condition);
         formConditions.put(form, conditions);
         // Register the raw input data
-        if (inputType == InputConstants.Type.KEYSYM)
-            Magus.keyboardInputModule.registerInputData(inputs, form, condition);
-        else
-            Magus.mouseInputModule.registerInputData(inputs, form, condition);
+        switch (type) {
+            // I can dream...
+            case VR -> {
+            }
+            case KEYBOARD -> Magus.keyboardInputModule.registerInputData(inputs, form, condition);
+            case MOUSE -> Magus.mouseInputModule.registerInputData(inputs, form, condition);
+
+        }
+        Magus.keyboardInputModule.registerInputData(inputs, form, condition);
+//        else
+//        Magus.mouseInputModule.registerInputData(inputs, form, condition);
     }
 
     public static List<Condition> getConditionsFrom(Form form) {

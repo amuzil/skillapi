@@ -135,7 +135,7 @@ public class ServerEvents {
                 AvatarFormRegistry.registerForms();
                 Magus.keyboardInputModule.init();
                 Magus.mouseInputModule.init();
-                Magus.mouseMotionModule.init();
+//                Magus.mouseMotionModule.init();
             }
         }
     }
