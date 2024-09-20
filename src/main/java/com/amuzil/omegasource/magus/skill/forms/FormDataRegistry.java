@@ -5,12 +5,8 @@ import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
-import com.mojang.blaze3d.platform.InputConstants;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class FormDataRegistry {
 
@@ -24,21 +20,18 @@ public class FormDataRegistry {
         formConditions = new HashMap<>();
     }
 
-    public static Form getFormByName(String formName) {
-        return formTypes.entrySet().stream().filter(form -> form.getValue().name().equals(formName)).findFirst().get().getValue();
-    }
-
-    public static List<InputData> getInputsForForm(Form formToModify) {
+    public static List<InputData> getInputsForForm(Form formToModify, RadixTree.InputType type) {
         return formTypes.entrySet().stream().filter(form -> form.getValue().name().equals(formToModify.name())).findFirst().get().getKey();
     }
 
 
     public static void registerForm(List<InputData> inputs, Form form, RadixTree.InputType type) {
         // Register the requisite conditions
-        List<Condition> conditions = new ArrayList<>();
+        List<Condition> conditions;
         if (formConditions.containsKey(form)) {
             conditions = formConditions.get(form);
         }
+        else conditions = new LinkedList<>();
         Condition condition = ConditionBuilder.instance().fromInputData(inputs).build();
         conditions.add(condition);
         formConditions.put(form, conditions);

@@ -77,6 +77,10 @@ public class KeyHoldCondition extends Condition {
         this.registerEntry();
     }
 
+    public int getHeld() {
+        return this.currentHolding;
+    }
+
     public boolean pressed(int held, int duration) {
         boolean pressed = held >= duration || held > 0 && duration <= KEY_PRESS_TIMEOUT;
 //        LogManager.getLogger().info("Checking pressed. held:" + held + ", duration: " + duration + ", result: " + pressed);
