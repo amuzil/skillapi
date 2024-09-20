@@ -3,6 +3,7 @@ package com.amuzil.omegasource.magus.input;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.radix.Condition;
+import com.amuzil.omegasource.magus.radix.ConditionPath;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -119,38 +120,47 @@ public class KeyboardInputModule extends InputModule {
     }
 
     @Override
-    public void registerInputData(List<InputData> formExecutionInputs, Form formToExecute, Condition formCondition) {
-        //generate condition from InputData.
-        Runnable onSuccess = () -> {
-            if(mc.level != null) {
-                //this section is to prevent re-activating
-                // single condition forms when you hold the activation key for Held modifiers
+    public void registerInputData(List<InputData> formExecutionInputs, Form formToExecute, List<Condition> formCondition) {
+        // TODO:
+        // - Change formCondition to be a list of Conditions.
+        // - Have a createConditionPath(List<Condition> conditions) method for each Form.
+        // - Call it here, then add the condition path to the radixtree.
 
-                //TODO: Fix an issue where it doesn't let players re-activate forms outside of the held modifier.
-                // I.e account for modifiers here.
-                if(formToExecute != lastActivatedForm) {
-                    //LogManager.getLogger().info("FORM ACTIVATED: " + formToExecute.name());
-                    activeForm = formToExecute;
-                }
+        // Now, we call:
+        ConditionPath path = formToExecute.createPath(formCondition);
+        // add the path to the tree
 
-                ticksSinceActivated = 0;
-            }
-            //Reset condition
-        };
-        Runnable onFailure = () -> {
-            activeForm = new Form();
-            //reset conditions?
-           // Magus.radixTree.burn();
-        };
-
-        if(formCondition != null) {
-            //Register listeners for condition created.
-            formCondition.register(formToExecute.name(), onSuccess, onFailure);
-            //add condition to InputModule registry so that it can be tracked.
-            formInputs.put(formCondition, formToExecute);
-        } else {
-            //todo errors/logging
-        }
+//        //generate condition from InputData.
+//        Runnable onSuccess = () -> {
+//            if(mc.level != null) {
+//                //this section is to prevent re-activating
+//                // single condition forms when you hold the activation key for Held modifiers
+//
+//                //TODO: Fix an issue where it doesn't let players re-activate forms outside of the held modifier.
+//                // I.e account for modifiers here.
+//                if(formToExecute != lastActivatedForm) {
+//                    //LogManager.getLogger().info("FORM ACTIVATED: " + formToExecute.name());
+//                    activeForm = formToExecute;
+//                }
+//
+//                ticksSinceActivated = 0;
+//            }
+//            //Reset condition
+//        };
+//        Runnable onFailure = () -> {
+//            activeForm = new Form();
+//            //reset conditions?
+//           // Magus.radixTree.burn();
+//        };
+//
+//        if(formCondition != null) {
+//            //Register listeners for condition created.
+//            formCondition.register(formToExecute.name(), onSuccess, onFailure);
+//            //add condition to InputModule registry so that it can be tracked.
+//            formInputs.put(formCondition, formToExecute);
+//        } else {
+//            //todo errors/logging
+//        }
 
     }
 

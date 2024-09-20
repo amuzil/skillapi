@@ -131,7 +131,7 @@ public class MouseInputModule extends InputModule {
     }
 
     @Override
-    public void registerInputData(List<InputData> formExecutionInputs, Form formToExecute, Condition condition) {
+    public void registerInputData(List<InputData> formExecutionInputs, Form formToExecute, List<Condition> conditions) {
         //generate condition from InputData.
         Runnable onSuccess = () -> {
             if(mc.level != null) {

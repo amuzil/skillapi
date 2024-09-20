@@ -1,54 +1,63 @@
 package com.amuzil.omegasource.magus.skill.forms;
 
 import com.amuzil.omegasource.magus.Magus;
+import com.amuzil.omegasource.magus.input.InputModuleData;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.RadixTree;
-import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
+import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
+import net.minecraft.resources.ResourceLocation;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class FormDataRegistry {
 
-    //TODO: Change this to use Conditions rather than a list of input data, and use a hashmap of input types
-    private static Map<List<InputData>, Form> formTypes;
-    private static Map<Form, List<Condition>> formConditions;
+    private static Map<Form, InputModuleData> formData;
 
     //Remember to see #InputConstants for the key names.
     public static void init() {
-        formTypes = new HashMap<>();
-        formConditions = new HashMap<>();
+        formData = new HashMap<>();
     }
 
+    public static Form getFormByName(String formName) {
+        return Registries.FORMS.get().getValue(new ResourceLocation(formName));
+    }
     public static List<InputData> getInputsForForm(Form formToModify, RadixTree.InputType type) {
-        return formTypes.entrySet().stream().filter(form -> form.getValue().name().equals(formToModify.name())).findFirst().get().getKey();
+        return formData.get(formToModify).getInputs(type);
     }
 
 
     public static void registerForm(List<InputData> inputs, Form form, RadixTree.InputType type) {
         // Register the requisite conditions
-        List<Condition> conditions;
-        if (formConditions.containsKey(form)) {
-            conditions = formConditions.get(form);
+        InputModuleData data;
+        if (formData.get(form) != null) {
+            data = formData.get(form);
         }
-        else conditions = new LinkedList<>();
-        Condition condition = ConditionBuilder.instance().fromInputData(inputs).build();
-        conditions.add(condition);
-        formConditions.put(form, conditions);
+        else data = new InputModuleData();
+        data.addTypeInputs(type, inputs);
+        data.fillConditions(type);
+        // This replaces the value, and since our InputModuleData automatically adds conditions and input data to itself when necessary...
+        formData.put(form, data);
+
+        // Need to pass this
+        List<Condition> conditions = data.getConditions(type);
         // Register the raw input data
         switch (type) {
             // I can dream...
             case VR -> {
             }
-            case KEYBOARD -> Magus.keyboardInputModule.registerInputData(inputs, form, condition);
-            case MOUSE -> Magus.mouseInputModule.registerInputData(inputs, form, condition);
-            case MOUSE_MOTION -> Magus.mouseMotionModule.registerInputData(inputs, form, condition);
+            case KEYBOARD -> Magus.keyboardInputModule.registerInputData(inputs, form, conditions);
+            case MOUSE -> Magus.mouseInputModule.registerInputData(inputs, form, conditions);
+            case MOUSE_MOTION -> Magus.mouseMotionModule.registerInputData(inputs, form, conditions);
 
         }
     }
 
-    public static List<Condition> getConditionsFrom(Form form) {
-        return formConditions.get(form);
+    public static List<Condition> getConditionsFrom(Form form, RadixTree.InputType type) {
+        return formData.get(form).getConditions(type);
     }
 
     public static void registerForm(InputData input, Form form) {

@@ -99,7 +99,7 @@ public class MouseMotionModule extends InputModule {
     }
 
     @Override
-    public void registerInputData(List<InputData> formExecutionInputs, Form formToExecute, Condition condition) {
+    public void registerInputData(List<InputData> formExecutionInputs, Form formToExecute, List<Condition> conditions) {
         //generate condition from InputData.
         Runnable onSuccess = () -> {
             if(mc.level != null) {
@@ -118,11 +118,11 @@ public class MouseMotionModule extends InputModule {
             // Magus.radixTree.burn();
         };
 
-        if(condition != null) {
+        if(conditions != null) {
             //Register listeners for condition created.
-            condition.register(formToExecute.name(), onSuccess, onFailure);
+            conditions.register(formToExecute.name(), onSuccess, onFailure);
             //add condition to InputModule registry so that it can be tracked.
-            formInputs.put(condition, formToExecute);
+            formInputs.put(conditions, formToExecute);
         } else {
             //todo errors/logging
         }

@@ -23,7 +23,7 @@ public abstract class InputModule {
     protected final Map<String, ModifierData> modifierQueue = new HashMap<>();
     protected Form lastActivatedForm = null;
 
-    public abstract void registerInputData(List<InputData> formExecutionInputs, Form formToExecute, Condition condition);
+    public abstract void registerInputData(List<InputData> formExecutionInputs, Form formToExecute, List<Condition> conditions);
 
     public void registerModifierListener(ModifierListener listener, CompoundTag treeData) {
         listener.setupListener(treeData);
