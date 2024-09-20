@@ -73,11 +73,16 @@ public abstract class InputModule {
         registerListeners();
     }
 
+    public void terminate() {
+        resetKeys();
+        unRegisterInputs();
+    }
+
     public abstract void registerListeners();
 
     public abstract void registerInputs();
 
-    public abstract void unregisterInputs();
+    public abstract void unRegisterInputs();
 
     public void unregisterModifiers() {
         modifierListeners.forEach(ModifierListener::unregister);

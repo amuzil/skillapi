@@ -3,6 +3,7 @@ package com.amuzil.omegasource.magus;
 import com.amuzil.omegasource.magus.input.InputModule;
 import com.amuzil.omegasource.magus.input.KeyboardInputModule;
 import com.amuzil.omegasource.magus.input.MouseInputModule;
+import com.amuzil.omegasource.magus.input.MouseMotionModule;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
@@ -40,6 +41,7 @@ public class Magus {
     //todo: make multiple input modules
     public static InputModule keyboardInputModule;
     public static InputModule mouseInputModule;
+    public static InputModule mouseMotionModule;
 
     public Magus() {
         // Register ourselves for server and other game events we are interested in
@@ -47,6 +49,7 @@ public class Magus {
         //Register the input modules
         keyboardInputModule = new KeyboardInputModule();
         mouseInputModule = new MouseInputModule();
+        mouseMotionModule = new MouseMotionModule();
         // Register capabilities
         FMLJavaModLoadingContext.get().getModEventBus().addListener(CapabilityHandler::registerCapabilities);
         // attach capabilities

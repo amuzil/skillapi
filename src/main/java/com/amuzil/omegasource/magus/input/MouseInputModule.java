@@ -18,6 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import java.util.*;
 import java.util.function.Consumer;
 
+
 public class MouseInputModule extends InputModule {
 
     private final Consumer<TickEvent> tickEventConsumer;
@@ -52,22 +53,21 @@ public class MouseInputModule extends InputModule {
 
         this.mouseListener = mouseEvent -> {
             int keyPressed = mouseEvent.getButton();
-                switch (mouseEvent.getAction()) {
-                    case InputConstants.PRESS -> {
-                        if (!glfwKeysDown.contains(keyPressed))
-                            glfwKeysDown.add(keyPressed);
+            switch (mouseEvent.getAction()) {
+                case InputConstants.PRESS -> {
+                    if (!glfwKeysDown.contains(keyPressed))
+                        glfwKeysDown.add(keyPressed);
+                }
+                case InputConstants.REPEAT -> {
+                    if (!glfwKeysDown.contains(keyPressed)) {
+                        glfwKeysDown.add(keyPressed);
                     }
-                    case InputConstants.REPEAT -> {
-                        if (!glfwKeysDown.contains(keyPressed)) {
-                            glfwKeysDown.add(keyPressed);
-                        }
+                }
+                case InputConstants.RELEASE -> {
+                    if (glfwKeysDown.contains(keyPressed)) {
+                        glfwKeysDown.remove((Integer) keyPressed);
                     }
-                    case InputConstants.RELEASE -> {
-                        if (glfwKeysDown.contains(keyPressed)) {
-                            glfwKeysDown.remove((Integer) keyPressed);
-                        }
-                    }
-            //    }
+                }
             }
         };
 
@@ -87,10 +87,10 @@ public class MouseInputModule extends InputModule {
             if(activeForm.name() != null) {
                 ticksSinceActivated++;
                 if(ticksSinceActivated >= tickActivationThreshold) {
-                    if (lastActivatedForm != null)
-                        LogManager.getLogger().info("LAST FORM ACTIVATED: " + lastActivatedForm.name() + " | FORM ACTIVATED: " + activeForm.name());
-                    else
-                        LogManager.getLogger().info("FORM ACTIVATED: " + activeForm.name());
+//                    if (lastActivatedForm != null)
+//                        LogManager.getLogger().info("LAST FORM ACTIVATED: " + lastActivatedForm.name() + " | FORM ACTIVATED: " + activeForm.name());
+//                    else
+//                        LogManager.getLogger().info("FORM ACTIVATED: " + activeForm.name());
 //                    MagusNetwork.sendToServer(new ConditionActivatedPacket(activeForm));
                     lastActivatedForm = activeForm;
                     activeForm = new Form();
@@ -175,7 +175,7 @@ public class MouseInputModule extends InputModule {
     }
 
     @Override
-    public void unregisterInputs() {
+    public void unRegisterInputs() {
         MinecraftForge.EVENT_BUS.unregister(mouseListener);
         MinecraftForge.EVENT_BUS.unregister(mouseScrollListener);
         MinecraftForge.EVENT_BUS.unregister(tickEventConsumer);
@@ -196,7 +196,7 @@ public class MouseInputModule extends InputModule {
             listen = true;
             System.out.println("Enabled!");
         } else {
-            unregisterInputs();
+            unRegisterInputs();
             listen = false;
             System.out.println("Disabled!");
         }

@@ -4,13 +4,13 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
-public record SegmentMouseInput(List<PointMouseInput> mouseInputs) {
+public record MouseMotionInput(List<MousePointInput> mouseInputs) {
 
-    public PointMouseInput start() {
+    public MousePointInput start() {
         return mouseInputs.get(0);
     }
 
-    public PointMouseInput end() {
+    public MousePointInput end() {
         return mouseInputs().get(mouseInputs().size() - 1);
     }
 
@@ -22,16 +22,16 @@ public record SegmentMouseInput(List<PointMouseInput> mouseInputs) {
     }
 
     public String getMotionDirection() {
-        PointMouseInput first = start();
+        MousePointInput first = start();
         Vec3 mouseDirection = getMouseDirection();
         String direction = "";
-        double degree_span = 45.0D; // Note: 45° doesn't cover the entire unit circle, leaving room to recognize diagonals
+        double degree_span = 90.0D; // Note: 45° doesn't cover the entire unit circle, leaving room to recognize diagonals
         Vec3 right = new Vec3(-first.lookAngle().z(), first.lookAngle().y(), first.lookAngle().x()).normalize();
         Vec3 left = new Vec3(first.lookAngle().z(), first.lookAngle().y(), -first.lookAngle().x()).normalize();
 
-        if (mouseDirection.y() > 0.7D) {
+        if (mouseDirection.y() > 0.45D) {
             direction = "up";
-        } else if (mouseDirection.y() < -0.7D) {
+        } else if (mouseDirection.y() < -0.45D) {
             direction = "down";
         } else if (getAngle2D(right, mouseDirection) <= degree_span) {
             direction = "right";

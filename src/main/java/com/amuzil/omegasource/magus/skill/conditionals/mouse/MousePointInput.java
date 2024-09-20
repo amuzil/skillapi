@@ -14,5 +14,5 @@ import net.minecraft.world.phys.Vec3;
  *
  * Get a Bézier curve function working. This tracks input segments, then we path through the input segments.
  */
-public record PointMouseInput(double x, double y, Vec3 lookAngle) implements InputData {
+public record MousePointInput(double x, double y, Vec3 lookAngle) implements InputData {
 }
