@@ -101,31 +101,31 @@ public class MouseMotionModule extends InputModule {
     @Override
     public void registerInputData(List<InputData> formExecutionInputs, Form formToExecute, List<Condition> conditions) {
         //generate condition from InputData.
-        Runnable onSuccess = () -> {
-            if(mc.level != null) {
-                //this section is to prevent re-activating
-                // single condition forms when you hold the activation key for Held modifiers
-                if(formToExecute != lastActivatedForm) {
-                    //LogManager.getLogger().info("FORM ACTIVATED: " + formToExecute.name());
-                    activeForm = formToExecute;
-                }
-                ticksSinceActivated = 0;
-            }
-        };
-        Runnable onFailure = () -> {
-            activeForm = new Form();
-            //reset conditions?
-            // Magus.radixTree.burn();
-        };
-
-        if(conditions != null) {
-            //Register listeners for condition created.
-            conditions.register(formToExecute.name(), onSuccess, onFailure);
-            //add condition to InputModule registry so that it can be tracked.
-            formInputs.put(conditions, formToExecute);
-        } else {
-            //todo errors/logging
-        }
+//        Runnable onSuccess = () -> {
+//            if(mc.level != null) {
+//                //this section is to prevent re-activating
+//                // single condition forms when you hold the activation key for Held modifiers
+//                if(formToExecute != lastActivatedForm) {
+//                    //LogManager.getLogger().info("FORM ACTIVATED: " + formToExecute.name());
+//                    activeForm = formToExecute;
+//                }
+//                ticksSinceActivated = 0;
+//            }
+//        };
+//        Runnable onFailure = () -> {
+//            activeForm = new Form();
+//            //reset conditions?
+//            // Magus.radixTree.burn();
+//        };
+//
+//        if(conditions != null) {
+//            //Register listeners for condition created.
+//            conditions.register(formToExecute.name(), onSuccess, onFailure);
+//            //add condition to InputModule registry so that it can be tracked.
+//            formInputs.put(conditions, formToExecute);
+//        } else {
+//            //todo errors/logging
+//        }
     }
 
     @Override
