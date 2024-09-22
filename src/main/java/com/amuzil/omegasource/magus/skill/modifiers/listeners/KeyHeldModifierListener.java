@@ -1,11 +1,11 @@
 package com.amuzil.omegasource.magus.skill.modifiers.listeners;
 
 import com.amuzil.omegasource.magus.Magus;
-import com.amuzil.omegasource.magus.input.KeyboardInputModule;
 import com.amuzil.omegasource.magus.radix.RadixTree;
-import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
-import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
+import com.amuzil.omegasource.magus.skill.conditionals.key.ChainedKeyInput;
+import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
+import com.amuzil.omegasource.magus.skill.conditionals.key.MultiKeyInput;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
@@ -42,33 +42,45 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
 
     @Override
     public void setupListener(CompoundTag compoundTag) {
-//        Form formToModify = FormDataRegistry.getFormByName(compoundTag.getString("lastFormActivated"));
-//        List<InputData> formConditions = FormDataRegistry.getInputsForForm(formToModify, RadixTree.InputType.KEYBOARD);
-//
-//        int keyToHold = ((KeyHoldCondition) new ConditionBuilder().fromInputData(formConditions.get(formConditions.size() - 1)).build()).getKey();
-//
-//        this.clientTickListener = event -> {
-//            if (event.phase == TickEvent.ClientTickEvent.Phase.START) {
-//                if (((KeyboardInputModule)Magus.keyboardInputModule).keyPressed(keyToHold)) {
-//                    this.isHeld = true;
-//                    this.currentHolding++;
-//                } else {
-//                    if(this.isHeld) {
-//                        this.wasHeld = true;
-//                        this.isHeld = false;
-//                    }
-//                }
-//            }
-//        };
+        Form formToModify = FormDataRegistry.getFormByName(compoundTag.getString("lastFormActivated"));
+        List<InputData> formInputs = FormDataRegistry.getInputsForForm(formToModify, RadixTree.InputType.KEYBOARD);
+
+        InputData lastInput = formInputs.get(formInputs.size() - 1);
+        int key;
+        if (lastInput instanceof ChainedKeyInput) {
+            key = ((ChainedKeyInput) lastInput).trueLast().key().getValue();
+        }
+        else if (lastInput instanceof MultiKeyInput) {
+            key = ((MultiKeyInput) lastInput).last().key().getValue();
+        }
+        else {
+            // If it's registered to the keyboard mouse input module, it's going to be some variant
+            // of KeyInput.
+            key = ((KeyInput) lastInput).key().getValue();
+        }
+
+        this.clientTickListener = event -> {
+            if (event.phase == TickEvent.ClientTickEvent.Phase.START) {
+                if (Magus.keyboardInputModule.keyPressed(key)) {
+                    this.isHeld = true;
+                    this.currentHolding++;
+                } else {
+                    if (this.isHeld) {
+                        this.wasHeld = true;
+                        this.isHeld = false;
+                    }
+                }
+            }
+        };
     }
 
     @Override
     public boolean shouldCollectModifierData(TickEvent event) {
-        if(isHeld && currentHolding > 0) {
+        if (isHeld && currentHolding > 0) {
             return true;
         }
         //so that we send a packet to say we've stopped holding(for continuous cast ability support)
-        if(!this.isHeld && this.wasHeld) {
+        if (!this.isHeld && this.wasHeld) {
             this.wasHeld = false;
             Magus.keyboardInputModule.resetLastActivated();
             return true;
