@@ -46,9 +46,8 @@ public class AvatarFormRegistry {
         /* Keyboard Forms */
         FormDataRegistry.registerForm(InputDataBuilder.toInputs(initializer), Forms.ARC, RadixTree.InputType.KEYBOARD);
         FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak), Forms.BREATHE, RadixTree.InputType.KEYBOARD);
+        // Forms.SPIN; Clockwise or anticlockwise cardinal directions. (WDSA or WASD).
 
-//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak, forwards), Forms.COMPRESS);
-//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak, back), Forms.EXPAND);
 //        FormDataRegistry.registerForm(Forms.PUSH);
 //        FormDataRegistry.registerForm(Forms.PULL);
 //        FormDataRegistry.registerForm(Forms.RAISE);
@@ -77,6 +76,9 @@ public class AvatarFormRegistry {
         }
 
         /* Combination Forms */
-
+        // Forms.COMPRESS; Shift and mouse wheel maybe?
+        // Forms.EXPAND; Shift and mouse wheel in other direction.
+        //        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak, forwards), Forms.COMPRESS);
+//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak, back), Forms.EXPAND);
     }
 }
