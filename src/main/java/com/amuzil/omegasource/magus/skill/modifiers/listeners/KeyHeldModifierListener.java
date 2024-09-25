@@ -111,7 +111,7 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
     }
 
     @Override
-    public ModifierListener copy() {
+    public KeyHeldModifierListener copy() {
         return new KeyHeldModifierListener();
     }
 }
