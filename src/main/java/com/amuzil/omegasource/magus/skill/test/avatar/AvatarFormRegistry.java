@@ -30,11 +30,22 @@ public class AvatarFormRegistry {
         // TODO: Rather than having "push", "pull", "raise", and "lower" as Forms,
         //  make them Effects using the Force Form, Direction modifier & Target Modifier
 
+        /* Mouse Button Forms */
         FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE, RadixTree.InputType.MOUSE);
         FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE, RadixTree.InputType.MOUSE);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(KeyDataBuilder.createMultiInput(left, right)), Forms.BURST, RadixTree.InputType.MOUSE);
+
+        /* Mouse Motion Forms */
+        // TODO: Figure out a way to pass a condition that specifies when to track data for this Form and other mouse motion Forms.
+
+        // Forms.SLASH; Sharp mouse motion in a direction. Used for things like air slash.
+        // Forms.TWIST; Circular mouse motion in front of the player.
+        // Forms.RAISE; Slower mouse motion up. Good for bending material manipulation, especially for Earth.
+        // Forms.LOWER; Slower mouse motion down.
+
+        /* Keyboard Forms */
         FormDataRegistry.registerForm(InputDataBuilder.toInputs(initializer), Forms.ARC, RadixTree.InputType.KEYBOARD);
         FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak), Forms.BREATHE, RadixTree.InputType.KEYBOARD);
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(KeyDataBuilder.createMultiInput(left, right)), Forms.BURST, RadixTree.InputType.MOUSE);
 
 //        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak, forwards), Forms.COMPRESS);
 //        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak, back), Forms.EXPAND);
@@ -64,5 +75,8 @@ public class AvatarFormRegistry {
             inputs.add(KeyDataBuilder.createChainedInput(first, second));
             FormDataRegistry.registerForm(inputs, Forms.STEP, RadixTree.InputType.KEYBOARD);
         }
+
+        /* Combination Forms */
+
     }
 }

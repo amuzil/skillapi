@@ -24,6 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Configure which key this listener uses
 public class TargetModifierListener extends ModifierListener<InputEvent.MouseButton> {
     private Vec3 lastTargetPosition;
     private Discipline activeDiscipline;
