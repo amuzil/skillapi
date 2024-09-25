@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.skill.modifiers.listeners;
 
 import com.amuzil.omegasource.magus.Magus;
+import com.amuzil.omegasource.magus.input.InputModule;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.conditionals.key.ChainedKeyInput;
@@ -16,6 +17,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
@@ -23,9 +25,15 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
     private int currentHolding;
     private boolean isHeld = true;
     private boolean wasHeld = true;
+    private RadixTree.InputType type;
 
     public KeyHeldModifierListener() {
+        this(RadixTree.InputType.KEYBOARD);
+    }
+
+    public KeyHeldModifierListener(RadixTree.InputType type) {
         this.modifierData = new HeldModifierData();
+        this.type = type;
     }
 
     @Override
@@ -43,7 +51,7 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
     @Override
     public void setupListener(CompoundTag compoundTag) {
         Form formToModify = FormDataRegistry.getFormByName(compoundTag.getString("lastFormActivated"));
-        List<InputData> formInputs = FormDataRegistry.getInputsForForm(formToModify, RadixTree.InputType.KEYBOARD);
+        List<InputData> formInputs = FormDataRegistry.getInputsForForm(formToModify, type);
 
         InputData lastInput = formInputs.get(formInputs.size() - 1);
         int key;
@@ -59,9 +67,16 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
             key = ((KeyInput) lastInput).key().getValue();
         }
 
+        InputModule module;
+        if (Objects.requireNonNull(type) == RadixTree.InputType.MOUSE) {
+            module = Magus.mouseInputModule;
+        } else {
+            module = Magus.keyboardInputModule;
+        }
+
         this.clientTickListener = event -> {
             if (event.phase == TickEvent.ClientTickEvent.Phase.START) {
-                if (Magus.keyboardInputModule.keyPressed(key)) {
+                if (module.keyPressed(key)) {
                     this.isHeld = true;
                     this.currentHolding++;
                 } else {
