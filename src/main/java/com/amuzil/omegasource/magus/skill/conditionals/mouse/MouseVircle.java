@@ -8,7 +8,7 @@ import java.util.List;
 public class MouseVircle {
     // Class that represents a virtual circle around the cursor
 
-    private float sphereRadius = 0.7F;
+    final float sphereRadius = 0.7F;
     private Vec3 centroid, aimDirection;
     private String motionDirection = "";
     public List<MousePointInput> mouseInputs = new ArrayList<>();

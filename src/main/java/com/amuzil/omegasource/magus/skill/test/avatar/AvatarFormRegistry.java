@@ -1,5 +1,6 @@
 package com.amuzil.omegasource.magus.skill.test.avatar;
 
+import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.input.KeyboardInputModule;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
@@ -80,5 +81,7 @@ public class AvatarFormRegistry {
         // Forms.EXPAND; Shift and mouse wheel in other direction.
         //        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak, forwards), Forms.COMPRESS);
 //        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak, back), Forms.EXPAND);
+        Magus.keyboardInputModule.getFormsTree().printAllConditions();
+        Magus.keyboardInputModule.getFormsTree().printAllBranches();
     }
 }

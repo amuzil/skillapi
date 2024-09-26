@@ -3,7 +3,6 @@ package com.amuzil.omegasource.magus.skill.modifiers.api;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
-import org.apache.logging.log4j.LogManager;
 
 import java.util.function.Consumer;
 

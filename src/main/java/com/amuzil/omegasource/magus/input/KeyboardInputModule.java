@@ -128,6 +128,7 @@ public class KeyboardInputModule extends InputModule {
 
         // Now, we call:
         ConditionPath path = formToExecute.createPath(formCondition);
+        formsTree.insert(path.conditions);
         // add the path to the tree
 
 //        //generate condition from InputData.

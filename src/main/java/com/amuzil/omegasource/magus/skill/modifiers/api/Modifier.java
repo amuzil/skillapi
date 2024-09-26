@@ -1,9 +1,6 @@
 package com.amuzil.omegasource.magus.skill.modifiers.api;
 
-import com.amuzil.omegasource.magus.skill.forms.Form;
 import net.minecraft.nbt.CompoundTag;
-
-import java.util.Objects;
 
 public final class Modifier {
     private ModifierData data;

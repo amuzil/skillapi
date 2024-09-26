@@ -3,7 +3,7 @@ package com.amuzil.omegasource.magus.skill.modifiers.api;
 import com.amuzil.omegasource.magus.skill.util.traits.DataTrait;
 
 
-// actually adding data is handled by sub-class implementations, this is just for generics.
+// actually adding data is handled by subclass implementations, this is just for generics.
 public abstract class ModifierData implements DataTrait {
 
 
@@ -24,10 +24,12 @@ public abstract class ModifierData implements DataTrait {
     }
 
     protected abstract void mergeFields(ModifierData modifierData);
+
     public abstract boolean serversideOnly();
 
     public abstract void print();
 
     public abstract void reset();
+
     public abstract ModifierData copy();
 }

@@ -32,7 +32,6 @@ public class MouseMotionModule extends InputModule {
     private final int tickTimeoutThreshold = 60;
     private final int modifierTickThreshold = 10;
     private boolean listen;
-    Minecraft mc = Minecraft.getInstance();
 
     public MouseMotionModule() {
         this.mouseGesture = new ArrayList<>();

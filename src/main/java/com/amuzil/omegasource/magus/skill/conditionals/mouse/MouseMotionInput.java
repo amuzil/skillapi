@@ -1,10 +1,11 @@
 package com.amuzil.omegasource.magus.skill.conditionals.mouse;
 
+import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
-public record MouseMotionInput(List<MousePointInput> mouseInputs) {
+public record MouseMotionInput(List<MousePointInput> mouseInputs) implements InputData {
 
     public MousePointInput start() {
         return mouseInputs.get(0);

@@ -2,11 +2,9 @@ package com.amuzil.omegasource.magus.skill.modifiers;
 
 import com.amuzil.omegasource.magus.skill.modifiers.api.Modifier;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
-import com.amuzil.omegasource.magus.skill.modifiers.data.DirectionModifierData;
-import com.amuzil.omegasource.magus.skill.modifiers.data.HeldModifierData;
-import com.amuzil.omegasource.magus.skill.modifiers.data.MultiModifierData;
-import com.amuzil.omegasource.magus.skill.modifiers.data.TargetModifierData;
+import com.amuzil.omegasource.magus.skill.modifiers.data.*;
 import com.amuzil.omegasource.magus.skill.modifiers.listeners.DirectionModifierListener;
+import com.amuzil.omegasource.magus.skill.modifiers.listeners.GestureModifierListener;
 import com.amuzil.omegasource.magus.skill.modifiers.listeners.KeyHeldModifierListener;
 import com.amuzil.omegasource.magus.skill.modifiers.listeners.TargetModifierListener;
 import net.minecraft.nbt.CompoundTag;
@@ -23,6 +21,7 @@ public class ModifiersRegistry {
     public static Modifier MULTI;
     public static Modifier DIRECTION;
     public static Modifier TARGET;
+    public static Modifier GESTURE;
 
     public static void init() {
         modifierDataTypes = new HashMap<>();
@@ -35,15 +34,17 @@ public class ModifiersRegistry {
         MULTI = new Modifier(multiModifierData, null);
         modifierDataTypes.put(multiModifierData.getName(), MULTI);
 
-
         ModifierData directionModifierData = new DirectionModifierData();
         DIRECTION = new Modifier(directionModifierData, new DirectionModifierListener());
         modifierDataTypes.put(directionModifierData.getName(), DIRECTION);
 
-
         ModifierData targetModifierData = new TargetModifierData();
         TARGET = new Modifier(targetModifierData, new TargetModifierListener());
         modifierDataTypes.put(targetModifierData.getName(), TARGET);
+
+        ModifierData gestureModifierData = new GestureModifierData();
+        GESTURE = new Modifier(gestureModifierData, new GestureModifierListener());
+        modifierDataTypes.put(gestureModifierData.getName(), GESTURE);
     }
 
     public static ModifierData fromCompoundTag(CompoundTag compoundTag) {

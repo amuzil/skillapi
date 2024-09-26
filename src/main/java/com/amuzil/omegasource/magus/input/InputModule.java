@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.input;
 
 import com.amuzil.omegasource.magus.radix.Condition;
+import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.EventCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.forms.Form;
@@ -18,6 +19,8 @@ import java.util.Map;
 
 
 public abstract class InputModule {
+    protected static final RadixTree formsTree = new RadixTree();
+    protected static final List<Form> activeFormInputs = new ArrayList<>();
     protected final Map<Condition, Form> formInputs = new HashMap<>();
     protected final List<ModifierListener> modifierListeners = new ArrayList<>();
     protected final Map<String, ModifierData> modifierQueue = new HashMap<>();
@@ -65,6 +68,10 @@ public abstract class InputModule {
 
     public Form getLastActivatedForm() {
         return this.lastActivatedForm;
+    }
+
+    public RadixTree getFormsTree() {
+        return formsTree;
     }
 
     public void init() {
