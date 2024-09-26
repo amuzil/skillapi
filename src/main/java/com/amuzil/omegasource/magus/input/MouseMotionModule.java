@@ -4,6 +4,7 @@ import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.radix.Condition;
+import com.amuzil.omegasource.magus.radix.ConditionPath;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.conditionals.mouse.MousePointInput;
 import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseVircle;
@@ -98,8 +99,10 @@ public class MouseMotionModule extends InputModule {
     }
 
     @Override
-    public void registerInputData(List<InputData> formExecutionInputs, Form formToExecute, List<Condition> conditions) {
+    public void registerInputData(List<InputData> formExecutionInputs, Form formToExecute, List<Condition> formCondition) {
         //generate condition from InputData.
+        ConditionPath path = formToExecute.createPath(formCondition);
+        formsTree.insert(path.conditions);
 //        Runnable onSuccess = () -> {
 //            if(mc.level != null) {
 //                //this section is to prevent re-activating
