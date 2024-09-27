@@ -23,7 +23,8 @@ public class PathBuilder {
 
     protected static void addSteps(ConditionPath path, Condition... conditions) {
         List<ModifierData> emptyData = new ArrayList<>();
-        if (path == null) path = new ConditionPath(List.of(conditions));
+        if (path == null)
+            path = new ConditionPath(List.of(conditions));
         for (Condition condition : conditions) {
             path.addStep(condition, emptyData);
         }
