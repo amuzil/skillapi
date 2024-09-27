@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Form {
-    private String name;
+    private final String name;
 
     public Form(String name) {
         this.name = name;
