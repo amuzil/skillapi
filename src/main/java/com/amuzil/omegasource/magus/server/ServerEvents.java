@@ -114,6 +114,9 @@ public class ServerEvents {
             }
         } else {
             if (event.getEntity() instanceof Player) {
+                Magus.keyboardInputModule.terminate();
+                Magus.mouseInputModule.terminate();
+                Magus.mouseMotionModule.terminate();
                 InputModule.resetFormsTree();
                 AvatarFormRegistry.registerForms();
                 Magus.keyboardInputModule.getFormsTree().printAllConditions();
