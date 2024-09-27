@@ -127,6 +127,7 @@ public class KeyboardInputModule extends InputModule {
         // - Call it here, then add the condition path to the radixtree.
 
         // Now, we call:
+        System.out.println("Inserting " + formToExecute.name() + " into tree with Conditions: " + formCondition + " | Inputs: " + formExecutionInputs);
         ConditionPath path = formToExecute.createPath(formCondition);
         formsTree.insert(path.conditions);
         // add the path to the tree

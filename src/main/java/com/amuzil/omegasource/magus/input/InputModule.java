@@ -5,6 +5,7 @@ import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.EventCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.forms.Form;
+import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierListener;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -19,7 +20,7 @@ import java.util.Map;
 
 
 public abstract class InputModule {
-    protected static final RadixTree formsTree = new RadixTree();
+    protected static RadixTree formsTree = new RadixTree();
     protected static final List<Form> activeFormInputs = new ArrayList<>();
     protected final Map<Condition, Form> formInputs = new HashMap<>();
     protected final List<ModifierListener> modifierListeners = new ArrayList<>();
@@ -72,6 +73,11 @@ public abstract class InputModule {
 
     public RadixTree getFormsTree() {
         return formsTree;
+    }
+
+    public static void resetFormsTree() {
+        FormDataRegistry.init(); // Re-initialize formData since it's a static field
+        formsTree = new RadixTree();
     }
 
     public void init() {

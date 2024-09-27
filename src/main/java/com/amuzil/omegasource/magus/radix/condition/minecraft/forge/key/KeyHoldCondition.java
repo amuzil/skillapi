@@ -22,7 +22,7 @@ public class KeyHoldCondition extends Condition {
     private final Consumer<ClientTickEvent> clientTickListener;
     private int currentTotal;
     private int currentHolding;
-    private final int key;
+    private final int key, duration, timeout;
     // False by default.
     private final boolean release;
     private boolean started = false;
@@ -34,6 +34,8 @@ public class KeyHoldCondition extends Condition {
 
         this.currentTotal = 0;
         this.currentHolding = 0;
+        this.duration = duration;
+        this.timeout = timeout;
         this.release = release;
         this.key = key;
         this.started = false;
@@ -43,7 +45,6 @@ public class KeyHoldCondition extends Condition {
                 if (Magus.keyboardInputModule.keyPressed(key) || Magus.mouseInputModule.keyPressed(key)) {
                     this.started = true;
                     this.currentHolding++;
-                    Minecraft mci = Minecraft.getInstance();
                 } else {
                     if (pressed(this.currentHolding, duration)) {
                         // If the Condition requires the key being released....
@@ -119,5 +120,11 @@ public class KeyHoldCondition extends Condition {
     @Override
     public String name() {
         return "key_hold";
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s[ %s, key=%s, d=%d, t=%d, r=%b ]", this.getClass().getSimpleName(), name(),
+                key, duration, timeout, release);
     }
 }

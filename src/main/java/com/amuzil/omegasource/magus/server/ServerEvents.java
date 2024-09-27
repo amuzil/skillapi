@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.server;
 
 import com.amuzil.omegasource.magus.Magus;
+import com.amuzil.omegasource.magus.input.InputModule;
 import com.amuzil.omegasource.magus.radix.Node;
 import com.amuzil.omegasource.magus.radix.NodeBuilder;
 import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
@@ -113,7 +114,10 @@ public class ServerEvents {
             }
         } else {
             if (event.getEntity() instanceof Player) {
+                InputModule.resetFormsTree();
                 AvatarFormRegistry.registerForms();
+                Magus.keyboardInputModule.getFormsTree().printAllConditions();
+                Magus.keyboardInputModule.getFormsTree().printAllBranches();
                 Magus.keyboardInputModule.init();
                 Magus.mouseInputModule.init();
 //                Magus.mouseMotionModule.init();
