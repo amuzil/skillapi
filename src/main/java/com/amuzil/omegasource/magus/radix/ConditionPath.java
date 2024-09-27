@@ -20,6 +20,7 @@ public class ConditionPath implements INBTSerializable<CompoundTag> {
 
     public ConditionPath() {
         activationPath = new LinkedList<>();
+        conditions = new LinkedList<>();
     }
 
     public ConditionPath(List<Condition> activatedConditions) {

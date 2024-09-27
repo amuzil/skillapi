@@ -4,6 +4,7 @@ import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.condition.MultiCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
+import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.conditionals.key.ChainedKeyInput;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
 import com.amuzil.omegasource.magus.skill.conditionals.key.MultiKeyInput;
@@ -27,25 +28,27 @@ public class InputConverter {
 
         /* Keys. */
         //TODO: Account for max delay
-        registerBuilder(KeyInput.class, keyInput -> {
-
+        registerBuilder(KeyInput.class, keyInputs -> {
             LinkedList<Condition> conditions = new LinkedList<>();
+            if (keyInputs instanceof List<?>)
+                for (Object obj: (List<?>) keyInputs) {
+                    KeyInput keyInput = (KeyInput) obj;
+                    // Any time less than this is just a key press.
+                    // TODO: Adjust timeout to be per node.
+                    // Use a configurable value to be our default timeout. If the condition should never time out,
+                    // dont add the threshold value.
+                    int timeout = TIMEOUT_THRESHOLD + keyInput.timeout();
+                    if (keyInput.timeout() < 0)
+                        timeout = keyInput.timeout();
 
-            // Any time less than this is just a key press.
-            // TODO: Adjust timeout to be per node.
-            // Use a configurable value to be our default timeout. If the condition should never time out,
-            // dont add the threshold value.
-            int timeout = TIMEOUT_THRESHOLD + keyInput.timeout();
-            if (keyInput.timeout() < 0)
-                timeout = keyInput.timeout();
+                    // Default is about 0 ticks.
 
-            // Default is about 0 ticks.
-
-            KeyHoldCondition keyPress = new KeyHoldCondition(keyInput.key().getValue(),
-                    keyInput.held(), timeout, keyInput.release());
-            // We can change these runnables later if need be.
-            keyPress.register("key_press", keyPress::reset, keyPress::reset);
-            conditions.add(keyPress);
+                    KeyHoldCondition keyPress = new KeyHoldCondition(keyInput.key().getValue(),
+                            keyInput.held(), timeout, keyInput.release());
+                    // We can change these runnables later if need be.
+                    keyPress.register("key_press", keyPress::reset, keyPress::reset);
+                    conditions.add(keyPress);
+                }
 
 
             return conditions;
@@ -53,33 +56,34 @@ public class InputConverter {
         // TODO: Need to print these out and test how they work,
         // TODO: in order to finalise ConditionBuilder.java.
         registerBuilder(MultiKeyInput.class,
-                permutation -> {
-                    List<Condition> conditions = new LinkedList<>(permutation.keys().stream().map(InputConverter::buildPathFrom)
-                            .collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll));
-
-                    // Create a MultiCondition from the flattened conditions
-                    MultiCondition multiCondition = ConditionBuilder.createMultiCondition(conditions);
+                obj -> {
                     LinkedList<Condition> multiConditions = new LinkedList<>();
-                    multiConditions.add(multiCondition);
+                    if (obj instanceof MultiKeyInput permutation) {
+                        List<Condition> conditions = new LinkedList<>(permutation.keys().stream().map(InputConverter::buildPathFrom)
+                                .collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll));
+
+                        // Create a MultiCondition from the flattened conditions
+                        MultiCondition multiCondition = ConditionBuilder.createMultiCondition(conditions);
+                        multiConditions.add(multiCondition);
+                    }
 
                     // Return a list containing the MultiCondition
                     return multiConditions;
                 }
         );
         registerBuilder(ChainedKeyInput.class,
-                combination -> {
-                    List<Condition> conditions = new LinkedList<>(combination.keys().stream().map(InputConverter::buildPathFrom)
-                            .collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll));
-
-
-
+                obj -> {
                     LinkedList<Condition> chained = new LinkedList<>();
-                    for (Condition condition : conditions) {
-                        if (condition instanceof MultiCondition)
-                            chained.add(ConditionBuilder.createSequentialCondition((MultiCondition) condition));
-                        else chained.add(ConditionBuilder.createSequentialCondition(condition));
-                    }
+                    if (obj instanceof ChainedKeyInput combination) {
+                        List<Condition> conditions = new LinkedList<>(combination.keys().stream().map(InputConverter::buildPathFrom)
+                                .collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll));
 
+                        for (Condition condition : conditions) {
+                            if (condition instanceof MultiCondition)
+                                chained.add(ConditionBuilder.createSequentialCondition((MultiCondition) condition));
+                            else chained.add(ConditionBuilder.createSequentialCondition(condition));
+                        }
+                    }
                     // Return a list containing the ChainedCondition
                     return chained;
                 }
@@ -102,7 +106,7 @@ public class InputConverter {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> void registerBuilder(Class<T> type, Function<T, LinkedList<Condition>> builder) {
+    public static <T> void registerBuilder(Class<T> type, Function<Object, LinkedList<Condition>> builder) {
         CONDITION_BUILDERS.put(type, (Function<Object, LinkedList<Condition>>) builder);
     }
 
@@ -110,5 +114,13 @@ public class InputConverter {
 
     public static <T> LinkedList<Condition> buildPathFrom(T data) {
         return CONDITION_BUILDERS.get(data.getClass()).apply(data);
+    }
+
+    public static LinkedList<Condition> buildPathFrom(List<InputData> data) {
+        if (data.isEmpty())
+            return new LinkedList<>();
+        Class<?> type = data.get(0).getClass();
+        Function<Object, LinkedList<Condition>> function = CONDITION_BUILDERS.get(type);
+        return function.apply(data);
     }
 }
