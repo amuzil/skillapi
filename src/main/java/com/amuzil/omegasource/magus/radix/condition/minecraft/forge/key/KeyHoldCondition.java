@@ -14,19 +14,31 @@ import net.minecraftforge.eventbus.api.EventPriority;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class KeyHoldCondition extends Condition {
-    //TODO: Make this configurable
     public static final int KEY_PRESS_TIMEOUT = 3;
-    private final Consumer<ClientTickEvent> clientTickListener;
+    private Consumer<ClientTickEvent> clientTickListener;
     private int currentTotal;
     private int currentHolding;
-    private final int key, duration, timeout;
+    private int key;
+    private int duration;
+    private int timeout = -1;
     // False by default.
-    private final boolean release;
+    private boolean release = false;
     private boolean started = false;
     public List<MousePointInput> mouseInputs = new ArrayList<>();
+
+    public KeyHoldCondition(int key, int duration) {
+        if (duration < 0)
+            RadixUtil.getLogger().warn("You should not be defining a key press duration of less than 0.");
+
+        this.currentTotal = 0;
+        this.currentHolding = 0;
+        this.duration = duration;
+        this.key = key;
+    }
 
     public KeyHoldCondition(int key, int duration, int timeout, boolean release) {
         if (duration < 0)
@@ -98,6 +110,39 @@ public class KeyHoldCondition extends Condition {
 
     public int getKey() {
         return this.key;
+    }
+
+    public void setKey(int key) {
+        this.key = key;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public void iterateDuration() {
+        this.duration++;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(key, duration);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (!(obj instanceof KeyHoldCondition other)) {
+            return false;
+        } else {
+            return Objects.equals(key, other.getKey()) &&
+                    Objects.equals(duration, other.getDuration());
+        }
     }
 
     @Override

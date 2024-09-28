@@ -15,32 +15,35 @@ import java.util.Map;
 
 public class FormDataRegistry {
 
-    private static Map<Form, InputModuleData> formData;
+    private static Map<Form, InputModuleData> formsData;
+    public static HashMap<Integer, Form> formsNamespace;
 
     //Remember to see #InputConstants for the key names.
     public static void init() {
-        formData = new HashMap<>();
+        formsData = new HashMap<>();
+        formsNamespace = new HashMap<>();
     }
 
     public static Form getFormByName(String formName) {
         return Registries.FORMS.get().getValue(new ResourceLocation(formName));
     }
     public static List<InputData> getInputsForForm(Form formToModify, RadixTree.InputType type) {
-        return formData.get(formToModify).getInputs(type);
+        return formsData.get(formToModify).getInputs(type);
     }
 
 
     public static void registerForm(List<InputData> inputs, Form form, RadixTree.InputType type) {
         // Register the requisite conditions
         InputModuleData data;
-        if (formData.get(form) != null) {
-            data = formData.get(form);
+        if (formsData.get(form) != null) {
+            data = formsData.get(form);
         }
         else data = new InputModuleData();
         data.addTypeInputs(type, inputs);
         data.fillConditions(type);
         // This replaces the value, and since our InputModuleData automatically adds conditions and input data to itself when necessary...
-        formData.put(form, data);
+        formsData.put(form, data);
+        formsNamespace.put(data.getConditions(type).hashCode(), form);
 
         // Need to pass this
         List<Condition> conditions = data.getConditions(type);
@@ -57,7 +60,7 @@ public class FormDataRegistry {
     }
 
     public static List<Condition> getConditionsFrom(Form form, RadixTree.InputType type) {
-        return formData.get(form).getConditions(type);
+        return formsData.get(form).getConditions(type);
     }
 
     public static void registerForm(InputData input, Form form) {

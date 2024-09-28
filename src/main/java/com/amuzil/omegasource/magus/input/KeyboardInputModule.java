@@ -4,8 +4,10 @@ import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.ConditionPath;
+import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.forms.Form;
+import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -23,6 +25,7 @@ public class KeyboardInputModule extends InputModule {
 
     private List<Integer> glfwKeysDown;
     private static final Map<String, Integer> movementKeys = new HashMap<>();
+    private static LinkedHashMap<Integer, Condition> activeConditions = new LinkedHashMap<>();
     private final Consumer<InputEvent.Key> keyboardListener;
     private final Consumer<TickEvent> tickEventConsumer;
     private Form activeForm = new Form();
@@ -46,32 +49,49 @@ public class KeyboardInputModule extends InputModule {
         this.listen = true;
         this.keyboardListener = keyboardEvent -> {
             int keyPressed = keyboardEvent.getKey();
+            // Get the Conditions list if one already exists for that key
+
             switch (keyboardEvent.getAction()) {
                 case InputConstants.PRESS -> {
-                    if (!glfwKeysDown.contains(keyPressed))
-                        glfwKeysDown.add(keyPressed);
-                }
-                case InputConstants.REPEAT -> {
                     if (!glfwKeysDown.contains(keyPressed)) {
                         glfwKeysDown.add(keyPressed);
+                        KeyHoldCondition newCondition = new KeyHoldCondition(keyPressed, 0);
+                        KeyHoldCondition condition = (KeyHoldCondition) activeConditions.getOrDefault(keyPressed, newCondition);
+                        activeConditions.put(keyPressed, condition);
+                        checkForForm();
                     }
+                }
+                case InputConstants.REPEAT -> {
+                    // NOTE: Minecraft's InputEvent.Key can only listen to the action InputConstants.REPEAT of one key at a time
+                    // tldr: it only fires the repeat event for the last key
+                    if (!glfwKeysDown.contains(keyPressed)) {
+                        glfwKeysDown.add(keyPressed);
+                        KeyHoldCondition condition = (KeyHoldCondition) activeConditions.get(keyPressed);
+                        activeConditions.put(keyPressed, condition);
+                    }
+
                 }
                 case InputConstants.RELEASE -> {
                     if (glfwKeysDown.contains(keyPressed)) {
                         glfwKeysDown.remove((Integer) keyPressed);
+                        activeConditions.remove(keyPressed);
                     }
                 }
             }
         };
 
         this.tickEventConsumer = tickEvent -> {
+            for (Condition condition: activeConditions.values()) {
+                KeyHoldCondition keyHoldCondition = (KeyHoldCondition) condition;
+                if (glfwKeysDown.contains(keyHoldCondition.getKey())) {
+                    keyHoldCondition.iterateDuration();
+                }
+            }
 
             ticksSinceModifiersSent++;
             if (ticksSinceModifiersSent > modifierTickThreshold && !modifierQueue.isEmpty()) {
                 sendModifierData();
             }
-
-            //cleanMCKeys();
 
             if(activeForm.name() != null) {
                 ticksSinceActivated++;
@@ -94,6 +114,15 @@ public class KeyboardInputModule extends InputModule {
                 }
             }
         };
+    }
+
+    private void checkForForm() {
+        List<Condition> conditions = activeConditions.values().stream().toList();
+        List<Condition> recognized = formsTree.search(conditions);
+        if (recognized != null) {
+            Form form = FormDataRegistry.formsNamespace.get(recognized.hashCode());
+            System.out.println("RECOGNIZED FORM: " + form.name() + " " + recognized);
+        }
     }
 
     private void sendModifierData() {
@@ -127,7 +156,7 @@ public class KeyboardInputModule extends InputModule {
         // - Call it here, then add the condition path to the radixtree.
 
         // Now, we call:
-        System.out.println("Inserting " + formToExecute.name() + " into tree with Conditions: " + formCondition + " | Inputs: " + formExecutionInputs);
+        System.out.println("Inserting " + formToExecute.name().toUpperCase() + " into tree with Conditions: " + formCondition + " | Inputs: " + formExecutionInputs);
         ConditionPath path = formToExecute.createPath(formCondition);
         formsTree.insert(path.conditions);
         // add the path to the tree
