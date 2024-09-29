@@ -86,4 +86,12 @@ public abstract class Condition {
 	public String toString() {
 		return this.getClass().getSimpleName() + "[ " + name + " ]";
 	}
+
+	public Runnable onSuccess() {
+		return this.onSuccess;
+	}
+
+	public Runnable onFailure() {
+		return this.onFailure;
+	}
 }

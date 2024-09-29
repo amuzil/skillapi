@@ -23,21 +23,20 @@ import java.util.function.Consumer;
 
 public class KeyboardInputModule extends InputModule {
 
-    private List<Integer> glfwKeysDown;
     private static final Map<String, Integer> movementKeys = new HashMap<>();
-    private static LinkedHashMap<Integer, Condition> activeConditions = new LinkedHashMap<>();
+    private final LinkedList<Condition> activeConditions = new LinkedList<>();
     private final Consumer<InputEvent.Key> keyboardListener;
     private final Consumer<TickEvent> tickEventConsumer;
-    private Form activeForm = new Form();
-    private int ticksSinceActivated = 0;
-    private int ticksSinceModifiersSent = 0;
-
     //todo make these thresholds configurable and make them longer. Especially the timeout threshold.
     private final int tickActivationThreshold = 15;
     private final int tickTimeoutThreshold = 60;
     private final int modifierTickThreshold = 10;
-    private boolean listen;
     Minecraft mc = Minecraft.getInstance();
+    private List<Integer> glfwKeysDown;
+    private Form activeForm = new Form();
+    private int ticksSinceActivated = 0;
+    private int ticksSinceModifiersSent = 0;
+    private boolean listen;
 
     // TODO: Fix this such that any tree requiring a form relies on the input
     // module activating a form rather than relying on the raw input data for those forms.
@@ -52,36 +51,26 @@ public class KeyboardInputModule extends InputModule {
             // Get the Conditions list if one already exists for that key
 
             switch (keyboardEvent.getAction()) {
-                case InputConstants.PRESS -> {
+                case InputConstants.PRESS, InputConstants.REPEAT -> {
                     if (!glfwKeysDown.contains(keyPressed)) {
                         glfwKeysDown.add(keyPressed);
-                        KeyHoldCondition newCondition = new KeyHoldCondition(keyPressed, 0);
-                        KeyHoldCondition condition = (KeyHoldCondition) activeConditions.getOrDefault(keyPressed, newCondition);
-                        activeConditions.put(keyPressed, condition);
                         checkForForm();
                     }
                 }
-                case InputConstants.REPEAT -> {
-                    // NOTE: Minecraft's InputEvent.Key can only listen to the action InputConstants.REPEAT of one key at a time
-                    // tldr: it only fires the repeat event for the last key
-                    if (!glfwKeysDown.contains(keyPressed)) {
-                        glfwKeysDown.add(keyPressed);
-                        KeyHoldCondition condition = (KeyHoldCondition) activeConditions.get(keyPressed);
-                        activeConditions.put(keyPressed, condition);
-                    }
-
-                }
+                // NOTE: Minecraft's InputEvent.Key can only listen to the action InputConstants.REPEAT of one key at a time
+                // tldr: it only fires the repeat event for the last key
                 case InputConstants.RELEASE -> {
                     if (glfwKeysDown.contains(keyPressed)) {
                         glfwKeysDown.remove((Integer) keyPressed);
                         activeConditions.remove(keyPressed);
+                        checkForForm();
                     }
                 }
             }
         };
 
         this.tickEventConsumer = tickEvent -> {
-            for (Condition condition: activeConditions.values()) {
+            for (Condition condition : activeConditions) {
                 KeyHoldCondition keyHoldCondition = (KeyHoldCondition) condition;
                 if (glfwKeysDown.contains(keyHoldCondition.getKey())) {
                     keyHoldCondition.iterateDuration();
@@ -93,20 +82,18 @@ public class KeyboardInputModule extends InputModule {
                 sendModifierData();
             }
 
-            if(activeForm.name() != null) {
+            if (activeForm.name() != null) {
                 ticksSinceActivated++;
-                if(ticksSinceActivated >= tickActivationThreshold) {
+                if (ticksSinceActivated >= tickActivationThreshold) {
                     if (lastActivatedForm != null)
                         LogManager.getLogger().info("LAST FORM ACTIVATED: " + lastActivatedForm.name() + " | FORM ACTIVATED: " + activeForm.name());
-                    else
-                        LogManager.getLogger().info("FORM ACTIVATED: " + activeForm.name());
+                    else LogManager.getLogger().info("FORM ACTIVATED: " + activeForm.name());
 //                    MagusNetwork.sendToServer(new ConditionActivatedPacket(activeForm));
                     lastActivatedForm = activeForm;
                     activeForm = new Form();
                     ticksSinceActivated = 0;
                 }
-            }
-            else {
+            } else {
                 ticksSinceActivated++;
                 if (ticksSinceActivated >= tickTimeoutThreshold) {
                     lastActivatedForm = null;
@@ -116,10 +103,23 @@ public class KeyboardInputModule extends InputModule {
         };
     }
 
+    public static void determineMotionKeys() {
+        Arrays.stream(Minecraft.getInstance().options.keyMappings).toList().forEach(keyMapping -> {
+            if (keyMapping.getCategory().equals(KeyMapping.CATEGORY_MOVEMENT)) {
+                movementKeys.put(keyMapping.getName(), keyMapping.getKey().getValue());
+            }
+        });
+    }
+
+    public static Map<String, Integer> getMovementKeys() {
+        return movementKeys;
+    }
+
     private void checkForForm() {
-        List<Condition> conditions = activeConditions.values().stream().toList();
+        List<Condition> conditions = activeConditions.stream().toList();
         List<Condition> recognized = formsTree.search(conditions);
         if (recognized != null) {
+            // TODO: Clear activeConditions.
             Form form = FormDataRegistry.formsNamespace.get(recognized.hashCode());
             System.out.println("RECOGNIZED FORM: " + form.name() + " " + recognized);
         }
@@ -157,6 +157,15 @@ public class KeyboardInputModule extends InputModule {
 
         // Now, we call:
         System.out.println("Inserting " + formToExecute.name().toUpperCase() + " into tree with Conditions: " + formCondition + " | Inputs: " + formExecutionInputs);
+        List<Condition> updatedConditions = formCondition.stream().toList();
+        for (Condition condition : updatedConditions) {
+            condition.register(condition.name(), () -> {
+                condition.onSuccess();
+                // Just do this instead and it's so much easier...
+                if (!activeConditions.contains(condition))
+                    activeConditions.add(condition);
+            }, condition.onFailure());
+        }
         ConditionPath path = formToExecute.createPath(formCondition);
         formsTree.insert(path.conditions);
         // add the path to the tree
@@ -229,18 +238,6 @@ public class KeyboardInputModule extends InputModule {
 
     public boolean keyPressed(int key) {
         return glfwKeysDown.contains(key);
-    }
-
-    public static void determineMotionKeys() {
-        Arrays.stream(Minecraft.getInstance().options.keyMappings).toList().forEach(keyMapping -> {
-            if(keyMapping.getCategory().equals(KeyMapping.CATEGORY_MOVEMENT)) {
-                movementKeys.put(keyMapping.getName(), keyMapping.getKey().getValue());
-            }
-        });
-    }
-
-    public static Map<String, Integer> getMovementKeys() {
-        return movementKeys;
     }
 
     public boolean isDirectionKey(int key) {
