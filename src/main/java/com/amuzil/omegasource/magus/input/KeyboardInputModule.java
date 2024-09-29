@@ -166,7 +166,7 @@ public class KeyboardInputModule extends InputModule {
                     activeConditions.add(condition);
             }, condition.onFailure());
         }
-        ConditionPath path = formToExecute.createPath(formCondition);
+        ConditionPath path = formToExecute.createPath(updatedConditions);
         formsTree.insert(path.conditions);
         // add the path to the tree
 
