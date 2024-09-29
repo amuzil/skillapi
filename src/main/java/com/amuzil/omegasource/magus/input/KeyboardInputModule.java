@@ -160,7 +160,7 @@ public class KeyboardInputModule extends InputModule {
         List<Condition> updatedConditions = formCondition.stream().toList();
         for (Condition condition : updatedConditions) {
             condition.register(condition.name(), () -> {
-                condition.onSuccess();
+                condition.onSuccess().run();
                 // Just do this instead and it's so much easier...
                 if (!activeConditions.contains(condition))
                     activeConditions.add(condition);
