@@ -27,7 +27,7 @@ public class KeyboardInputModule extends InputModule {
     private final Consumer<InputEvent.Key> keyboardListener;
     private final Consumer<TickEvent> tickEventConsumer;
     //todo make these thresholds configurable and make them longer. Especially the timeout threshold.
-    private final int tickActivationThreshold = 20;
+    private final int tickActivationThreshold = 30;
     private final int tickTimeoutThreshold = 60;
     private final int modifierTickThreshold = 10;
     Minecraft mc = Minecraft.getInstance();
@@ -159,20 +159,20 @@ public class KeyboardInputModule extends InputModule {
                     activeConditions.add(condition);
                 condition.reset();
             }, () -> {
-                activeConditions.remove(condition);
+//                activeConditions.remove(condition);
                 condition.reset();
             });
         }
         // And if the list has multiple conditions that won't all necessarily fail....
-        if (!formCondition.isEmpty()) {
-            Condition lastCondition = formCondition.get(formCondition.size() - 1);
-            Runnable failure = lastCondition.onFailure();
-            lastCondition.register(lastCondition.name(), lastCondition.onSuccess(), () -> {
-                if (failure != null)
-                    failure.run();
-                activeConditions.removeAll(formCondition);
-            });
-        }
+//        if (!formCondition.isEmpty()) {
+//            Condition lastCondition = formCondition.get(formCondition.size() - 1);
+//            Runnable failure = lastCondition.onFailure();
+//            lastCondition.register(lastCondition.name(), lastCondition.onSuccess(), () -> {
+//                if (failure != null)
+//                    failure.run();
+//                activeConditions.removeAll(formCondition);
+//            });
+//        }
 
         ConditionPath path = formToExecute.createPath(updatedConditions);
         System.out.println("Inserting " + formToExecute.name().toUpperCase() + " into tree with Conditions: " + formCondition + " | Inputs: " + formExecutionInputs);
