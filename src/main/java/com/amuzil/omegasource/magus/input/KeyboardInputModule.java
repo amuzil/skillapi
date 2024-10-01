@@ -86,9 +86,9 @@ public class KeyboardInputModule extends InputModule {
             if (activeForm != null && activeForm.name() != null) {
                 ticksSinceActivated++;
                 if (ticksSinceActivated >= tickActivationThreshold) {
-                    if (lastActivatedForm != null)
-                        LogManager.getLogger().info("LAST FORM ACTIVATED: " + lastActivatedForm.name() + " | FORM ACTIVATED: " + activeForm.name());
-                    else LogManager.getLogger().info("FORM ACTIVATED: " + activeForm.name());
+//                    if (lastActivatedForm != null)
+//                        LogManager.getLogger().info("LAST FORM ACTIVATED: " + lastActivatedForm.name() + " | FORM ACTIVATED: " + activeForm.name());
+//                    else LogManager.getLogger().info("FORM ACTIVATED: " + activeForm.name());
 //                    MagusNetwork.sendToServer(new ConditionActivatedPacket(activeForm));
                     lastActivatedForm = activeForm;
                     activeForm = null;
@@ -134,9 +134,9 @@ public class KeyboardInputModule extends InputModule {
     private void checkForForm() {
         List<Condition> conditions = activeConditions.stream().toList();
         List<Condition> recognized = formsTree.search(conditions);
-        System.out.println("activeConditions: " + activeConditions);
+        System.out.println("activeConditions KIM: " + activeConditions);
         if (recognized != null) {
-//            activeConditions.clear();
+            activeConditions.clear();
             activeForm = FormDataRegistry.formsNamespace.get(recognized.hashCode());
             System.out.println("RECOGNIZED FORM: " + activeForm.name() + " " + recognized);
             Magus.sendDebugMsg("RECOGNIZED FORM: " + activeForm.name());
@@ -177,20 +177,12 @@ public class KeyboardInputModule extends InputModule {
         List<Condition> updatedConditions = formCondition.stream().toList();
         for (Condition condition : updatedConditions) {
             condition.register(condition.name(), () -> {
-
-                RadixUtil.getLogger().debug("Condition being added: " + condition);
-                if (!activeConditions.isEmpty()) {
-                    System.out.println(activeConditions.get(0));
-                }
-
-                if (!activeConditions.contains(condition)) {
-//                    RadixUtil.getLogger().debug("Condition being added: " + condition);
+                if (!activeConditions.contains(condition))
                     activeConditions.add(condition);
-                }
                 this.timeout = 0;
-                condition.reset();
+//                condition.reset();
             }, () -> {
-//                activeConditions.remove(condition);
+                activeConditions.remove(condition);
                 condition.reset();
             });
         }
