@@ -48,7 +48,7 @@ public class RadixTree {
         }
     }
 
-    private void activateAllConditions() {
+    public void activateAllConditions() {
         activateAllConditions(root, new ArrayList<>());
     }
 
@@ -60,7 +60,7 @@ public class RadixTree {
             activateAllConditions(branch.next, Stream.concat(result.stream(), branch.path.conditions.stream()).toList());
     }
 
-    private void deactivateAllConditions() {
+    public void deactivateAllConditions() {
         deactivateAllConditions(root, new ArrayList<>());
     }
 
