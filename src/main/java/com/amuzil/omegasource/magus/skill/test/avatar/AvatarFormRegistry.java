@@ -64,7 +64,6 @@ public class AvatarFormRegistry {
         // Left, right, up, down, jump, sneak, sprint.
         LinkedList<InputData> inputs = new LinkedList<>();
         for (Map.Entry<String, Integer> key : KeyboardInputModule.getMovementKeys().entrySet()) {
-            RadixUtil.getLogger().debug("Movement Direction: " + key.getKey() + ", Key Value: " + key.getValue());
             inputs.clear();
 
             KeyInput first, second;
