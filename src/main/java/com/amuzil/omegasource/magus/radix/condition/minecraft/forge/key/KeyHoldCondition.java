@@ -57,7 +57,9 @@ public class KeyHoldCondition extends Condition {
                 if (Magus.keyboardInputModule.keyPressed(key) || Magus.mouseInputModule.keyPressed(key)) {
                     this.started = true;
                     this.currentHolding++;
+                    this.onSuccess.run();
                 } else {
+                    this.onFailure.run();
                     if (pressed(this.currentHolding, duration)) {
                         // If the Condition requires the key being released....
                         if (release) {
@@ -112,22 +114,6 @@ public class KeyHoldCondition extends Condition {
         return this.key;
     }
 
-    public void setKey(int key) {
-        this.key = key;
-    }
-
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
-    public void iterateDuration() {
-        this.duration++;
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(key, duration);
@@ -140,8 +126,10 @@ public class KeyHoldCondition extends Condition {
         } else if (!(obj instanceof KeyHoldCondition other)) {
             return false;
         } else {
+//            System.out.println("this: stored in tree -> " + this);
+//            System.out.println("other: activeCondition from user input -> " + other);
             return Objects.equals(key, other.getKey()) &&
-                    Objects.equals(duration, other.getDuration());
+                    other.currentHolding >= duration;
         }
     }
 
@@ -163,13 +151,8 @@ public class KeyHoldCondition extends Condition {
     }
 
     @Override
-    public String name() {
-        return "key_hold";
-    }
-
-    @Override
     public String toString() {
-        return String.format("%s[ %s, key=%s, d=%d, t=%d, r=%b ]", this.getClass().getSimpleName(), name(),
-                key, duration, timeout, release);
+        return String.format("%s[ %s, key=%s, held=%d, d=%d, t=%d, r=%b ]", this.getClass().getSimpleName(), name(),
+                key, currentHolding, duration, timeout, release);
     }
 }

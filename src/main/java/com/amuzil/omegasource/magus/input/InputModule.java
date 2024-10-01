@@ -13,14 +13,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.client.event.InputEvent;
 import org.apache.logging.log4j.LogManager;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public abstract class InputModule {
     protected static RadixTree formsTree = new RadixTree();
+    protected static LinkedList<Condition> activeConditions = new LinkedList<>();
     protected static final List<Form> activeFormInputs = new ArrayList<>();
     protected final Map<Condition, Form> formInputs = new HashMap<>();
     protected final List<ModifierListener> modifierListeners = new ArrayList<>();

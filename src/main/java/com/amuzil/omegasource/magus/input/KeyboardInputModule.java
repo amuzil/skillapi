@@ -1,10 +1,10 @@
 package com.amuzil.omegasource.magus.input;
 
+import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.ConditionPath;
-import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
@@ -24,7 +24,6 @@ import java.util.function.Consumer;
 public class KeyboardInputModule extends InputModule {
 
     private static final Map<String, Integer> movementKeys = new HashMap<>();
-    private final LinkedList<Condition> activeConditions = new LinkedList<>();
     private final Consumer<InputEvent.Key> keyboardListener;
     private final Consumer<TickEvent> tickEventConsumer;
     //todo make these thresholds configurable and make them longer. Especially the timeout threshold.
@@ -62,7 +61,6 @@ public class KeyboardInputModule extends InputModule {
                 case InputConstants.RELEASE -> {
                     if (glfwKeysDown.contains(keyPressed)) {
                         glfwKeysDown.remove((Integer) keyPressed);
-                        activeConditions.remove(keyPressed);
                         checkForForm();
                     }
                 }
@@ -70,13 +68,6 @@ public class KeyboardInputModule extends InputModule {
         };
 
         this.tickEventConsumer = tickEvent -> {
-            for (Condition condition : activeConditions) {
-                KeyHoldCondition keyHoldCondition = (KeyHoldCondition) condition;
-                if (glfwKeysDown.contains(keyHoldCondition.getKey())) {
-                    keyHoldCondition.iterateDuration();
-                }
-            }
-
             ticksSinceModifiersSent++;
             if (ticksSinceModifiersSent > modifierTickThreshold && !modifierQueue.isEmpty()) {
                 sendModifierData();
@@ -118,10 +109,12 @@ public class KeyboardInputModule extends InputModule {
     private void checkForForm() {
         List<Condition> conditions = activeConditions.stream().toList();
         List<Condition> recognized = formsTree.search(conditions);
+        System.out.println("activeConditions: " + activeConditions);
         if (recognized != null) {
-            // TODO: Clear activeConditions.
-            Form form = FormDataRegistry.formsNamespace.get(recognized.hashCode());
-            System.out.println("RECOGNIZED FORM: " + form.name() + " " + recognized);
+            activeConditions.clear();
+            Form activeForm = FormDataRegistry.formsNamespace.get(recognized.hashCode());
+            System.out.println("RECOGNIZED FORM: " + activeForm.name() + " " + recognized);
+            Magus.sendDebugMsg("RECOGNIZED FORM: " + activeForm.name());
         }
     }
 
@@ -156,17 +149,18 @@ public class KeyboardInputModule extends InputModule {
         // - Call it here, then add the condition path to the radixtree.
 
         // Now, we call:
-        System.out.println("Inserting " + formToExecute.name().toUpperCase() + " into tree with Conditions: " + formCondition + " | Inputs: " + formExecutionInputs);
         List<Condition> updatedConditions = formCondition.stream().toList();
         for (Condition condition : updatedConditions) {
             condition.register(condition.name(), () -> {
-                condition.onSuccess().run();
-                // Just do this instead and it's so much easier...
                 if (!activeConditions.contains(condition))
                     activeConditions.add(condition);
-            }, condition.onFailure());
+            }, () -> {
+                activeConditions.remove(condition);
+                condition.reset();
+            });
         }
         ConditionPath path = formToExecute.createPath(updatedConditions);
+        System.out.println("Inserting " + formToExecute.name().toUpperCase() + " into tree with Conditions: " + formCondition + " | Inputs: " + formExecutionInputs);
         formsTree.insert(path.conditions);
         // add the path to the tree
 

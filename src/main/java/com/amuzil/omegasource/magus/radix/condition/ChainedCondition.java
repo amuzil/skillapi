@@ -52,7 +52,7 @@ public class ChainedCondition extends Condition {
 
     }
 
-    private void reset() {
+    public void reset() {
         currentConditionIndex = 0;
         currentCondition.unregister();
         currentCondition = conditionSequence.get(currentConditionIndex);

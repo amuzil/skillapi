@@ -15,7 +15,7 @@ public abstract class Condition {
 
 	protected static final Runnable NO_OPERATION = () -> RadixUtil.getLogger().debug("Result: No Operation");
 
-	private String name;
+	protected String name;
 	protected Runnable onSuccess;
 	protected Runnable onFailure;
 
@@ -67,6 +67,8 @@ public abstract class Condition {
 	public String modID() {
 		return Magus.MOD_ID;
 	}
+
+	public void reset() {}
 
 	public static boolean startsWith(List<Condition> conditions, List<Condition> subConditions) {
 		try {
