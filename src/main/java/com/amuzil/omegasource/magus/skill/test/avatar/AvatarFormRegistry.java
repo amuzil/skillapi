@@ -3,6 +3,7 @@ package com.amuzil.omegasource.magus.skill.test.avatar;
 import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.input.KeyboardInputModule;
 import com.amuzil.omegasource.magus.radix.RadixTree;
+import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.conditionals.InputDataBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyDataBuilder;
@@ -63,18 +64,18 @@ public class AvatarFormRegistry {
         // Left, right, up, down, jump, sneak, sprint.
         LinkedList<InputData> inputs = new LinkedList<>();
         for (Map.Entry<String, Integer> key : KeyboardInputModule.getMovementKeys().entrySet()) {
-            System.out.println(key.getKey());
-//            inputs.clear();
+            RadixUtil.getLogger().debug("Movement Direction: " + key.getKey() + ", Key Value: " + key.getValue());
+            inputs.clear();
 
             KeyInput first, second;
 
             // key.right is 68
             first = KeyDataBuilder.createInput(key.getValue(), true, 0);
             // Has to be a relatively quick input.
-//            second = KeyDataBuilder.createInput(68 /*key.getValue()*/, 0, 15);
-//            inputs.add(first);
-//            inputs.add(second);
-            FormDataRegistry.registerForm(InputDataBuilder.toInputs(first), Forms.STEP, RadixTree.InputType.KEYBOARD);
+            second = KeyDataBuilder.createInput(key.getValue(), 0, 15);
+            inputs.add(first);
+            inputs.add(second);
+            FormDataRegistry.registerForm(inputs, Forms.STEP, RadixTree.InputType.KEYBOARD);
         }
 
         /* Combination Forms */

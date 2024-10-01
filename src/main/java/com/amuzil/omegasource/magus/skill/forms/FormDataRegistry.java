@@ -34,11 +34,7 @@ public class FormDataRegistry {
 
     public static void registerForm(List<InputData> inputs, Form form, RadixTree.InputType type) {
         // Register the requisite conditions
-        InputModuleData data;
-        if (formsData.get(form) != null) {
-            data = formsData.get(form);
-        }
-        else data = new InputModuleData();
+        InputModuleData data = new InputModuleData();
         data.addTypeInputs(type, inputs);
         data.fillConditions(type);
         // This replaces the value, and since our InputModuleData automatically adds conditions and input data to itself when necessary...

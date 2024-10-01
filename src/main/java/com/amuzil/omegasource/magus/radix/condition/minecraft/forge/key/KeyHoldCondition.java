@@ -59,7 +59,6 @@ public class KeyHoldCondition extends Condition {
 //                    // If the Condition doesn't require the key being released....
                         if (!release) {
                             this.onSuccess.run();
-                            this.reset();
                         }
                     }
                 } else {
@@ -67,13 +66,11 @@ public class KeyHoldCondition extends Condition {
                         // If the Condition requires the key being released....
                         if (release) {
                             this.onSuccess.run();
-                            this.reset();
                         }
                     } else {
                         // Not held for long enough
                         if (this.currentHolding > 0) {
                             this.onFailure.run();
-                            this.reset();
                         }
                     }
                 }
@@ -101,11 +98,11 @@ public class KeyHoldCondition extends Condition {
             return held > 0;
         }
         else return held >= duration;
-//        LogManager.getLogger().info("Checking pressed. held:" + held + ", duration: " + duration + ", result: " + pressed);
     }
 
     // Should be called in either runnable by other methods, rather than manually here. Calling it manually in the class can lead
     // to race conditions and other weird bugs, none of which are ideal.
+    @Override
     public void reset() {
         this.currentTotal = 0;
         this.currentHolding = 0;

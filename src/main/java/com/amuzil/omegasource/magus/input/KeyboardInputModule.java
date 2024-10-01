@@ -27,7 +27,7 @@ public class KeyboardInputModule extends InputModule {
     private final Consumer<InputEvent.Key> keyboardListener;
     private final Consumer<TickEvent> tickEventConsumer;
     //todo make these thresholds configurable and make them longer. Especially the timeout threshold.
-    private final int tickActivationThreshold = 15;
+    private final int tickActivationThreshold = 20;
     private final int tickTimeoutThreshold = 60;
     private final int modifierTickThreshold = 10;
     Minecraft mc = Minecraft.getInstance();
@@ -83,7 +83,7 @@ public class KeyboardInputModule extends InputModule {
                     lastActivatedForm = activeForm;
                     activeForm = null;
                     ticksSinceActivated = 0;
-                    activeConditions.clear();
+//                    activeConditions.clear();
                 }
             } else {
                 ticksSinceActivated++;
@@ -114,9 +114,8 @@ public class KeyboardInputModule extends InputModule {
         List<Condition> recognized = formsTree.search(conditions);
         System.out.println("activeConditions: " + activeConditions);
         if (recognized != null) {
-            activeConditions.clear();
-            Form activeForm = FormDataRegistry.formsNamespace.get(recognized.hashCode());
-            this.activeForm = activeForm;
+//            activeConditions.clear();
+            activeForm = FormDataRegistry.formsNamespace.get(recognized.hashCode());
             System.out.println("RECOGNIZED FORM: " + activeForm.name() + " " + recognized);
             Magus.sendDebugMsg("RECOGNIZED FORM: " + activeForm.name());
         }
@@ -158,6 +157,7 @@ public class KeyboardInputModule extends InputModule {
             condition.register(condition.name(), () -> {
                 if (!activeConditions.contains(condition))
                     activeConditions.add(condition);
+                condition.reset();
             }, () -> {
                 activeConditions.remove(condition);
                 condition.reset();
