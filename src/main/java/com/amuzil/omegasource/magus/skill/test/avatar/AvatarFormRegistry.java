@@ -70,9 +70,9 @@ public class AvatarFormRegistry {
             KeyInput first, second;
 
             // key.right is 68
-            first = KeyDataBuilder.createInput(key.getValue(), true, 0);
+            first = KeyDataBuilder.createInput(key.getValue(), 0, 20);
             // Has to be a relatively quick input.
-            second = KeyDataBuilder.createInput(key.getValue(), 0, 20);
+            second = KeyDataBuilder.createInput(key.getValue(), true, 0);
             inputs.add(first);
             inputs.add(second);
             FormDataRegistry.registerForm(inputs, Forms.STEP, RadixTree.InputType.KEYBOARD);
