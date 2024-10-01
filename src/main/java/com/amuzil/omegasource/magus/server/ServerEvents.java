@@ -136,7 +136,6 @@ public class ServerEvents {
             Magus.keyboardInputModule.terminate();
             Magus.mouseInputModule.terminate();
             Magus.mouseMotionModule.terminate();
-
         }
     }
 }
