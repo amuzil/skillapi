@@ -52,6 +52,8 @@ public class KeyHoldCondition extends Condition {
 
         this.clientTickListener = event -> {
             if (event.phase == ClientTickEvent.Phase.START && Minecraft.getInstance().getOverlay() == null) {
+                if (timeout > 0)
+                    RadixUtil.getLogger().debug("Listening on timed condition.");
                 if (Magus.keyboardInputModule.keyPressed(key) || Magus.mouseInputModule.keyPressed(key)) {
                     this.started = true;
                     this.currentHolding++;

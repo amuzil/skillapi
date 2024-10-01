@@ -22,14 +22,25 @@ public class RadixTree {
     private Discipline activeDiscipline = null; //Disciplines.FIRE;
     private ConditionPath path;
     private Entity owner;
+    private Side side = Side.COMMON;
+
+    public RadixTree(Node root, Side side) {
+        this(root);
+        this.side = side;
+    }
 
     public RadixTree(Node root) {
         this.root = root;
         this.active = root;
     }
 
+    public RadixTree(Side side) {
+        this();
+        this.side = side;
+    }
+
     public RadixTree() {
-        root = new Node(false);
+        this(new Node(false));
     }
 
     private int getFirstMismatchCondition(List<Condition> conditions, List<Condition> edgeCondition) {
@@ -174,8 +185,6 @@ public class RadixTree {
         return ret;
     }
 
-    // ---------- Cali's RadixTree Impl ----------
-
     public void burn() {
         if (active.terminateCondition() != null) {
             active.terminateCondition().unregister();
@@ -184,6 +193,8 @@ public class RadixTree {
         active = null;
         activeDiscipline = null;
     }
+
+    // ---------- Cali's RadixTree Impl ----------
 
     public void start() {
         setActive(root);
@@ -209,7 +220,10 @@ public class RadixTree {
                 currentCondition.register(currentCondition.name(), () -> {
                     currentCondition.onSuccess.run();
                     currentCondition.unregister();
-                    MagusNetwork.sendToServer(new ConditionActivatedPacket(currentCondition));
+                    switch (side) {
+                        default -> MagusNetwork.sendToServer(new ConditionActivatedPacket(currentCondition));
+                    }
+
                 }, currentCondition.onFailure);
                 currentCondition.register();
             }
@@ -334,6 +348,10 @@ public class RadixTree {
 
     public void setOwner(Entity entity) {
         this.owner = entity;
+    }
+
+    public enum Side {
+        CLIENT, COMMON, SERVER
     }
 
     // Menu = radial menu or a HUD. Other activation types are self explanatory.
