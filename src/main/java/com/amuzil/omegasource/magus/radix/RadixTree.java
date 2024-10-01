@@ -173,7 +173,7 @@ public class RadixTree {
 //        deactivateAllConditions();
 //        for (Condition condition : root.getImmediateBranches())
 //            condition.register();
-        activateAllConditions();
+//        activateAllConditions();
     }
 
     // Returns matched condition path if found and null if not found - O(n)
@@ -214,7 +214,7 @@ public class RadixTree {
         path = new ConditionPath();
     }
 
-    private void setActive(Discipline discipline) {
+    public void setDiscipline(Discipline discipline) {
         this.activeDiscipline = discipline;
     }
 

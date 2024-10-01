@@ -4,6 +4,8 @@ import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.EventCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
+import com.amuzil.omegasource.magus.skill.elements.Discipline;
+import com.amuzil.omegasource.magus.skill.elements.Disciplines;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
@@ -76,6 +78,8 @@ public abstract class InputModule {
     public static void resetFormsTree() {
         FormDataRegistry.init(); // Re-initialize formData since it's a static field
         formsTree = new RadixTree();
+        // Default is air.
+        formsTree.setDiscipline(Disciplines.AIR);
     }
 
     public void init() {

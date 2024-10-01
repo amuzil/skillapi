@@ -5,8 +5,8 @@ import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.ConditionPath;
-import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
+import com.amuzil.omegasource.magus.skill.elements.Disciplines;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -46,6 +46,8 @@ public class KeyboardInputModule extends InputModule {
     // remain functionally the same, they just check different input modules for whether the same
     // forms are activated.
     public KeyboardInputModule() {
+        formsTree.setDiscipline(Disciplines.AIR);
+
         this.glfwKeysDown = new ArrayList<>();
         this.listen = true;
         this.keyboardListener = keyboardEvent -> {
@@ -179,6 +181,7 @@ public class KeyboardInputModule extends InputModule {
             condition.register(condition.name(), () -> {
                 if (!activeConditions.contains(condition))
                     activeConditions.add(condition);
+                formsTree.moveDown(condition);
                 this.timeout = 0;
 //                condition.reset();
             }, () -> {
