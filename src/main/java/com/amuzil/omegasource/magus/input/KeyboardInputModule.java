@@ -32,7 +32,7 @@ public class KeyboardInputModule extends InputModule {
     private final int modifierTickThreshold = 10;
     Minecraft mc = Minecraft.getInstance();
     private List<Integer> glfwKeysDown;
-    private Form activeForm = new Form();
+    private Form activeForm = null;
     private int ticksSinceActivated = 0;
     private int ticksSinceModifiersSent = 0;
     private boolean listen;
@@ -73,7 +73,7 @@ public class KeyboardInputModule extends InputModule {
                 sendModifierData();
             }
 
-            if (activeForm.name() != null) {
+            if (activeForm != null && activeForm.name() != null) {
                 ticksSinceActivated++;
                 if (ticksSinceActivated >= tickActivationThreshold) {
                     if (lastActivatedForm != null)
@@ -81,7 +81,7 @@ public class KeyboardInputModule extends InputModule {
                     else LogManager.getLogger().info("FORM ACTIVATED: " + activeForm.name());
 //                    MagusNetwork.sendToServer(new ConditionActivatedPacket(activeForm));
                     lastActivatedForm = activeForm;
-                    activeForm = new Form();
+                    activeForm = null;
                     ticksSinceActivated = 0;
                 }
             } else {
@@ -113,6 +113,7 @@ public class KeyboardInputModule extends InputModule {
         if (recognized != null) {
             activeConditions.clear();
             Form activeForm = FormDataRegistry.formsNamespace.get(recognized.hashCode());
+            this.activeForm = activeForm;
             System.out.println("RECOGNIZED FORM: " + activeForm.name() + " " + recognized);
             Magus.sendDebugMsg("RECOGNIZED FORM: " + activeForm.name());
         }
@@ -159,6 +160,17 @@ public class KeyboardInputModule extends InputModule {
                 condition.reset();
             });
         }
+        // And if the list has multiple conditions that won't all necessarily fail....
+        if (!formCondition.isEmpty()) {
+            Condition lastCondition = formCondition.get(formCondition.size() - 1);
+            Runnable failure = lastCondition.onFailure();
+            lastCondition.register(lastCondition.name(), lastCondition.onSuccess(), () -> {
+                if (failure != null)
+                    failure.run();
+                activeConditions.removeAll(formCondition);
+            });
+        }
+
         ConditionPath path = formToExecute.createPath(updatedConditions);
         System.out.println("Inserting " + formToExecute.name().toUpperCase() + " into tree with Conditions: " + formCondition + " | Inputs: " + formExecutionInputs);
         formsTree.insert(path.conditions);
