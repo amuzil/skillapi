@@ -83,11 +83,14 @@ public class KeyboardInputModule extends InputModule {
                     lastActivatedForm = activeForm;
                     activeForm = null;
                     ticksSinceActivated = 0;
+                    activeConditions.clear();
                 }
             } else {
                 ticksSinceActivated++;
                 if (ticksSinceActivated >= tickTimeoutThreshold) {
                     lastActivatedForm = null;
+                    // Have to clear currently active conditions
+                    activeConditions.clear();
                     ticksSinceActivated = 0;
                 }
             }

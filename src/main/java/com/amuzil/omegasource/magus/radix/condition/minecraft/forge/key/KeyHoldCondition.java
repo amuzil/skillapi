@@ -4,9 +4,7 @@ import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.amuzil.omegasource.magus.skill.conditionals.mouse.MousePointInput;
-import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseMotionInput;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
@@ -19,16 +17,16 @@ import java.util.function.Consumer;
 
 public class KeyHoldCondition extends Condition {
     public static final int KEY_PRESS_TIMEOUT = 3;
+    public List<MousePointInput> mouseInputs = new ArrayList<>();
     private Consumer<ClientTickEvent> clientTickListener;
     private int currentTotal;
     private int currentHolding;
-    private int key;
-    private int duration;
+    private final int key;
+    private final int duration;
     private int timeout = -1;
     // False by default.
     private boolean release = false;
     private boolean started = false;
-    public List<MousePointInput> mouseInputs = new ArrayList<>();
 
     public KeyHoldCondition(int key, int duration) {
         if (duration < 0)
@@ -57,28 +55,30 @@ public class KeyHoldCondition extends Condition {
                 if (Magus.keyboardInputModule.keyPressed(key) || Magus.mouseInputModule.keyPressed(key)) {
                     this.started = true;
                     this.currentHolding++;
-                    this.onSuccess.run();
+                    if (pressed(this.currentHolding, duration)) {
+//                    // If the Condition doesn't require the key being released....
+                        if (!release) {
+                            this.onSuccess.run();
+                            this.reset();
+                        }
+                    }
                 } else {
-                    this.onFailure.run();
                     if (pressed(this.currentHolding, duration)) {
                         // If the Condition requires the key being released....
                         if (release) {
                             this.onSuccess.run();
+                            this.reset();
                         }
                     } else {
                         // Not held for long enough
                         if (this.currentHolding > 0) {
                             this.onFailure.run();
+                            this.reset();
                         }
                     }
                 }
                 // If the duration is <= 3, then we want the Condition to act as a key press, rather than a hold.
-//                if (pressed(this.currentHolding, duration)) {
-//                    // If the Condition doesn't require the key being released....
-//                    if (!release) {
-//                        this.onSuccess.run();
-//                    }
-//                }
+//
                 if (this.started) {
                     // Timeout of -1 means that this should wait forever.
                     if (timeout > -1 && this.currentTotal >= timeout) {
@@ -97,9 +97,11 @@ public class KeyHoldCondition extends Condition {
     }
 
     public boolean pressed(int held, int duration) {
-        boolean pressed = held >= duration || held > 0 && duration <= KEY_PRESS_TIMEOUT;
+        if (duration <= KEY_PRESS_TIMEOUT) {
+            return held > 0;
+        }
+        else return held >= duration;
 //        LogManager.getLogger().info("Checking pressed. held:" + held + ", duration: " + duration + ", result: " + pressed);
-        return pressed;
     }
 
     // Should be called in either runnable by other methods, rather than manually here. Calling it manually in the class can lead

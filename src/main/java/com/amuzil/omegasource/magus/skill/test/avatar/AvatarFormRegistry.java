@@ -14,6 +14,7 @@ import com.amuzil.omegasource.magus.skill.forms.Forms;
 import net.minecraft.client.Minecraft;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class AvatarFormRegistry {
@@ -62,18 +63,18 @@ public class AvatarFormRegistry {
         // Left, right, up, down, jump, sneak, sprint.
         LinkedList<InputData> inputs = new LinkedList<>();
         for (Map.Entry<String, Integer> key : KeyboardInputModule.getMovementKeys().entrySet()) {
-            inputs.clear();
-            // TODO: Add in a mandatory key release condition so you can't activate these by holding down a key.
-            //  Also account for the direction modifier.
+            System.out.println(key.getKey());
+//            inputs.clear();
 
             KeyInput first, second;
-            // Problem: The tick delay is being combined with the key press into a simultaneous condition.
-            // Not good.
+
+            // key.right is 68
             first = KeyDataBuilder.createInput(key.getValue(), true, 0);
             // Has to be a relatively quick input.
-            second = KeyDataBuilder.createInput(key.getValue(), 0, 15);
-            inputs.add(KeyDataBuilder.createChainedInput(first, second));
-            FormDataRegistry.registerForm(inputs, Forms.STEP, RadixTree.InputType.KEYBOARD);
+//            second = KeyDataBuilder.createInput(68 /*key.getValue()*/, 0, 15);
+//            inputs.add(first);
+//            inputs.add(second);
+            FormDataRegistry.registerForm(InputDataBuilder.toInputs(first), Forms.STEP, RadixTree.InputType.KEYBOARD);
         }
 
         /* Combination Forms */
