@@ -119,7 +119,9 @@ public class ServerEvents {
                 Magus.mouseMotionModule.terminate();
                 InputModule.resetFormsTree();
                 AvatarFormRegistry.registerForms();
+                System.out.println("All RadixTree Forms Conditions:");
                 Magus.keyboardInputModule.getFormsTree().printAllConditions();
+                System.out.println("All RadixTree Branches:");
                 Magus.keyboardInputModule.getFormsTree().printAllBranches();
                 Magus.keyboardInputModule.init();
                 Magus.mouseInputModule.init();
