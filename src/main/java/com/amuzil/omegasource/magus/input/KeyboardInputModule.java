@@ -5,6 +5,7 @@ import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.ConditionPath;
+import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
@@ -27,7 +28,7 @@ public class KeyboardInputModule extends InputModule {
     private final Consumer<InputEvent.Key> keyboardListener;
     private final Consumer<TickEvent> tickEventConsumer;
     //todo make these thresholds configurable and make them longer. Especially the timeout threshold.
-    private final int tickActivationThreshold = 30;
+    private final int tickActivationThreshold = 5;
     private final int tickTimeoutThreshold = 60;
     private final int modifierTickThreshold = 10;
     Minecraft mc = Minecraft.getInstance();
@@ -35,7 +36,9 @@ public class KeyboardInputModule extends InputModule {
     private Form activeForm = null;
     private int ticksSinceActivated = 0;
     private int ticksSinceModifiersSent = 0;
+    private int timeout = 0;
     private boolean listen;
+    private boolean checkForm = false;
 
     // TODO: Fix this such that any tree requiring a form relies on the input
     // module activating a form rather than relying on the raw input data for those forms.
@@ -61,7 +64,7 @@ public class KeyboardInputModule extends InputModule {
                 case InputConstants.RELEASE -> {
                     if (glfwKeysDown.contains(keyPressed)) {
                         glfwKeysDown.remove((Integer) keyPressed);
-                        checkForForm();
+                        checkForm = true;
                     }
                 }
             }
@@ -71,6 +74,13 @@ public class KeyboardInputModule extends InputModule {
             ticksSinceModifiersSent++;
             if (ticksSinceModifiersSent > modifierTickThreshold && !modifierQueue.isEmpty()) {
                 sendModifierData();
+            }
+
+            // Every tick... Yay...
+            // Needed so that key releases actually work.
+            if (checkForm) {
+                checkForForm();
+                checkForm = false;
             }
 
             if (activeForm != null && activeForm.name() != null) {
@@ -83,17 +93,29 @@ public class KeyboardInputModule extends InputModule {
                     lastActivatedForm = activeForm;
                     activeForm = null;
                     ticksSinceActivated = 0;
-//                    activeConditions.clear();
-                }
-            } else {
-                ticksSinceActivated++;
-                if (ticksSinceActivated >= tickTimeoutThreshold) {
-                    lastActivatedForm = null;
-                    // Have to clear currently active conditions
+                    timeout = 0;
                     activeConditions.clear();
-                    ticksSinceActivated = 0;
+
+                }
+
+            } else {
+                timeout++;
+                if (timeout > tickTimeoutThreshold) {
+                    if (!activeConditions.isEmpty()) {
+                        activeConditions.clear();
+                        lastActivatedForm = null;
+                        timeout = 0;
+                    }
                 }
             }
+            //else {
+//                ticksSinceActivated++;
+//                if (ticksSinceActivated >= tickTimeoutThreshold) {
+//                    lastActivatedForm = null;
+//                    // Have to clear currently active conditions
+//                    activeConditions.clear();
+//                    ticksSinceActivated = 0;
+//                }
         };
     }
 
@@ -155,8 +177,17 @@ public class KeyboardInputModule extends InputModule {
         List<Condition> updatedConditions = formCondition.stream().toList();
         for (Condition condition : updatedConditions) {
             condition.register(condition.name(), () -> {
-                if (!activeConditions.contains(condition))
+
+                RadixUtil.getLogger().debug("Condition being added: " + condition);
+                if (!activeConditions.isEmpty()) {
+                    System.out.println(activeConditions.get(0));
+                }
+
+                if (!activeConditions.contains(condition)) {
+//                    RadixUtil.getLogger().debug("Condition being added: " + condition);
                     activeConditions.add(condition);
+                }
+                this.timeout = 0;
                 condition.reset();
             }, () -> {
 //                activeConditions.remove(condition);

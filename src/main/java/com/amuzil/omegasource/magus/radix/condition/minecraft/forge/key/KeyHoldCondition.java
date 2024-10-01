@@ -79,6 +79,7 @@ public class KeyHoldCondition extends Condition {
                 if (this.started) {
                     // Timeout of -1 means that this should wait forever.
                     if (timeout > -1 && this.currentTotal >= timeout) {
+                        RadixUtil.getLogger().warn("Condition is failing. " + this);
                         this.onFailure.run();
                     }
                     this.currentTotal++;
@@ -86,7 +87,7 @@ public class KeyHoldCondition extends Condition {
 
             }
         };
-        this.registerEntry();
+//        this.registerEntry();
     }
 
     public int getHeld() {
@@ -115,7 +116,7 @@ public class KeyHoldCondition extends Condition {
 
     @Override
     public int hashCode() {
-        return Objects.hash(key, duration);
+        return Objects.hash(key, duration, release, timeout);
     }
 
     @Override
@@ -125,10 +126,14 @@ public class KeyHoldCondition extends Condition {
         } else if (!(obj instanceof KeyHoldCondition other)) {
             return false;
         } else {
-//            System.out.println("this: stored in tree -> " + this);
-//            System.out.println("other: activeCondition from user input -> " + other);
+            System.out.println("this: stored in tree -> " + this);
+            System.out.println("other: activeCondition from user input -> " + other);
             return Objects.equals(key, other.getKey()) &&
-                    other.currentHolding >= duration;
+                    /* Makes sure an alternative key condition that's been pressed has been pressed at least as long
+                    * as the currently compared condition. */
+                    other.currentHolding >= duration
+                    && other.release == release
+                    && timeout == other.timeout;
         }
     }
 
