@@ -124,7 +124,9 @@ public class Magus {
     public static void sendDebugMsg(String msg) {
         LocalPlayer player = Minecraft.getInstance().player;
         Component text = Component.literal(msg);
-        assert player != null;
-        player.sendSystemMessage(text);
+        if (player != null)
+            player.sendSystemMessage(text);
+        else
+            System.err.println("sendDebugMsg failed: player is null");
     }
 }

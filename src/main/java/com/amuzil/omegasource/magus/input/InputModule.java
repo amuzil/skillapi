@@ -88,6 +88,7 @@ public abstract class InputModule {
         resetKeys();
         unRegisterInputs();
         activeConditions.clear();
+        formsTree.deactivateAllConditions();
     }
 
     public abstract void registerListeners();

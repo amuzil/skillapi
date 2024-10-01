@@ -132,10 +132,11 @@ public class ServerEvents {
 
     @SubscribeEvent
     public static void OnPlayerLeaveWorld(EntityLeaveLevelEvent event) {
-        if (event.getLevel().isClientSide() && event.getEntity() instanceof Player) {
+        if (event.getLevel().isClientSide()) {
             Magus.keyboardInputModule.terminate();
             Magus.mouseInputModule.terminate();
             Magus.mouseMotionModule.terminate();
+
         }
     }
 }
