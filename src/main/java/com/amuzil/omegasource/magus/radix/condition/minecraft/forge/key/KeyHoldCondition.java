@@ -128,8 +128,8 @@ public class KeyHoldCondition extends Condition {
         } else if (!(obj instanceof KeyHoldCondition other)) {
             return false;
         } else {
-            System.out.println("this: stored in tree -> " + this);
-            System.out.println("other: activeCondition from user input -> " + other);
+//            System.out.println("this: stored in tree -> " + this);
+//            System.out.println("other: activeCondition from user input -> " + other);
             return Objects.equals(key, other.getKey()) &&
                     /* Makes sure an alternative key condition that's been pressed has been pressed at least as long
                     * as the currently compared condition. */

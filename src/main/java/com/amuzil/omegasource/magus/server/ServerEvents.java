@@ -119,7 +119,9 @@ public class ServerEvents {
                 Magus.mouseMotionModule.terminate();
                 InputModule.resetFormsTree();
                 AvatarFormRegistry.registerForms();
+                System.out.println("All RadixTree Forms Conditions:");
                 Magus.keyboardInputModule.getFormsTree().printAllConditions();
+                System.out.println("All RadixTree Branches:");
                 Magus.keyboardInputModule.getFormsTree().printAllBranches();
                 Magus.keyboardInputModule.init();
                 Magus.mouseInputModule.init();
@@ -130,7 +132,8 @@ public class ServerEvents {
 
     @SubscribeEvent
     public static void OnPlayerLeaveWorld(EntityLeaveLevelEvent event) {
-        if (event.getLevel().isClientSide() && event.getEntity() instanceof Player) {
+        if (event.getEntity() instanceof Player) {
+            Magus.keyboardInputModule.getFormsTree().deactivateAllConditions();
             Magus.keyboardInputModule.terminate();
             Magus.mouseInputModule.terminate();
             Magus.mouseMotionModule.terminate();
