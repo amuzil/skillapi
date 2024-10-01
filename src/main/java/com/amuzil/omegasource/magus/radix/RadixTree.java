@@ -111,7 +111,7 @@ public class RadixTree {
                 break;
             }
 
-            int splitIndex = getFirstMismatchCondition(currCondition, currentBranch.path.conditions);
+            int splitIndex = getFirstMismatchCondition(currCondition, currentBranch.path.conditions); // uses equals
             if (splitIndex == NO_MISMATCH) {
                 // The branch and leftover conditions are the same length
                 // so finish and update the next node as a complete node
@@ -159,12 +159,12 @@ public class RadixTree {
         int currIndex = 0;
         while (currIndex < conditions.size()) {
             Condition currentCondition = conditions.get(currIndex);
-            RadixBranch branch = current.getTransition(currentCondition);
+            RadixBranch branch = current.getTransition(currentCondition); // uses hashcode
 //            RadixBranch branch = current.getMatchedPath(currentCondition);
             if (branch == null) return null;
 
             List<Condition> currSubCondition = conditions.subList(currIndex, conditions.size());
-            if (!Condition.startsWith(currSubCondition, branch.path.conditions)) return null;
+            if (!Condition.startsWith(currSubCondition, branch.path.conditions)) return null; // uses equals
 
             currIndex += branch.path.conditions.size();
             current = branch.next;
