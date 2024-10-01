@@ -48,6 +48,18 @@ public class RadixTree {
         }
     }
 
+    private void activateAllConditions() {
+        activateAllConditions(root, new ArrayList<>());
+    }
+
+    private void activateAllConditions(Node current, List<Condition> result) {
+        if (current.isComplete) for (Condition condition : result)
+            condition.register();
+
+        for (RadixBranch branch : current.branches.values())
+            activateAllConditions(branch.next, Stream.concat(result.stream(), branch.path.conditions.stream()).toList());
+    }
+
     private void deactivateAllConditions() {
         deactivateAllConditions(root, new ArrayList<>());
     }
@@ -147,9 +159,10 @@ public class RadixTree {
         }
 
         // Only register immediate children conditions
-        deactivateAllConditions();
-        for (Condition condition : root.getImmediateBranches())
-            condition.register();
+//        deactivateAllConditions();
+//        for (Condition condition : root.getImmediateBranches())
+//            condition.register();
+        activateAllConditions();
     }
 
     // Returns matched condition path if found and null if not found - O(n)

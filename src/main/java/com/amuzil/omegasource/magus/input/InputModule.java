@@ -87,6 +87,7 @@ public abstract class InputModule {
     public void terminate() {
         resetKeys();
         unRegisterInputs();
+        activeConditions.clear();
     }
 
     public abstract void registerListeners();
