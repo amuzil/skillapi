@@ -75,7 +75,7 @@ public class KeyHoldCondition extends Condition {
                     }
                 }
                 // If the duration is <= 3, then we want the Condition to act as a key press, rather than a hold.
-//
+
                 if (this.started) {
                     // Timeout of -1 means that this should wait forever.
                     if (timeout > -1 && this.currentTotal >= timeout) {
