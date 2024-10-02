@@ -145,18 +145,20 @@ public class KeyHoldCondition extends Condition {
     @Override
     public void register() {
         super.register();
+        active = true;
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ClientTickEvent.class,
                 clientTickListener);
     }
 
     @Override
     public void unregister() {
+        active = false;
         MinecraftForge.EVENT_BUS.unregister(clientTickListener);
     }
 
     @Override
     public String toString() {
-        return String.format("%s[ %s, key=%s, held=%d, d=%d, t=%d, r=%b ]", this.getClass().getSimpleName(), name(),
+        return String.format("%s[ active=%b, key=%s, held=%d, d=%d, t=%d, r=%b ]", this.getClass().getSimpleName(), active,
                 key, currentHolding, duration, timeout, release);
     }
 }

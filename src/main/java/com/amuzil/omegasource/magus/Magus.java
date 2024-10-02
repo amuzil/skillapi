@@ -9,12 +9,14 @@ import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
+import com.amuzil.omegasource.magus.skill.test.avatar.AvatarCommand;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.*;
@@ -90,9 +92,10 @@ public class Magus {
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
-    public void onServerStarting(FMLDedicatedServerSetupEvent event) {
+    public void onServerStarting(ServerStartingEvent event) {
         // do something when the server starts
         LOGGER.info("HELLO from server starting");
+        AvatarCommand.register(event.getServer().getCommands().getDispatcher());
     }
 
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD

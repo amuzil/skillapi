@@ -16,6 +16,7 @@ public abstract class Condition {
 	protected static final Runnable NO_OPERATION = () -> RadixUtil.getLogger().debug("Result: No Operation");
 
 	protected String name;
+	protected boolean active = false;
 	protected Runnable onSuccess;
 	protected Runnable onFailure;
 
