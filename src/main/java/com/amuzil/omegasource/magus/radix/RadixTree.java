@@ -19,7 +19,7 @@ public class RadixTree {
     private Node active;
     private Condition lastActivated = null;
     // Fire is a test
-    private Discipline activeDiscipline = null; //Disciplines.FIRE;
+    private Discipline activeDiscipline = null; // Disciplines.FIRE;
     private ConditionPath path;
     private Entity owner;
     private Side side = Side.COMMON;
@@ -81,6 +81,12 @@ public class RadixTree {
 
         for (RadixBranch branch : current.branches.values())
             deactivateAllConditions(branch.next, Stream.concat(result.stream(), branch.path.conditions.stream()).toList());
+    }
+
+    public void resetTree() {
+        deactivateAllConditions();
+        for (Condition condition : root.getImmediateBranches())
+            condition.register();
     }
 
     // Helpful method to debug and to see all the conditions
@@ -170,9 +176,7 @@ public class RadixTree {
         }
 
         // Only register immediate children conditions
-//        deactivateAllConditions();
-//        for (Condition condition : root.getImmediateBranches())
-//            condition.register();
+        resetTree();
 //        activateAllConditions();
     }
 
@@ -187,8 +191,16 @@ public class RadixTree {
 //            RadixBranch branch = current.getMatchedPath(currentCondition);
             if (branch == null) return null;
 
+            if (!branch.path.conditions.isEmpty()) { // Move down logic
+                branch.path.conditions.get(0).unregister(); // Stop listening to current condition
+                for (Condition condition: branch.next.branches.keySet()) {
+                    condition.register(); // Start listening to next child conditions
+                }
+            }
+
             List<Condition> currSubCondition = conditions.subList(currIndex, conditions.size());
-            if (!Condition.startsWith(currSubCondition, branch.path.conditions)) return null; // uses equals
+            if (!Condition.startsWith(currSubCondition, branch.path.conditions))
+                return null; // uses equals
 
             currIndex += branch.path.conditions.size();
             current = branch.next;
