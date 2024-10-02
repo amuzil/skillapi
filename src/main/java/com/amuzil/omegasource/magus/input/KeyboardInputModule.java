@@ -190,15 +190,22 @@ public class KeyboardInputModule extends InputModule {
             });
         }
         // And if the list has multiple conditions that won't all necessarily fail....
-//        if (!formCondition.isEmpty()) {
-//            Condition lastCondition = formCondition.get(formCondition.size() - 1);
-//            Runnable failure = lastCondition.onFailure();
-//            lastCondition.register(lastCondition.name(), lastCondition.onSuccess(), () -> {
-//                if (failure != null)
-//                    failure.run();
-//                activeConditions.removeAll(formCondition);
-//            });
-//        }
+        if (!formCondition.isEmpty()) {
+            Condition lastCondition = formCondition.get(formCondition.size() - 1);
+            Runnable failure = lastCondition.onFailure();
+            Runnable success = lastCondition.onSuccess();
+            lastCondition.register(lastCondition.name(), () -> {
+                if (success != null)
+                    success.run();
+                // Then add the form to a linked list
+                if (!activeForms.contains(formToExecute))
+                    activeForms.add(formToExecute);
+            }, () -> {
+                if (failure != null)
+                    failure.run();
+                activeConditions.removeAll(formCondition);
+            });
+        }
 
         ConditionPath path = formToExecute.createPath(updatedConditions);
         System.out.println("Inserting " + formToExecute.name().toUpperCase() + " into tree with Conditions: " + formCondition + " | Inputs: " + formExecutionInputs);

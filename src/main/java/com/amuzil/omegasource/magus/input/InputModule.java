@@ -21,6 +21,7 @@ import java.util.*;
 public abstract class InputModule {
     protected static RadixTree formsTree = new RadixTree(RadixTree.Side.CLIENT);
     protected static LinkedList<Condition> activeConditions = new LinkedList<>();
+    protected static LinkedList<Form> activeForms = new LinkedList<>();
     protected static final List<Form> activeFormInputs = new ArrayList<>();
     protected final Map<Condition, Form> formInputs = new HashMap<>();
     protected final List<ModifierListener> modifierListeners = new ArrayList<>();
