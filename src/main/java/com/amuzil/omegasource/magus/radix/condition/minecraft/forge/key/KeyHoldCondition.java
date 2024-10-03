@@ -54,37 +54,46 @@ public class KeyHoldCondition extends Condition {
         this.clientTickListener = event -> {
             if (event.phase == ClientTickEvent.Phase.START && Minecraft.getInstance().getOverlay() == null) {
                 if (Magus.keyboardInputModule.keyPressed(key) || Magus.mouseInputModule.keyPressed(key)) {
-                    this.started = true;
                     this.currentHolding++;
                     if (pressed(this.currentHolding, duration)) {
 //                    // If the Condition doesn't require the key being released....
-                        if (!release) {
+                        if (!started) {
+                            this.started = true;
                             this.onSuccess.run();
                         }
                     }
                 } else {
-                    if (pressed(this.currentHolding, duration)) {
-                        // If the Condition requires the key being released....
-                        if (release) {
-                            this.onSuccess.run();
-                        }
-                    } else {
-                        // Not held for long enough
-                        if (this.currentHolding > 0) {
-                            this.onFailure.run();
-                        }
+                    if (started) {
+                        this.onSuccess.run();
+                        this.started = false;
                     }
+//                    if (pressed(this.currentHolding, duration)) {
+//                        // If the Condition requires the key being released....
+//                        if (release) {
+//                            this.onSuccess.run();
+//                        }
+//                    }
+//                    if (started) {
+//                        started = false;
+//                        this.onFailure.run();
+//                    }
+//                    else {
+//                        // Not held for long enough
+//                        if (this.currentHolding > 0) {
+//                            this.onFailure.run();
+//                        }
+//                    }
                 }
                 // If the duration is <= 3, then we want the Condition to act as a key press, rather than a hold.
 
-                if (this.started) {
-                    // Timeout of -1 means that this should wait forever.
-                    if (timeout > -1 && this.currentTotal >= timeout) {
-                        RadixUtil.getLogger().warn("Condition is failing. " + this);
-                        this.onFailure.run();
-                    }
-                    this.currentTotal++;
-                }
+//                if (this.started) {
+//                    // Timeout of -1 means that this should wait forever.
+//                    if (timeout > -1 && this.currentTotal >= timeout) {
+//                        RadixUtil.getLogger().warn("Condition is failing. " + this);
+//                        this.onFailure.run();
+//                    }
+//                    this.currentTotal++;
+//                }
 
             }
         };
@@ -146,15 +155,15 @@ public class KeyHoldCondition extends Condition {
     @Override
     public void register() {
         super.register();
-        active = true;
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ClientTickEvent.class,
                 clientTickListener);
+        active = true;
     }
 
     @Override
     public void unregister() {
-        active = false;
         MinecraftForge.EVENT_BUS.unregister(clientTickListener);
+        active = false;
     }
 
     @Override

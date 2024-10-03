@@ -1,6 +1,8 @@
 package com.amuzil.omegasource.magus.radix;
 
 
+import java.util.List;
+
 public class RadixBranch {
     // Class that represents a valid condition path leading from a previous Node and stores the Condition(s)
 
@@ -14,6 +16,10 @@ public class RadixBranch {
     public RadixBranch(ConditionPath path, Node next) {
         this.path = path;
         this.next = next;
+     }
+
+     public List<Condition> conditions() {
+        return path.conditions;
      }
 
     @Override

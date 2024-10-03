@@ -43,6 +43,10 @@ public class RadixTree {
         this(new Node(false));
     }
 
+    public Node getRoot() {
+        return root;
+    }
+
     private int getFirstMismatchCondition(List<Condition> conditions, List<Condition> edgeCondition) {
         int LENGTH = Math.min(conditions.size(), edgeCondition.size());
         for (int i = 1; i < LENGTH; i++) {
@@ -53,7 +57,7 @@ public class RadixTree {
         return NO_MISMATCH;
     }
 
-    private void activateBranchConditions(List<Condition> conditions) {
+    public static void registerConditions(List<Condition> conditions) {
         for (Condition condition : conditions) {
             condition.register();
         }
@@ -114,9 +118,16 @@ public class RadixTree {
             else System.out.println(indent.replace("+", "|") + branch.path);
             int length1 = indent.length() / 2 == 0 ? 4 : indent.length() / 2;
             int length2 = branch.path.toString().length() / 3;
-            String oldIndent = new String(new char[length1]).replace("\0", " ");
-            String lineIndent = new String(new char[length2]).replace("\0", "-");
-            String newIndent = oldIndent + "+" + lineIndent + "->";
+            String lineIndent = new String(new char[length2]).replace("\0", "─");
+            String oldIndent, newIndent;
+            if (i != lastValue) {
+                length1 = length1 - 4;
+                oldIndent = new String(new char[length1]).replace("\0", " ");
+                newIndent = "    |" + oldIndent + "+" + lineIndent + "─>";
+            } else {
+                oldIndent = new String(new char[length1]).replace("\0", " ");
+                newIndent = oldIndent + "+" + lineIndent + "─>";
+            }
             i++;
             printAllBranches(branch.next, newIndent);
         }

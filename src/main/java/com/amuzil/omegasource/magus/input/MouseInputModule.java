@@ -5,6 +5,7 @@ import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.ConditionPath;
+import com.amuzil.omegasource.magus.radix.Node;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
@@ -100,7 +101,7 @@ public class MouseInputModule extends InputModule {
                     lastActivatedForm = activeForm;
                     activeForm = new Form();
                     ticksSinceActivated = 0;
-                    activeConditions.clear();
+//                    activeConditions.clear();
                 }
             }
             else {
@@ -108,7 +109,7 @@ public class MouseInputModule extends InputModule {
                 if (ticksSinceActivated >= tickTimeoutThreshold) {
                     lastActivatedForm = null;
                     ticksSinceActivated = 0;
-                    activeConditions.clear();
+//                    activeConditions.clear();
                 }
             }
         };
@@ -196,6 +197,11 @@ public class MouseInputModule extends InputModule {
 //        } else {
 //            //todo errors/logging
 //        }
+
+    }
+
+    @Override
+    public void registerRunnables(Node current) {
 
     }
 

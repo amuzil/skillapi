@@ -5,6 +5,7 @@ import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.ConditionPath;
+import com.amuzil.omegasource.magus.radix.Node;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.conditionals.mouse.MousePointInput;
 import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseVircle;
@@ -128,6 +129,11 @@ public class MouseMotionModule extends InputModule {
 //        } else {
 //            //todo errors/logging
 //        }
+    }
+
+    @Override
+    public void registerRunnables(Node current) {
+
     }
 
     @Override

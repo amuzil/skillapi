@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.input;
 
 import com.amuzil.omegasource.magus.radix.Condition;
+import com.amuzil.omegasource.magus.radix.Node;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.EventCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
@@ -98,6 +99,12 @@ public abstract class InputModule {
         unRegisterInputs();
         activeConditions.clear();
     }
+
+    public void registerRunnables(RadixTree tree) {
+        registerRunnables(tree.getRoot());
+    }
+
+    public abstract void registerRunnables(Node current);
 
     public abstract void registerListeners();
 

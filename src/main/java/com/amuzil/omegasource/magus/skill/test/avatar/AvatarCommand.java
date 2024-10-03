@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.skill.test.avatar;
 
 import com.amuzil.omegasource.magus.Magus;
+import com.amuzil.omegasource.magus.input.InputModule;
 import com.amuzil.omegasource.magus.input.KeyboardInputModule;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -48,9 +49,13 @@ public class AvatarCommand {
     }
 
     private static int reset() {
-        Magus.keyboardInputModule.getFormsTree().resetTree();
-        Magus.keyboardInputModule.getActiveConditions().clear();
-        Magus.sendDebugMsg("Reset Forms RadixTree & Active Conditions");
+        KeyboardInputModule kim = (KeyboardInputModule) Magus.keyboardInputModule;
+        kim.getFormsTree().resetTree();
+        kim.getActiveConditions().clear();
+        InputModule.resetFormsTree();
+        AvatarFormRegistry.registerForms();
+        kim.registerRunnables(Magus.keyboardInputModule.getFormsTree());
+        Magus.sendDebugMsg("Reset Forms RadixTree");
         return 1;
     }
 }
