@@ -71,6 +71,10 @@ public abstract class Condition {
 
 	public void reset() {}
 
+	public boolean getActiveStatus() {
+		return active;
+	}
+
 	public static boolean startsWith(List<Condition> conditions, List<Condition> subConditions) {
 		try {
 			return conditions.subList(0, subConditions.size()).equals(subConditions);

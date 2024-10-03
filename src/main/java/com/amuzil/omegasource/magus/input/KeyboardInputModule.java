@@ -39,6 +39,8 @@ public class KeyboardInputModule extends InputModule {
     private int timeout = 0;
     private boolean listen;
     private boolean checkForm = false;
+    public List<Condition> testConditions;
+    public int testKey = 68;
 
     // TODO: Fix this such that any tree requiring a form relies on the input
     // module activating a form rather than relying on the raw input data for those forms.
@@ -52,7 +54,8 @@ public class KeyboardInputModule extends InputModule {
         this.listen = true;
         this.keyboardListener = keyboardEvent -> {
             int keyPressed = keyboardEvent.getKey();
-            // Get the Conditions list if one already exists for that key
+            // NOTE: Minecraft's InputEvent.Key can only listen to the action InputConstants.REPEAT of one key at a time
+            // tldr: it only fires the repeat event for the last key
 
             switch (keyboardEvent.getAction()) {
                 case InputConstants.PRESS, InputConstants.REPEAT -> {

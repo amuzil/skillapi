@@ -1,8 +1,9 @@
 package com.amuzil.omegasource.magus.skill.test.avatar;
 
 import com.amuzil.omegasource.magus.Magus;
+import com.amuzil.omegasource.magus.input.KeyboardInputModule;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
@@ -11,26 +12,28 @@ public class AvatarCommand {
     // Class for registering the '/gesture' command
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("avatar")
-                .then(Commands.literal("record")
-                        .then(Commands.argument("value", BoolArgumentType.bool())
-                                .executes(c -> record(BoolArgumentType.getBool(c, "value")))
+                .then(Commands.literal("key")
+                        .then(Commands.argument("value", IntegerArgumentType.integer())
+                                .executes(c -> key(IntegerArgumentType.getInteger(c, "value")))
                         )
                         .executes(c -> record())
                 )
                 .then(Commands.literal("tree")
+                        .then(Commands.literal("reset")
+                                .executes(c -> reset())
+                        )
                         .executes(c -> tree())
                 )
-                .then(Commands.literal("save")
-                        .executes(c -> save())
-                )
                 .executes(c -> {
-                    Magus.sendDebugMsg("Possible modes: record, tree, save");
+                    Magus.sendDebugMsg("Possible modes: record, tree, reset");
                     return 1;
                 })
         );
     }
 
-    private static int record(boolean mode) {
+    private static int key(int keyValue) {
+        KeyboardInputModule kim = (KeyboardInputModule) Magus.keyboardInputModule;
+        kim.testKey = keyValue;
         return 1;
     }
 
@@ -43,7 +46,9 @@ public class AvatarCommand {
         return 1;
     }
 
-    private static int save() {
+    private static int reset() {
+        Magus.keyboardInputModule.getFormsTree().resetTree();
+        Magus.sendDebugMsg("Reset Forms RadixTree");
         return 1;
     }
 }

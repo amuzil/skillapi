@@ -4,6 +4,7 @@ import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.amuzil.omegasource.magus.skill.conditionals.mouse.MousePointInput;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -159,6 +160,7 @@ public class KeyHoldCondition extends Condition {
     @Override
     public String toString() {
         return String.format("%s[ active=%b, key=%s, held=%d, d=%d, t=%d, r=%b ]", this.getClass().getSimpleName(), active,
-                key, currentHolding, duration, timeout, release);
+                InputConstants.getKey(key, -1).getName().replace("key.", ""),
+                currentHolding, duration, timeout, release);
     }
 }
