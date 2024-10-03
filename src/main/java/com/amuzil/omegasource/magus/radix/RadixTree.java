@@ -191,12 +191,12 @@ public class RadixTree {
 //            RadixBranch branch = current.getMatchedPath(currentCondition);
             if (branch == null) return null;
 
-            if (!branch.path.conditions.isEmpty()) { // Move down logic
-                branch.path.conditions.get(0).unregister(); // Stop listening to current condition
-                for (Condition condition: branch.next.branches.keySet()) {
-                    condition.register(); // Start listening to next child conditions
-                }
-            }
+//            if (!branch.path.conditions.isEmpty()) { // Move down logic
+//                branch.path.conditions.get(0).unregister(); // Stop listening to current condition
+//                for (Condition condition: branch.next.branches.keySet()) {
+//                    condition.register(); // Start listening to next child conditions
+//                }
+//            }
 
             List<Condition> currSubCondition = conditions.subList(currIndex, conditions.size());
             if (!Condition.startsWith(currSubCondition, branch.path.conditions))
