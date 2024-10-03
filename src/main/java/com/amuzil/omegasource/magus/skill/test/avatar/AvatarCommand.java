@@ -43,12 +43,14 @@ public class AvatarCommand {
 
     private static int tree() {
         Magus.keyboardInputModule.getFormsTree().printAllBranches();
+        System.out.println("Current Active Forms: " + Magus.keyboardInputModule.getActiveConditions());
         return 1;
     }
 
     private static int reset() {
         Magus.keyboardInputModule.getFormsTree().resetTree();
-        Magus.sendDebugMsg("Reset Forms RadixTree");
+        Magus.keyboardInputModule.getActiveConditions().clear();
+        Magus.sendDebugMsg("Reset Forms RadixTree & Active Conditions");
         return 1;
     }
 }

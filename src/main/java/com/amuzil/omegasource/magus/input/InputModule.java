@@ -76,6 +76,10 @@ public abstract class InputModule {
         return formsTree;
     }
 
+    public List<Condition> getActiveConditions() {
+        return activeConditions;
+    }
+
     public static void resetFormsTree() {
         FormDataRegistry.init(); // Re-initialize formData since it's a static field
         formsTree = new RadixTree();
@@ -110,4 +114,6 @@ public abstract class InputModule {
     public abstract void resetKeys();
 
     public abstract boolean keyPressed(int key);
+
+
 }
