@@ -225,11 +225,19 @@ public class KeyboardInputModule extends InputModule {
         for (RadixBranch branch : current.branches.values()) {
             if (!branch.next.branches.keySet().isEmpty())
                 System.out.println(branch.conditions() + " | THE KIDS: " + branch.next.branches.keySet());
-            for (Condition condition:  branch.conditions()) {
+            for (int i=0; i < branch.conditions().size(); i++) {
+                Condition condition = branch.conditions().get(i);
+                Condition nextCondition;
+                if (i+1 < branch.conditions().size())
+                    nextCondition = branch.conditions().get(i+1);
+                else
+                    nextCondition = null;
                 Runnable onSuccess = () -> {
                     if (!activeConditions.contains(condition)) {
                         activeConditions.add(condition);
                         condition.unregister(); // unregister parent to give child nodes a shot to be heard
+                        if (nextCondition != null)
+                            nextCondition.register(); // register next condition in the path if it exists
                         List<Condition> childConditions = branch.next.branches.keySet().stream().toList();
                         RadixTree.registerConditions(childConditions);
                     }
