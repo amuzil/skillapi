@@ -25,7 +25,7 @@ public class AvatarFormRegistry {
         KeyInput right = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyUse.getKey(), 0);
         KeyInput initializer = KeyDataBuilder.createInput("key.keyboard.left.alt", 0);
         KeyInput held = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyShift.getKey(), 20);
-        KeyInput sneak = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyShift.getKey(), 0, 20);
+        KeyInput sneak = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyShift.getKey(), 16);
         MouseWheelInput forwards = MouseDataBuilder.createWheelInput(MouseDataBuilder.Direction.FORWARDS, 1);
         MouseWheelInput back = MouseDataBuilder.createWheelInput(MouseDataBuilder.Direction.BACK, 1);
 
@@ -69,9 +69,9 @@ public class AvatarFormRegistry {
             KeyInput first, second;
 
             // key.right is 68
-            first = KeyDataBuilder.createInput(key.getValue(), 0, 20);
+            first = KeyDataBuilder.createInput(key.getValue(), true,0);
             // Has to be a relatively quick input.
-            second = KeyDataBuilder.createInput(key.getValue(), true, 0);
+            second = KeyDataBuilder.createInput(key.getValue(), 0, 15);
             inputs.add(first);
             inputs.add(second);
             FormDataRegistry.registerForm(inputs, Forms.STEP, RadixTree.InputType.KEYBOARD);

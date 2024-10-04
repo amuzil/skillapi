@@ -28,9 +28,11 @@ public class KeyboardInputModule extends InputModule {
     private final Consumer<InputEvent.Key> keyboardListener;
     private final Consumer<TickEvent> tickEventConsumer;
     //todo make these thresholds configurable and make them longer. Especially the timeout threshold.
-    private final int tickActivationThreshold = 5;
-    private final int tickTimeoutThreshold = 100;
+    private final int tickActivationThreshold = 15;
+    private final int tickTimeoutThreshold = 60;
     private final int modifierTickThreshold = 10;
+    public List<Condition> testConditions;
+    public int testKey = 68;
     Minecraft mc = Minecraft.getInstance();
     private List<Integer> glfwKeysDown;
     private Form activeForm = null;
@@ -39,8 +41,6 @@ public class KeyboardInputModule extends InputModule {
     private int timeout = 0;
     private boolean listen;
     private boolean checkForm = false;
-    public List<Condition> testConditions;
-    public int testKey = 68;
 
     // TODO: Fix this such that any tree requiring a form relies on the input
     // module activating a form rather than relying on the raw input data for those forms.
@@ -83,25 +83,26 @@ public class KeyboardInputModule extends InputModule {
 
             // Every tick... Yay...
             // Needed so that key releases actually work.
-//            if (checkForm) {
-//                checkForForm();
-//                checkForm = false;
-//            }
+            if (checkForm) {
+                checkForForm();
+                checkForm = false;
+            }
 
-//            if (activeForm != null && activeForm.name() != null) {
-//                ticksSinceActivated++;
-//                if (ticksSinceActivated >= tickActivationThreshold) {
-////                    if (lastActivatedForm != null)
-////                        LogManager.getLogger().info("LAST FORM ACTIVATED: " + lastActivatedForm.name() + " | FORM ACTIVATED: " + activeForm.name());
-////                    else LogManager.getLogger().info("FORM ACTIVATED: " + activeForm.name());
-////                    MagusNetwork.sendToServer(new ConditionActivatedPacket(activeForm));
-//                    lastActivatedForm = activeForm;
-//                    activeForm = null;
-//                    ticksSinceActivated = 0;
-//                    timeout = 0;
-//                    activeConditions.clear();
-//
-//                }
+            if (activeForm != null && activeForm.name() != null) {
+                ticksSinceActivated++;
+                if (ticksSinceActivated >= tickActivationThreshold) {
+//                    if (lastActivatedForm != null)
+//                        LogManager.getLogger().info("LAST FORM ACTIVATED: " + lastActivatedForm.name() + " | FORM ACTIVATED: " + activeForm.name());
+//                    else LogManager.getLogger().info("FORM ACTIVATED: " + activeForm.name());
+//                    MagusNetwork.sendToServer(new ConditionActivatedPacket(activeForm));
+                    lastActivatedForm = activeForm;
+                    activeForm = null;
+                    ticksSinceActivated = 0;
+                    timeout = 0;
+                    resetConditions();
+
+                }
+            }
 
 //            } else {
 //                timeout++;
@@ -116,15 +117,23 @@ public class KeyboardInputModule extends InputModule {
 //                }
 //            }
             //else {
-                ticksSinceActivated++;
-                if (ticksSinceActivated >= tickTimeoutThreshold) {
+            ticksSinceActivated++;
+            if (ticksSinceActivated >= tickTimeoutThreshold) {
 //                    System.out.println("RESET STATE!");
-                    lastActivatedForm = null;
-                    activeConditions.clear();
-                    formsTree.resetTree();
-                    ticksSinceActivated = 0;
-                }
+                lastActivatedForm = null;
+                resetConditions();
+                formsTree.resetTree();
+                ticksSinceActivated = 0;
+            }
         };
+    }
+
+    public void resetConditions() {
+        if (!activeConditions.isEmpty()) {
+            for (Condition condition : activeConditions)
+                condition.reset();
+            activeConditions.clear();
+        }
     }
 
     public static void determineMotionKeys() {
@@ -150,7 +159,7 @@ public class KeyboardInputModule extends InputModule {
             List<Condition> conditions = activeConditions.stream().toList();
             List<Condition> recognized = formsTree.search(conditions);
             if (recognized != null) {
-//                activeConditions.clear(); formsTree.resetTree();
+                resetConditions();
                 activeForm = FormDataRegistry.formsNamespace.get(recognized.hashCode());
                 System.out.println("RECOGNIZED FORM: " + activeForm.name() + " " + recognized);
                 Magus.sendDebugMsg("RECOGNIZED FORM: " + activeForm.name());
@@ -184,22 +193,19 @@ public class KeyboardInputModule extends InputModule {
     @Override
     public void registerInputData(List<InputData> formExecutionInputs, Form formToExecute, List<Condition> formCondition) {
         List<Condition> updatedConditions = formCondition.stream().toList();
-        for (int i=0; i < updatedConditions.size(); i++) {
+        for (int i = 0; i < updatedConditions.size(); i++) {
             Condition condition = updatedConditions.get(i);
             Condition nextCondition;
-            if (i+1 < updatedConditions.size())
-                nextCondition = updatedConditions.get(i+1);
-            else
-                nextCondition = null;
+            if (i + 1 < updatedConditions.size()) nextCondition = updatedConditions.get(i + 1);
+            else nextCondition = null;
             condition.register(condition.name(), () -> {
                 if (!activeConditions.contains(condition)) {
                     activeConditions.add(condition);
                     condition.unregister();
-                    if (nextCondition != null)
-                        nextCondition.register();
+                    if (nextCondition != null) nextCondition.register();
                 }
-                this.timeout = 0;
                 condition.reset();
+                this.timeout = 0;
             }, () -> {
                 activeConditions.remove(condition);
                 condition.reset();
@@ -211,8 +217,7 @@ public class KeyboardInputModule extends InputModule {
         formsTree.insert(path.conditions);
         registerRunnables(formsTree);
         if (formCondition.get(0) instanceof KeyHoldCondition keyCondition)
-            if (keyCondition.getKey() == testKey)
-                testConditions = updatedConditions;
+            if (keyCondition.getKey() == testKey) testConditions = updatedConditions;
 
     }
 
@@ -222,35 +227,34 @@ public class KeyboardInputModule extends InputModule {
 
     @Override
     public void registerRunnables(Node current) {
-        for (RadixBranch branch : current.branches.values()) {
-            if (!branch.next.branches.keySet().isEmpty())
-                System.out.println(branch.conditions() + " | THE KIDS: " + branch.next.branches.keySet());
-            for (int i=0; i < branch.conditions().size(); i++) {
-                Condition condition = branch.conditions().get(i);
-                Condition nextCondition;
-                if (i+1 < branch.conditions().size())
-                    nextCondition = branch.conditions().get(i+1);
-                else
-                    nextCondition = null;
-                Runnable onSuccess = () -> {
-                    if (!activeConditions.contains(condition)) {
-                        activeConditions.add(condition);
-                        condition.unregister(); // unregister parent to give child nodes a shot to be heard
-                        if (nextCondition != null)
-                            nextCondition.register(); // register next condition in the path if it exists
-                        List<Condition> childConditions = branch.next.branches.keySet().stream().toList();
-                        RadixTree.registerConditions(childConditions);
-                    }
-                    this.timeout = 0;
-                };
-                Runnable onFailure = () -> {
-                    activeConditions.remove(condition);
-                    condition.reset();
-                };
-                condition.register(condition.name(), onSuccess, onFailure);
-            }
-            registerRunnables(branch.next);
-        }
+//        for (RadixBranch branch : current.branches.values()) {
+//            if (!branch.next.branches.keySet().isEmpty())
+//                System.out.println(branch.conditions() + " | THE KIDS: " + branch.next.branches.keySet());
+//            for (int i = 0; i < branch.conditions().size(); i++) {
+//                Condition condition = branch.conditions().get(i);
+//                Condition nextCondition;
+//                if (i + 1 < branch.conditions().size()) nextCondition = branch.conditions().get(i + 1);
+//                else nextCondition = null;
+//                Runnable onSuccess = () -> {
+//                    if (!activeConditions.contains(condition)) {
+//                        activeConditions.add(condition);
+//                        condition.unregister(); // unregister parent to give child nodes a shot to be heard
+//                        if (nextCondition != null)
+//                            nextCondition.register(); // register next condition in the path if it exists
+//                        List<Condition> childConditions = branch.next.branches.keySet().stream().toList();
+//                        RadixTree.registerConditions(childConditions);
+//                    }
+//                    this.timeout = 0;
+//                    condition.reset();
+//                };
+//                Runnable onFailure = () -> {
+//                    activeConditions.remove(condition);
+//                    condition.reset();
+//                };
+//                condition.register(condition.name(), onSuccess, onFailure);
+//            }
+//            registerRunnables(branch.next);
+//        }
     }
 
     @Override
