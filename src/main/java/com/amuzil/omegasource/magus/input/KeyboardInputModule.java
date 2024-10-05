@@ -35,7 +35,7 @@ public class KeyboardInputModule extends InputModule {
     public int testKey = 68;
     Minecraft mc = Minecraft.getInstance();
     private List<Integer> glfwKeysDown;
-    private Form activeForm = null;
+    private Form activeForm, lastActivatedForm = null;
     private int ticksSinceActivated = 0;
     private int ticksSinceModifiersSent = 0;
     private int timeout = 0;
@@ -58,16 +58,16 @@ public class KeyboardInputModule extends InputModule {
             // tldr: it only fires the repeat event for the last key
 
             switch (keyboardEvent.getAction()) {
-                case InputConstants.PRESS -> {
+                case InputConstants.PRESS-> {
                     if (!glfwKeysDown.contains(keyPressed)) {
                         glfwKeysDown.add(keyPressed);
-                        checkForForm();
+//                        checkForForm();
                     }
                 }
                 case InputConstants.RELEASE -> {
                     if (glfwKeysDown.contains(keyPressed)) {
                         glfwKeysDown.remove((Integer) keyPressed);
-                        checkForForm();
+//                        checkForForm();
                     }
                 }
             }
@@ -78,8 +78,6 @@ public class KeyboardInputModule extends InputModule {
             if (ticksSinceModifiersSent > modifierTickThreshold && !modifierQueue.isEmpty()) {
                 sendModifierData();
             }
-
-//            checkForForm();
 
             // Every tick... Yay...
             // Needed so that key releases actually work.
@@ -151,13 +149,13 @@ public class KeyboardInputModule extends InputModule {
     private void checkForForm() {
         if (!activeConditions.isEmpty()) {
             System.out.println("activeConditions KIM: " + activeConditions + " | " + glfwKeysDown);
+            List<Condition> conditions = activeConditions.stream().toList();
+            List<Condition> recognized = formsTree.search(conditions);
             System.out.println("FOUND STEP D FORM: " + formsTree.search(testConditions));
 //            System.out.println("STEP SNEAK FORM: " + testConditions);
 //            testConditions.forEach(condition -> System.out.print(condition.getActiveStatus() + " "));
 //            System.out.println();
 //            formsTree.printAllConditions();
-            List<Condition> conditions = activeConditions.stream().toList();
-            List<Condition> recognized = formsTree.search(conditions);
             if (recognized != null) {
                 resetConditions();
                 activeForm = FormDataRegistry.formsNamespace.get(recognized.hashCode());
@@ -165,6 +163,15 @@ public class KeyboardInputModule extends InputModule {
                 Magus.sendDebugMsg("RECOGNIZED FORM: " + activeForm.name());
             }
         }
+
+        if (ticksSinceActivated >= tickTimeoutThreshold) {
+            lastActivatedForm = null;
+            activeConditions.clear();
+            formsTree.resetTree();
+            ticksSinceActivated = 0;
+//            System.out.println("RESET");
+        }
+        ticksSinceActivated++;
     }
 
     private void sendModifierData() {
@@ -192,33 +199,33 @@ public class KeyboardInputModule extends InputModule {
 
     @Override
     public void registerInputData(List<InputData> formExecutionInputs, Form formToExecute, List<Condition> formCondition) {
-        List<Condition> updatedConditions = formCondition.stream().toList();
-        for (int i = 0; i < updatedConditions.size(); i++) {
-            Condition condition = updatedConditions.get(i);
-            Condition nextCondition;
-            if (i + 1 < updatedConditions.size()) nextCondition = updatedConditions.get(i + 1);
-            else nextCondition = null;
-            condition.register(condition.name(), () -> {
-                if (!activeConditions.contains(condition)) {
-                    activeConditions.add(condition);
-                    condition.unregister();
-                    if (nextCondition != null) nextCondition.register();
-                }
-                condition.reset();
-                this.timeout = 0;
-            }, () -> {
-                activeConditions.remove(condition);
-                condition.reset();
-            });
-        }
+//        List<Condition> updatedConditions = formCondition.stream().toList();
+//        for (int i = 0; i < updatedConditions.size(); i++) {
+//            Condition condition = updatedConditions.get(i);
+//            Condition nextCondition;
+//            if (i + 1 < updatedConditions.size()) nextCondition = updatedConditions.get(i + 1);
+//            else nextCondition = null;
+//            condition.register(condition.name(), () -> {
+//                if (!activeConditions.contains(condition)) {
+//                    activeConditions.add(condition);
+//                    condition.unregister();
+//                    if (nextCondition != null) nextCondition.register();
+//                }
+//                condition.reset();
+//                this.timeout = 0;
+//            }, () -> {
+//                activeConditions.remove(condition);
+//                condition.reset();
+//            });
+//        }
 
-        ConditionPath path = formToExecute.createPath(updatedConditions);
+        ConditionPath path = formToExecute.createPath(formCondition);
         System.out.println("Inserting " + formToExecute.name().toUpperCase() + " into tree with Conditions: " + formCondition + " | Inputs: " + formExecutionInputs);
         formsTree.insert(path.conditions);
         registerRunnables(formsTree);
         if (formCondition.get(0) instanceof KeyHoldCondition keyCondition)
-            if (keyCondition.getKey() == testKey) testConditions = updatedConditions;
-
+            if (keyCondition.getKey() == testKey)
+                testConditions = formCondition;
     }
 
     public void registerRunnables(RadixTree tree) {
@@ -227,34 +234,35 @@ public class KeyboardInputModule extends InputModule {
 
     @Override
     public void registerRunnables(Node current) {
-//        for (RadixBranch branch : current.branches.values()) {
-//            if (!branch.next.branches.keySet().isEmpty())
-//                System.out.println(branch.conditions() + " | THE KIDS: " + branch.next.branches.keySet());
-//            for (int i = 0; i < branch.conditions().size(); i++) {
-//                Condition condition = branch.conditions().get(i);
-//                Condition nextCondition;
-//                if (i + 1 < branch.conditions().size()) nextCondition = branch.conditions().get(i + 1);
-//                else nextCondition = null;
-//                Runnable onSuccess = () -> {
-//                    if (!activeConditions.contains(condition)) {
-//                        activeConditions.add(condition);
-//                        condition.unregister(); // unregister parent to give child nodes a shot to be heard
-//                        if (nextCondition != null)
-//                            nextCondition.register(); // register next condition in the path if it exists
-//                        List<Condition> childConditions = branch.next.branches.keySet().stream().toList();
-//                        RadixTree.registerConditions(childConditions);
-//                    }
-//                    this.timeout = 0;
-//                    condition.reset();
-//                };
-//                Runnable onFailure = () -> {
-//                    activeConditions.remove(condition);
-//                    condition.reset();
-//                };
-//                condition.register(condition.name(), onSuccess, onFailure);
-//            }
-//            registerRunnables(branch.next);
-//        }
+        for (RadixBranch branch : current.branches.values()) {
+            if (!branch.next.branches.keySet().isEmpty())
+                System.out.println(branch.conditions() + " | THE KIDS: " + branch.next.branches.keySet());
+            for (int i=0; i < branch.conditions().size(); i++) {
+                Condition condition = branch.conditions().get(i);
+                Condition nextCondition;
+                if (i+1 < branch.conditions().size())
+                    nextCondition = branch.conditions().get(i+1);
+                else
+                    nextCondition = null;
+                Runnable onSuccess = () -> {
+                    if (!activeConditions.contains(condition)) {
+                        activeConditions.add(condition);
+                        condition.unregister(); // unregister parent to give child nodes a shot to be heard
+                        if (nextCondition != null)
+                            nextCondition.register(); // register next condition in the path if it exists
+                        List<Condition> childConditions = branch.next.branches.keySet().stream().toList();
+                        RadixTree.registerConditions(childConditions); // register any next of kin if they exist
+                    }
+                    this.timeout = 0;
+                };
+                Runnable onFailure = () -> {
+                    activeConditions.remove(condition);
+                    condition.reset();
+                };
+                condition.register(condition.name(), onSuccess, onFailure);
+            }
+            registerRunnables(branch.next);
+        }
     }
 
     @Override
