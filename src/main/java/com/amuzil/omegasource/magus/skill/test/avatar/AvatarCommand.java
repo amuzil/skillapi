@@ -33,8 +33,6 @@ public class AvatarCommand {
     }
 
     private static int key(int keyValue) {
-        KeyboardInputModule kim = (KeyboardInputModule) Magus.keyboardInputModule;
-        kim.testKey = keyValue;
         return 1;
     }
 

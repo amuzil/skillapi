@@ -23,16 +23,15 @@ import java.util.function.Consumer;
 
 public class KeyboardInputModule extends InputModule {
 
-    private final Consumer<InputEvent.Key> keyboardListener;
     private final Consumer<TickEvent> tickEventConsumer;
+    private final Consumer<InputEvent.Key> keyboardListener;
     private final int tickActivationThreshold = 15;
     private final int tickTimeoutThreshold = 60;
     private final int modifierTickThreshold = 10;
-    public int testKey = 68;
-    private List<Integer> glfwKeysDown;
-    private Form activeForm, lastActivatedForm = null;
     private int ticksSinceActivated = 0;
     private int ticksSinceModifiersSent = 0;
+    private List<Integer> glfwKeysDown;
+    private Form activeForm;
     private int timeout = 0;
     private boolean listen;
     private boolean checkForm = false;
