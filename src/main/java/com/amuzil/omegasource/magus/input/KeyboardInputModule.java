@@ -201,6 +201,7 @@ public class KeyboardInputModule extends InputModule {
                 else nextCondition = null;
 
 
+                Runnable originalSuccess = condition.onSuccess();
                 Runnable onSuccess = () -> {
                     if (!activeConditions.contains(condition)) {
                         activeConditions.add(condition);
@@ -211,10 +212,16 @@ public class KeyboardInputModule extends InputModule {
                         RadixTree.registerConditions(childConditions); // register any next of kin if they exist
                     }
                     this.timeout = 0;
+                    if (originalSuccess != null)
+                        originalSuccess.run();
                 };
+
+                Runnable originalFailure = condition.onFailure();
                 Runnable onFailure = () -> {
                     activeConditions.remove(condition);
                     condition.reset();
+                    if (originalFailure != null)
+                        originalFailure.run();
                 };
                 condition.register(condition.name(), onSuccess, onFailure);
             }

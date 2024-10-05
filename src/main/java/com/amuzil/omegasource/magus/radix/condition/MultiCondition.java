@@ -77,12 +77,14 @@ public class MultiCondition extends Condition {
                     startedExecuting = true;
                     conditionsMet.put(id, true);
                     condition.unregister();
+                    condition.reset();
                 }
                 checkConditionMet();
             }, () -> {
                 synchronized (conditionsMet) {
                     conditionsMet.put(id, false);
                     condition.unregister();
+                    condition.reset();
                 }
                 checkConditionMet();
             });
