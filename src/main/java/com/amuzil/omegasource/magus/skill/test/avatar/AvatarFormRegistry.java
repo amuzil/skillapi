@@ -1,9 +1,7 @@
 package com.amuzil.omegasource.magus.skill.test.avatar;
 
-import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.input.KeyboardInputModule;
 import com.amuzil.omegasource.magus.radix.RadixTree;
-import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.conditionals.InputDataBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyDataBuilder;
@@ -15,7 +13,6 @@ import com.amuzil.omegasource.magus.skill.forms.Forms;
 import net.minecraft.client.Minecraft;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 public class AvatarFormRegistry {

@@ -4,7 +4,6 @@ import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.radix.*;
-import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.elements.Disciplines;
 import com.amuzil.omegasource.magus.skill.forms.Form;
@@ -58,7 +57,7 @@ public class KeyboardInputModule extends InputModule {
             // tldr: it only fires the repeat event for the last key
 
             switch (keyboardEvent.getAction()) {
-                case InputConstants.PRESS-> {
+                case InputConstants.PRESS -> {
                     if (!glfwKeysDown.contains(keyPressed)) {
                         glfwKeysDown.add(keyPressed);
 //                        checkForForm();
@@ -68,10 +67,12 @@ public class KeyboardInputModule extends InputModule {
                     if (glfwKeysDown.contains(keyPressed)) {
                         glfwKeysDown.remove((Integer) keyPressed);
 //                        checkForForm();
+                        checkForm = true;
                     }
                 }
             }
         };
+
 
         this.tickEventConsumer = tickEvent -> {
             ticksSinceModifiersSent++;
@@ -86,9 +87,17 @@ public class KeyboardInputModule extends InputModule {
                 checkForm = false;
             }
 
+            // Check every couple of ticks
+            if (ticksSinceActivated % (tickActivationThreshold - 1) == 0
+                    || timeout % tickActivationThreshold - 1 == 0)
+                checkForForm();
+
+//            if (timeout % 20 == 0)
+//                RadixUtil.getLogger().debug("Timeout: " + timeout);
             if (activeForm != null && activeForm.name() != null) {
                 ticksSinceActivated++;
                 if (ticksSinceActivated >= tickActivationThreshold) {
+                    ticksSinceActivated++;
 //                    if (lastActivatedForm != null)
 //                        LogManager.getLogger().info("LAST FORM ACTIVATED: " + lastActivatedForm.name() + " | FORM ACTIVATED: " + activeForm.name());
 //                    else LogManager.getLogger().info("FORM ACTIVATED: " + activeForm.name());
@@ -98,40 +107,30 @@ public class KeyboardInputModule extends InputModule {
                     ticksSinceActivated = 0;
                     timeout = 0;
                     resetConditions();
+                }
 
+            } else {
+                timeout++;
+                if (timeout > tickTimeoutThreshold) {
+                    if (!activeConditions.isEmpty()) {
+                        System.out.println("Resetting...");
+                        resetConditions();
+                        timeout = 0;
+                    }
                 }
             }
+//            resetConditions();
 
-//            } else {
-//                timeout++;
-//                if (timeout > tickTimeoutThreshold) {
-//                    if (!activeConditions.isEmpty()) {
-//                        System.out.println("Resetting...");
-//                        formsTree.resetTree();
-//                        activeConditions.clear();
-//                        lastActivatedForm = null;
-//                        timeout = 0;
-//                    }
-//                }
-//            }
             //else {
-            ticksSinceActivated++;
-            if (ticksSinceActivated >= tickTimeoutThreshold) {
-//                    System.out.println("RESET STATE!");
-                lastActivatedForm = null;
-                resetConditions();
-                formsTree.resetTree();
-                ticksSinceActivated = 0;
-            }
+//            ticksSinceActivated++;
+//            if (ticksSinceActivated >= tickTimeoutThreshold) {
+////                    System.out.println("RESET STATE!");
+//                lastActivatedForm = null;
+//                resetConditions();
+//                formsTree.resetTree();
+//                ticksSinceActivated = 0;
+//            }
         };
-    }
-
-    public void resetConditions() {
-        if (!activeConditions.isEmpty()) {
-            for (Condition condition : activeConditions)
-                condition.reset();
-            activeConditions.clear();
-        }
     }
 
     public static void determineMotionKeys() {
@@ -146,32 +145,31 @@ public class KeyboardInputModule extends InputModule {
         return movementKeys;
     }
 
+    public void resetConditions() {
+        if (!activeConditions.isEmpty()) {
+//            for (Condition condition : activeConditions)
+//                condition.reset();
+            activeConditions.clear();
+        }
+    }
+
     private void checkForForm() {
         if (!activeConditions.isEmpty()) {
-            System.out.println("activeConditions KIM: " + activeConditions + " | " + glfwKeysDown);
+//            System.out.println("activeConditions KIM: " + activeConditions + " | " + glfwKeysDown);
             List<Condition> conditions = activeConditions.stream().toList();
             List<Condition> recognized = formsTree.search(conditions);
-            System.out.println("FOUND STEP D FORM: " + formsTree.search(testConditions));
+//            System.out.println("FOUND STEP D FORM: " + formsTree.search(testConditions));
 //            System.out.println("STEP SNEAK FORM: " + testConditions);
 //            testConditions.forEach(condition -> System.out.print(condition.getActiveStatus() + " "));
 //            System.out.println();
 //            formsTree.printAllConditions();
             if (recognized != null) {
-                resetConditions();
+//                resetConditions();
                 activeForm = FormDataRegistry.formsNamespace.get(recognized.hashCode());
                 System.out.println("RECOGNIZED FORM: " + activeForm.name() + " " + recognized);
                 Magus.sendDebugMsg("RECOGNIZED FORM: " + activeForm.name());
             }
         }
-
-        if (ticksSinceActivated >= tickTimeoutThreshold) {
-            lastActivatedForm = null;
-            activeConditions.clear();
-            formsTree.resetTree();
-            ticksSinceActivated = 0;
-//            System.out.println("RESET");
-        }
-        ticksSinceActivated++;
     }
 
     private void sendModifierData() {
@@ -223,9 +221,8 @@ public class KeyboardInputModule extends InputModule {
         System.out.println("Inserting " + formToExecute.name().toUpperCase() + " into tree with Conditions: " + formCondition + " | Inputs: " + formExecutionInputs);
         formsTree.insert(path.conditions);
         registerRunnables(formsTree);
-        if (formCondition.get(0) instanceof KeyHoldCondition keyCondition)
-            if (keyCondition.getKey() == testKey)
-                testConditions = formCondition;
+//        if (formCondition.get(0) instanceof KeyHoldCondition keyCondition)
+//            if (keyCondition.getKey() == testKey) testConditions = formCondition;
     }
 
     public void registerRunnables(RadixTree tree) {
@@ -237,17 +234,21 @@ public class KeyboardInputModule extends InputModule {
         for (RadixBranch branch : current.branches.values()) {
             if (!branch.next.branches.keySet().isEmpty())
                 System.out.println(branch.conditions() + " | THE KIDS: " + branch.next.branches.keySet());
-            for (int i=0; i < branch.conditions().size(); i++) {
+            for (int i = 0; i < branch.conditions().size(); i++) {
                 Condition condition = branch.conditions().get(i);
                 Condition nextCondition;
-                if (i+1 < branch.conditions().size())
-                    nextCondition = branch.conditions().get(i+1);
+
+                if (i + 1 < branch.conditions().size())
+                    nextCondition = branch.conditions().get(i + 1);
                 else
                     nextCondition = null;
+
+
                 Runnable onSuccess = () -> {
                     if (!activeConditions.contains(condition)) {
                         activeConditions.add(condition);
-                        condition.unregister(); // unregister parent to give child nodes a shot to be heard
+                        //condition.unregister(); // unregister parent to give child nodes a shot to be heard
+                        condition.unregister();
                         if (nextCondition != null)
                             nextCondition.register(); // register next condition in the path if it exists
                         List<Condition> childConditions = branch.next.branches.keySet().stream().toList();
