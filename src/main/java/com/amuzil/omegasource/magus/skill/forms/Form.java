@@ -44,4 +44,9 @@ public class Form {
 
         return path;
     }
+
+    @Override
+    public String toString() {
+        return "Form[ " + name().toUpperCase() + " ]";
+    }
 }

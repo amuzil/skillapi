@@ -59,12 +59,14 @@ public class KeyHoldCondition extends Condition {
 //                    // If the Condition doesn't require the key being released....
                         if (!started) {
                             this.started = true;
+                            if (key == 68 && !release)
+                                System.out.println("2nd CONDITION: " + active);
                             this.onSuccess.run();
                         }
                     }
                 } else {
                     if (started) {
-                        this.onSuccess.run();
+                        this.onFailure.run();
                         this.started = false;
                     }
 //                    if (pressed(this.currentHolding, duration)) {
