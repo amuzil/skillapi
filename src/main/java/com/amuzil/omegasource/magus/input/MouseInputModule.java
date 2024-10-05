@@ -23,24 +23,23 @@ import java.util.function.Consumer;
 public class MouseInputModule extends InputModule {
 
     private final Consumer<TickEvent> tickEventConsumer;
+    private final Consumer<InputEvent.MouseButton> mouseListener;
+    private final Consumer<InputEvent.MouseScrollingEvent> mouseScrollListener;
+    private final int tickActivationThreshold = 15;
+    private final int tickTimeoutThreshold = 60;
+    private final int modifierTickThreshold = 10;
+    private int ticksSinceActivated = 0;
+    private int ticksSinceModifiersSent = 0;
     private List<Integer> glfwKeysDown;
+    private Form activeForm;
+    private double mouseScrollDelta;
+    private int timeout = 0;
+    private boolean listen;
+    private boolean checkForm = false;
 
     // How scroll delta works: every physical "tick" forwards on the mouse is 1.0, and backwards
     // is -1.0. Therefore, you'd need a tracker over time, like a key held event, for the mouse wheel.
     // Except you're not pressing it, you're spinning it....
-    private double mouseScrollDelta;
-    private final Consumer<InputEvent.MouseButton> mouseListener;
-    private final Consumer<InputEvent.MouseScrollingEvent> mouseScrollListener;
-    private Form activeForm, lastActivatedForm = null;
-    private int ticksSinceActivated = 0;
-    private int ticksSinceModifiersSent = 0;
-
-    private final int tickActivationThreshold = 15;
-    private final int tickTimeoutThreshold = 60;
-    private final int modifierTickThreshold = 10;
-    private int timeout = 0;
-    private boolean listen;
-    private boolean checkForm = false;
 
     public MouseInputModule() {
         this.glfwKeysDown = new ArrayList<>();
