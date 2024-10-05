@@ -23,16 +23,12 @@ import java.util.function.Consumer;
 
 public class KeyboardInputModule extends InputModule {
 
-    private static final Map<String, Integer> movementKeys = new HashMap<>();
     private final Consumer<InputEvent.Key> keyboardListener;
     private final Consumer<TickEvent> tickEventConsumer;
-    //todo make these thresholds configurable and make them longer. Especially the timeout threshold.
     private final int tickActivationThreshold = 15;
     private final int tickTimeoutThreshold = 60;
     private final int modifierTickThreshold = 10;
-    public List<Condition> testConditions;
     public int testKey = 68;
-    Minecraft mc = Minecraft.getInstance();
     private List<Integer> glfwKeysDown;
     private Form activeForm, lastActivatedForm = null;
     private int ticksSinceActivated = 0;
@@ -41,11 +37,11 @@ public class KeyboardInputModule extends InputModule {
     private boolean listen;
     private boolean checkForm = false;
 
-    // TODO: Fix this such that any tree requiring a form relies on the input
     // module activating a form rather than relying on the raw input data for those forms.
     // This way, the trees for different complex methods (such as VR and multikey)
     // remain functionally the same, they just check different input modules for whether the same
     // forms are activated.
+
     public KeyboardInputModule() {
         formsTree.setDiscipline(Disciplines.AIR);
 
@@ -92,12 +88,12 @@ public class KeyboardInputModule extends InputModule {
             if (activeForm != null && activeForm.name() != null) {
                 ticksSinceActivated++;
                 if (ticksSinceActivated >= tickActivationThreshold) {
-                    if (lastActivatedForm != null && lastActivatedForm.name().equals(activeForm.name())) {
-                        // Send modifier data of it being held and/or multi.
-                    }
-                    else {
-                        // Send packet
-                    }
+//                    if (lastActivatedForm != null && lastActivatedForm.name().equals(activeForm.name())) {
+//                        // Send modifier data of it being held and/or multi.
+//                    }
+//                    else {
+//                        // Send packet
+//                    }
                     lastActivatedForm = activeForm;
 //                    Magus.sendDebugMsg("Form Activated: " + lastActivatedForm.name());
                     activeForm = null;
@@ -116,31 +112,6 @@ public class KeyboardInputModule extends InputModule {
                 }
             }
         };
-    }
-
-    public static void determineMotionKeys() {
-        Arrays.stream(Minecraft.getInstance().options.keyMappings).toList().forEach(keyMapping -> {
-            if (keyMapping.getCategory().equals(KeyMapping.CATEGORY_MOVEMENT)) {
-                movementKeys.put(keyMapping.getName(), keyMapping.getKey().getValue());
-            }
-        });
-    }
-
-    public static Map<String, Integer> getMovementKeys() {
-        return movementKeys;
-    }
-
-    public void resetTreeConditions() {
-        resetConditions();
-        formsTree.resetTree();
-    }
-
-    public void resetConditions() {
-        if (!activeConditions.isEmpty()) {
-            for (Condition condition : activeConditions)
-                condition.reset();
-            activeConditions.clear();
-        }
     }
 
     private void checkForForm() {
@@ -179,30 +150,25 @@ public class KeyboardInputModule extends InputModule {
     }
 
     @Override
-    public void registerInputData(List<InputData> formExecutionInputs, Form
-            formToExecute, List<Condition> formCondition) {
-        ConditionPath path = formToExecute.createPath(formCondition);
-        System.out.println("Inserting " + formToExecute.name().toUpperCase() + " into tree with Conditions: " + formCondition + " | Inputs: " + formExecutionInputs);
+    public void registerInputData(List<InputData> formExecutionInputs,
+                                  Form formToExecute, List<Condition> formConditions) {
+        ConditionPath path = formToExecute.createPath(formConditions);
+        System.out.println("Inserting " + formToExecute.name().toUpperCase() + " into tree with Conditions: " + formConditions + " | Inputs: " + formExecutionInputs);
         formsTree.insert(path.conditions);
         registerRunnables(formsTree);
-    }
-
-    public void registerRunnables(RadixTree tree) {
-        registerRunnables(tree.getRoot());
     }
 
     @Override
     public void registerRunnables(Node current) {
         for (RadixBranch branch : current.branches.values()) {
-            if (!branch.next.branches.keySet().isEmpty())
-                System.out.println(branch.conditions() + " | THE KIDS: " + branch.next.branches.keySet());
+//            if (!branch.next.branches.keySet().isEmpty())
+//                System.out.println(branch.conditions() + " | THE KIDS: " + branch.next.branches.keySet());
             for (int i = 0; i < branch.conditions().size(); i++) {
                 Condition condition = branch.conditions().get(i);
                 Condition nextCondition;
 
                 if (i + 1 < branch.conditions().size()) nextCondition = branch.conditions().get(i + 1);
                 else nextCondition = null;
-
 
                 Runnable originalSuccess = condition.onSuccess();
                 Runnable onSuccess = () -> {
@@ -247,9 +213,7 @@ public class KeyboardInputModule extends InputModule {
 
     @Override
     public void registerInputs() {
-        formInputs.forEach((condition, form) -> {
-            condition.register();
-        });
+        formInputs.forEach((condition, form) -> condition.register());
     }
 
     @Override
@@ -266,9 +230,5 @@ public class KeyboardInputModule extends InputModule {
 
     public boolean keyPressed(int key) {
         return glfwKeysDown.contains(key);
-    }
-
-    public boolean isDirectionKey(int key) {
-        return movementKeys.containsValue(Integer.valueOf(key));
     }
 }

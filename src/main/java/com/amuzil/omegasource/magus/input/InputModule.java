@@ -12,6 +12,8 @@ import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierListener;
 import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.client.event.InputEvent;
 import org.apache.logging.log4j.LogManager;
@@ -24,6 +26,7 @@ public abstract class InputModule {
     protected static LinkedList<Condition> activeConditions = new LinkedList<>();
     protected static LinkedList<Form> activeForms = new LinkedList<>();
     protected static final List<Form> activeFormInputs = new ArrayList<>();
+    protected static final Map<String, Integer> movementKeys = new HashMap<>();
     protected final Map<Condition, Form> formInputs = new HashMap<>();
     protected final List<ModifierListener> modifierListeners = new ArrayList<>();
     protected final Map<String, ModifierData> modifierQueue = new HashMap<>();
@@ -64,6 +67,22 @@ public abstract class InputModule {
         == actionCondition);
     }
 
+    public static void determineMotionKeys() {
+        Arrays.stream(Minecraft.getInstance().options.keyMappings).toList().forEach(keyMapping -> {
+            if (keyMapping.getCategory().equals(KeyMapping.CATEGORY_MOVEMENT)) {
+                movementKeys.put(keyMapping.getName(), keyMapping.getKey().getValue());
+            }
+        });
+    }
+
+    public static Map<String, Integer> getMovementKeys() {
+        return movementKeys;
+    }
+
+    public static boolean isDirectionKey(int key) {
+        return movementKeys.containsValue(Integer.valueOf(key));
+    }
+
     public void resetLastActivated() {
         LogManager.getLogger().info("RESETTING LAST ACTIVATED FORM");
         this.lastActivatedForm = null;
@@ -79,6 +98,19 @@ public abstract class InputModule {
 
     public List<Condition> getActiveConditions() {
         return activeConditions;
+    }
+
+    public void resetTreeConditions() {
+        resetConditions();
+        formsTree.resetTree();
+    }
+
+    public void resetConditions() {
+        if (!activeConditions.isEmpty()) {
+            for (Condition condition : activeConditions)
+                condition.reset();
+            activeConditions.clear();
+        }
     }
 
     public static void resetFormsTree() {
