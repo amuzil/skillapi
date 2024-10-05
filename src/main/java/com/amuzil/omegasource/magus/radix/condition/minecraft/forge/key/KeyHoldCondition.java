@@ -18,20 +18,19 @@ import java.util.function.Consumer;
 
 public class KeyHoldCondition extends Condition {
     public static final int KEY_PRESS_TIMEOUT = 3;
+    private final int key;
+    private final int duration;
     public List<MousePointInput> mouseInputs = new ArrayList<>();
     private Consumer<ClientTickEvent> clientTickListener;
     private int currentTotal;
     private int currentHolding;
-    private final int key;
-    private final int duration;
     private int timeout = -1;
     // False by default.
     private boolean release = false;
     private boolean started = false;
 
     public KeyHoldCondition(int key, int duration) {
-        if (duration < 0)
-            RadixUtil.getLogger().warn("You should not be defining a key press duration of less than 0.");
+        if (duration < 0) RadixUtil.getLogger().warn("You should not be defining a key press duration of less than 0.");
 
         this.currentTotal = 0;
         this.currentHolding = 0;
@@ -40,8 +39,7 @@ public class KeyHoldCondition extends Condition {
     }
 
     public KeyHoldCondition(int key, int duration, int timeout, boolean release) {
-        if (duration < 0)
-            RadixUtil.getLogger().warn("You should not be defining a key press duration of less than 0.");
+        if (duration < 0) RadixUtil.getLogger().warn("You should not be defining a key press duration of less than 0.");
 
         this.currentTotal = 0;
         this.currentHolding = 0;
@@ -54,48 +52,38 @@ public class KeyHoldCondition extends Condition {
         this.clientTickListener = event -> {
             if (event.phase == ClientTickEvent.Phase.START && Minecraft.getInstance().getOverlay() == null) {
                 if (Magus.keyboardInputModule.keyPressed(key) || Magus.mouseInputModule.keyPressed(key)) {
+                    this.started = true;
                     this.currentHolding++;
                     if (pressed(this.currentHolding, duration)) {
 //                    // If the Condition doesn't require the key being released....
-                        if (!started) {
-                            this.started = true;
-                            if (key == 68 && !release)
-                                System.out.println("2nd CONDITION: " + active);
+                        if (!release) {
                             this.onSuccess.run();
                         }
                     }
                 } else {
-                    if (started) {
-                        this.onFailure.run();
-                        this.started = false;
+                    if (pressed(this.currentHolding, duration)) {
+                        // If the Condition requires the key being released....
+                        if (release) {
+                            this.onSuccess.run();
+                        }
                     }
-//                    if (pressed(this.currentHolding, duration)) {
-//                        // If the Condition requires the key being released....
-//                        if (release) {
-//                            this.onSuccess.run();
-//                        }
-//                    }
-//                    if (started) {
-//                        started = false;
-//                        this.onFailure.run();
-//                    }
-//                    else {
-//                        // Not held for long enough
-//                        if (this.currentHolding > 0) {
-//                            this.onFailure.run();
-//                        }
-//                    }
+                    else {
+                        // Not held for long enough
+                        if (this.currentHolding > 0) {
+                            this.onFailure.run();
+                        }
+                    }
                 }
                 // If the duration is <= 3, then we want the Condition to act as a key press, rather than a hold.
 
-//                if (this.started) {
-//                    // Timeout of -1 means that this should wait forever.
-//                    if (timeout > -1 && this.currentTotal >= timeout) {
-//                        RadixUtil.getLogger().warn("Condition is failing. " + this);
-//                        this.onFailure.run();
-//                    }
-//                    this.currentTotal++;
-//                }
+                if (this.started) {
+                    // Timeout of -1 means that this should wait forever.
+                    if (timeout > -1 && this.currentTotal >= timeout) {
+                        RadixUtil.getLogger().warn("Condition is failing. " + this);
+                        this.onFailure.run();
+                    }
+                    this.currentTotal++;
+                }
 
             }
         };
@@ -109,8 +97,7 @@ public class KeyHoldCondition extends Condition {
     public boolean pressed(int held, int duration) {
         if (duration <= KEY_PRESS_TIMEOUT) {
             return held > 0;
-        }
-        else return held >= duration;
+        } else return held >= duration;
     }
 
     // Should be called in either runnable by other methods, rather than manually here. Calling it manually in the class can lead
@@ -142,10 +129,8 @@ public class KeyHoldCondition extends Condition {
 //            System.out.println("other: activeCondition from user input -> " + other);
             return Objects.equals(key, other.getKey()) &&
                     /* Makes sure an alternative key condition that's been pressed has been pressed at least as long
-                    * as the currently compared condition. */
-                    other.currentHolding >= duration
-                    && other.release == release
-                    && timeout == other.timeout;
+                     * as the currently compared condition. */
+                    other.currentHolding >= duration && other.release == release && timeout == other.timeout;
         }
     }
 
@@ -157,8 +142,7 @@ public class KeyHoldCondition extends Condition {
     @Override
     public void register() {
         super.register();
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ClientTickEvent.class,
-                clientTickListener);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ClientTickEvent.class, clientTickListener);
         active = true;
     }
 
@@ -170,8 +154,6 @@ public class KeyHoldCondition extends Condition {
 
     @Override
     public String toString() {
-        return String.format("%s[ active=%b, key=%s, held=%d, d=%d, t=%d, r=%b ]", this.getClass().getSimpleName(), active,
-                InputConstants.getKey(key, -1).getName().replace("key.", ""),
-                currentHolding, duration, timeout, release);
+        return String.format("%s[ active=%b, key=%s, held=%d, d=%d, t=%d, r=%b ]", this.getClass().getSimpleName(), active, InputConstants.getKey(key, -1).getName().replace("key.", ""), currentHolding, duration, timeout, release);
     }
 }
