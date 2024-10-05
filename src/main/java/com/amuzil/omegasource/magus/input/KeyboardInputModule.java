@@ -92,9 +92,11 @@ public class KeyboardInputModule extends InputModule {
             if (activeForm != null && activeForm.name() != null) {
                 ticksSinceActivated++;
                 if (ticksSinceActivated >= tickActivationThreshold) {
-                    if (lastActivatedForm.name().equals(activeForm.name())) {
-                        // Send modifier data of it being held.
+                    if (lastActivatedForm != null && lastActivatedForm.name().equals(activeForm.name())) {
                     }
+                    
+                    // Send modifier data of it being held.
+
                     else {
                         // Send packet
                     }
@@ -177,7 +179,8 @@ public class KeyboardInputModule extends InputModule {
     }
 
     @Override
-    public void registerInputData(List<InputData> formExecutionInputs, Form formToExecute, List<Condition> formCondition) {
+    public void registerInputData(List<InputData> formExecutionInputs, Form
+            formToExecute, List<Condition> formCondition) {
         ConditionPath path = formToExecute.createPath(formCondition);
         System.out.println("Inserting " + formToExecute.name().toUpperCase() + " into tree with Conditions: " + formCondition + " | Inputs: " + formExecutionInputs);
         formsTree.insert(path.conditions);
