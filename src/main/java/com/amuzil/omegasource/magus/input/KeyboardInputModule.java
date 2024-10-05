@@ -93,15 +93,13 @@ public class KeyboardInputModule extends InputModule {
                 ticksSinceActivated++;
                 if (ticksSinceActivated >= tickActivationThreshold) {
                     if (lastActivatedForm != null && lastActivatedForm.name().equals(activeForm.name())) {
+                        // Send modifier data of it being held and/or multi.
                     }
-                    
-                    // Send modifier data of it being held.
-
                     else {
                         // Send packet
                     }
                     lastActivatedForm = activeForm;
-                    Magus.sendDebugMsg("Form Activated: " + lastActivatedForm.name());
+//                    Magus.sendDebugMsg("Form Activated: " + lastActivatedForm.name());
                     activeForm = null;
                     ticksSinceActivated = 0;
                     timeout = 0;
@@ -112,6 +110,8 @@ public class KeyboardInputModule extends InputModule {
                 timeout++;
                 if (timeout > tickTimeoutThreshold) {
                     resetTreeConditions();
+                    // Timed out enough where multi is no longer valid.
+                    lastActivatedForm = null;
                     timeout = 0;
                 }
             }
