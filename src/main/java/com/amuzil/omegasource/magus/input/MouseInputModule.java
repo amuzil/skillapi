@@ -78,53 +78,53 @@ public class MouseInputModule extends InputModule {
 
         this.tickEventConsumer = tickEvent -> {
 
-            ticksSinceModifiersSent++;
-            if (ticksSinceModifiersSent > modifierTickThreshold && !modifierQueue.isEmpty()) {
-                sendModifierData();
-            }
-
-            if (checkForm) {
-                checkForForm();
-                checkForm = false;
-            }
-
-            //cleanMCKeys();
-
-            if(activeForm.name() != null) {
-                ticksSinceActivated++;
-                if(ticksSinceActivated >= tickActivationThreshold) {
-//                    if (lastActivatedForm != null)
-//                        LogManager.getLogger().info("LAST FORM ACTIVATED: " + lastActivatedForm.name() + " | FORM ACTIVATED: " + activeForm.name());
-//                    else
-//                        LogManager.getLogger().info("FORM ACTIVATED: " + activeForm.name());
-//                    MagusNetwork.sendToServer(new ConditionActivatedPacket(activeForm));
-                    lastActivatedForm = activeForm;
-                    activeForm = new Form();
-                    ticksSinceActivated = 0;
-//                    activeConditions.clear();
-                }
-            }
-            else {
-                ticksSinceActivated++;
-                if (ticksSinceActivated >= tickTimeoutThreshold) {
-                    lastActivatedForm = null;
-                    ticksSinceActivated = 0;
-//                    activeConditions.clear();
-                }
-            }
+//            ticksSinceModifiersSent++;
+//            if (ticksSinceModifiersSent > modifierTickThreshold && !modifierQueue.isEmpty()) {
+//                sendModifierData();
+//            }
+//
+//            if (checkForm) {
+//                checkForForm();
+//                checkForm = false;
+//            }
+//
+//            //cleanMCKeys();
+//
+//            if(activeForm.name() != null) {
+//                ticksSinceActivated++;
+//                if(ticksSinceActivated >= tickActivationThreshold) {
+////                    if (lastActivatedForm != null)
+////                        LogManager.getLogger().info("LAST FORM ACTIVATED: " + lastActivatedForm.name() + " | FORM ACTIVATED: " + activeForm.name());
+////                    else
+////                        LogManager.getLogger().info("FORM ACTIVATED: " + activeForm.name());
+////                    MagusNetwork.sendToServer(new ConditionActivatedPacket(activeForm));
+//                    lastActivatedForm = activeForm;
+//                    activeForm = new Form();
+//                    ticksSinceActivated = 0;
+////                    activeConditions.clear();
+//                }
+//            }
+//            else {
+//                ticksSinceActivated++;
+//                if (ticksSinceActivated >= tickTimeoutThreshold) {
+//                    lastActivatedForm = null;
+//                    ticksSinceActivated = 0;
+////                    activeConditions.clear();
+//                }
+//            }
         };
     }
 
     private void checkForForm() {
-        List<Condition> conditions = activeConditions.stream().toList();
-        List<Condition> recognized = formsTree.search(conditions);
-        System.out.println("activeConditions MIM: " + activeConditions);
-        if (recognized != null) {
-            activeConditions.clear();
-            activeForm = FormDataRegistry.formsNamespace.get(recognized.hashCode());
-            System.out.println("RECOGNIZED FORM: " + activeForm.name() + " " + recognized);
-            Magus.sendDebugMsg("RECOGNIZED FORM: " + activeForm.name());
-        }
+//        List<Condition> conditions = activeConditions.stream().toList();
+//        List<Condition> recognized = formsTree.search(conditions);
+//        System.out.println("activeConditions MIM: " + activeConditions);
+//        if (recognized != null) {
+//            activeConditions.clear();
+//            activeForm = FormDataRegistry.formsNamespace.get(recognized.hashCode());
+//            System.out.println("RECOGNIZED FORM: " + activeForm.name() + " " + recognized);
+//            Magus.sendDebugMsg("RECOGNIZED FORM: " + activeForm.name());
+//        }
     }
 
     private void sendModifierData() {
@@ -152,20 +152,20 @@ public class MouseInputModule extends InputModule {
 
     @Override
     public void registerInputData(List<InputData> formExecutionInputs, Form formToExecute, List<Condition> formCondition) {
-        List<Condition> updatedConditions = formCondition.stream().toList();
-        for (Condition condition : updatedConditions) {
-            condition.register(condition.name(), () -> {
-                if (!activeConditions.contains(condition))
-                    activeConditions.add(condition);
-                condition.reset();
-            }, () -> {
-                activeConditions.remove(condition);
-                condition.reset();
-            });
-        }
-        ConditionPath path = formToExecute.createPath(updatedConditions);
+//        List<Condition> updatedConditions = formCondition.stream().toList();
+//        for (Condition condition : updatedConditions) {
+//            condition.register(condition.name(), () -> {
+//                if (!activeConditions.contains(condition))
+//                    activeConditions.add(condition);
+//                condition.reset();
+//            }, () -> {
+//                activeConditions.remove(condition);
+//                condition.reset();
+//            });
+//        }
+//        ConditionPath path = formToExecute.createPath(updatedConditions);
         System.out.println("Inserting " + formToExecute.name().toUpperCase() + " into tree with Conditions: " + formCondition + " | Inputs: " + formExecutionInputs);
-        formsTree.insert(path.conditions);
+//        formsTree.insert(path.conditions);
 //        Runnable onSuccess = () -> {
 //            if(mc.level != null) {
 //                //this section is to prevent re-activating

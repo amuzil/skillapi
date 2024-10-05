@@ -88,8 +88,7 @@ public class KeyboardInputModule extends InputModule {
             }
 
             // Check every couple of ticks
-            if (ticksSinceActivated % (tickActivationThreshold - 1) == 0
-                    || timeout % tickActivationThreshold - 1 == 0)
+            if (ticksSinceActivated % (tickActivationThreshold - 1) == 0 || timeout % tickActivationThreshold - 1 == 0)
                 checkForForm();
 
 //            if (timeout % 20 == 0)
@@ -107,16 +106,16 @@ public class KeyboardInputModule extends InputModule {
                     ticksSinceActivated = 0;
                     timeout = 0;
                     resetConditions();
+                    formsTree.resetTree();
                 }
 
             } else {
                 timeout++;
                 if (timeout > tickTimeoutThreshold) {
-                    if (!activeConditions.isEmpty()) {
-                        System.out.println("Resetting...");
-                        resetConditions();
-                        timeout = 0;
-                    }
+//                    System.out.println("Resetting...");
+                    resetConditions();
+                    formsTree.resetTree();
+                    timeout = 0;
                 }
             }
 //            resetConditions();
@@ -147,8 +146,8 @@ public class KeyboardInputModule extends InputModule {
 
     public void resetConditions() {
         if (!activeConditions.isEmpty()) {
-//            for (Condition condition : activeConditions)
-//                condition.reset();
+            for (Condition condition : activeConditions)
+                condition.reset();
             activeConditions.clear();
         }
     }
@@ -158,13 +157,7 @@ public class KeyboardInputModule extends InputModule {
 //            System.out.println("activeConditions KIM: " + activeConditions + " | " + glfwKeysDown);
             List<Condition> conditions = activeConditions.stream().toList();
             List<Condition> recognized = formsTree.search(conditions);
-//            System.out.println("FOUND STEP D FORM: " + formsTree.search(testConditions));
-//            System.out.println("STEP SNEAK FORM: " + testConditions);
-//            testConditions.forEach(condition -> System.out.print(condition.getActiveStatus() + " "));
-//            System.out.println();
-//            formsTree.printAllConditions();
             if (recognized != null) {
-//                resetConditions();
                 activeForm = FormDataRegistry.formsNamespace.get(recognized.hashCode());
                 System.out.println("RECOGNIZED FORM: " + activeForm.name() + " " + recognized);
                 Magus.sendDebugMsg("RECOGNIZED FORM: " + activeForm.name());
@@ -238,10 +231,8 @@ public class KeyboardInputModule extends InputModule {
                 Condition condition = branch.conditions().get(i);
                 Condition nextCondition;
 
-                if (i + 1 < branch.conditions().size())
-                    nextCondition = branch.conditions().get(i + 1);
-                else
-                    nextCondition = null;
+                if (i + 1 < branch.conditions().size()) nextCondition = branch.conditions().get(i + 1);
+                else nextCondition = null;
 
 
                 Runnable onSuccess = () -> {
