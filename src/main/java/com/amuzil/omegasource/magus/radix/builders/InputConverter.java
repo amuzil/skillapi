@@ -56,14 +56,22 @@ public class InputConverter {
         // TODO: Need to print these out and test how they work,
         // TODO: in order to finalise ConditionBuilder.java.
         registerBuilder(MultiKeyInput.class,
-                obj -> {
+                multiKeyInputs -> {
                     LinkedList<Condition> multiConditions = new LinkedList<>();
-                    if (obj instanceof MultiKeyInput permutation) {
-                        List<Condition> conditions = new LinkedList<>(permutation.keys().stream().map(InputConverter::buildPathFrom)
-                                .collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll));
+                   for (Object obj : (List<?>) multiKeyInputs) {
+                        MultiKeyInput permutation = (MultiKeyInput) obj;
+                        // THis list isn't working.
+                        List<Condition> conditions = new LinkedList<>();
+                        for (KeyInput input : permutation.keys()) {
+                            conditions.addAll(buildPathFrom(List.of(input)));
+                        }
+
+                            //= new LinkedList<>(permutation.keys().stream().map(InputConverter::buildPathFrom)
+                                //.collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll));
 
                         // Create a MultiCondition from the flattened conditions
                         MultiCondition multiCondition = ConditionBuilder.createMultiCondition(conditions);
+                        multiCondition.register("multi_key_press", multiCondition::reset, multiCondition::reset);
                         multiConditions.add(multiCondition);
                     }
 
@@ -72,9 +80,10 @@ public class InputConverter {
                 }
         );
         registerBuilder(ChainedKeyInput.class,
-                obj -> {
+                chainedKeyInputs -> {
                     LinkedList<Condition> chained = new LinkedList<>();
-                    if (obj instanceof ChainedKeyInput combination) {
+                    for (Object obj : (List<?>) chainedKeyInputs) {
+                        ChainedKeyInput combination = (ChainedKeyInput) obj;
                         List<Condition> conditions = new LinkedList<>(combination.keys().stream().map(InputConverter::buildPathFrom)
                                 .collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll));
 

@@ -101,4 +101,6 @@ public class MultiCondition extends Condition {
     public void unregister() {
         concurrentConditions.forEach(Condition::unregister);
     }
+
+    //TODO: Hashing, equals function like in KeyHoldCondition
 }
