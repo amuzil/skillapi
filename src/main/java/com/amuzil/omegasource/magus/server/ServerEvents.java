@@ -8,22 +8,19 @@ import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import com.amuzil.omegasource.magus.skill.util.capability.entity.Data;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+
 @Mod.EventBusSubscriber
 public class ServerEvents {
 
     @SubscribeEvent
-    public static void worldStart(LevelEvent event) {
-
-    }
+    public static void worldStart(LevelEvent event) {}
 
     @SubscribeEvent
     public static void onEntityJoinLevel(EntityJoinLevelEvent event) {
@@ -114,17 +111,15 @@ public class ServerEvents {
             }
         } else {
             if (event.getEntity() instanceof Player) {
-                Magus.keyboardInputModule.terminate();
-                Magus.mouseInputModule.terminate();
+                Magus.keyboardMouseInputModule.terminate();
                 Magus.mouseMotionModule.terminate();
                 InputModule.resetFormsTree();
                 AvatarFormRegistry.registerForms();
 //                System.out.println("All RadixTree Forms Conditions:");
 //                Magus.keyboardInputModule.getFormsTree().printAllConditions();
                 System.out.println("All RadixTree Branches:");
-                Magus.keyboardInputModule.getFormsTree().printAllBranches();
-                Magus.keyboardInputModule.init();
-                Magus.mouseInputModule.init();
+                Magus.keyboardMouseInputModule.getFormsTree().printAllBranches();
+                Magus.keyboardMouseInputModule.init();
 //                Magus.mouseMotionModule.init();
             }
         }
@@ -133,9 +128,8 @@ public class ServerEvents {
     @SubscribeEvent
     public static void OnPlayerLeaveWorld(EntityLeaveLevelEvent event) {
         if (event.getEntity() instanceof Player) {
-            Magus.keyboardInputModule.getFormsTree().deactivateAllConditions();
-            Magus.keyboardInputModule.terminate();
-            Magus.mouseInputModule.terminate();
+            Magus.keyboardMouseInputModule.getFormsTree().deactivateAllConditions();
+            Magus.keyboardMouseInputModule.terminate();
             Magus.mouseMotionModule.terminate();
         }
     }

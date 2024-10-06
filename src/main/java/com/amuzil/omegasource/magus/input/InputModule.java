@@ -92,12 +92,12 @@ public abstract class InputModule {
         return this.lastActivatedForm;
     }
 
-    public RadixTree getFormsTree() {
-        return formsTree;
-    }
-
     public List<Condition> getActiveConditions() {
         return activeConditions;
+    }
+
+    public RadixTree getFormsTree() {
+        return formsTree;
     }
 
     public void resetTreeConditions() {
@@ -119,6 +119,19 @@ public abstract class InputModule {
         // Default is air.
         formsTree.setDiscipline(Disciplines.AIR);
     }
+
+//    private Form checkForForm() {
+//        if (!activeConditions.isEmpty()) {
+//            List<Condition> conditions = activeConditions.stream().toList();
+//            List<Condition> recognized = formsTree.search(conditions);
+//            if (recognized != null) {
+//                return FormDataRegistry.formsNamespace.get(recognized.hashCode());
+//                System.out.println("RECOGNIZED FORM: " + activeForm.name() + " " + recognized);
+//                Magus.sendDebugMsg("RECOGNIZED FORM: " + activeForm.name());
+//            }
+//        }
+//        return new Form();
+//    }
 
     public void init() {
         resetKeys();

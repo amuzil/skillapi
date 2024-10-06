@@ -52,7 +52,7 @@ public class KeyHoldCondition extends Condition {
 
         this.clientTickListener = event -> {
             if (event.phase == ClientTickEvent.Phase.START && Minecraft.getInstance().getOverlay() == null) {
-                if (Magus.keyboardInputModule.keyPressed(key) || Magus.mouseInputModule.keyPressed(key)) {
+                if (Magus.keyboardMouseInputModule.keyPressed(key)) {
                     this.started = true;
                     this.currentHolding++;
                     if (pressed(this.currentHolding, duration)) {

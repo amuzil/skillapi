@@ -88,7 +88,6 @@ public class MouseInputModule extends InputModule {
 //                        LogManager.getLogger().info("LAST FORM ACTIVATED: " + lastActivatedForm.name() + " | FORM ACTIVATED: " + activeForm.name());
 //                    else
 //                        LogManager.getLogger().info("FORM ACTIVATED: " + activeForm.name());
-//                    MagusNetwork.sendToServer(new ConditionActivatedPacket(activeForm));
                     lastActivatedForm = activeForm;
                     Magus.sendDebugMsg("Form Activated: " + lastActivatedForm.name());
                     activeForm = null;
@@ -111,7 +110,6 @@ public class MouseInputModule extends InputModule {
     private void checkForForm() {
         if (!activeConditions.isEmpty()) {
             List<Condition> conditions = activeConditions.stream().toList();
-            System.out.println("Active Conditions: " + activeConditions);
             List<Condition> recognized = formsTree.search(conditions);
             if (recognized != null) {
                 activeForm = FormDataRegistry.formsNamespace.get(recognized.hashCode());
@@ -218,11 +216,9 @@ public class MouseInputModule extends InputModule {
             registerListeners();
             registerInputs();
             listen = true;
-            System.out.println("Enabled!");
         } else {
             unRegisterInputs();
             listen = false;
-            System.out.println("Disabled!");
         }
     }
 

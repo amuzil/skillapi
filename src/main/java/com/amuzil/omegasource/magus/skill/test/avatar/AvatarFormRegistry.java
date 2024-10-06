@@ -1,6 +1,6 @@
 package com.amuzil.omegasource.magus.skill.test.avatar;
 
-import com.amuzil.omegasource.magus.input.KeyboardInputModule;
+import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.conditionals.InputDataBuilder;
@@ -31,9 +31,9 @@ public class AvatarFormRegistry {
         //  make them Effects using the Force Form, Direction modifier & Target Modifier
 
         /* Mouse Button Forms */
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE, RadixTree.InputType.MOUSE);
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE, RadixTree.InputType.MOUSE);
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(KeyDataBuilder.createMultiInput(left, right)), Forms.BURST, RadixTree.InputType.MOUSE);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE, RadixTree.InputType.KEYBOARD);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE, RadixTree.InputType.KEYBOARD);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(KeyDataBuilder.createMultiInput(left, right)), Forms.BURST, RadixTree.InputType.KEYBOARD);
 
         /* Mouse Motion Forms */
         // TODO: Figure out a way to pass a condition that specifies when to track data for this Form and other mouse motion Forms.
@@ -60,7 +60,7 @@ public class AvatarFormRegistry {
         // Motion! 7 different movement options.
         // Left, right, up, down, jump, sneak, sprint.
         LinkedList<InputData> inputs = new LinkedList<>();
-        for (Map.Entry<String, Integer> key : KeyboardInputModule.getMovementKeys().entrySet()) {
+        for (Map.Entry<String, Integer> key : KeyboardMouseInputModule.getMovementKeys().entrySet()) {
             inputs.clear();
 
             KeyInput first, second;

@@ -1,8 +1,7 @@
 package com.amuzil.omegasource.magus;
 
 import com.amuzil.omegasource.magus.input.InputModule;
-import com.amuzil.omegasource.magus.input.KeyboardInputModule;
-import com.amuzil.omegasource.magus.input.MouseInputModule;
+import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.input.MouseMotionModule;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.registry.Registries;
@@ -19,7 +18,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.*;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,16 +43,16 @@ public class Magus {
 
     //todo: move these to a better place
     //todo: make multiple input modules
-    public static InputModule keyboardInputModule;
-    public static InputModule mouseInputModule;
+    public static InputModule keyboardMouseInputModule;
+//    public static InputModule mouseInputModule;
     public static InputModule mouseMotionModule;
 
     public Magus() {
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
         //Register the input modules
-        keyboardInputModule = new KeyboardInputModule();
-        mouseInputModule = new MouseInputModule();
+        keyboardMouseInputModule = new KeyboardMouseInputModule();
+//        mouseInputModule = new MouseInputModule();
         mouseMotionModule = new MouseMotionModule();
         // Register capabilities
         FMLJavaModLoadingContext.get().getModEventBus().addListener(CapabilityHandler::registerCapabilities);
@@ -95,6 +97,7 @@ public class Magus {
     public void onServerStarting(ServerStartingEvent event) {
         // do something when the server starts
         LOGGER.info("HELLO from server starting");
+        LOGGER.info("Setting up Avatar commands...");
         AvatarCommand.register(event.getServer().getCommands().getDispatcher());
     }
 
@@ -117,7 +120,7 @@ public class Magus {
             // Some client setup code
             LOGGER.info("HELLO FROM CLIENT SETUP");
 
-            KeyboardInputModule.determineMotionKeys();
+            KeyboardMouseInputModule.determineMotionKeys();
 
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }

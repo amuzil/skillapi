@@ -21,16 +21,19 @@ import java.util.*;
 import java.util.function.Consumer;
 
 
-public class KeyboardInputModule extends InputModule {
+public class KeyboardMouseInputModule extends InputModule {
 
     private final Consumer<TickEvent> tickEventConsumer;
     private final Consumer<InputEvent.Key> keyboardListener;
+    private final Consumer<InputEvent.MouseButton> mouseListener;
+    private final Consumer<InputEvent.MouseScrollingEvent> mouseScrollListener;
     private final int tickActivationThreshold = 15;
     private final int tickTimeoutThreshold = 60;
     private final int modifierTickThreshold = 10;
     private int ticksSinceActivated = 0;
     private int ticksSinceModifiersSent = 0;
     private List<Integer> glfwKeysDown;
+    private double mouseScrollDelta;
     private Form activeForm;
     private int timeout = 0;
     private boolean listen;
@@ -41,7 +44,7 @@ public class KeyboardInputModule extends InputModule {
     // remain functionally the same, they just check different input modules for whether the same
     // forms are activated.
 
-    public KeyboardInputModule() {
+    public KeyboardMouseInputModule() {
         formsTree.setDiscipline(Disciplines.AIR);
 
         this.glfwKeysDown = new ArrayList<>();
@@ -64,6 +67,27 @@ public class KeyboardInputModule extends InputModule {
                     }
                 }
             }
+        };
+
+        this.mouseListener = mouseEvent -> {
+            int keyPressed = mouseEvent.getButton();
+            switch (mouseEvent.getAction()) {
+                case InputConstants.PRESS-> {
+                    if (!glfwKeysDown.contains(keyPressed)) {
+                        glfwKeysDown.add(keyPressed);
+                    }
+                }
+                case InputConstants.RELEASE -> {
+                    if (glfwKeysDown.contains(keyPressed)) {
+                        glfwKeysDown.remove((Integer) keyPressed);
+                        checkForm = true;
+                    }
+                }
+            }
+        };
+
+        this.mouseScrollListener = mouseScrollingEvent -> {
+            this.mouseScrollDelta = mouseScrollingEvent.getScrollDelta();
         };
 
 
@@ -92,9 +116,10 @@ public class KeyboardInputModule extends InputModule {
 //                    }
 //                    else {
 //                        // Send packet
+//                        MagusNetwork.sendToServer(new ConditionActivatedPacket(activeForm));
 //                    }
                     lastActivatedForm = activeForm;
-//                    Magus.sendDebugMsg("Form Activated: " + lastActivatedForm.name());
+                    Magus.sendDebugMsg("Form Activated: " + lastActivatedForm.name());
                     activeForm = null;
                     ticksSinceActivated = 0;
                     timeout = 0;
@@ -117,6 +142,8 @@ public class KeyboardInputModule extends InputModule {
         if (!activeConditions.isEmpty()) {
             List<Condition> conditions = activeConditions.stream().toList();
             List<Condition> recognized = formsTree.search(conditions);
+            System.out.println("activeConditions: " + activeConditions + "| GLFW: " + glfwKeysDown);
+//            System.out.println("recognized: " + recognized);
             if (recognized != null) {
                 activeForm = FormDataRegistry.formsNamespace.get(recognized.hashCode());
 //                System.out.println("RECOGNIZED FORM: " + activeForm.name() + " " + recognized);
@@ -199,14 +226,18 @@ public class KeyboardInputModule extends InputModule {
 
     @Override
     public void registerListeners() {
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.Key.class, keyboardListener);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.class, tickEventConsumer);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.Key.class, keyboardListener);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.MouseButton.class, mouseListener);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.MouseScrollingEvent.class, mouseScrollListener);
     }
 
     @Override
     public void unRegisterInputs() {
-        MinecraftForge.EVENT_BUS.unregister(keyboardListener);
         MinecraftForge.EVENT_BUS.unregister(tickEventConsumer);
+        MinecraftForge.EVENT_BUS.unregister(keyboardListener);
+        MinecraftForge.EVENT_BUS.unregister(mouseListener);
+        MinecraftForge.EVENT_BUS.unregister(mouseScrollListener);
         formInputs.forEach((condition, form) -> condition.unregister());
     }
 
@@ -221,9 +252,11 @@ public class KeyboardInputModule extends InputModule {
             registerListeners();
             registerInputs();
             listen = true;
+            System.out.println("Enabled!");
         } else {
             unRegisterInputs();
             listen = false;
+            System.out.println("Disabled!");
         }
     }
 

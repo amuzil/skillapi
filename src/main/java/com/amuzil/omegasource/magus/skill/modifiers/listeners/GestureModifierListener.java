@@ -1,13 +1,8 @@
 package com.amuzil.omegasource.magus.skill.modifiers.listeners;
 
 import com.amuzil.omegasource.magus.Magus;
-import com.amuzil.omegasource.magus.input.InputModule;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
-import com.amuzil.omegasource.magus.skill.conditionals.key.ChainedKeyInput;
-import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
-import com.amuzil.omegasource.magus.skill.conditionals.key.MultiKeyInput;
-import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseMotionInput;
 import com.amuzil.omegasource.magus.skill.conditionals.mouse.MousePointInput;
 import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseShapeInput;
 import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseVircle;
@@ -16,18 +11,15 @@ import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierListener;
 import com.amuzil.omegasource.magus.skill.modifiers.data.GestureModifierData;
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 public class GestureModifierListener extends ModifierListener<TickEvent> {
@@ -66,7 +58,7 @@ public class GestureModifierListener extends ModifierListener<TickEvent> {
         InputData lastInput = formInputs.get(formInputs.size() - 1);
 
         this.clientTickListener = event -> {
-            if (Magus.keyboardInputModule.keyPressed(Minecraft.getInstance().options.keyShift.getKey().getValue())) {
+            if (Magus.keyboardMouseInputModule.keyPressed(Minecraft.getInstance().options.keyShift.getKey().getValue())) {
                 Minecraft mci = Minecraft.getInstance();
                 assert mci.player != null;
                 double x = mci.mouseHandler.xpos();
@@ -86,7 +78,7 @@ public class GestureModifierListener extends ModifierListener<TickEvent> {
 
     @Override
     public boolean shouldCollectModifierData(TickEvent event) {
-        if (!Magus.keyboardInputModule.keyPressed(Minecraft.getInstance().options.keyShift.getKey().getValue())) {
+        if (!Magus.keyboardMouseInputModule.keyPressed(Minecraft.getInstance().options.keyShift.getKey().getValue())) {
             if (!mouseGestures.isEmpty()) {
                 mouseGestures.clear();
                 return false;

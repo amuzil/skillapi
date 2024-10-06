@@ -95,17 +95,6 @@ public class RadixTree {
             condition.register();
     }
 
-    private List<Condition> prioritizeConditions(List<Condition> conditions) {
-        List<Condition> prioritizedConditions = new ArrayList<>();
-        for (Condition condition: conditions) {
-            if (condition instanceof MultiClientCondition) {
-                prioritizedConditions.add(condition);
-                break;
-            }
-        }
-        return prioritizedConditions.isEmpty() ? conditions : prioritizedConditions;
-    }
-
     // Helpful method to debug and to see all the conditions
     public void printAllConditions() {
         printAllConditions(root, new ArrayList<>());
@@ -144,6 +133,17 @@ public class RadixTree {
             i++;
             printAllBranches(branch.next, newIndent);
         }
+    }
+
+    private List<Condition> prioritizeConditions(List<Condition> conditions) {
+        List<Condition> prioritizedConditions = new ArrayList<>();
+        for (Condition condition: conditions) {
+            if (condition instanceof MultiClientCondition) {
+                prioritizedConditions.add(condition);
+                break;
+            }
+        }
+        return prioritizedConditions.isEmpty() ? conditions : prioritizedConditions;
     }
 
     // Add conditions to RadixTree - O(n)

@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public class FormDataRegistry {
 
     private static Map<Form, InputModuleData> formsData;
@@ -27,10 +28,10 @@ public class FormDataRegistry {
     public static Form getFormByName(String formName) {
         return Registries.FORMS.get().getValue(new ResourceLocation(formName));
     }
+
     public static List<InputData> getInputsForForm(Form formToModify, RadixTree.InputType type) {
         return formsData.get(formToModify).getInputs(type);
     }
-
 
     public static void registerForm(List<InputData> inputs, Form form, RadixTree.InputType type) {
         // Register the requisite conditions
@@ -48,8 +49,7 @@ public class FormDataRegistry {
             // I can dream...
             case VR -> {
             }
-            case KEYBOARD -> Magus.keyboardInputModule.registerInputData(inputs, form, conditions);
-            case MOUSE -> Magus.mouseInputModule.registerInputData(inputs, form, conditions);
+            case KEYBOARD -> Magus.keyboardMouseInputModule.registerInputData(inputs, form, conditions);
             case MOUSE_MOTION -> Magus.mouseMotionModule.registerInputData(inputs, form, conditions);
 
         }

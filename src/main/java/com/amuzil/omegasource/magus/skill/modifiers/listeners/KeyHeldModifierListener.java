@@ -17,7 +17,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
@@ -67,12 +66,12 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
             key = ((KeyInput) lastInput).key().getValue();
         }
 
-        InputModule module;
-        if (Objects.requireNonNull(type) == RadixTree.InputType.MOUSE) {
-            module = Magus.mouseInputModule;
-        } else {
-            module = Magus.keyboardInputModule;
-        }
+        InputModule  module = Magus.keyboardMouseInputModule;
+//        if (Objects.requireNonNull(type) == RadixTree.InputType.MOUSE) {
+//            module = Magus.mouseInputModule;
+//        } else {
+//            module = Magus.keyboardInputModule;
+//        }
 
         this.clientTickListener = event -> {
             if (event.phase == TickEvent.ClientTickEvent.Phase.START) {
@@ -97,7 +96,7 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
         //so that we send a packet to say we've stopped holding(for continuous cast ability support)
         if (!this.isHeld && this.wasHeld) {
             this.wasHeld = false;
-            Magus.keyboardInputModule.resetLastActivated();
+            Magus.keyboardMouseInputModule.resetLastActivated();
             return true;
         }
         return false;

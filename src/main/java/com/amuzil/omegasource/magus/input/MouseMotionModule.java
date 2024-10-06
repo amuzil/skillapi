@@ -46,7 +46,7 @@ public class MouseMotionModule extends InputModule {
                 sendModifierData();
             }
 
-            if (Magus.keyboardInputModule.keyPressed(Minecraft.getInstance().options.keyShift.getKey().getValue())) {
+            if (Magus.keyboardMouseInputModule.keyPressed(Minecraft.getInstance().options.keyShift.getKey().getValue())) {
                 Minecraft mci = Minecraft.getInstance();
                 assert mci.player != null;
                 double x = mci.mouseHandler.xpos();
