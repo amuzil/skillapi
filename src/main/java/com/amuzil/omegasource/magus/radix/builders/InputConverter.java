@@ -54,7 +54,6 @@ public class InputConverter {
 
             return conditions;
         });
-        // TODO: Need to print these out and test how they work,
         // TODO: in order to finalise ConditionBuilder.java.
         registerBuilder(MultiKeyInput.class,
                 multiKeyInputs -> {
