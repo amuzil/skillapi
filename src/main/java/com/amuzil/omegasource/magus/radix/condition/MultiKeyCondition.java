@@ -138,6 +138,9 @@ public class MultiKeyCondition extends Condition {
         }
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s[ %s ]", this.getClass().getSimpleName() , concurrentConditions);
+    }
 
-    //TODO: Hashing, equals function like in KeyHoldCondition
 }
