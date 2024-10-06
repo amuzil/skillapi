@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+
 public class KeyHoldCondition extends Condition {
     public static final int KEY_PRESS_TIMEOUT = 3;
     private final int key;
