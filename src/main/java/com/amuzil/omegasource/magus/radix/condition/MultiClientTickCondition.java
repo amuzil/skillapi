@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-public class MultiKeyCondition extends Condition {
+public class MultiClientTickCondition extends Condition {
     private static final int TIMEOUT_IN_TICKS = 15;
     private final List<Condition> concurrentConditions;
     private Dictionary<Integer, Boolean> conditionsMet;
@@ -19,12 +19,12 @@ public class MultiKeyCondition extends Condition {
     private int executionTime = 0;
     private boolean startedExecuting = false;
 
-    public MultiKeyCondition(List<Condition> concurrentConditions) {
+    public MultiClientTickCondition(List<Condition> concurrentConditions) {
         this.concurrentConditions = concurrentConditions;
         this.registerEntry();
     }
 
-    public MultiKeyCondition(Condition condition) {
+    public MultiClientTickCondition(Condition condition) {
         this(List.of(condition));
     }
 
@@ -52,7 +52,7 @@ public class MultiKeyCondition extends Condition {
         super.register(name, onSuccess, onFailure);
         this.clientTickListener = event -> {
             if (event.phase == TickEvent.ClientTickEvent.Phase.START
-            && Minecraft.getInstance().getOverlay() == null) {
+                    && Minecraft.getInstance().getOverlay() == null) {
 //                System.out.println("Ticking.");
                 if (startedExecuting) {
 //                    System.out.println("Started Executing.");
@@ -79,8 +79,6 @@ public class MultiKeyCondition extends Condition {
             condition.register(condition.name(), () -> {
                 System.out.println("First Condition Met: " + condition);
                 synchronized (conditionsMet) {
-                    // Debugging statement:
-//                    LogManager.getLogger().info("MARKING CONDITION MET: " + concurrentConditions.get(id).getClass());
                     startedExecuting = true;
                     conditionsMet.put(id, true);
                     condition.unregister();
@@ -125,12 +123,12 @@ public class MultiKeyCondition extends Condition {
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
-        } else if (!(obj instanceof MultiKeyCondition other)) {
+        } else if (!(obj instanceof MultiClientTickCondition other)) {
             return false;
         } else {
 //            System.out.println("this: stored in tree -> " + this);
 //            System.out.println("other: activeCondition from user input -> " + other);
-            return Objects.equals(concurrentConditions.size(), ((MultiKeyCondition) obj).concurrentConditions.size())
+            return Objects.equals(concurrentConditions.size(), ((MultiClientTickCondition) obj).concurrentConditions.size())
                     &&
                     /* Makes sure an alternative key condition that's been pressed has been pressed at least as long
                      * as the currently compared condition. */
