@@ -2,6 +2,7 @@ package com.amuzil.omegasource.magus.radix;
 
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.server_executed.ConditionActivatedPacket;
+import com.amuzil.omegasource.magus.radix.condition.MultiClientTickCondition;
 import com.amuzil.omegasource.magus.skill.elements.Discipline;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.data.MultiModifierData;
@@ -92,6 +93,17 @@ public class RadixTree {
         deactivateAllConditions();
         for (Condition condition : root.getImmediateBranches())
             condition.register();
+    }
+
+    private List<Condition> prioritizeConditions(List<Condition> conditions) {
+        List<Condition> prioritizedConditions = new ArrayList<>();
+        for (Condition condition: conditions) {
+            if (condition instanceof MultiClientTickCondition) {
+                prioritizedConditions.add(condition);
+                break;
+            }
+        }
+        return prioritizedConditions.isEmpty() ? conditions : prioritizedConditions;
     }
 
     // Helpful method to debug and to see all the conditions
@@ -194,6 +206,7 @@ public class RadixTree {
 
     // Returns matched condition path if found and null if not found - O(n)
     public List<Condition> search(List<Condition> conditions) {
+        conditions = prioritizeConditions(conditions);
         List<Condition> ret = null;
         Node current = root;
         int currIndex = 0;
@@ -202,13 +215,6 @@ public class RadixTree {
             RadixBranch branch = current.getTransition(currentCondition); // uses hashcode
 //            RadixBranch branch = current.getMatchedPath(currentCondition);
             if (branch == null) return null;
-
-//            if (!branch.path.conditions.isEmpty()) { // Move down logic
-//                branch.path.conditions.get(0).unregister(); // Stop listening to current condition
-//                for (Condition condition: branch.next.branches.keySet()) {
-//                    condition.register(); // Start listening to next child conditions
-//                }
-//            }
 
             List<Condition> currSubCondition = conditions.subList(currIndex, conditions.size());
             if (!Condition.startsWith(currSubCondition, branch.path.conditions))
