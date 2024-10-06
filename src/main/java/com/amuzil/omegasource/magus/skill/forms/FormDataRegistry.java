@@ -49,7 +49,7 @@ public class FormDataRegistry {
             // I can dream...
             case VR -> {
             }
-            case KEYBOARD -> Magus.keyboardMouseInputModule.registerInputData(inputs, form, conditions);
+            case KEYBOARD_MOUSE -> Magus.keyboardMouseInputModule.registerInputData(inputs, form, conditions);
             case MOUSE_MOTION -> Magus.mouseMotionModule.registerInputData(inputs, form, conditions);
 
         }
@@ -62,6 +62,6 @@ public class FormDataRegistry {
     public static void registerForm(InputData input, Form form) {
         List<InputData> singleton = new ArrayList<>();
         singleton.add(input);
-        registerForm(singleton, form, RadixTree.InputType.KEYBOARD);
+        registerForm(singleton, form, RadixTree.InputType.KEYBOARD_MOUSE);
     }
 }

@@ -405,6 +405,6 @@ public class RadixTree {
     // Essentially which input module to use.
     // Used for VR, multikey, and hotkey activation types.
     public enum InputType {
-        KEYBOARD, MOUSE, MOUSE_MOTION, VR
+        KEYBOARD_MOUSE, MOUSE, MOUSE_MOTION, VR
     }
 }

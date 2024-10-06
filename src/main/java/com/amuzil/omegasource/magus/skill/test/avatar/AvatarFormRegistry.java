@@ -15,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import java.util.LinkedList;
 import java.util.Map;
 
+
 public class AvatarFormRegistry {
 
     public static void registerForms() {
@@ -31,9 +32,9 @@ public class AvatarFormRegistry {
         //  make them Effects using the Force Form, Direction modifier & Target Modifier
 
         /* Mouse Button Forms */
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE, RadixTree.InputType.KEYBOARD);
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE, RadixTree.InputType.KEYBOARD);
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(KeyDataBuilder.createMultiInput(left, right)), Forms.BURST, RadixTree.InputType.KEYBOARD);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE, RadixTree.InputType.KEYBOARD_MOUSE);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE, RadixTree.InputType.KEYBOARD_MOUSE);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(KeyDataBuilder.createMultiInput(left, right)), Forms.BURST, RadixTree.InputType.KEYBOARD_MOUSE);
 
         /* Mouse Motion Forms */
         // TODO: Figure out a way to pass a condition that specifies when to track data for this Form and other mouse motion Forms.
@@ -44,8 +45,8 @@ public class AvatarFormRegistry {
         // Forms.LOWER; Slower mouse motion down.
 
         /* Keyboard Forms */
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(initializer), Forms.ARC, RadixTree.InputType.KEYBOARD);
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak), Forms.BREATHE, RadixTree.InputType.KEYBOARD);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(initializer), Forms.ARC, RadixTree.InputType.KEYBOARD_MOUSE);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak), Forms.BREATHE, RadixTree.InputType.KEYBOARD_MOUSE);
         // Forms.SPIN; Clockwise or anticlockwise cardinal directions. (WDSA or WASD).
 
 //        FormDataRegistry.registerForm(Forms.PUSH);
@@ -71,7 +72,7 @@ public class AvatarFormRegistry {
             second = KeyDataBuilder.createInput(key.getValue(), 0, 15);
             inputs.add(first);
             inputs.add(second);
-            FormDataRegistry.registerForm(inputs, Forms.STEP, RadixTree.InputType.KEYBOARD);
+            FormDataRegistry.registerForm(inputs, Forms.STEP, RadixTree.InputType.KEYBOARD_MOUSE);
         }
 
         /* Combination Forms */

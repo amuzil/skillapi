@@ -27,7 +27,7 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
     private RadixTree.InputType type;
 
     public KeyHeldModifierListener() {
-        this(RadixTree.InputType.KEYBOARD);
+        this(RadixTree.InputType.KEYBOARD_MOUSE);
     }
 
     public KeyHeldModifierListener(RadixTree.InputType type) {

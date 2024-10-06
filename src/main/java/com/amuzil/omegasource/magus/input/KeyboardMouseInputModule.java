@@ -142,7 +142,7 @@ public class KeyboardMouseInputModule extends InputModule {
         if (!activeConditions.isEmpty()) {
             List<Condition> conditions = activeConditions.stream().toList();
             List<Condition> recognized = formsTree.search(conditions);
-            System.out.println("activeConditions: " + conditions);
+//            System.out.println("activeConditions: " + conditions);
 //            System.out.println("recognized: " + recognized);
             if (recognized != null) {
                 activeForm = FormDataRegistry.formsNamespace.get(recognized.hashCode());
