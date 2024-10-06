@@ -49,9 +49,7 @@ public class MultiCondition extends Condition {
         super.register(name, onSuccess, onFailure);
         this.clientTickListener = event -> {
             if (event.phase == TickEvent.ClientTickEvent.Phase.START) {
-                System.out.println("Ticking.");
                 if (startedExecuting) {
-                    System.out.println("Started Executing.");
                     executionTime++;
                     if (executionTime > TIMEOUT_IN_TICKS) {
                         this.onCompleteFailure.run();
