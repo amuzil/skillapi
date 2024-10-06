@@ -1,8 +1,7 @@
 package com.amuzil.omegasource.magus.radix.condition;
 
 import com.amuzil.omegasource.magus.radix.Condition;
-import com.amuzil.omegasource.magus.radix.RadixTree;
-import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -12,22 +11,20 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-public class MultiCondition extends Condition {
+public class MultiKeyCondition extends Condition {
     private static final int TIMEOUT_IN_TICKS = 15;
     private final List<Condition> concurrentConditions;
-    private Runnable onCompleteSuccess;
-    private Runnable onCompleteFailure;
     private Dictionary<Integer, Boolean> conditionsMet;
     private Consumer<TickEvent.ClientTickEvent> clientTickListener;
     private int executionTime = 0;
     private boolean startedExecuting = false;
 
-    public MultiCondition(List<Condition> concurrentConditions) {
+    public MultiKeyCondition(List<Condition> concurrentConditions) {
         this.concurrentConditions = concurrentConditions;
         this.registerEntry();
     }
 
-    public MultiCondition(Condition condition) {
+    public MultiKeyCondition(Condition condition) {
         this(List.of(condition));
     }
 
@@ -36,7 +33,7 @@ public class MultiCondition extends Condition {
             // none/not all conditions have been met yet, exit loop and dont execute.
             if (!it.next()) return;
         }
-        this.onCompleteSuccess.run();
+        this.onSuccess.run();
         this.reset();
     }
 
@@ -48,13 +45,14 @@ public class MultiCondition extends Condition {
     public void register(String name, Runnable onSuccess, Runnable onFailure) {
         super.register(name, onSuccess, onFailure);
         this.clientTickListener = event -> {
-            if (event.phase == TickEvent.ClientTickEvent.Phase.START) {
-                System.out.println("Ticking.");
+            if (event.phase == TickEvent.ClientTickEvent.Phase.START
+            && Minecraft.getInstance().getOverlay() == null) {
+//                System.out.println("Ticking.");
                 if (startedExecuting) {
                     System.out.println("Started Executing.");
                     executionTime++;
                     if (executionTime > TIMEOUT_IN_TICKS) {
-                        this.onCompleteFailure.run();
+                        this.onFailure().run();
 
                         LogManager.getLogger().info("MULTI CONDITION TIMED OUT");
                         this.reset();
@@ -62,8 +60,6 @@ public class MultiCondition extends Condition {
                 }
             }
         };
-        this.onCompleteSuccess = onSuccess;
-        this.onCompleteFailure = onFailure;
         this.reset();
     }
 
@@ -107,6 +103,7 @@ public class MultiCondition extends Condition {
 
     @Override
     public void unregister() {
+        MinecraftForge.EVENT_BUS.unregister(clientTickListener);
         concurrentConditions.forEach(Condition::unregister);
     }
 
@@ -122,12 +119,12 @@ public class MultiCondition extends Condition {
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
-        } else if (!(obj instanceof MultiCondition other)) {
+        } else if (!(obj instanceof MultiKeyCondition other)) {
             return false;
         } else {
 //            System.out.println("this: stored in tree -> " + this);
 //            System.out.println("other: activeCondition from user input -> " + other);
-            return Objects.equals(concurrentConditions.size(), ((MultiCondition) obj).concurrentConditions.size())
+            return Objects.equals(concurrentConditions.size(), ((MultiKeyCondition) obj).concurrentConditions.size())
                     &&
                     /* Makes sure an alternative key condition that's been pressed has been pressed at least as long
                      * as the currently compared condition. */
