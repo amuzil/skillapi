@@ -29,12 +29,18 @@ public class MultiKeyCondition extends Condition {
     }
 
     private void checkConditionMet() {
-        for (Iterator<Boolean> it = conditionsMet.elements().asIterator(); it.hasNext(); ) {
-            // none/not all conditions have been met yet, exit loop and dont execute.
-            if (!it.next()) return;
+        if (conditionsMet.size() == concurrentConditions.size()) {
+            boolean success = true;
+            for (Iterator<Boolean> it = conditionsMet.elements().asIterator(); it.hasNext(); ) {
+                success = it.next();
+            }
+            if (success) {
+                System.out.println("Success!");
+                this.onSuccess.run();
+                this.reset();
+            }
         }
-        this.onSuccess.run();
-        this.reset();
+
     }
 
     public List<Condition> getSubConditions() {
@@ -49,7 +55,7 @@ public class MultiKeyCondition extends Condition {
             && Minecraft.getInstance().getOverlay() == null) {
 //                System.out.println("Ticking.");
                 if (startedExecuting) {
-                    System.out.println("Started Executing.");
+//                    System.out.println("Started Executing.");
                     executionTime++;
                     if (executionTime > TIMEOUT_IN_TICKS) {
                         this.onFailure().run();
