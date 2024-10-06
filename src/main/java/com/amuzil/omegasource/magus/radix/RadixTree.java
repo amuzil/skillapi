@@ -2,7 +2,7 @@ package com.amuzil.omegasource.magus.radix;
 
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.server_executed.ConditionActivatedPacket;
-import com.amuzil.omegasource.magus.radix.condition.MultiClientTickCondition;
+import com.amuzil.omegasource.magus.radix.condition.MultiClientCondition;
 import com.amuzil.omegasource.magus.skill.elements.Discipline;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.data.MultiModifierData;
@@ -98,7 +98,7 @@ public class RadixTree {
     private List<Condition> prioritizeConditions(List<Condition> conditions) {
         List<Condition> prioritizedConditions = new ArrayList<>();
         for (Condition condition: conditions) {
-            if (condition instanceof MultiClientTickCondition) {
+            if (condition instanceof MultiClientCondition) {
                 prioritizedConditions.add(condition);
                 break;
             }

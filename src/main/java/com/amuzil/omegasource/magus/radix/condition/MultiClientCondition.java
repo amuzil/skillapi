@@ -11,34 +11,35 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-public class MultiClientTickCondition extends Condition {
-    private static final int TIMEOUT_IN_TICKS = 15;
+public class MultiClientCondition extends Condition {
+    private static final int TIMEOUT_IN_TICKS = 3;
     private final List<Condition> concurrentConditions;
     private Dictionary<Integer, Boolean> conditionsMet;
     private Consumer<TickEvent.ClientTickEvent> clientTickListener;
     private int executionTime = 0;
     private boolean startedExecuting = false;
 
-    public MultiClientTickCondition(List<Condition> concurrentConditions) {
+    public MultiClientCondition(List<Condition> concurrentConditions) {
         this.concurrentConditions = concurrentConditions;
         this.registerEntry();
     }
 
-    public MultiClientTickCondition(Condition condition) {
+    public MultiClientCondition(Condition condition) {
         this(List.of(condition));
     }
 
     private void checkConditionMet() {
         if (conditionsMet.size() == concurrentConditions.size()) {
-            boolean success = true;
+            boolean success;
             for (Iterator<Boolean> it = conditionsMet.elements().asIterator(); it.hasNext(); ) {
                 success = it.next();
+                if (!success)
+                    return;
             }
-            if (success) {
-                System.out.println("Success!");
-                this.onSuccess.run();
-                this.reset();
-            }
+            System.out.println("Success!");
+            this.onSuccess.run();
+            startedExecuting = false;
+            this.reset();
         }
 
     }
@@ -77,7 +78,6 @@ public class MultiClientTickCondition extends Condition {
         concurrentConditions.forEach(condition -> {
             int id = counter.getAndIncrement();
             condition.register(condition.name(), () -> {
-                System.out.println("First Condition Met: " + condition);
                 synchronized (conditionsMet) {
                     startedExecuting = true;
                     conditionsMet.put(id, true);
@@ -96,6 +96,7 @@ public class MultiClientTickCondition extends Condition {
             conditionsMet.put(id, false);
         });
     }
+
 
     @Override
     public void register() {
@@ -123,12 +124,12 @@ public class MultiClientTickCondition extends Condition {
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
-        } else if (!(obj instanceof MultiClientTickCondition other)) {
+        } else if (!(obj instanceof MultiClientCondition other)) {
             return false;
         } else {
 //            System.out.println("this: stored in tree -> " + this);
 //            System.out.println("other: activeCondition from user input -> " + other);
-            return Objects.equals(concurrentConditions.size(), ((MultiClientTickCondition) obj).concurrentConditions.size())
+            return Objects.equals(concurrentConditions.size(), ((MultiClientCondition) obj).concurrentConditions.size())
                     &&
                     /* Makes sure an alternative key condition that's been pressed has been pressed at least as long
                      * as the currently compared condition. */
@@ -138,7 +139,7 @@ public class MultiClientTickCondition extends Condition {
 
     @Override
     public String toString() {
-        return String.format("%s[ %s ]", this.getClass().getSimpleName() , concurrentConditions);
+        return String.format("%s[ %s ]", this.getClass().getSimpleName(), concurrentConditions);
     }
 
 }

@@ -1,8 +1,8 @@
 package com.amuzil.omegasource.magus.radix.builders;
 
 import com.amuzil.omegasource.magus.radix.Condition;
+import com.amuzil.omegasource.magus.radix.condition.MultiClientCondition;
 import com.amuzil.omegasource.magus.radix.condition.MultiCondition;
-import com.amuzil.omegasource.magus.radix.condition.MultiClientTickCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
@@ -71,7 +71,7 @@ public class InputConverter {
                                 //.collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll));
 
                         // Create a MultiCondition from the flattened conditions
-                        MultiClientTickCondition multiCondition = new MultiClientTickCondition(conditions);
+                        MultiClientCondition multiCondition = new MultiClientCondition(conditions);
                         multiCondition.register("multi_key_press", multiCondition::reset, multiCondition::reset);
                         multiConditions.add(multiCondition);
                     }
