@@ -1,13 +1,11 @@
 package com.amuzil.omegasource.magus.radix.condition;
 
 import com.amuzil.omegasource.magus.radix.Condition;
+import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import net.minecraftforge.event.TickEvent;
 import org.apache.logging.log4j.LogManager;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -45,6 +43,7 @@ public class MultiCondition extends Condition {
 
     @Override
     public void register(String name, Runnable onSuccess, Runnable onFailure) {
+        super.register(name, onSuccess, onFailure);
         this.clientTickListener = event -> {
             if (event.phase == TickEvent.ClientTickEvent.Phase.START) {
                 if (startedExecuting) {
@@ -71,6 +70,7 @@ public class MultiCondition extends Condition {
         concurrentConditions.forEach(condition -> {
             int id = counter.getAndIncrement();
             condition.register(condition.name(), () -> {
+                System.out.println("First Condition Met: " + condition);
                 synchronized (conditionsMet) {
                     // Debugging statement:
 //                    LogManager.getLogger().info("MARKING CONDITION MET: " + concurrentConditions.get(id).getClass());
@@ -101,6 +101,32 @@ public class MultiCondition extends Condition {
     public void unregister() {
         concurrentConditions.forEach(Condition::unregister);
     }
+
+    @Override
+    public int hashCode() {
+        int hashSum = 0;
+        for (Condition condition : concurrentConditions)
+            hashSum += condition.hashCode();
+        return Objects.hash(name, hashSum);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (!(obj instanceof MultiCondition other)) {
+            return false;
+        } else {
+//            System.out.println("this: stored in tree -> " + this);
+//            System.out.println("other: activeCondition from user input -> " + other);
+            return Objects.equals(concurrentConditions.size(), ((MultiCondition) obj).concurrentConditions.size())
+                    &&
+                    /* Makes sure an alternative key condition that's been pressed has been pressed at least as long
+                     * as the currently compared condition. */
+                    obj.hashCode() == this.hashCode();
+        }
+    }
+
 
     //TODO: Hashing, equals function like in KeyHoldCondition
 }

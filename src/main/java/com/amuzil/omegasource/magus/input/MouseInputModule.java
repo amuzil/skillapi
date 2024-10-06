@@ -111,6 +111,7 @@ public class MouseInputModule extends InputModule {
     private void checkForForm() {
         if (!activeConditions.isEmpty()) {
             List<Condition> conditions = activeConditions.stream().toList();
+//            System.out.println("Active Conditions: " + activeConditions);
             List<Condition> recognized = formsTree.search(conditions);
             if (recognized != null) {
                 activeForm = FormDataRegistry.formsNamespace.get(recognized.hashCode());
