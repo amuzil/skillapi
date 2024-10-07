@@ -54,7 +54,7 @@ public class InputConverter {
 
             return conditions;
         });
-        // TODO: in order to finalise ConditionBuilder.java.
+
         registerBuilder(MultiKeyInput.class,
                 multiKeyInputs -> {
                     LinkedList<Condition> multiConditions = new LinkedList<>();
@@ -79,6 +79,7 @@ public class InputConverter {
                     return multiConditions;
                 }
         );
+
         registerBuilder(ChainedKeyInput.class,
                 chainedKeyInputs -> {
                     LinkedList<Condition> chained = new LinkedList<>();
@@ -101,6 +102,7 @@ public class InputConverter {
         /* Mouse */
 //		registerBuilder(MouseInput.class,
 //				mouseInput -> );
+
         registerBuilder(MouseWheelInput.class,
                 mouseWheelInput -> {
 
