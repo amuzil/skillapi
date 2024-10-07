@@ -24,21 +24,10 @@ public class RadixTree {
     private Discipline activeDiscipline = null; // Disciplines.FIRE;
     private ConditionPath path;
     private Entity owner;
-    private Side side = Side.COMMON;
-
-    public RadixTree(Node root, Side side) {
-        this(root);
-        this.side = side;
-    }
 
     public RadixTree(Node root) {
         this.root = root;
         this.active = root;
-    }
-
-    public RadixTree(Side side) {
-        this();
-        this.side = side;
     }
 
     public RadixTree() {
@@ -263,9 +252,9 @@ public class RadixTree {
                 currentCondition.register(currentCondition.name(), () -> {
                     currentCondition.onSuccess.run();
                     currentCondition.unregister();
-                    switch (side) {
-                        default -> MagusNetwork.sendToServer(new ConditionActivatedPacket(currentCondition));
-                    }
+//                    switch (side) {
+//                        default -> MagusNetwork.sendToServer(new ConditionActivatedPacket(currentCondition));
+//                    }
 
                 }, currentCondition.onFailure);
                 currentCondition.register();
@@ -393,11 +382,7 @@ public class RadixTree {
         this.owner = entity;
     }
 
-    public enum Side {
-        CLIENT, COMMON, SERVER
-    }
-
-    // Menu = radial menu or a HUD. Other activation types are self explanatory.
+    // Menu = radial menu or a HUD. Other activation types are self-explanatory.
     public enum ActivationType {
         MULTIKEY, MENU, HOTKEY, VR
     }
@@ -405,6 +390,6 @@ public class RadixTree {
     // Essentially which input module to use.
     // Used for VR, multikey, and hotkey activation types.
     public enum InputType {
-        KEYBOARD_MOUSE, MOUSE, MOUSE_MOTION, VR
+        KEYBOARD_MOUSE, MOUSE_MOTION, VR
     }
 }

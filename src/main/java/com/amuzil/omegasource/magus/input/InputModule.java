@@ -5,7 +5,6 @@ import com.amuzil.omegasource.magus.radix.Node;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.EventCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
-import com.amuzil.omegasource.magus.skill.elements.Discipline;
 import com.amuzil.omegasource.magus.skill.elements.Disciplines;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
@@ -22,7 +21,7 @@ import java.util.*;
 
 
 public abstract class InputModule {
-    protected static RadixTree formsTree = new RadixTree(RadixTree.Side.CLIENT);
+    protected static RadixTree formsTree = new RadixTree();
     protected static LinkedList<Condition> activeConditions = new LinkedList<>();
     protected static LinkedList<Form> activeForms = new LinkedList<>();
     protected static final List<Form> activeFormInputs = new ArrayList<>();
