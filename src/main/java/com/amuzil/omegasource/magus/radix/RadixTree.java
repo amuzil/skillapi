@@ -252,10 +252,6 @@ public class RadixTree {
                 currentCondition.register(currentCondition.name(), () -> {
                     currentCondition.onSuccess.run();
                     currentCondition.unregister();
-//                    switch (side) {
-//                        default -> MagusNetwork.sendToServer(new ConditionActivatedPacket(currentCondition));
-//                    }
-
                 }, currentCondition.onFailure);
                 currentCondition.register();
             }
