@@ -6,14 +6,16 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import org.apache.logging.log4j.LogManager;
 
-import java.util.*;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public class MultiCondition extends Condition {
     protected static final int TIMEOUT_IN_TICKS = 15;
     protected final List<Condition> concurrentConditions;
-    protected Dictionary<Integer, Boolean> conditionsMet;
+    protected final Hashtable<Integer, Boolean> conditionsMet = new Hashtable<>();
     protected Consumer<TickEvent.LevelTickEvent> levelTickListener;
     protected int executionTime = 0;
     protected boolean startedExecuting = false;
@@ -29,10 +31,8 @@ public class MultiCondition extends Condition {
 
     protected void checkConditionMet() {
         if (conditionsMet.size() == concurrentConditions.size()) {
-            boolean success;
-            for (Iterator<Boolean> it = conditionsMet.elements().asIterator(); it.hasNext(); ) {
-                success = it.next();
-                if (!success)
+            for (Boolean conditionIsMet: conditionsMet.values()) {
+                if (!conditionIsMet)
                     return;
             }
             this.onSuccess.run();
@@ -68,7 +68,7 @@ public class MultiCondition extends Condition {
 
     public void reset() {
         AtomicInteger counter = new AtomicInteger();
-        conditionsMet = new Hashtable<>();
+        conditionsMet.clear();
         this.startedExecuting = false;
         this.executionTime = 0;
         concurrentConditions.forEach(condition -> {
