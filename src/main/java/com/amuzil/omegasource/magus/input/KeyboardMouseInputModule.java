@@ -87,6 +87,7 @@ public class KeyboardMouseInputModule extends InputModule {
         };
 
         this.mouseScrollListener = mouseScrollingEvent -> {
+            // 1.0 = away from player, -1 = towards player
             this.mouseScrollDelta = mouseScrollingEvent.getScrollDelta();
         };
 
