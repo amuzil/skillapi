@@ -2,9 +2,7 @@ package com.amuzil.omegasource.magus.radix.builders;
 
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.condition.MultiClientCondition;
-import com.amuzil.omegasource.magus.radix.condition.MultiCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
-import com.amuzil.omegasource.magus.skill.conditionals.ConditionBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.conditionals.key.ChainedKeyInput;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
@@ -88,11 +86,7 @@ public class InputConverter {
                         List<Condition> conditions = new LinkedList<>(combination.keys().stream().map(InputConverter::buildPathFrom)
                                 .collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll));
 
-                        for (Condition condition : conditions) {
-                            if (condition instanceof MultiCondition)
-                                chained.add(ConditionBuilder.createSequentialCondition((MultiCondition) condition));
-                            else chained.add(ConditionBuilder.createSequentialCondition(condition));
-                        }
+                        chained.addAll(conditions);
                     }
                     // Return a list containing the ChainedCondition
                     return chained;

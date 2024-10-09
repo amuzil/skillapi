@@ -1,7 +1,6 @@
 package com.amuzil.omegasource.magus.skill.conditionals;
 
 import com.amuzil.omegasource.magus.radix.Condition;
-import com.amuzil.omegasource.magus.radix.condition.ChainedCondition;
 import com.amuzil.omegasource.magus.radix.condition.MultiCondition;
 import com.amuzil.omegasource.magus.radix.builders.InputConverter;
 
@@ -36,15 +35,6 @@ public class ConditionBuilder {
         return new MultiCondition(condition);
     }
 
-    // This is designed for simple conditions/singular.
-    public static ChainedCondition createSequentialCondition(Condition condition) {
-        return new ChainedCondition(createMultiCondition(condition));
-    }
-
-    public static ChainedCondition createSequentialCondition(MultiCondition condition) {
-        return new ChainedCondition(condition);
-    }
-
     public ConditionBuilder fromInputData(List<InputData> formExecutionInputs) {
         formExecutionInputs.forEach(inputData -> conditionList.addAll(InputConverter.buildPathFrom(inputData)));
         return this;
@@ -59,7 +49,7 @@ public class ConditionBuilder {
      * @return A CombinationCondition combining all of the prequisite InputData
      * for an input group.
      */
-    public Condition build() {
+    public LinkedList<Condition> build() {
         //Creates a copy of the list
         List<Condition> conditions = conditionList.stream().toList();
 
@@ -68,10 +58,8 @@ public class ConditionBuilder {
 
         if (conditions.size() == 0)
             return null;
-        if (conditions.size() == 1)
-            return conditions.get(0);
 
-        return new ChainedCondition(conditions);
+        return new LinkedList<>(conditions);
     }
 
     public void reset() {

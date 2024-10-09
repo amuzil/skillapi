@@ -7,42 +7,21 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import org.apache.logging.log4j.LogManager;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.List;
 import java.util.function.Consumer;
 
 
-public class MultiClientCondition extends Condition {
+public class MultiClientCondition extends MultiCondition {
     private static final int TIMEOUT_IN_TICKS = 3;
-    private final List<Condition> concurrentConditions;
-    private Dictionary<Integer, Boolean> conditionsMet;
     private Consumer<TickEvent.ClientTickEvent> clientTickListener;
-    private int executionTime = 0;
-    private boolean startedExecuting = false;
+
 
     public MultiClientCondition(List<Condition> concurrentConditions) {
-        this.concurrentConditions = concurrentConditions;
-        this.registerEntry();
+        super(concurrentConditions);
     }
 
     public MultiClientCondition(Condition condition) {
-        this(List.of(condition));
-    }
-
-    private void checkConditionMet() {
-        if (conditionsMet.size() == concurrentConditions.size()) {
-            boolean success;
-            for (Iterator<Boolean> it = conditionsMet.elements().asIterator(); it.hasNext(); ) {
-                success = it.next();
-                if (!success)
-                    return;
-            }
-            System.out.println("Success!");
-            this.onSuccess.run();
-            startedExecuting = false;
-            this.reset();
-        }
-
+        super(condition);
     }
 
     public List<Condition> getSubConditions() {
@@ -71,37 +50,8 @@ public class MultiClientCondition extends Condition {
         this.reset();
     }
 
-    public void reset() {
-        AtomicInteger counter = new AtomicInteger();
-        conditionsMet = new Hashtable<>();
-        this.startedExecuting = false;
-        this.executionTime = 0;
-        concurrentConditions.forEach(condition -> {
-            int id = counter.getAndIncrement();
-            condition.register(condition.name(), () -> {
-                synchronized (conditionsMet) {
-                    startedExecuting = true;
-                    conditionsMet.put(id, true);
-                    condition.unregister();
-                    condition.reset();
-                }
-                checkConditionMet();
-            }, () -> {
-                synchronized (conditionsMet) {
-                    conditionsMet.put(id, false);
-                    condition.unregister();
-                    condition.reset();
-                }
-                checkConditionMet();
-            });
-            conditionsMet.put(id, false);
-        });
-    }
-
-
     @Override
     public void register() {
-        super.register();
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ClientTickEvent.class, clientTickListener);
         for (Condition condition : getSubConditions())
             condition.register();
@@ -115,27 +65,12 @@ public class MultiClientCondition extends Condition {
 
     @Override
     public int hashCode() {
-        int hashSum = 0;
-        for (Condition condition : concurrentConditions)
-            hashSum += condition.hashCode();
-        return Objects.hash(name, hashSum);
+        return super.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        } else if (!(obj instanceof MultiClientCondition other)) {
-            return false;
-        } else {
-//            System.out.println("this: stored in tree -> " + this);
-//            System.out.println("other: activeCondition from user input -> " + other);
-            return Objects.equals(concurrentConditions.size(), ((MultiClientCondition) obj).concurrentConditions.size())
-                    &&
-                    /* Makes sure an alternative key condition that's been pressed has been pressed at least as long
-                     * as the currently compared condition. */
-                    obj.hashCode() == this.hashCode();
-        }
+        return super.equals(obj);
     }
 
     @Override

@@ -1,8 +1,6 @@
 package com.amuzil.omegasource.magus.radix.condition;
 
 import com.amuzil.omegasource.magus.radix.Condition;
-import com.amuzil.omegasource.magus.radix.RadixTree;
-import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -13,14 +11,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public class MultiCondition extends Condition {
-    private static final int TIMEOUT_IN_TICKS = 15;
-    private final List<Condition> concurrentConditions;
-    private Runnable onCompleteSuccess;
-    private Runnable onCompleteFailure;
-    private Dictionary<Integer, Boolean> conditionsMet;
-    private Consumer<TickEvent.ClientTickEvent> clientTickListener;
-    private int executionTime = 0;
-    private boolean startedExecuting = false;
+    protected static final int TIMEOUT_IN_TICKS = 15;
+    protected final List<Condition> concurrentConditions;
+    protected Dictionary<Integer, Boolean> conditionsMet;
+    protected Consumer<TickEvent.LevelTickEvent> levelTickListener;
+    protected int executionTime = 0;
+    protected boolean startedExecuting = false;
 
     public MultiCondition(List<Condition> concurrentConditions) {
         this.concurrentConditions = concurrentConditions;
@@ -31,13 +27,18 @@ public class MultiCondition extends Condition {
         this(List.of(condition));
     }
 
-    private void checkConditionMet() {
-        for (Iterator<Boolean> it = conditionsMet.elements().asIterator(); it.hasNext(); ) {
-            // none/not all conditions have been met yet, exit loop and dont execute.
-            if (!it.next()) return;
+    protected void checkConditionMet() {
+        if (conditionsMet.size() == concurrentConditions.size()) {
+            boolean success;
+            for (Iterator<Boolean> it = conditionsMet.elements().asIterator(); it.hasNext(); ) {
+                success = it.next();
+                if (!success)
+                    return;
+            }
+            this.onSuccess.run();
+            startedExecuting = false;
+            this.reset();
         }
-        this.onCompleteSuccess.run();
-        this.reset();
     }
 
     public List<Condition> getSubConditions() {
@@ -47,12 +48,12 @@ public class MultiCondition extends Condition {
     @Override
     public void register(String name, Runnable onSuccess, Runnable onFailure) {
         super.register(name, onSuccess, onFailure);
-        this.clientTickListener = event -> {
-            if (event.phase == TickEvent.ClientTickEvent.Phase.START) {
+        this.levelTickListener = event -> {
+            if (event.phase == TickEvent.LevelTickEvent.Phase.START) {
                 if (startedExecuting) {
                     executionTime++;
                     if (executionTime > TIMEOUT_IN_TICKS) {
-                        this.onCompleteFailure.run();
+                        this.onFailure.run();
 
                         LogManager.getLogger().info("MULTI CONDITION TIMED OUT");
                         this.reset();
@@ -60,8 +61,8 @@ public class MultiCondition extends Condition {
                 }
             }
         };
-        this.onCompleteSuccess = onSuccess;
-        this.onCompleteFailure = onFailure;
+        this.onSuccess = onSuccess;
+        this.onFailure = onFailure;
         this.reset();
     }
 
@@ -73,7 +74,6 @@ public class MultiCondition extends Condition {
         concurrentConditions.forEach(condition -> {
             int id = counter.getAndIncrement();
             condition.register(condition.name(), () -> {
-                System.out.println("First Condition Met: " + condition);
                 synchronized (conditionsMet) {
                     // Debugging statement:
 //                    LogManager.getLogger().info("MARKING CONDITION MET: " + concurrentConditions.get(id).getClass());
@@ -98,13 +98,14 @@ public class MultiCondition extends Condition {
     @Override
     public void register() {
         super.register();
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ClientTickEvent.class, clientTickListener);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.LevelTickEvent.class, levelTickListener);
         for (Condition condition : getSubConditions())
             condition.register();
     }
 
     @Override
     public void unregister() {
+        super.unregister();
         concurrentConditions.forEach(Condition::unregister);
     }
 
