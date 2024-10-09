@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.radix;
 
 import com.amuzil.omegasource.magus.Magus;
+import com.amuzil.omegasource.magus.radix.condition.ConditionRegistry;
 import com.amuzil.omegasource.magus.registry.Registries;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public abstract class Condition {
 		//			RadixUtil.getLogger().debug("Result: failure: " + getClass());
 		//			Thread.dumpStack();
 		this.onFailure = onFailure;
+		registerEntry();
 	}
 
 	// TODO: Change this to registerListeners()
@@ -38,7 +40,7 @@ public abstract class Condition {
 
 	// Every Condition needs to call this in their constructor
 	public void registerEntry() {
-		Registries.registerCondition(this);
+		ConditionRegistry.register(this);
 	}
 
 	public void unregister() {

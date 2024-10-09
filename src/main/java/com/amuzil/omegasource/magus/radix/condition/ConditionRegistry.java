@@ -16,9 +16,11 @@ public class ConditionRegistry {
 
     static int id = 0;
     public static void register(Condition condition) {
-        conditions.put(id, condition);
-        conditionIDs.put(condition, id);
-        id++;
+        if (!conditions.containsValue(condition)) {
+            conditions.put(id, condition);
+            conditionIDs.put(condition, id);
+            id++;
+        }
     }
 
     public static Condition getCondition(int id) {
