@@ -91,7 +91,6 @@ public class KeyboardMouseInputModule extends InputModule {
             this.mouseScrollDelta = mouseScrollingEvent.getScrollDelta();
         };
 
-
         this.tickEventConsumer = tickEvent -> {
             ticksSinceModifiersSent++;
             if (ticksSinceModifiersSent > modifierTickThreshold && !modifierQueue.isEmpty()) {
@@ -205,7 +204,7 @@ public class KeyboardMouseInputModule extends InputModule {
                         if (nextCondition != null)
                             nextCondition.register(); // register next condition in the path if it exists
                         List<Condition> childConditions = branch.next.branches.keySet().stream().toList();
-                        RadixTree.registerConditions(childConditions); // register any next of kin if they exist
+                        RadixTree.registerConditions(childConditions); // register any next of kin children if they exist
                     }
                     this.timeout = 0;
                     if (originalSuccess != null)
