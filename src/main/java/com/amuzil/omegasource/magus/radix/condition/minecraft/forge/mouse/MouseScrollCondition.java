@@ -4,12 +4,15 @@ import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.EventCondition;
+import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseDataBuilder;
+import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseWheelInput;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -18,7 +21,7 @@ public class MouseScrollCondition extends Condition {
     private int timeout;
     private int timer;
     private int duration;
-    private int currentScrolling;
+    protected int currentScrolling;
     private float currentScrollTotal;
     private double maxScrollTotal;
     private double currentScrollDelta;
@@ -44,13 +47,11 @@ public class MouseScrollCondition extends Condition {
                     // If the current total is equal to the max total...
                     if (currentScrollTotal == maxScrollTotal) {
                         this.onSuccess.run();
-                        this.reset();
                     }
                 }
                 else {
                     if (this.direction.getDirection() == (int) currentScrollDelta) {
                         this.onSuccess.run();
-                        this.reset();
                     }
                 }
             }
@@ -62,7 +63,6 @@ public class MouseScrollCondition extends Condition {
                 }
                 if (currentScrolling >= duration) {
                     this.onSuccess.run();
-                    this.reset();
                 }
             }
 
@@ -70,7 +70,6 @@ public class MouseScrollCondition extends Condition {
             // Time out
             if (timer > timeout && timeout > -1) {
                 this.onFailure.run();
-                reset();
             }
 
             // Fail because wrong direction. Works when we need a specific direction for a certain amount of ticks.
@@ -78,7 +77,6 @@ public class MouseScrollCondition extends Condition {
                 if (maxScrollTotal == 0) {
                     if (currentScrollDelta != direction.getDirection()) {
                         this.onFailure.run();
-                        this.reset();
                     }
                 }
             }
@@ -98,4 +96,26 @@ public class MouseScrollCondition extends Condition {
         super.unregister();
         MinecraftForge.EVENT_BUS.unregister(clientTicker);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(direction.getDirection(), duration, maxScrollTotal, timeout);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (!(obj instanceof MouseScrollCondition other)) {
+            return false;
+        } else {
+//            System.out.println("this: stored in tree -> " + this);
+//            System.out.println("other: activeCondition from user input -> " + other);
+            return Objects.equals(direction.getDirection(), other.direction.getDirection()) &&
+                    /* Makes sure an alternative key condition that's been pressed has been pressed at least as long
+                     * as the currently compared condition. */
+                    other.currentScrolling >= duration && other.maxScrollTotal == maxScrollTotal && timeout == other.timeout;
+        }
+    }
+
 }
