@@ -7,29 +7,28 @@ import java.util.List;
 
 public class MouseDataBuilder {
 
-    /**
-     * Number corresponds to the MC mouse wheel direction.
-     */
-    public enum Direction {
-
-        // Away from the user
-        FORWARDS(1),
-        // Towards the user
-        BACK(-1),
-        NEUTRAL(0);
-
-        private final int dir;
-        Direction(int dir) {
-            this.dir = dir;
-        }
-
-        public int getDirection() {
-            return this.dir;
-        }
+    public static MouseWheelInput createWheelInput(Direction direction) {
+        return createWheelInput(direction, -1, -1, -1);
     }
 
-    public static MouseWheelInput createWheelInput(Direction direction, int time) {
-        return new MouseWheelInput(direction, time);
+    public static MouseWheelInput createWheelInput(Direction direction, int duration) {
+        return createWheelInput(direction, -1, duration, -1);
+    }
+
+    public static MouseWheelInput createWheelInput(Direction direction, int duration, int timeout) {
+        return createWheelInput(direction, -1, duration, timeout);
+    }
+
+    public static MouseWheelInput createWheelInput(Direction direction, float totalChange, int duration, int timeout) {
+        return new MouseWheelInput(direction, totalChange, duration, timeout);
+    }
+
+    public static MouseWheelInput createWheelInput(Direction direction, float totalChange, int timeout) {
+        return createWheelInput(direction, totalChange, -1, timeout);
+    }
+
+    public static MouseWheelInput createWheelInput(Direction direction, float totalChange) {
+        return createWheelInput(direction, totalChange, -1);
     }
 
     public static MouseMotionInput createSegmentMouseInput(MousePointInput... inputs) {
@@ -47,7 +46,7 @@ public class MouseDataBuilder {
             double t = i / (double) numPoints;
             double x = (1 - t) * start.x() + t * end.x();
             double y = (1 - t) * start.y() + t * end.y();
-            if(Minecraft.getInstance().player != null)
+            if (Minecraft.getInstance().player != null)
                 points.add(new MousePointInput(x, y, Minecraft.getInstance().player.getLookAngle()));
         }
         return new MouseMotionInput(points);
@@ -84,5 +83,25 @@ public class MouseDataBuilder {
             segments.add(createLine(start, end, numPoints));
         }
         return new MouseShapeInput(segments);
+    }
+
+    /**
+     * Number corresponds to the MC mouse wheel direction.
+     */
+    public enum Direction {
+
+        // Away from the user
+        FORWARDS(1), // Towards the user
+        BACK(-1), NEUTRAL(0);
+
+        private final int dir;
+
+        Direction(int dir) {
+            this.dir = dir;
+        }
+
+        public int getDirection() {
+            return this.dir;
+        }
     }
 }
