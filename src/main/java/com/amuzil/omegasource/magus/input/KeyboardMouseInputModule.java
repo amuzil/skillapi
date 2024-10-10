@@ -263,4 +263,10 @@ public class KeyboardMouseInputModule extends InputModule {
     public boolean keyPressed(int key) {
         return glfwKeysDown.contains(key);
     }
+
+    public double getMouseScrollDelta() {
+        return this.mouseScrollDelta;
+    }
+
+
 }

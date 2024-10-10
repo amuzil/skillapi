@@ -3,11 +3,14 @@ package com.amuzil.omegasource.magus.radix.builders;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.condition.MultiClientCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
+import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.mouse.MouseScrollCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.conditionals.key.ChainedKeyInput;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
 import com.amuzil.omegasource.magus.skill.conditionals.key.MultiKeyInput;
+import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseDataBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseWheelInput;
+import net.minecraftforge.client.event.InputEvent;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -98,11 +101,19 @@ public class InputConverter {
 //				mouseInput -> );
 
         registerBuilder(MouseWheelInput.class,
-                mouseWheelInput -> {
+                mouseWheelInputs -> {
 
                     LinkedList<Condition> conditions = new LinkedList<>();
-                    // Placeholder for now
-                    //conditions.add(new KeyPressCondition(0, TIMEOUT_THRESHOLD));
+                    if (mouseWheelInputs instanceof List<?>) {
+                        for (Object obj : (List<?>) mouseWheelInputs) {
+                            MouseWheelInput input = (MouseWheelInput) obj;
+                            MouseScrollCondition scroll = new MouseScrollCondition(input.direction(), input.duration(), input.totalChange(),
+                                    input.timeout());
+                            scroll.register("mouse_scroll", scroll::reset, scroll::reset);
+                            conditions.add(scroll);
+                        }
+                    }
+
 
                     return conditions;
 
