@@ -2,6 +2,7 @@ package com.amuzil.omegasource.magus.skill.test.avatar;
 
 import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.radix.RadixTree;
+import com.amuzil.omegasource.magus.radix.builders.InputPathBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.conditionals.InputDataBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.key.KeyDataBuilder;
@@ -22,10 +23,9 @@ public class AvatarFormRegistry {
         KeyInput left = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyAttack.getKey(), 0);
         KeyInput right = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyUse.getKey(), 0);
         KeyInput initializer = KeyDataBuilder.createInput("key.keyboard.left.alt", 0);
-        KeyInput held = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyShift.getKey(), 20);
         KeyInput sneak = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyShift.getKey(), 16);
-        MouseWheelInput forwards = MouseDataBuilder.createWheelInput(MouseDataBuilder.Direction.FORWARDS, 1);
-        MouseWheelInput back = MouseDataBuilder.createWheelInput(MouseDataBuilder.Direction.BACK, 1);
+        MouseWheelInput forwards = MouseDataBuilder.createWheelInput(MouseDataBuilder.Direction.FORWARDS, 2);
+        MouseWheelInput back = MouseDataBuilder.createWheelInput(MouseDataBuilder.Direction.BACK, 2);
 
 
         // TODO: Rather than having "push", "pull", "raise", and "lower" as Forms,
@@ -35,6 +35,8 @@ public class AvatarFormRegistry {
         FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE, RadixTree.InputType.KEYBOARD_MOUSE);
         FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE, RadixTree.InputType.KEYBOARD_MOUSE);
         FormDataRegistry.registerForm(InputDataBuilder.toInputs(KeyDataBuilder.createMultiInput(left, right)), Forms.BURST, RadixTree.InputType.KEYBOARD_MOUSE);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(forwards), Forms.EXPAND, RadixTree.InputType.KEYBOARD_MOUSE);
+        FormDataRegistry.registerForm(InputDataBuilder.toInputs(back), Forms.COMPRESS, RadixTree.InputType.KEYBOARD_MOUSE);
 
         /* Mouse Motion Forms */
         // TODO: Figure out a way to pass a condition that specifies when to track data for this Form and other mouse motion Forms.

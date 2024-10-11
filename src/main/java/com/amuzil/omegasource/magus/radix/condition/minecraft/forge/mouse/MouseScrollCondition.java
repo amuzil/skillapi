@@ -7,6 +7,7 @@ import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.EventConditi
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseDataBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseWheelInput;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -27,6 +28,7 @@ public class MouseScrollCondition extends Condition {
     private double currentScrollDelta;
     private MouseDataBuilder.Direction direction;
     private Consumer<TickEvent.ClientTickEvent> clientTicker;
+    private boolean started;
 
     public MouseScrollCondition(MouseDataBuilder.Direction direction, int duration, float total, int timeout) {
         this.direction = direction;
@@ -34,55 +36,68 @@ public class MouseScrollCondition extends Condition {
         this.maxScrollTotal = total;
         this.timeout = timeout;
         this.timer = 0;
+        this.started = false;
 
         this.clientTicker = tickEvent -> {
 
-            currentScrollDelta = ((KeyboardMouseInputModule) Magus.keyboardMouseInputModule).getMouseScrollDelta();
-            currentScrollTotal += ((KeyboardMouseInputModule) Magus.keyboardMouseInputModule).getMouseScrollDelta();
+            if (tickEvent.phase == TickEvent.ClientTickEvent.Phase.START && Minecraft.getInstance().getOverlay() == null) {
+                currentScrollDelta = ((KeyboardMouseInputModule) Magus.keyboardMouseInputModule).getMouseScrollDelta();
+                currentScrollTotal += ((KeyboardMouseInputModule) Magus.keyboardMouseInputModule).getMouseScrollDelta();
+
+                // Wait until the player touches the mouse.
+                if (currentScrollDelta != 0)
+                    started = true;
 
 
-            // Any instant of the required direction being fulfilled
-            if (duration < 0) {
-                if (total != 0) {
-                    // If the current total is equal to the max total...
-                    if (currentScrollTotal == maxScrollTotal) {
-                        this.onSuccess.run();
+                // Any instant of the required direction being fulfilled
+                if (duration < 0) {
+                    if (total != 0) {
+                        // If the current total is equal to the max total...
+                        if (currentScrollTotal == maxScrollTotal) {
+                            this.onSuccess.run();
+                        }
+                    } else {
+                        if (this.direction.getDirection() == (int) currentScrollDelta) {
+                            this.onSuccess.run();
+                        }
                     }
                 }
+
+                // Otherwise, we need to track over the duration
                 else {
-                    if (this.direction.getDirection() == (int) currentScrollDelta) {
+                    if (currentScrollDelta == direction.getDirection()) {
+                        currentScrolling++;
+                    }
+                    if (currentScrolling >= duration) {
                         this.onSuccess.run();
                     }
                 }
-            }
 
-            // Otherwise, we need to track over the duration
-            else {
-                if (currentScrollDelta == direction.getDirection()) {
-                    currentScrolling++;
+                // Fail because wrong direction. Works when we need a specific direction for a certain amount of ticks.
+                if (duration > -1) {
+                    if (maxScrollTotal == 0) {
+                        if (currentScrollDelta != direction.getDirection()) {
+                            this.onFailure.run();
+                        }
+                    }
                 }
-                if (currentScrolling >= duration) {
-                    this.onSuccess.run();
-                }
-            }
 
+                timer++;
+            }
 
             // Time out
-            if (timer > timeout && timeout > -1) {
+            if (started && timer > timeout && timeout > -1) {
                 this.onFailure.run();
             }
-
-            // Fail because wrong direction. Works when we need a specific direction for a certain amount of ticks.
-            if (duration > -1) {
-                if (maxScrollTotal == 0) {
-                    if (currentScrollDelta != direction.getDirection()) {
-                        this.onFailure.run();
-                    }
-                }
-            }
-
-            timer++;
         };
+    }
+
+    @Override
+    public void reset() {
+        this.currentScrolling = 0;
+        this.currentScrollDelta = 0;
+        this.currentScrollTotal = 0;
+        this.timer = 0;
     }
 
     @Override
@@ -93,7 +108,6 @@ public class MouseScrollCondition extends Condition {
 
     @Override
     public void unregister() {
-        super.unregister();
         MinecraftForge.EVENT_BUS.unregister(clientTicker);
     }
 

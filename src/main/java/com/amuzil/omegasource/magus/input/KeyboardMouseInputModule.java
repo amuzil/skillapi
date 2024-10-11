@@ -36,6 +36,7 @@ public class KeyboardMouseInputModule extends InputModule {
     private double mouseScrollDelta;
     private Form activeForm;
     private int timeout = 0;
+    private int scrollTimeout = 0;
     private boolean listen;
     private boolean checkForm = false;
 
@@ -87,12 +88,20 @@ public class KeyboardMouseInputModule extends InputModule {
         };
 
         this.mouseScrollListener = mouseScrollingEvent -> {
+            this.scrollTimeout = 0;
             // 1.0 = away from player, -1 = towards player
             this.mouseScrollDelta = mouseScrollingEvent.getScrollDelta();
+
         };
 
         this.tickEventConsumer = tickEvent -> {
             ticksSinceModifiersSent++;
+            scrollTimeout++;
+
+            // Resets mouse scrolling delta
+            if (scrollTimeout >= tickActivationThreshold)
+                this.mouseScrollDelta = 0;
+
             if (ticksSinceModifiersSent > modifierTickThreshold && !modifierQueue.isEmpty()) {
                 sendModifierData();
             }
