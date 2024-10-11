@@ -16,6 +16,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -53,17 +54,19 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
         List<InputData> formInputs = FormDataRegistry.getInputsForForm(formToModify, type);
 
         InputData lastInput = formInputs.get(formInputs.size() - 1);
-        int key;
+        List<Integer> keyCodes = new ArrayList<>();
         if (lastInput instanceof ChainedKeyInput) {
-            key = ((ChainedKeyInput) lastInput).trueLast().key().getValue();
+            keyCodes.add(((ChainedKeyInput) lastInput).trueLast().key().getValue());
         }
+        /// I need to fix multi :(
         else if (lastInput instanceof MultiKeyInput) {
-            key = ((MultiKeyInput) lastInput).last().key().getValue();
+            for (KeyInput key: ((MultiKeyInput) lastInput).keys())
+                keyCodes.add(key.key().getValue());
         }
         else {
             // If it's registered to the keyboard mouse input module, it's going to be some variant
             // of KeyInput.
-            key = ((KeyInput) lastInput).key().getValue();
+            keyCodes.add(((KeyInput) lastInput).key().getValue());
         }
 
         InputModule  module = Magus.keyboardMouseInputModule;
@@ -75,7 +78,14 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
 
         this.clientTickListener = event -> {
             if (event.phase == TickEvent.ClientTickEvent.Phase.START) {
-                if (module.keyPressed(key)) {
+                boolean pressed = true;
+                for (int key : keyCodes) {
+                    if (!module.keyPressed(key)) {
+                        pressed = false;
+                        break;
+                    }
+                }
+                if (pressed) {
                     this.isHeld = true;
                     this.currentHolding++;
                 } else {
