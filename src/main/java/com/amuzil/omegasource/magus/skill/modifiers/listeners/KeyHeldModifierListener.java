@@ -56,11 +56,12 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
         InputData lastInput = formInputs.get(formInputs.size() - 1);
         List<Integer> keyCodes = new ArrayList<>();
         if (lastInput instanceof ChainedKeyInput) {
-            keyCodes.add(((ChainedKeyInput) lastInput).trueLast().key().getValue());
+            for (KeyInput key : ((ChainedKeyInput) lastInput).last().keys())
+                keyCodes.add(key.key().getValue());
         }
         /// I need to fix multi :(
         else if (lastInput instanceof MultiKeyInput) {
-            for (KeyInput key: ((MultiKeyInput) lastInput).keys())
+            for (KeyInput key : ((MultiKeyInput) lastInput).keys())
                 keyCodes.add(key.key().getValue());
         }
         else {
@@ -79,6 +80,7 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
         this.clientTickListener = event -> {
             if (event.phase == TickEvent.ClientTickEvent.Phase.START) {
                 boolean pressed = true;
+                // If all requisite keys aren't pressed, don't iterate modifier data
                 for (int key : keyCodes) {
                     if (!module.keyPressed(key)) {
                         pressed = false;

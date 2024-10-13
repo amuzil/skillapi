@@ -17,7 +17,8 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import org.apache.logging.log4j.LogManager;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 
@@ -73,7 +74,7 @@ public class KeyboardMouseInputModule extends InputModule {
         this.mouseListener = mouseEvent -> {
             int keyPressed = mouseEvent.getButton();
             switch (mouseEvent.getAction()) {
-                case InputConstants.PRESS-> {
+                case InputConstants.PRESS -> {
                     if (!glfwKeysDown.contains(keyPressed)) {
                         glfwKeysDown.add(keyPressed);
                     }
@@ -120,13 +121,16 @@ public class KeyboardMouseInputModule extends InputModule {
             if (activeForm != null && activeForm.name() != null) {
                 ticksSinceActivated++;
                 if (ticksSinceActivated >= tickActivationThreshold) {
+                    // Always to send modifier data right when the form is activated
+                    sendModifierData();
 //                    if (lastActivatedForm != null && lastActivatedForm.name().equals(activeForm.name())) {
-//                        // Send modifier data of it being held and/or multi.
+//                        // Send modifier data of it being multi.
 //                    }
 //                    else {
 //                        // Send packet
 //                        MagusNetwork.sendToServer(new ConditionActivatedPacket(activeForm));
 //                    }
+
                     lastActivatedForm = activeForm;
                     Magus.sendDebugMsg("Form Activated: " + lastActivatedForm.name());
                     activeForm = null;

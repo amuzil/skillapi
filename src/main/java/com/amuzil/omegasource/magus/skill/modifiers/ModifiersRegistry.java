@@ -3,10 +3,7 @@ package com.amuzil.omegasource.magus.skill.modifiers;
 import com.amuzil.omegasource.magus.skill.modifiers.api.Modifier;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.data.*;
-import com.amuzil.omegasource.magus.skill.modifiers.listeners.DirectionModifierListener;
-import com.amuzil.omegasource.magus.skill.modifiers.listeners.GestureModifierListener;
-import com.amuzil.omegasource.magus.skill.modifiers.listeners.KeyHeldModifierListener;
-import com.amuzil.omegasource.magus.skill.modifiers.listeners.TargetModifierListener;
+import com.amuzil.omegasource.magus.skill.modifiers.listeners.*;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.HashMap;
@@ -22,6 +19,8 @@ public class ModifiersRegistry {
     public static Modifier DIRECTION;
     public static Modifier TARGET;
     public static Modifier GESTURE;
+
+    public static Modifier CONTROL;
 
     public static void init() {
         modifierDataTypes = new HashMap<>();
@@ -45,6 +44,11 @@ public class ModifiersRegistry {
         ModifierData gestureModifierData = new GestureModifierData();
         GESTURE = new Modifier(gestureModifierData, new GestureModifierListener());
         modifierDataTypes.put(gestureModifierData.getName(), GESTURE);
+
+        ModifierData scrollModifierData = new MouseScrollModifierData();
+        CONTROL = new Modifier(scrollModifierData, new MouseScrollModifierListener());
+        modifierDataTypes.put(scrollModifierData.getName(), CONTROL);
+
     }
 
     public static ModifierData fromCompoundTag(CompoundTag compoundTag) {
