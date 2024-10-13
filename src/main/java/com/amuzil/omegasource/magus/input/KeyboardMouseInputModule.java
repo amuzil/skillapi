@@ -8,6 +8,7 @@ import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.elements.Disciplines;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
+import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -123,6 +124,7 @@ public class KeyboardMouseInputModule extends InputModule {
                 if (ticksSinceActivated >= tickActivationThreshold) {
                     // Always to send modifier data right when the form is activated
                     sendModifierData();
+
 //                    if (lastActivatedForm != null && lastActivatedForm.name().equals(activeForm.name())) {
 //                        // Send modifier data of it being multi.
 //                    }
@@ -167,6 +169,11 @@ public class KeyboardMouseInputModule extends InputModule {
 
     private void sendModifierData() {
         LogManager.getLogger().info("SENDING MODIFIER DATA");
+        System.out.println("Modifier Listener Size: " + modifierListeners.size());
+        System.out.println("Modifier Data Size: " + modifierQueue.size());
+        for (ModifierData modData : modifierQueue.values())
+            modData.print();
+
         synchronized (modifierQueue) {
             MagusNetwork.sendToServer(new SendModifierDataPacket(modifierQueue.values().stream().toList()));
             ticksSinceModifiersSent = 0;

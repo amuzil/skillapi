@@ -1,5 +1,6 @@
 package com.amuzil.omegasource.magus.skill.modifiers.data;
 
+import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.amuzil.omegasource.magus.skill.modifiers.api.BaseModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.listeners.MouseScrollModifierListener;

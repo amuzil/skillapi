@@ -3,6 +3,7 @@ package com.amuzil.omegasource.magus.skill.modifiers.api;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.EventPriority;
 
 import java.util.function.Consumer;
 
@@ -12,7 +13,7 @@ public abstract class ModifierListener<T extends Event> implements Consumer<T> {
     protected ModifierData modifierData;
 
     public void register(Runnable onSuccess) {
-        MinecraftForge.EVENT_BUS.addListener(this);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, this);
         this.onSuccess = onSuccess;
     }
 
