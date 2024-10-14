@@ -70,7 +70,6 @@ public class Magus {
         Forms.init();
         FormDataRegistry.init();
         ModifiersRegistry.init();
-
     }
 
     private void setup(final FMLCommonSetupEvent event) {
@@ -86,11 +85,9 @@ public class Magus {
         //todo call this anytime the key mappings are updated
     }
 
-    private void enqueueIMC(final InterModEnqueueEvent event) {
-    }
+    private void enqueueIMC(final InterModEnqueueEvent event) {}
 
-    private void processIMC(final InterModProcessEvent event) {
-    }
+    private void processIMC(final InterModProcessEvent event) {}
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent

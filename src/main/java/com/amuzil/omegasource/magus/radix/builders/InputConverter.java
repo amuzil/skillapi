@@ -51,74 +51,59 @@ public class InputConverter {
                     keyPress.register("key_press", keyPress::reset, keyPress::reset);
                     conditions.add(keyPress);
                 }
-
-
             return conditions;
         });
 
-        registerBuilder(MultiKeyInput.class,
-                multiKeyInputs -> {
-                    LinkedList<Condition> multiConditions = new LinkedList<>();
-                   for (Object obj : (List<?>) multiKeyInputs) {
-                        MultiKeyInput permutation = (MultiKeyInput) obj;
-                        // THis list isn't working.
-                        List<Condition> conditions = new LinkedList<>();
-                        for (KeyInput input : permutation.keys()) {
-                            conditions.addAll(buildPathFrom(List.of(input)));
-                        }
-
-                            //= new LinkedList<>(permutation.keys().stream().map(InputConverter::buildPathFrom)
-                                //.collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll));
-
-                        // Create a MultiCondition from the flattened conditions
-                        MultiClientCondition multiCondition = new MultiClientCondition(conditions);
-                        multiCondition.register("multi_key_press", multiCondition::reset, multiCondition::reset);
-                        multiConditions.add(multiCondition);
-                    }
-
-                    // Return a list containing the MultiCondition
-                    return multiConditions;
+        registerBuilder(MultiKeyInput.class, multiKeyInputs -> {
+           LinkedList<Condition> multiConditions = new LinkedList<>();
+           for (Object obj : (List<?>) multiKeyInputs) {
+                MultiKeyInput permutation = (MultiKeyInput) obj;
+                // THis list isn't working.
+                List<Condition> conditions = new LinkedList<>();
+                for (KeyInput input : permutation.keys()) {
+                    conditions.addAll(buildPathFrom(List.of(input)));
                 }
-        );
+                    //= new LinkedList<>(permutation.keys().stream().map(InputConverter::buildPathFrom)
+                        //.collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll));
+                // Create a MultiCondition from the flattened conditions
+                MultiClientCondition multiCondition = new MultiClientCondition(conditions);
+                multiCondition.register("multi_key_press", multiCondition::reset, multiCondition::reset);
+                multiConditions.add(multiCondition);
+           }
+           // Return a list containing the MultiCondition
+           return multiConditions;
+        });
 
-        registerBuilder(ChainedKeyInput.class,
-                chainedKeyInputs -> {
-                    LinkedList<Condition> chained = new LinkedList<>();
-                    for (Object obj : (List<?>) chainedKeyInputs) {
-                        ChainedKeyInput combination = (ChainedKeyInput) obj;
-                        List<Condition> conditions = new LinkedList<>(combination.keys().stream().map(InputConverter::buildPathFrom)
-                                .collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll));
+        registerBuilder(ChainedKeyInput.class, chainedKeyInputs -> {
+            LinkedList<Condition> chained = new LinkedList<>();
+            for (Object obj : (List<?>) chainedKeyInputs) {
+                ChainedKeyInput combination = (ChainedKeyInput) obj;
+                List<Condition> conditions = new LinkedList<>(combination.keys().stream().map(InputConverter::buildPathFrom)
+                        .collect(LinkedList::new, LinkedList::addAll, LinkedList::addAll));
 
-                        chained.addAll(conditions);
-                    }
-                    // Return a list containing the ChainedCondition
-                    return chained;
-                }
-        );
+                chained.addAll(conditions);
+            }
+            // Return a list containing the ChainedCondition
+            return chained;
+        });
 
         /* Mouse */
 //		registerBuilder(MouseInput.class,
 //				mouseInput -> );
 
-        registerBuilder(MouseWheelInput.class,
-                mouseWheelInputs -> {
-
-                    LinkedList<Condition> conditions = new LinkedList<>();
-                    if (mouseWheelInputs instanceof List<?>) {
-                        for (Object obj : (List<?>) mouseWheelInputs) {
-                            MouseWheelInput input = (MouseWheelInput) obj;
-                            MouseScrollCondition scroll = new MouseScrollCondition(input.direction(), input.duration(), input.totalChange(),
-                                    input.timeout());
-                            scroll.register("mouse_scroll", scroll::reset, scroll::reset);
-                            conditions.add(scroll);
-                        }
-                    }
-
-
-                    return conditions;
-
+        registerBuilder(MouseWheelInput.class, mouseWheelInputs -> {
+            LinkedList<Condition> conditions = new LinkedList<>();
+            if (mouseWheelInputs instanceof List<?>) {
+                for (Object obj : (List<?>) mouseWheelInputs) {
+                    MouseWheelInput input = (MouseWheelInput) obj;
+                    MouseScrollCondition scroll = new MouseScrollCondition(input.direction(), input.duration(), input.totalChange(),
+                            input.timeout());
+                    scroll.register("mouse_scroll", scroll::reset, scroll::reset);
+                    conditions.add(scroll);
                 }
-        );
+            }
+            return conditions;
+        });
     }
 
     @SuppressWarnings("unchecked")
