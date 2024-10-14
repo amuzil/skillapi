@@ -3,8 +3,9 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'org.spongepowered.mixin' version '0.7.+'
 }
-
+apply plugin: 'org.spongepowered.mixin'
 version = mod_version
 group = mod_group_id
 
@@ -117,7 +118,7 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 repositories {
     // Put repositories for dependencies here
     // ForgeGradle automatically adds the Forge maven and Maven Central for you
-
+    maven { url = "https://maven.firstdarkdev.xyz/snapshots" } // LDLib, Photon
     // If you have mod jar dependencies in ./libs, you can declare them as a repository like so.
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html#sub:flat_dir_resolver
     // flatDir {
@@ -132,7 +133,8 @@ dependencies {
     // If the group id is "net.minecraft" and the artifact id is one of ["client", "server", "joined"],
     // then special handling is done to allow a setup of a vanilla dependency without the use of an external repository.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-
+    implementation fg.deobf("com.lowdragmc.photon:photon-forge-1.19.4:1.0.5") { transitive = false }
+    implementation fg.deobf("com.lowdragmc.ldlib:ldlib-forge-1.19.4:1.0.14.a") { transitive = false }
     // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
