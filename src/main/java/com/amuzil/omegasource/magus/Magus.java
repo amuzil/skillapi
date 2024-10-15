@@ -128,11 +128,19 @@ public class Magus {
 
     // Send a message to in-game chat
     public static void sendDebugMsg(String msg) {
-        LocalPlayer player = Minecraft.getInstance().player;
-        Component text = Component.literal(msg);
-        if (player != null)
-            player.sendSystemMessage(text);
-        else
-            System.err.println("sendDebugMsg failed: player is null");
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft == null) {
+            System.err.println("sendDebugMsg failed: Minecraft instance is null");
+            return;
+        }
+        minecraft.execute(() -> {
+            LocalPlayer player = minecraft.player;
+            if (player != null) {
+                Component text = Component.literal(msg);
+                player.sendSystemMessage(text);
+            } else {
+                System.err.println("sendDebugMsg failed: player is null");
+            }
+        });
     }
 }

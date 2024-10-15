@@ -4,6 +4,7 @@ import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.client_executed.RegisterModifierListenersPacket;
 import com.amuzil.omegasource.magus.network.packets.client_executed.UnregisterModifierListenersPacket;
 import com.amuzil.omegasource.magus.skill.elements.Discipline;
+import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.modifiers.api.Modifier;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.mojang.datafixers.util.Pair;
@@ -67,7 +68,6 @@ public class Node {
         this.branches = new HashMap<>();
         this.isComplete = isComplete;
     }
-
     public RadixBranch getTransition(Condition transitionCondition) {
         return branches.get(transitionCondition);
     }
@@ -136,6 +136,8 @@ public class Node {
 
         List<String> modifierTypes = new ArrayList<>();
         List<ModifierData> modifiers = getModifiers();
+        Modifier modifier = ModifiersRegistry.CONTROL;
+
         synchronized (modifiers) {
             modifiers.stream()
                     .filter(modifierData -> !modifierData.serversideOnly())

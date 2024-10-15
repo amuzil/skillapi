@@ -20,6 +20,8 @@ public class MultiCondition extends Condition {
     protected int executionTime = 0;
     protected boolean startedExecuting = false;
 
+    private final Object lock = new Object();
+
     public MultiCondition(List<Condition> concurrentConditions) {
         this.concurrentConditions = concurrentConditions;
         this.registerEntry();
@@ -54,8 +56,6 @@ public class MultiCondition extends Condition {
                     executionTime++;
                     if (executionTime > TIMEOUT_IN_TICKS) {
                         this.onFailure.run();
-
-                        LogManager.getLogger().info("MULTI CONDITION TIMED OUT");
                         this.reset();
                     }
                 }

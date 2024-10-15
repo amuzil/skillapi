@@ -27,6 +27,7 @@ public class DirectionModifierListener extends ModifierListener<LivingEvent.Livi
     @Override
     public boolean shouldCollectModifierData(LivingEvent.LivingTickEvent event) {
         if(!(event.getEntity() instanceof Player)) return false;
+        //TODO: Need to check for direction key presses instead of motion
         if((event.getEntity().getDeltaMovement().length() > motionThreshold)) {
             LogManager.getLogger().info("MOVE MOTION: " + event.getEntity().getDeltaMovement().length());
             LogManager.getLogger().info("MOVE DIRECTION: " + event.getEntity().getMotionDirection());

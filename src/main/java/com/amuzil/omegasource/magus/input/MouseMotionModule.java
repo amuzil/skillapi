@@ -75,7 +75,7 @@ public class MouseMotionModule extends InputModule {
 //                    else
 //                        LogManager.getLogger().info("FORM ACTIVATED: " + activeForm.name());
 //                    MagusNetwork.sendToServer(new ConditionActivatedPacket(activeForm));
-                    lastActivatedForm = activeForm;
+                    lastActivatedForm.set(activeForm);
                     activeForm = new Form();
                     ticksSinceActivated = 0;
                 }

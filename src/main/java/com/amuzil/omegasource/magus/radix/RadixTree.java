@@ -4,6 +4,7 @@ import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.server_executed.ConditionActivatedPacket;
 import com.amuzil.omegasource.magus.radix.condition.MultiClientCondition;
 import com.amuzil.omegasource.magus.skill.elements.Discipline;
+import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.data.MultiModifierData;
 import net.minecraft.server.level.ServerPlayer;
@@ -165,6 +166,16 @@ public class RadixTree {
                     List<Condition> suffix = currentBranch.path.conditions.subList(currCondition.size() - 1, currCondition.size());
                     currentBranch.path.conditions = currCondition;
                     Node newNext = new Node(true);
+
+                    // Add modifiers for all available types...
+                    newNext.addModifierData(ModifiersRegistry.DIRECTION.data());
+                    newNext.addModifierData(ModifiersRegistry.MULTI.data());
+                    newNext.addModifierData(ModifiersRegistry.FOCUS.data());
+                    newNext.addModifierData(ModifiersRegistry.TARGET.data());
+                    newNext.addModifierData(ModifiersRegistry.CONTROL.data());
+                    newNext.addModifierData(ModifiersRegistry.GESTURE.data());
+
+
                     Node afterNewNext = currentBranch.next;
                     currentBranch.next = newNext;
 

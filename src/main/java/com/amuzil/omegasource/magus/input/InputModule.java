@@ -8,6 +8,7 @@ import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.elements.Disciplines;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
+import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierListener;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -16,20 +17,22 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.client.event.InputEvent;
 import org.apache.logging.log4j.LogManager;
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 public abstract class InputModule {
     protected static RadixTree formsTree = new RadixTree();
-    protected static LinkedList<Condition> activeConditions = new LinkedList<>();
+    protected final List<Condition> activeConditions = Collections.synchronizedList(new LinkedList<>());
     protected static LinkedList<Form> activeForms = new LinkedList<>();
     protected static final List<Form> activeFormInputs = new ArrayList<>();
     protected static final Map<String, Integer> movementKeys = new HashMap<>();
     protected final Map<Condition, Form> formInputs = new HashMap<>();
     protected final List<ModifierListener> modifierListeners = new ArrayList<>();
     protected final Map<String, ModifierData> modifierQueue = new HashMap<>();
-    protected Form lastActivatedForm = null;
+    protected AtomicReference<Form> lastActivatedForm = new AtomicReference<>(Forms.NULL);
 
     public abstract void registerInputData(List<InputData> formExecutionInputs, Form formToExecute, List<Condition> conditions);
 
@@ -88,7 +91,7 @@ public abstract class InputModule {
     }
 
     public Form getLastActivatedForm() {
-        return this.lastActivatedForm;
+        return this.lastActivatedForm.get();
     }
 
     public List<Condition> getActiveConditions() {

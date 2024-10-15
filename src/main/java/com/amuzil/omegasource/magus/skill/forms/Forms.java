@@ -2,6 +2,8 @@ package com.amuzil.omegasource.magus.skill.forms;
 
 public class Forms {
     // FORMS
+    // bank form
+    public static final Form NULL = new Form("null");
     public static final Form PUSH = new Form("push");
     public static final Form PULL = new Form("pull");
     public static final Form RAISE = new Form("raise");
