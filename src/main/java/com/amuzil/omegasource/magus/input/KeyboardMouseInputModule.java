@@ -19,7 +19,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import org.apache.logging.log4j.LogManager;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -36,12 +36,11 @@ public class KeyboardMouseInputModule extends InputModule {
     private final int tickTimeoutThreshold = 60;
     private final int modifierTickThreshold = 10;
     // Maybe?
-    private final Object lock = new Object();
-    private final AtomicInteger ticksSinceActivated = new AtomicInteger(0);
-    private final AtomicReference<Form> activeForm = new AtomicReference<>(Forms.NULL);
-    private final AtomicInteger timeout = new AtomicInteger(0);
+    private final AtomicInteger ticksSinceActivated;
+    private final AtomicReference<Form> activeForm;
+    private final AtomicInteger timeout;
     private int ticksSinceModifiersSent = 0;
-    private List<Integer> glfwKeysDown;
+    private final List<Integer> glfwKeysDown;
     private double mouseScrollDelta;
     private int scrollTimeout = 0;
     private boolean listen;
@@ -55,8 +54,12 @@ public class KeyboardMouseInputModule extends InputModule {
     public KeyboardMouseInputModule() {
         formsTree.setDiscipline(Disciplines.AIR);
 
-        this.glfwKeysDown = new ArrayList<>();
+        this.ticksSinceActivated = new AtomicInteger(0);
+        this.activeForm = new AtomicReference<>(Forms.NULL);
+        this.timeout = new AtomicInteger(0);
+        this.glfwKeysDown = new LinkedList<>();
         this.listen = true;
+
         this.keyboardListener = keyboardEvent -> {
             int keyPressed = keyboardEvent.getKey();
             // NOTE: Minecraft's InputEvent.Key can only listen to the action InputConstants.REPEAT of one key at a time
@@ -79,16 +82,18 @@ public class KeyboardMouseInputModule extends InputModule {
 
         this.mouseListener = mouseEvent -> {
             int keyPressed = mouseEvent.getButton();
-            switch (mouseEvent.getAction()) {
-                case InputConstants.PRESS -> {
-                    if (!glfwKeysDown.contains(keyPressed)) {
-                        glfwKeysDown.add(keyPressed);
+            synchronized (glfwKeysDown) {
+                switch (mouseEvent.getAction()) {
+                    case InputConstants.PRESS -> {
+                        if (!glfwKeysDown.contains(keyPressed)) {
+                            glfwKeysDown.add(keyPressed);
+                        }
                     }
-                }
-                case InputConstants.RELEASE -> {
-                    if (glfwKeysDown.contains(keyPressed)) {
-                        glfwKeysDown.remove((Integer) keyPressed);
-                        checkForm = true;
+                    case InputConstants.RELEASE -> {
+                        if (glfwKeysDown.contains(keyPressed)) {
+                            glfwKeysDown.remove((Integer) keyPressed);
+                            checkForm = true;
+                        }
                     }
                 }
             }
@@ -192,7 +197,7 @@ public class KeyboardMouseInputModule extends InputModule {
     }
 
     public void resetKeys() {
-        glfwKeysDown = new ArrayList<>();
+        glfwKeysDown.clear();
     }
 
     public void cleanMCKeys() {
