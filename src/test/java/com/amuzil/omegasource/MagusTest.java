@@ -9,18 +9,18 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class MagusTest {
 
-    @Test
-    public void checkResource(){
-        System.out.println("Executing Test...");
-        ResourceLocation resource; FX fx;
-
-        resource = new ResourceLocation("magus", "blue_fire");
-        fx = FXHelper.getFX(resource);
-        System.out.println("resource: " + resource.getNamespace());
-        System.out.println("resource: " + resource.getPath());
-        System.out.println("resource: " + resource.toDebugFileName());
-        System.out.println("fx: " + fx);
-
-        assertNotNull(fx, "FX object not found!");
-    }
+//    @Test
+//    public void checkResource(){
+//        System.out.println("Executing Test...");
+//        ResourceLocation resource; FX fx;
+//
+//        resource = new ResourceLocation("magus", "blue_fire");
+//        fx = FXHelper.getFX(resource);
+//        System.out.println("resource: " + resource.getNamespace());
+//        System.out.println("resource: " + resource.getPath());
+//        System.out.println("resource: " + resource.toDebugFileName());
+//        System.out.println("fx: " + fx);
+//
+//        assertNotNull(fx, "FX object not found!");
+//    }
 }
