@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 
 public abstract class InputModule {
-    protected static Discipline activeDiscipline = Disciplines.AIR;
+    public static Discipline activeDiscipline = Disciplines.AIR;
     protected static final List<Form> activeFormInputs = new ArrayList<>();
     protected static final Map<String, Integer> movementKeys = new HashMap<>();
     protected static RadixTree formsTree = new RadixTree();
@@ -54,6 +54,10 @@ public abstract class InputModule {
                 movementKeys.put(keyMapping.getName(), keyMapping.getKey().getValue());
             }
         });
+    }
+
+    public static Discipline getDiscipline() {
+        return activeDiscipline;
     }
 
     public static Map<String, Integer> getMovementKeys() {
