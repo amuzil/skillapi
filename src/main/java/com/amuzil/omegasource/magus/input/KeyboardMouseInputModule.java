@@ -61,7 +61,6 @@ public class KeyboardMouseInputModule extends InputModule {
         this.glfwKeysDown = new LinkedList<>();
         this.listen = true;
         this.resetScrolling = false;
-        this.previousScrollDelta = 0;
 
         this.keyboardListener = keyboardEvent -> {
             int keyPressed = keyboardEvent.getKey();
