@@ -42,8 +42,8 @@ public class ModifiersRegistry {
         TARGET = new Modifier(targetModifierData, new TargetModifierListener());
         modifierDataTypes.put(targetModifierData.getName(), TARGET);
 
-        ModifierData gestureModifierData = new GestureModifierData();
-        GESTURE = new Modifier(gestureModifierData, new GestureModifierListener());
+        ModifierData gestureModifierData = new MouseGestureModifierData();
+        GESTURE = new Modifier(gestureModifierData, new MouseGestureModifierListener());
         modifierDataTypes.put(gestureModifierData.getName(), GESTURE);
 
         ModifierData scrollModifierData = new MouseScrollModifierData();

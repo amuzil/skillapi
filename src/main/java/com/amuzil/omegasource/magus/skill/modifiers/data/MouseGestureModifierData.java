@@ -5,24 +5,23 @@ import com.amuzil.omegasource.magus.skill.modifiers.api.BaseModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class GestureModifierData extends BaseModifierData {
+public class MouseGestureModifierData extends BaseModifierData {
 
     private List<String> mouseGestures;
     private HashMap<MouseShapeInput, Integer> shapeCounter;
 
-    public GestureModifierData() {
+    public MouseGestureModifierData() {
         this.mouseGestures = new ArrayList<>();
         this.shapeCounter = new HashMap<>();
     }
 
-    public GestureModifierData(List<String> gestures) {
+    public MouseGestureModifierData(List<String> gestures) {
         this.mouseGestures = gestures;
     }
 
@@ -47,8 +46,8 @@ public class GestureModifierData extends BaseModifierData {
     }
 
     @Override
-    public GestureModifierData copy() {
-        return new GestureModifierData();
+    public MouseGestureModifierData copy() {
+        return new MouseGestureModifierData();
     }
 
     @Override
@@ -66,8 +65,8 @@ public class GestureModifierData extends BaseModifierData {
     //it is safe to cast at this point because the public add(ModifierData data) method encapsulates type-checking
     @Override
     protected void mergeFields(ModifierData modifierData) {
-        GestureModifierData gestureModifierData = (GestureModifierData) modifierData;
-        this.mouseGestures.addAll(gestureModifierData.mouseGestures);
+        MouseGestureModifierData mouseGestureModifierData = (MouseGestureModifierData) modifierData;
+        this.mouseGestures.addAll(mouseGestureModifierData.mouseGestures);
     }
 
     @Override
