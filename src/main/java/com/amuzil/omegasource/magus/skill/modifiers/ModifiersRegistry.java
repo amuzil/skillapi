@@ -7,6 +7,7 @@ import com.amuzil.omegasource.magus.skill.modifiers.listeners.*;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ModifiersRegistry {
@@ -49,6 +50,10 @@ public class ModifiersRegistry {
         CONTROL = new Modifier(scrollModifierData, new MouseScrollModifierListener());
         modifierDataTypes.put(scrollModifierData.getName(), CONTROL);
 
+    }
+
+    public static List<Modifier> getModifiers() {
+        return modifierDataTypes.values().stream().toList();
     }
 
     public static ModifierData fromCompoundTag(CompoundTag compoundTag) {

@@ -136,7 +136,6 @@ public class Node {
 
         List<String> modifierTypes = new ArrayList<>();
         List<ModifierData> modifiers = getModifiers();
-        Modifier modifier = ModifiersRegistry.CONTROL;
 
         synchronized (modifiers) {
             modifiers.stream()

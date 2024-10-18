@@ -66,10 +66,7 @@ public class Magus {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
         // Register the doClientStuff method for mod loading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
-        //Assign input data to forms
-        Forms.init();
-        FormDataRegistry.init();
-        ModifiersRegistry.init();
+
     }
 
     private void setup(final FMLCommonSetupEvent event) {
@@ -77,12 +74,15 @@ public class Magus {
         Registries.init();
         CapabilityHandler.initialiseCaps();
         MagusNetwork.registerMessages();
-
+        Forms.init();
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
         // do something that can only be done on the client
         //todo call this anytime the key mappings are updated
+        //Assign input data to forms
+        FormDataRegistry.init();
+        ModifiersRegistry.init();
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {}

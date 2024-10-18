@@ -39,11 +39,12 @@ public class KeyboardMouseInputModule extends InputModule {
     private final AtomicInteger ticksSinceActivated;
     private final AtomicReference<Form> activeForm;
     private final AtomicInteger timeout;
-    private int ticksSinceModifiersSent = 0;
     private final List<Integer> glfwKeysDown;
+    private int ticksSinceModifiersSent = 0;
     private double mouseScrollDelta;
     private int scrollTimeout = 0;
     private boolean listen;
+    // Used for modifier data
     private boolean checkForm = false;
 
     // module activating a form rather than relying on the raw input data for those forms.
@@ -59,6 +60,8 @@ public class KeyboardMouseInputModule extends InputModule {
         this.timeout = new AtomicInteger(0);
         this.glfwKeysDown = new LinkedList<>();
         this.listen = true;
+        this.resetScrolling = false;
+        this.previousScrollDelta = 0;
 
         this.keyboardListener = keyboardEvent -> {
             int keyPressed = keyboardEvent.getKey();
@@ -111,7 +114,11 @@ public class KeyboardMouseInputModule extends InputModule {
             scrollTimeout++;
 
             // Resets mouse scrolling delta
-            if (scrollTimeout >= tickActivationThreshold) this.mouseScrollDelta = 0;
+            if (scrollTimeout >= tickActivationThreshold) {
+                this.mouseScrollDelta = 0;
+                this.scrollTimeout = 0;
+                this.resetScrolling = true;
+            }
 
             if (ticksSinceModifiersSent > modifierTickThreshold && !modifierQueue.isEmpty()) {
                 sendModifierData();

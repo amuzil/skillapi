@@ -30,6 +30,7 @@ public class ServerEvents {
             if (capability != null && event.getEntity() instanceof Player) {
 
 
+
                 // initialise the radix tree and set the player as an instance property for sending packets.
                 //todo this is temporary manual tree construction for testing purposes. the true tree will be
                 // generated at runtime based on available skills for the player/entity.
@@ -120,6 +121,7 @@ public class ServerEvents {
                 System.out.println("All RadixTree Branches:");
                 Magus.keyboardMouseInputModule.getFormsTree().printAllBranches();
                 Magus.keyboardMouseInputModule.init();
+                Magus.keyboardMouseInputModule.registerModifiers();
 //                Magus.mouseMotionModule.init();
             }
         }

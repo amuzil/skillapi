@@ -2,7 +2,6 @@ package com.amuzil.omegasource.magus.skill.modifiers.listeners;
 
 import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
-import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierListener;
 import com.amuzil.omegasource.magus.skill.modifiers.data.MouseScrollModifierData;
@@ -20,15 +19,17 @@ public class MouseScrollModifierListener extends ModifierListener<TickEvent.Clie
 
     @Override
     public boolean shouldCollectModifierData(TickEvent.ClientTickEvent event) {
-        RadixUtil.getLogger().info("Mouse Scroll Listener:" + inputModule.getMouseScrollDelta());
-        return inputModule.getMouseScrollDelta() != 0;
+        return inputModule.getMouseScrollDelta() != 0 || inputModule.resetScrolling;
     }
 
     @Override
     public ModifierData collectModifierDataFromEvent(TickEvent.ClientTickEvent event) {
-        this.totalScrollDelta += inputModule.getMouseScrollDelta();
-        MouseScrollModifierData data = new MouseScrollModifierData(totalScrollDelta);
-        return data;
+        if (inputModule.resetScrolling) {
+            this.totalScrollDelta = 0;
+            inputModule.resetScrolling = false;
+        }
+        else this.totalScrollDelta += inputModule.getMouseScrollDelta();
+        return new MouseScrollModifierData(totalScrollDelta);
     }
 
     @Override
