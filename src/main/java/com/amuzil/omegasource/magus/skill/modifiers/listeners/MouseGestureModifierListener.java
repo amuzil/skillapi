@@ -10,7 +10,7 @@ import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierListener;
-import com.amuzil.omegasource.magus.skill.modifiers.data.GestureModifierData;
+import com.amuzil.omegasource.magus.skill.modifiers.data.MouseGestureModifierData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.phys.Vec3;
@@ -22,19 +22,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class GestureModifierListener extends ModifierListener<TickEvent> {
+public class MouseGestureModifierListener extends ModifierListener<TickEvent> {
     private Consumer<TickEvent.ClientTickEvent> clientTickListener;
     public List<String> mouseGestures;
     public MouseVircle vircle;
     private HashMap<MouseShapeInput, Integer> shapeCounter;
     private final RadixTree.InputType type;
 
-    public GestureModifierListener() {
+    public MouseGestureModifierListener() {
         this(RadixTree.InputType.MOUSE_MOTION);
     }
 
-    public GestureModifierListener(RadixTree.InputType type) {
-        this.modifierData = new GestureModifierData();
+    public MouseGestureModifierListener(RadixTree.InputType type) {
+        this.modifierData = new MouseGestureModifierData();
         this.type = type;
     }
 
@@ -89,13 +89,13 @@ public class GestureModifierListener extends ModifierListener<TickEvent> {
 
     @Override
     public ModifierData collectModifierDataFromEvent(TickEvent event) {
-        GestureModifierData data = new GestureModifierData(mouseGestures);
+        MouseGestureModifierData data = new MouseGestureModifierData(mouseGestures);
         this.mouseGestures = new ArrayList<>();
         return data;
     }
 
     @Override
-    public GestureModifierListener copy() {
-        return new GestureModifierListener();
+    public MouseGestureModifierListener copy() {
+        return new MouseGestureModifierListener();
     }
 }
