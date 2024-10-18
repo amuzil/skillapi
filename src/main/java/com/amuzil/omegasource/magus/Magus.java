@@ -1,17 +1,18 @@
 package com.amuzil.omegasource.magus;
 
-import com.amuzil.omegasource.magus.input.InputModule;
-import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
-import com.amuzil.omegasource.magus.input.MouseMotionModule;
+import com.amuzil.omegasource.magus.input.*;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.test.avatar.AvatarCommand;
+import com.amuzil.omegasource.magus.skill.test.avatar.AvatarEntities;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
@@ -36,15 +37,13 @@ import org.apache.logging.log4j.Logger;
 
 @Mod(Magus.MOD_ID)
 public class Magus {
-    //MODID reference
+    // MOD ID reference
     public static final String MOD_ID = "magus";
     // Directly reference a log4j logger.
     public static final Logger LOGGER = LogManager.getLogger();
 
     //todo: move these to a better place
-    //todo: make multiple input modules
     public static InputModule keyboardMouseInputModule;
-//    public static InputModule mouseInputModule;
     public static InputModule mouseMotionModule;
 
     public Magus() {
@@ -52,7 +51,6 @@ public class Magus {
         MinecraftForge.EVENT_BUS.register(this);
         //Register the input modules
         keyboardMouseInputModule = new KeyboardMouseInputModule();
-//        mouseInputModule = new MouseInputModule();
         mouseMotionModule = new MouseMotionModule();
         // Register capabilities
         FMLJavaModLoadingContext.get().getModEventBus().addListener(CapabilityHandler::registerCapabilities);
@@ -67,6 +65,8 @@ public class Magus {
         // Register the doClientStuff method for mod loading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
 
+        // Register Testing Entities
+        AvatarEntities.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
     private void setup(final FMLCommonSetupEvent event) {
@@ -118,6 +118,7 @@ public class Magus {
             LOGGER.info("HELLO FROM CLIENT SETUP");
 
             KeyboardMouseInputModule.determineMotionKeys();
+            EntityRenderers.register(AvatarEntities.TEST_PROJECTILE.get(), ThrownItemRenderer::new);
 
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }
