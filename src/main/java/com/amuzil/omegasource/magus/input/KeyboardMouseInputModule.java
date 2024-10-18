@@ -179,14 +179,15 @@ public class KeyboardMouseInputModule extends InputModule {
         };
 
         this.tickServerEventConsumer = event -> {
-            synchronized (lastActivatedForm.get()) {
-                if (!lastActivatedForm.get().name().equals("null")) {
+            synchronized (activeForm.get()) {
+                if (!activeForm.get().name().equals("null")) {
                     ResourceLocation resource = null;
-                    if (lastActivatedForm.get().name().equals("strike"))
+                    if (activeForm.get().name().equals("strike"))
                         resource = new ResourceLocation(Magus.MOD_ID, "fire_bloom");
-                    if (lastActivatedForm.get().name().equals("force"))
+                    if (activeForm.get().name().equals("force"))
                         resource = new ResourceLocation(Magus.MOD_ID, "blue_fire");
                     ServerLevel level = event.getServer().getAllLevels().iterator().next();
+                    System.out.println("LEVEL: " + level);
                     if (!level.isClientSide && resource != null) {
                         Player player = Minecraft.getInstance().player;
                         assert  player != null;
