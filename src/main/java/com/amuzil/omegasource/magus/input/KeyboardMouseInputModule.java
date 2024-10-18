@@ -180,17 +180,21 @@ public class KeyboardMouseInputModule extends InputModule {
 
         this.tickServerEventConsumer = event -> {
             synchronized (lastActivatedForm.get()) {
-                if (!lastActivatedForm.get().name().equals("null") && !lastActivatedForm.get().name().equals("strike")) {
+                if (!lastActivatedForm.get().name().equals("null")) {
+                    ResourceLocation resource = null;
+                    if (lastActivatedForm.get().name().equals("strike"))
+                        resource = new ResourceLocation(Magus.MOD_ID, "fire_bloom");
+                    if (lastActivatedForm.get().name().equals("force"))
+                        resource = new ResourceLocation(Magus.MOD_ID, "blue_fire");
                     ServerLevel level = event.getServer().getAllLevels().iterator().next();
-                    if (!level.isClientSide) {
+                    if (!level.isClientSide && resource != null) {
                         Player player = Minecraft.getInstance().player;
                         assert  player != null;
                         TestProjectileEntity element = new TestProjectileEntity(level, player);
 //                        element.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
                         element.shoot(player.getViewVector(1).x, player.getViewVector(1).y, player.getViewVector(1).z, 2, 1);
                         level.addFreshEntity(element);
-                        ResourceLocation fireResource = new ResourceLocation(Magus.MOD_ID, "fire_bloom");
-                        FX fx = FXHelper.getFX(fireResource);
+                        FX fx = FXHelper.getFX(resource);
                         EntityEffect entityEffect = new EntityEffect(fx, level, element);
                         entityEffect.start();
                     }
