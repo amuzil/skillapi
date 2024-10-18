@@ -71,11 +71,6 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
         }
 
         InputModule  module = Magus.keyboardMouseInputModule;
-//        if (Objects.requireNonNull(type) == RadixTree.InputType.MOUSE) {
-//            module = Magus.mouseInputModule;
-//        } else {
-//            module = Magus.keyboardInputModule;
-//        }
 
         this.clientTickListener = event -> {
             if (event.phase == TickEvent.ClientTickEvent.Phase.START) {

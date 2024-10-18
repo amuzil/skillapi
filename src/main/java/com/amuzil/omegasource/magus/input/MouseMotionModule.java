@@ -23,15 +23,15 @@ import java.util.function.Consumer;
 
 
 public class MouseMotionModule extends InputModule {
-    private final Consumer<TickEvent> tickEventConsumer;
+    private final Consumer<TickEvent.ClientTickEvent> tickEventConsumer;
     public List<String> mouseGesture;
     public MouseVircle vircle;
     private Form activeForm = new Form();
     private int ticksSinceActivated = 0;
     private int ticksSinceModifiersSent = 0;
 
-    private final int tickActivationThreshold = 15;
-    private final int tickTimeoutThreshold = 60;
+    private final int tickActivationThreshold = 10;
+    private final int tickTimeoutThreshold = 30;
     private final int modifierTickThreshold = 10;
     private boolean listen;
 
@@ -138,7 +138,7 @@ public class MouseMotionModule extends InputModule {
 
     @Override
     public void registerListeners() {
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.class, tickEventConsumer);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ClientTickEvent.class, tickEventConsumer);
     }
 
     @Override
