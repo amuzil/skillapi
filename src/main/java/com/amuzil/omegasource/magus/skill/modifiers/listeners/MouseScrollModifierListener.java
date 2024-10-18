@@ -19,7 +19,11 @@ public class MouseScrollModifierListener extends ModifierListener<TickEvent.Clie
 
     @Override
     public boolean shouldCollectModifierData(TickEvent.ClientTickEvent event) {
-        return inputModule.getMouseScrollDelta() != 0 || inputModule.resetScrolling;
+        // Half a second, or 20 ticks
+//        Magus.LOGGER.warn(System.currentTimeMillis());
+        return inputModule.scrollTimeout % 3 == 0 &&
+                inputModule.getMouseScrollDelta() != 0 ||
+                inputModule.resetScrolling;
     }
 
     @Override

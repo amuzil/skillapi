@@ -1,5 +1,7 @@
 package com.amuzil.omegasource.magus.skill.modifiers;
 
+import com.amuzil.omegasource.magus.Magus;
+import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.amuzil.omegasource.magus.skill.modifiers.api.Modifier;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.data.*;
@@ -49,7 +51,6 @@ public class ModifiersRegistry {
         ModifierData scrollModifierData = new MouseScrollModifierData();
         CONTROL = new Modifier(scrollModifierData, new MouseScrollModifierListener());
         modifierDataTypes.put(scrollModifierData.getName(), CONTROL);
-
     }
 
     public static List<Modifier> getModifiers() {

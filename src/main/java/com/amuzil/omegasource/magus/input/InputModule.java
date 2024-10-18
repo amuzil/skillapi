@@ -5,6 +5,7 @@ import com.amuzil.omegasource.magus.radix.Node;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.EventCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
+import com.amuzil.omegasource.magus.skill.elements.Discipline;
 import com.amuzil.omegasource.magus.skill.elements.Disciplines;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
@@ -25,7 +26,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 
 public abstract class InputModule {
-    public boolean resetScrolling;
+    protected static Discipline activeDiscipline = Disciplines.AIR;
     protected static final List<Form> activeFormInputs = new ArrayList<>();
     protected static final Map<String, Integer> movementKeys = new HashMap<>();
     protected static RadixTree formsTree = new RadixTree();
@@ -34,6 +35,7 @@ public abstract class InputModule {
     protected final Map<Condition, Form> formInputs = new HashMap<>();
     protected final List<ModifierListener> modifierListeners = new ArrayList<>();
     protected final Map<String, ModifierData> modifierQueue = new HashMap<>();
+    public boolean resetScrolling;
     protected AtomicReference<Form> lastActivatedForm = new AtomicReference<>(Forms.NULL);
 
     public static EventCondition<?> keyToCondition(InputConstants.Key key, int actionCondition) {
@@ -66,18 +68,22 @@ public abstract class InputModule {
         FormDataRegistry.init(); // Re-initialize formData since it's a static field
         formsTree = new RadixTree();
         // Default is air.
-        formsTree.setDiscipline(Disciplines.AIR);
+        formsTree.setDiscipline(activeDiscipline);
     }
 
     public abstract void registerInputData(List<InputData> formExecutionInputs, Form formToExecute, List<Condition> conditions);
 
     public void registerModifiers() {
-        registerModifierListener(ModifiersRegistry.CONTROL.listener(), Minecraft.getInstance().player.getPersistentData());
+//        registerModifierListener(ModifiersRegistry.CONTROL.listener(), Minecraft.getInstance().player.getPersistentData());
         // Need to register this to the player's compound tag...
-//        for (Modifier modifiers : ModifiersRegistry.getModifiers()) {
-//            registerModifierListener(modifiers.listener(), Minecraft.getInstance().player.getPersistentData());
-//        }
+        CompoundTag listenerInstanceData = new CompoundTag();
+        listenerInstanceData.putString("activeElement", activeDiscipline.name());
+        for (Modifier modifier : ModifiersRegistry.getModifiers()) {
+            if (modifier.listener() != null)
+                registerModifierListener(modifier.listener(), listenerInstanceData);
+        }
     }
+
     public void registerModifierListener(ModifierListener listener, CompoundTag treeData) {
         listener.setupListener(treeData);
         listener.register(() -> {

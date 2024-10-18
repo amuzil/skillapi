@@ -5,6 +5,7 @@ import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.radix.*;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
+import com.amuzil.omegasource.magus.skill.elements.Discipline;
 import com.amuzil.omegasource.magus.skill.elements.Disciplines;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
@@ -27,14 +28,13 @@ import java.util.function.Consumer;
 
 
 public class KeyboardMouseInputModule extends InputModule {
-
-    private final Consumer<TickEvent> tickEventConsumer;
+    private final Consumer<TickEvent.ClientTickEvent> tickEventConsumer;
     private final Consumer<InputEvent.Key> keyboardListener;
     private final Consumer<InputEvent.MouseButton> mouseListener;
     private final Consumer<InputEvent.MouseScrollingEvent> mouseScrollListener;
-    private final int tickActivationThreshold = 15;
-    private final int tickTimeoutThreshold = 60;
-    private final int modifierTickThreshold = 10;
+    private final int tickActivationThreshold = 5;
+    private final int tickTimeoutThreshold = 15;
+    private final int modifierTickThreshold = 5;
     // Maybe?
     private final AtomicInteger ticksSinceActivated;
     private final AtomicReference<Form> activeForm;
@@ -42,7 +42,7 @@ public class KeyboardMouseInputModule extends InputModule {
     private final List<Integer> glfwKeysDown;
     private int ticksSinceModifiersSent = 0;
     private double mouseScrollDelta;
-    private int scrollTimeout = 0;
+    public int scrollTimeout = 0;
     private boolean listen;
     // Used for modifier data
     private boolean checkForm = false;
@@ -53,7 +53,7 @@ public class KeyboardMouseInputModule extends InputModule {
     // forms are activated.
 
     public KeyboardMouseInputModule() {
-        formsTree.setDiscipline(Disciplines.AIR);
+        formsTree.setDiscipline(activeDiscipline);
 
         this.ticksSinceActivated = new AtomicInteger(0);
         this.activeForm = new AtomicReference<>(Forms.NULL);
@@ -172,6 +172,11 @@ public class KeyboardMouseInputModule extends InputModule {
         };
     }
 
+    public static void setActiveDiscipline(Discipline discipline) {
+        activeDiscipline = discipline;
+        formsTree.setDiscipline(discipline);
+    }
+
     private void checkForForm() {
         synchronized (activeConditions) {
             if (!activeConditions.isEmpty()) {
@@ -268,7 +273,7 @@ public class KeyboardMouseInputModule extends InputModule {
 
     @Override
     public void registerListeners() {
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.class, tickEventConsumer);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ClientTickEvent.class, tickEventConsumer);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.Key.class, keyboardListener);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.MouseButton.class, mouseListener);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.MouseScrollingEvent.class, mouseScrollListener);
