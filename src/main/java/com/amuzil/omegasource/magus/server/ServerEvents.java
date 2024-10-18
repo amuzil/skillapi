@@ -122,7 +122,7 @@ public class ServerEvents {
                 Magus.keyboardMouseInputModule.getFormsTree().printAllBranches();
                 Magus.keyboardMouseInputModule.init();
                 Magus.keyboardMouseInputModule.registerModifiers();
-//                Magus.mouseMotionModule.init();
+                Magus.mouseMotionModule.init();
             }
         }
     }
