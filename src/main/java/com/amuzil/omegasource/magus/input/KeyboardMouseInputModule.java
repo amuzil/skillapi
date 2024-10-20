@@ -53,6 +53,7 @@ public class KeyboardMouseInputModule extends InputModule {
     private boolean listen;
     // Used for modifier data
     private boolean checkForm = false;
+    private int c = 0;
 
     // module activating a form rather than relying on the raw input data for those forms.
     // This way, the trees for different complex methods (such as VR and multikey)
@@ -157,10 +158,10 @@ public class KeyboardMouseInputModule extends InputModule {
 
                     lastActivatedForm.set(activeForm.get());
                     // Extra check for race conditions. Probably wont' help...
-                    synchronized (lastActivatedForm.get()) {
-                        if (!lastActivatedForm.get().name().equals("null"))
-                            Magus.sendDebugMsg("Form Activated: " + lastActivatedForm.get().name());
-                    }
+//                    synchronized (lastActivatedForm.get()) {
+//                        if (!lastActivatedForm.get().name().equals("null"))
+//                            Magus.sendDebugMsg("Form Activated: " + lastActivatedForm.get().name());
+//                    }
                     activeForm.set(Forms.NULL);
                     ticksSinceActivated.set(0);
                     timeout.set(0);
@@ -179,27 +180,32 @@ public class KeyboardMouseInputModule extends InputModule {
         };
 
         this.tickServerEventConsumer = event -> {
-            synchronized (activeForm.get()) {
-                if (!activeForm.get().name().equals("null")) {
-                    ResourceLocation resource = null;
-                    if (activeForm.get().name().equals("strike"))
-                        resource = new ResourceLocation(Magus.MOD_ID, "fire_bloom");
-                    if (activeForm.get().name().equals("force"))
-                        resource = new ResourceLocation(Magus.MOD_ID, "blue_fire");
-                    ServerLevel level = event.getServer().getAllLevels().iterator().next();
-                    System.out.println("LEVEL: " + level);
-                    if (!level.isClientSide && resource != null) {
-                        Player player = Minecraft.getInstance().player;
-                        assert  player != null;
-                        TestProjectileEntity element = new TestProjectileEntity(level, player);
+            if (c == 0) {
+                synchronized (activeForm.get()) {
+                    if (!activeForm.get().name().equals("null")) {
+                        ResourceLocation resource = null;
+                        if (activeForm.get().name().equals("strike"))
+                            resource = new ResourceLocation(Magus.MOD_ID, "fire_bloom");
+                        if (activeForm.get().name().equals("force"))
+                            resource = new ResourceLocation(Magus.MOD_ID, "blue_fire");
+                        ServerLevel level = event.getServer().getAllLevels().iterator().next();
+                        System.out.println("LEVEL: " + level);
+                        if (!level.isClientSide && resource != null) {
+                            c = 20;
+                            Player player = Minecraft.getInstance().player;
+                            assert player != null;
+                            TestProjectileEntity element = new TestProjectileEntity(level, player);
 //                        element.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
-                        element.shoot(player.getViewVector(1).x, player.getViewVector(1).y, player.getViewVector(1).z, 2, 1);
-                        level.addFreshEntity(element);
-                        FX fx = FXHelper.getFX(resource);
-                        EntityEffect entityEffect = new EntityEffect(fx, level, element);
-                        entityEffect.start();
+                            element.shoot(player.getViewVector(1).x, player.getViewVector(1).y, player.getViewVector(1).z, 2, 1);
+                            level.addFreshEntity(element);
+                            FX fx = FXHelper.getFX(resource);
+                            EntityEffect entityEffect = new EntityEffect(fx, level, element);
+                            entityEffect.start();
+                        }
                     }
                 }
+            } else {
+                c--;
             }
         };
     }

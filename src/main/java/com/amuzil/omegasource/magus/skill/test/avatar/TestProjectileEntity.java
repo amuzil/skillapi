@@ -1,7 +1,13 @@
 package com.amuzil.omegasource.magus.skill.test.avatar;
 
+import com.amuzil.omegasource.magus.Magus;
+import com.lowdragmc.photon.client.fx.EntityEffect;
+import com.lowdragmc.photon.client.fx.FX;
+import com.lowdragmc.photon.client.fx.FXHelper;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -39,17 +45,23 @@ public class TestProjectileEntity extends AbstractArrow implements ItemSupplier 
     }
 
     protected void onHitEntity(EntityHitResult entityHitResult) {
-        super.onHitEntity(entityHitResult);
+//        super.onHitEntity(entityHitResult);
         Entity entity = entityHitResult.getEntity();
-        int i = entity instanceof Blaze ? 0 : 15; // Deal 15 damage
-        entity.hurt(this.damageSources().thrown(this, this.getOwner()), (float)i);
+        if (entity instanceof Blaze) {
+            if (this.getOwner() != null) {
+                this.shoot(entity.getViewVector(1).x, entity.getViewVector(1).y+0.5, entity.getViewVector(1).z, 0.75F, 1);
+            }
+        } else {
+            int i = 15; // Deal 15 damage
+            entity.hurt(this.damageSources().thrown(this, this.getOwner()), (float)i);
+        }
     }
 
     protected void onHit(HitResult hitResult) {
         super.onHit(hitResult);
         if (!this.level.isClientSide) {
             this.level.broadcastEntityEvent(this, (byte)3);
-            this.discard();
+//            this.discard();
         }
     }
 
