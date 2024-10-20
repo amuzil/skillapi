@@ -180,6 +180,7 @@ public class KeyboardMouseInputModule extends InputModule {
         };
 
         this.tickServerEventConsumer = event -> {
+            // NOTE: This is strictly for testing and to be deleted later
             if (c == 0) {
                 synchronized (activeForm.get()) {
                     if (!activeForm.get().name().equals("null")) {
