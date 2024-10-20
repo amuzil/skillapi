@@ -11,6 +11,7 @@ import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 
@@ -49,6 +50,11 @@ public class TestProjectileEntity extends AbstractArrow implements ItemSupplier 
             int i = 15; // Deal 15 damage
             entity.hurt(this.damageSources().thrown(this, this.getOwner()), (float)i);
         }
+    }
+
+    protected void onHitBlock(BlockHitResult blockHitResult) {
+//        super.onHitBlock(blockHitResult);
+        this.discard();
     }
 
     protected void onHit(HitResult hitResult) {
