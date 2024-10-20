@@ -1,0 +1,41 @@
+
+public record Skill (
+    String name,
+    SkillCategory category;
+    SkillTraits traits
+    ) {
+
+    public boolean shouldStart(LivingEntity entity, RadixTree tree) {
+    }
+
+    public void start(LivingEntity entity, RadixTree tree) {
+        if (shouldRun(entity, tree))
+            run(entity, tree);
+    }
+
+    public boolean shouldRun(LivingEntity entity, RadixTree tree) {
+
+    }
+
+    public void run(LivingEntity entity, RadixTree tree) {
+        if (shouldStop(entity, tree))
+            stop(entity, tree);
+        //Code that does whatever
+
+        if (shouldRun(entity, tree))
+            run(entity, tree);
+    }
+
+    public boolean shouldStop(LivingEntity entity, RadixTree tree) {
+    }
+
+    public void stop(LivingEntity entity, RadixTree tree) {
+    }
+
+    public SkillType getType() {
+    }
+
+
+
+
+}
