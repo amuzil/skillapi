@@ -66,6 +66,7 @@ public class Magus {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
 
         // Register Testing Entities
+        // NOTE: This is strictly for testing and to be deleted later
         AvatarEntities.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
