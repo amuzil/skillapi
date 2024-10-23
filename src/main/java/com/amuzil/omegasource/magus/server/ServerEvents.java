@@ -130,6 +130,9 @@ public class ServerEvents {
     @SubscribeEvent
     public static void OnPlayerLeaveWorld(EntityLeaveLevelEvent event) {
         if (event.getEntity() instanceof Player) {
+            // TODO - Causes whole server to crash when player leaves
+            //      java.lang.NullPointerException: Cannot invoke "com.amuzil.omegasource.magus.input.InputModule.getFormsTree()"
+            //      because "com.amuzil.omegasource.magus.Magus.keyboardMouseInputModule" is null
             Magus.keyboardMouseInputModule.getFormsTree().deactivateAllConditions();
             Magus.keyboardMouseInputModule.terminate();
             Magus.mouseMotionModule.terminate();
