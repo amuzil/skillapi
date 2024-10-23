@@ -26,7 +26,7 @@ public class AvatarCommand {
                         .executes(c -> tree())
                 )
                 .executes(c -> {
-                    Magus.sendDebugMsg("Possible modes: record, tree, reset");
+                    InputModule.sendDebugMsg("Possible modes: record, tree, reset");
                     return 1;
                 })
         );
@@ -53,7 +53,7 @@ public class AvatarCommand {
         InputModule.resetFormsTree();
         AvatarFormRegistry.registerForms();
         kim.registerRunnables(Magus.keyboardMouseInputModule.getFormsTree());
-        Magus.sendDebugMsg("Reset Forms RadixTree");
+        InputModule.sendDebugMsg("Reset Forms RadixTree");
         return 1;
     }
 }
