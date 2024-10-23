@@ -47,11 +47,6 @@ public class Magus {
     public static InputModule mouseMotionModule;
 
     public Magus() {
-        // Register ourselves for server and other game events we are interested in
-        MinecraftForge.EVENT_BUS.register(this);
-        //Register the input modules
-        keyboardMouseInputModule = new KeyboardMouseInputModule();
-        mouseMotionModule = new MouseMotionModule();
         // Register capabilities
         FMLJavaModLoadingContext.get().getModEventBus().addListener(CapabilityHandler::registerCapabilities);
         // attach capabilities
@@ -64,6 +59,9 @@ public class Magus {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
         // Register the doClientStuff method for mod loading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
+
+        // Register ourselves for server and other game events we are interested in
+        MinecraftForge.EVENT_BUS.register(this);
 
         // Register Testing Entities
         // NOTE: This is strictly for testing and to be deleted later
@@ -80,8 +78,11 @@ public class Magus {
 
     private void doClientStuff(final FMLClientSetupEvent event) {
         // do something that can only be done on the client
-        //todo call this anytime the key mappings are updated
-        //Assign input data to forms
+        // Register the input modules
+        keyboardMouseInputModule = new KeyboardMouseInputModule();
+        mouseMotionModule = new MouseMotionModule();
+        // TODO - call this anytime the key mappings are updated
+        // Assign input data to forms
         FormDataRegistry.init();
         ModifiersRegistry.init();
     }
@@ -123,23 +124,5 @@ public class Magus {
 
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }
-    }
-
-    // Send a message to in-game chat
-    public static void sendDebugMsg(String msg) {
-        Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft == null) {
-            System.err.println("sendDebugMsg failed: Minecraft instance is null");
-            return;
-        }
-        minecraft.execute(() -> {
-            LocalPlayer player = minecraft.player;
-            if (player != null) {
-                Component text = Component.literal(msg);
-                player.sendSystemMessage(text);
-            } else {
-                System.err.println("sendDebugMsg failed: player is null");
-            }
-        });
     }
 }

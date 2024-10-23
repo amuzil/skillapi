@@ -6,7 +6,6 @@ import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifier
 import com.amuzil.omegasource.magus.radix.*;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.elements.Discipline;
-import com.amuzil.omegasource.magus.skill.elements.Disciplines;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
@@ -158,10 +157,10 @@ public class KeyboardMouseInputModule extends InputModule {
 
                     lastActivatedForm.set(activeForm.get());
                     // Extra check for race conditions. Probably wont' help...
-//                    synchronized (lastActivatedForm.get()) {
-//                        if (!lastActivatedForm.get().name().equals("null"))
-//                            Magus.sendDebugMsg("Form Activated: " + lastActivatedForm.get().name());
-//                    }
+                    synchronized (lastActivatedForm.get()) {
+                        if (!lastActivatedForm.get().name().equals("null"))
+                            sendDebugMsg("Form Activated: " + lastActivatedForm.get().name());
+                    }
                     activeForm.set(Forms.NULL);
                     ticksSinceActivated.set(0);
                     timeout.set(0);
@@ -190,12 +189,12 @@ public class KeyboardMouseInputModule extends InputModule {
                         if (activeForm.get().name().equals("force"))
                             resource = new ResourceLocation(Magus.MOD_ID, "blue_fire");
                         ServerLevel level = event.getServer().getAllLevels().iterator().next();
-                        System.out.println("LEVEL: " + level);
+//                        System.out.println("LEVEL: " + level);
                         if (!level.isClientSide && resource != null) {
-                            c = 20;
+                            c = 5;
                             Player player = Minecraft.getInstance().player;
                             assert player != null;
-                            TestProjectileEntity element = new TestProjectileEntity(level, player);
+                            TestProjectileEntity element = new TestProjectileEntity(player, level);
 //                        element.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
                             element.shoot(player.getViewVector(1).x, player.getViewVector(1).y, player.getViewVector(1).z, 2, 1);
                             level.addFreshEntity(element);
@@ -226,7 +225,7 @@ public class KeyboardMouseInputModule extends InputModule {
                 if (recognized != null) {
                     activeForm.set(FormDataRegistry.formsNamespace.get(recognized.hashCode()));
 //                System.out.println("RECOGNIZED FORM: " + activeForm.name() + " " + recognized);
-//                Magus.sendDebugMsg("RECOGNIZED FORM: " + activeForm.name());
+//                sendDebugMsg("RECOGNIZED FORM: " + activeForm.name());
                 }
             }
         }

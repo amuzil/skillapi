@@ -17,7 +17,9 @@ import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierListener;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.client.event.InputEvent;
 import org.apache.logging.log4j.LogManager;
 
@@ -37,6 +39,24 @@ public abstract class InputModule {
     protected final Map<String, ModifierData> modifierQueue = new HashMap<>();
     public boolean resetScrolling;
     protected AtomicReference<Form> lastActivatedForm = new AtomicReference<>(Forms.NULL);
+
+    // Send a message to in-game chat
+    public static void sendDebugMsg(String msg) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft == null) {
+            System.err.println("sendDebugMsg failed: Minecraft instance is null");
+            return;
+        }
+        minecraft.execute(() -> {
+            LocalPlayer player = minecraft.player;
+            if (player != null) {
+                Component text = Component.literal(msg);
+                player.sendSystemMessage(text);
+            } else {
+                System.err.println("sendDebugMsg failed: player is null");
+            }
+        });
+    }
 
     public static EventCondition<?> keyToCondition(InputConstants.Key key, int actionCondition) {
         if (key.getType().equals(InputConstants.Type.MOUSE)) {
@@ -139,19 +159,6 @@ public abstract class InputModule {
             activeConditions.clear();
         }
     }
-
-//    private Form checkForForm() {
-//        if (!activeConditions.isEmpty()) {
-//            List<Condition> conditions = activeConditions.stream().toList();
-//            List<Condition> recognized = formsTree.search(conditions);
-//            if (recognized != null) {
-//                return FormDataRegistry.formsNamespace.get(recognized.hashCode());
-//                System.out.println("RECOGNIZED FORM: " + activeForm.name() + " " + recognized);
-//                Magus.sendDebugMsg("RECOGNIZED FORM: " + activeForm.name());
-//            }
-//        }
-//        return new Form();
-//    }
 
     public void init() {
         resetKeys();
