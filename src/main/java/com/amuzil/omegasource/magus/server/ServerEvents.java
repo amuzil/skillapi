@@ -34,13 +34,13 @@ public class ServerEvents {
                 // initialise the radix tree and set the player as an instance property for sending packets.
                 //todo this is temporary manual tree construction for testing purposes. the true tree will be
                 // generated at runtime based on available skills for the player/entity.
-                Node secondNode = NodeBuilder.middle()
-                        .addModifiers(ModifiersRegistry.FOCUS.copy(), ModifiersRegistry.MULTI.copy(),
-                                ModifiersRegistry.DIRECTION.copy(), ModifiersRegistry.TARGET.copy())
-                        .build();
-                //Resets the tree; for testing purposes.
-                if (capability.getTree() != null)
-                    capability.getTree().burn();
+//                Node secondNode = NodeBuilder.middle()
+//                        .addModifiers(ModifiersRegistry.FOCUS.copy(), ModifiersRegistry.MULTI.copy(),
+//                                ModifiersRegistry.DIRECTION.copy(), ModifiersRegistry.TARGET.copy())
+//                        .build();
+//                //Resets the tree; for testing purposes.
+//                if (capability.getTree() != null)
+//                    capability.getTree().burn();
                 // TODO: Need a way to convert forms into conditions
                 // Need to test out the condition tree. use left alt/arc > strike (left click).
                 // While this test code will directly use conditions, Skills will reference Forms
@@ -81,7 +81,7 @@ public class ServerEvents {
 //
 //                Condition arc2 = new FormCondition(Forms.ARC, -1, Magus.keyboardInputModule);
 //                arc2.register("ARC", () -> {
-//                    Magus.sendDebugMsg("ARC FORM TRIGGERED");
+//                    Magus.keyboardMouseInputModule.sendDebugMsg("ARC FORM TRIGGERED");
 //                }, () -> {});
 //
 //                System.out.println("Test RadixTree");
@@ -121,7 +121,7 @@ public class ServerEvents {
                 System.out.println("All RadixTree Branches:");
                 Magus.keyboardMouseInputModule.getFormsTree().printAllBranches();
                 Magus.keyboardMouseInputModule.init();
-                Magus.keyboardMouseInputModule.registerModifiers();
+//                Magus.keyboardMouseInputModule.registerModifiers();
                 Magus.mouseMotionModule.init();
             }
         }
