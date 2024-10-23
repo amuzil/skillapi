@@ -209,7 +209,7 @@ public class TestProjectileEntity extends Projectile implements ItemSupplier {
 
     protected void tickDespawn() {
         ++this.life;
-        if (this.life >= 600) {
+        if (this.life >= 200) {
             System.out.println("BYE BYE BBY");
             this.discard();
         }
