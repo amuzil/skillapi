@@ -6,7 +6,6 @@ import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifier
 import com.amuzil.omegasource.magus.radix.*;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.elements.Discipline;
-import com.amuzil.omegasource.magus.skill.elements.Disciplines;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
@@ -190,12 +189,12 @@ public class KeyboardMouseInputModule extends InputModule {
                         if (activeForm.get().name().equals("force"))
                             resource = new ResourceLocation(Magus.MOD_ID, "blue_fire");
                         ServerLevel level = event.getServer().getAllLevels().iterator().next();
-                        System.out.println("LEVEL: " + level);
+//                        System.out.println("LEVEL: " + level);
                         if (!level.isClientSide && resource != null) {
-                            c = 20;
+                            c = 5;
                             Player player = Minecraft.getInstance().player;
                             assert player != null;
-                            TestProjectileEntity element = new TestProjectileEntity(level, player);
+                            TestProjectileEntity element = new TestProjectileEntity(player, level);
 //                        element.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
                             element.shoot(player.getViewVector(1).x, player.getViewVector(1).y, player.getViewVector(1).z, 2, 1);
                             level.addFreshEntity(element);
