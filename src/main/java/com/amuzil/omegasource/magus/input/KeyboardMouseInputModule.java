@@ -157,10 +157,10 @@ public class KeyboardMouseInputModule extends InputModule {
 
                     lastActivatedForm.set(activeForm.get());
                     // Extra check for race conditions. Probably wont' help...
-//                    synchronized (lastActivatedForm.get()) {
-//                        if (!lastActivatedForm.get().name().equals("null"))
-//                            Magus.sendDebugMsg("Form Activated: " + lastActivatedForm.get().name());
-//                    }
+                    synchronized (lastActivatedForm.get()) {
+                        if (!lastActivatedForm.get().name().equals("null"))
+                            sendDebugMsg("Form Activated: " + lastActivatedForm.get().name());
+                    }
                     activeForm.set(Forms.NULL);
                     ticksSinceActivated.set(0);
                     timeout.set(0);
@@ -225,7 +225,7 @@ public class KeyboardMouseInputModule extends InputModule {
                 if (recognized != null) {
                     activeForm.set(FormDataRegistry.formsNamespace.get(recognized.hashCode()));
 //                System.out.println("RECOGNIZED FORM: " + activeForm.name() + " " + recognized);
-//                Magus.sendDebugMsg("RECOGNIZED FORM: " + activeForm.name());
+//                sendDebugMsg("RECOGNIZED FORM: " + activeForm.name());
                 }
             }
         }
