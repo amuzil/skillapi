@@ -1,11 +1,16 @@
 package com.amuzil.omegasource.magus.skill.test.avatar;
 
+import com.amuzil.omegasource.magus.Magus;
+import com.lowdragmc.photon.client.fx.EntityEffect;
+import com.lowdragmc.photon.client.fx.FX;
+import com.lowdragmc.photon.client.fx.FXHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -126,6 +131,7 @@ public class TestProjectileEntity extends Projectile implements ItemSupplier {
                     break;
                 this.onHit(hitresult);
                 this.hasImpulse = true;
+                break;
             }
 
             if (entityhitresult == null) {
@@ -265,6 +271,9 @@ public class TestProjectileEntity extends Projectile implements ItemSupplier {
         } else if (entity instanceof TestProjectileEntity) {
             System.out.println("SUCCESS MADE IT HIT!!!");
             if (this.getOwner() != null) {
+                FX fx = FXHelper.getFX(new ResourceLocation(Magus.MOD_ID, "orb_bloom"));
+                EntityEffect entityEffect = new EntityEffect(fx, level, entity);
+                entityEffect.start();
                 this.discard(); // kys asap
 //                this.shoot(entity.getViewVector(1).x, entity.getViewVector(1).y+0.5, entity.getViewVector(1).z, 0.75F, 1);
             }
