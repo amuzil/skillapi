@@ -68,7 +68,7 @@ public class FormActivatedPacket implements MagusPacket {
             fx = fire_bloom;
         if (form.name().equals("force"))
             fx = blue_fire;
-        if (fx != null && entityId != -1) {
+        if (fx != null) {
             TestProjectileEntity entity = (TestProjectileEntity) player.level.getEntity(entityId);
             EntityEffect entityEffect = new EntityEffect(fx, level, entity);
             entityEffect.start();
