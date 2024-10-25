@@ -26,6 +26,7 @@ public class ServerEvents {
     public static void onEntityJoinLevel(EntityJoinLevelEvent event) {
 
         if (!event.getLevel().isClientSide()) {
+            // TODO: Add a wrapper class for getting capabilities and data. Maybe SkillUser? MagusEntity?
             Data capability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.LIVING_DATA);
             if (capability != null && event.getEntity() instanceof Player) {
 

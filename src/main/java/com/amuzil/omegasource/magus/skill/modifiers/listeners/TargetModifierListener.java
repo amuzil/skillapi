@@ -1,7 +1,6 @@
 package com.amuzil.omegasource.magus.skill.modifiers.listeners;
 
-import com.amuzil.omegasource.magus.Magus;
-import com.amuzil.omegasource.magus.input.InputModule;
+import  com.amuzil.omegasource.magus.input.InputModule;
 import com.amuzil.omegasource.magus.skill.elements.Discipline;
 import com.amuzil.omegasource.magus.skill.elements.Disciplines;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
@@ -45,7 +44,7 @@ public class TargetModifierListener extends ModifierListener<InputEvent.MouseBut
 
         //TODO: Fix this
         this.activeDiscipline = InputModule.getDiscipline();
-        
+
         if(event instanceof InputEvent.MouseButton.Post && // prevents double activation(Pre- and Post-event firing)
                 event.getButton() == InputConstants.MOUSE_BUTTON_MIDDLE && event.getAction() == InputConstants.PRESS) {
             Minecraft mc = Minecraft.getInstance();
