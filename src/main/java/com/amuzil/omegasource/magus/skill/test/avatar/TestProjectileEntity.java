@@ -189,7 +189,7 @@ public class TestProjectileEntity extends Projectile implements ItemSupplier {
         Entity entity = null;
 
         for(Entity otherEntity : level.getEntities(thisEntity, thisAABB, canBeHit)) {
-            System.out.println("ENTITY NEARBY: " + otherEntity);
+//            System.out.println("ENTITY NEARBY: " + otherEntity);
             AABB aabb = otherEntity.getBoundingBox().inflate(scale);
             Optional<Vec3> optional = aabb.clip(pos, delta);
             if (optional.isPresent()) {
@@ -222,7 +222,7 @@ public class TestProjectileEntity extends Projectile implements ItemSupplier {
     protected void tickDespawn() {
         ++this.life;
         if (this.life >= 100) {
-            System.out.println("BYE BYE BBY");
+//            System.out.println("BYE BYE BBY");
             this.discard();
         }
     }

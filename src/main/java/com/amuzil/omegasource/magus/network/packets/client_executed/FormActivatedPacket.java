@@ -59,7 +59,6 @@ public class FormActivatedPacket implements MagusPacket {
     // Client-side handler method
     @OnlyIn(Dist.CLIENT)
     private static void handleClientSide(Form form, int entityId) {
-        System.out.println("Packet received on client");
         // Perform client-side particle effect or other rendering logic here
         Player player = Minecraft.getInstance().player;
         assert player != null;
