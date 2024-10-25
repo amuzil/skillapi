@@ -3,9 +3,13 @@ package com.amuzil.omegasource.magus.skill.util.capability.entity;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
+import com.amuzil.omegasource.magus.skill.util.data.SkillData;
 import com.amuzil.omegasource.magus.skill.util.traits.DataTrait;
 import com.amuzil.omegasource.magus.skill.util.traits.SkillTrait;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.common.util.FakePlayer;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +30,7 @@ public class Magi {
     public LivingDataCapability.LivingDataCapabilityImp getMagusData() {
         return (LivingDataCapability.LivingDataCapabilityImp) capabilityData;
     }
+
     public RadixTree getTree() {
         return capabilityData.getTree();
     }
@@ -37,8 +42,15 @@ public class Magi {
     public List<SkillTrait> getSkillTraits(Skill skill) {
         // Get skill data based on the skill,
         // then get the list of its traits.
-        
         // Empty for now...
         return new LinkedList<>();
+    }
+
+    public static boolean isEntitySupported(Entity entity) {
+        return entity instanceof LivingEntity;
+    }
+
+    public SkillData getSkillData(Skill skill) {
+        return null;
     }
 }
