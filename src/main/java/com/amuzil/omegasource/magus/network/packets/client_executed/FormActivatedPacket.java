@@ -86,10 +86,12 @@ public class FormActivatedPacket implements MagusPacket {
                 assert player != null;
                 ServerLevel level = player.getLevel();
                 TestProjectileEntity entity = new TestProjectileEntity(player, level, form);
-                entity.shoot(player.getViewVector(1).x, player.getViewVector(1).y, player.getViewVector(1).z, 2, 1);
+                entity.shoot(player.getViewVector(1).x, player.getViewVector(1).y, player.getViewVector(1).z, 1, 1);
                 level.addFreshEntity(entity);
                 MagusNetwork.sendToClient(new FormActivatedPacket(form, entity.getId()), player);
-                Predicate<ServerPlayer> predicate = (serverPlayer) -> player.distanceToSqr(serverPlayer) < 2500;
+                Predicate<ServerPlayer> predicate = (serverPlayer) -> {
+                    return player.distanceToSqr(serverPlayer) < 2500 && !player.equals(serverPlayer);
+                };
                 for (ServerPlayer nearbyPlayer: level.getPlayers(predicate.and(LivingEntity::isAlive))) {
                     MagusNetwork.sendToClient(new FormActivatedPacket(form, entity.getId()), nearbyPlayer);
                 }
