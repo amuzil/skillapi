@@ -9,11 +9,14 @@ import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.test.avatar.AvatarCommand;
 import com.amuzil.omegasource.magus.skill.test.avatar.AvatarEntities;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
+import com.lowdragmc.photon.client.fx.FX;
+import com.lowdragmc.photon.client.fx.FXHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -73,7 +76,6 @@ public class Magus {
         Registries.init();
         CapabilityHandler.initialiseCaps();
         MagusNetwork.registerMessages();
-        Forms.init();
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {

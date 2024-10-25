@@ -7,6 +7,10 @@ import java.util.function.Supplier;
 
 public interface MagusPacket {
     void toBytes(FriendlyByteBuf buffer);
+
     static MagusPacket fromBytes(FriendlyByteBuf buffer) { return null; }
-    boolean handle(Supplier<NetworkEvent.Context> context);
+
+    static boolean handle(MagusPacket packet, Supplier<NetworkEvent.Context> context) {
+        return false;
+    }
 }

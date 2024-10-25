@@ -5,6 +5,7 @@ import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.skill.elements.Discipline;
 import com.amuzil.omegasource.magus.skill.elements.Disciplines;
 import com.amuzil.omegasource.magus.skill.forms.Form;
+import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
 import com.amuzil.omegasource.magus.skill.skill.SkillActive;
 import com.amuzil.omegasource.magus.skill.skill.SkillCategory;
@@ -120,9 +121,9 @@ public class Registries {
         SKILLS = event.create(skills);
 
         //Forms
-        RegistryBuilder<Form> forms = new RegistryBuilder<>();
-        forms.setName(new ResourceLocation(Magus.MOD_ID, "forms"));
-        FORMS = event.create(forms);
+        RegistryBuilder<Form> formRegistryBuilder = new RegistryBuilder<>();
+        formRegistryBuilder.setName(new ResourceLocation(Magus.MOD_ID, "forms"));
+        FORMS = event.create(formRegistryBuilder);
 
         //Modifiers
     }
@@ -148,6 +149,7 @@ public class Registries {
 
     @SubscribeEvent
     public static void gameRegistry(RegisterEvent event) {
+        Forms.init(); // Moved here so that forms registry gets populated
         /* Skill Categories. */
         if (event.getRegistryKey().equals(SKILL_CATEGORIES.get().getRegistryKey())) {
             IForgeRegistry<SkillCategory> registry = SKILL_CATEGORIES.get();
@@ -173,7 +175,6 @@ public class Registries {
         if (event.getRegistryKey().equals(FORMS.get().getRegistryKey())) {
             IForgeRegistry<Form> registry = FORMS.get();
             ResourceKey<Registry<Form>> resKey = registry.getRegistryKey();
-
 
             event.register(resKey, helper -> {
                 for (Form form : forms)

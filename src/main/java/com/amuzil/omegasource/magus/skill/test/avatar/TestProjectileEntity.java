@@ -1,6 +1,9 @@
 package com.amuzil.omegasource.magus.skill.test.avatar;
 
 import com.amuzil.omegasource.magus.Magus;
+import com.amuzil.omegasource.magus.network.MagusNetwork;
+import com.amuzil.omegasource.magus.network.packets.client_executed.FormActivatedPacket;
+import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.lowdragmc.photon.client.fx.EntityEffect;
 import com.lowdragmc.photon.client.fx.FX;
 import com.lowdragmc.photon.client.fx.FXHelper;
@@ -11,6 +14,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -32,6 +36,8 @@ import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import static com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry.orb_bloom;
+
 
 public class TestProjectileEntity extends Projectile implements ItemSupplier {
     public static final ItemStack PROJECTILE_ITEM = new ItemStack(Blocks.AIR);
@@ -51,7 +57,7 @@ public class TestProjectileEntity extends Projectile implements ItemSupplier {
         this.setPos(x, y, z);
     }
 
-    public TestProjectileEntity(LivingEntity livingEntity, Level level) {
+    public TestProjectileEntity(LivingEntity livingEntity, Level level, Form form) {
         this(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ(), level);
         this.setOwner(livingEntity);
     }
@@ -270,9 +276,8 @@ public class TestProjectileEntity extends Projectile implements ItemSupplier {
             }
         } else if (entity instanceof TestProjectileEntity) {
             System.out.println("SUCCESS MADE IT HIT!!!");
-            if (this.getOwner() != null) {
-                FX fx = FXHelper.getFX(new ResourceLocation(Magus.MOD_ID, "orb_bloom"));
-                EntityEffect entityEffect = new EntityEffect(fx, level, entity);
+            if (this.getOwner() != null && this.level.isClientSide) {
+                EntityEffect entityEffect = new EntityEffect(orb_bloom, level, entity);
                 entityEffect.start();
                 this.discard(); // kys asap
 //                this.shoot(entity.getViewVector(1).x, entity.getViewVector(1).y+0.5, entity.getViewVector(1).z, 0.75F, 1);

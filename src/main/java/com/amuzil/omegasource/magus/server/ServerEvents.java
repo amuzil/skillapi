@@ -8,6 +8,9 @@ import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import com.amuzil.omegasource.magus.skill.util.capability.entity.Data;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
@@ -129,13 +132,15 @@ public class ServerEvents {
 
     @SubscribeEvent
     public static void OnPlayerLeaveWorld(EntityLeaveLevelEvent event) {
-        if (event.getEntity() instanceof Player) {
+        if (event.getEntity() instanceof ServerPlayer) {
             // TODO - Causes whole server to crash when player leaves
             //      java.lang.NullPointerException: Cannot invoke "com.amuzil.omegasource.magus.input.InputModule.getFormsTree()"
             //      because "com.amuzil.omegasource.magus.Magus.keyboardMouseInputModule" is null
-            Magus.keyboardMouseInputModule.getFormsTree().deactivateAllConditions();
-            Magus.keyboardMouseInputModule.terminate();
-            Magus.mouseMotionModule.terminate();
+            if (Magus.keyboardMouseInputModule != null) { // Temporary fix until we decide which side to make InputModules
+                Magus.keyboardMouseInputModule.getFormsTree().deactivateAllConditions();
+                Magus.keyboardMouseInputModule.terminate();
+                Magus.mouseMotionModule.terminate();
+            }
         }
     }
 }

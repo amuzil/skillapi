@@ -2,6 +2,7 @@ package com.amuzil.omegasource.magus.input;
 
 import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
+import com.amuzil.omegasource.magus.network.packets.client_executed.FormActivatedPacket;
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.radix.*;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
@@ -145,7 +146,7 @@ public class KeyboardMouseInputModule extends InputModule {
                 ticksSinceActivated.getAndIncrement();
                 if (ticksSinceActivated.get() >= tickActivationThreshold) {
                     // Always to send modifier data right when the form is activated
-                    sendModifierData();
+//                    sendModifierData();
 
 //                    if (lastActivatedForm != null && lastActivatedForm.name().equals(activeForm.name())) {
 //                        // Send modifier data of it being multi.
@@ -158,8 +159,12 @@ public class KeyboardMouseInputModule extends InputModule {
                     lastActivatedForm.set(activeForm.get());
                     // Extra check for race conditions. Probably wont' help...
                     synchronized (lastActivatedForm.get()) {
-                        if (!lastActivatedForm.get().name().equals("null"))
+                        if (!lastActivatedForm.get().name().equals("null")) {
+                            if (Minecraft.getInstance().getConnection() != null) {
+                                MagusNetwork.sendToServer(new FormActivatedPacket(activeForm.get(), 0));
+                            }
                             sendDebugMsg("Form Activated: " + lastActivatedForm.get().name());
+                        }
                     }
                     activeForm.set(Forms.NULL);
                     ticksSinceActivated.set(0);
@@ -194,13 +199,13 @@ public class KeyboardMouseInputModule extends InputModule {
                             c = 5;
                             Player player = Minecraft.getInstance().player;
                             assert player != null;
-                            TestProjectileEntity element = new TestProjectileEntity(player, level);
-//                        element.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
-                            element.shoot(player.getViewVector(1).x, player.getViewVector(1).y, player.getViewVector(1).z, 2, 1);
-                            level.addFreshEntity(element);
-                            FX fx = FXHelper.getFX(resource);
-                            EntityEffect entityEffect = new EntityEffect(fx, level, element);
-                            entityEffect.start();
+//                            TestProjectileEntity element = new TestProjectileEntity(player, level, activeForm.get());
+//                            element.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
+//                            element.shoot(player.getViewVector(1).x, player.getViewVector(1).y, player.getViewVector(1).z, 2, 1);
+//                            level.addFreshEntity(element);
+//                            FX fx = FXHelper.getFX(resource);
+//                            EntityEffect entityEffect = new EntityEffect(fx, level, element);
+//                            entityEffect.start();
                         }
                     }
                 }
@@ -311,7 +316,6 @@ public class KeyboardMouseInputModule extends InputModule {
 
     @Override
     public void registerListeners() {
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ServerTickEvent.class, tickServerEventConsumer);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ClientTickEvent.class, tickEventConsumer);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.Key.class, keyboardListener);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.MouseButton.class, mouseListener);

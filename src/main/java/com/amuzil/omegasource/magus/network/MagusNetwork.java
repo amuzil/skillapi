@@ -2,6 +2,7 @@ package com.amuzil.omegasource.magus.network;
 
 import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.network.packets.api.MagusPacket;
+import com.amuzil.omegasource.magus.network.packets.client_executed.FormActivatedPacket;
 import com.amuzil.omegasource.magus.network.packets.client_executed.RegisterModifierListenersPacket;
 import com.amuzil.omegasource.magus.network.packets.client_executed.SkillTriggeredPacket;
 import com.amuzil.omegasource.magus.network.packets.client_executed.UnregisterModifierListenersPacket;
@@ -13,6 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
+
 
 public class MagusNetwork {
     private static final String PROTOCOL_VERSION = "1.0.0";
@@ -29,6 +31,12 @@ public class MagusNetwork {
     }
 
     public static void registerMessages() {
+        CHANNEL.messageBuilder(FormActivatedPacket.class, nextID())
+                .encoder(FormActivatedPacket::toBytes)
+                .decoder(FormActivatedPacket::fromBytes)
+                .consumerMainThread(FormActivatedPacket::handle)
+                .add();
+
         CHANNEL.messageBuilder(ConditionActivatedPacket.class, nextID())
                 .encoder(ConditionActivatedPacket::toBytes)
                 .decoder(ConditionActivatedPacket::fromBytes)
