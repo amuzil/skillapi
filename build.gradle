@@ -89,7 +89,7 @@ minecraft {
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             property 'forge.enabledGameTestNamespaces', mod_id
             // Set custom username
-            jvmArgs += ["--username", "Dev####"]
+            args "--username", "Dev####"
         }
 
         server {
