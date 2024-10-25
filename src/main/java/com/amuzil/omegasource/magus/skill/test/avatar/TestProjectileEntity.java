@@ -1,20 +1,13 @@
 package com.amuzil.omegasource.magus.skill.test.avatar;
 
-import com.amuzil.omegasource.magus.Magus;
-import com.amuzil.omegasource.magus.network.MagusNetwork;
-import com.amuzil.omegasource.magus.network.packets.client_executed.FormActivatedPacket;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.lowdragmc.photon.client.fx.EntityEffect;
-import com.lowdragmc.photon.client.fx.FX;
-import com.lowdragmc.photon.client.fx.FXHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -275,10 +268,10 @@ public class TestProjectileEntity extends Projectile implements ItemSupplier {
                 this.shoot(entity.getViewVector(1).x, entity.getViewVector(1).y+0.5, entity.getViewVector(1).z, 0.75F, 1);
             }
         } else if (entity instanceof TestProjectileEntity) {
-            System.out.println("SUCCESS MADE IT HIT!!!");
             if (this.getOwner() != null && this.level.isClientSide) {
                 EntityEffect entityEffect = new EntityEffect(orb_bloom, level, entity);
                 entityEffect.start();
+                System.out.println("SUCCESS COLLISION!!!");
                 this.discard(); // kys asap
 //                this.shoot(entity.getViewVector(1).x, entity.getViewVector(1).y+0.5, entity.getViewVector(1).z, 0.75F, 1);
             }

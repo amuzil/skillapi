@@ -21,6 +21,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.PacketDistributor;
 import org.apache.logging.log4j.core.jmx.Server;
 
 import java.util.Objects;
@@ -88,13 +89,16 @@ public class FormActivatedPacket implements MagusPacket {
                 TestProjectileEntity entity = new TestProjectileEntity(player, level, form);
                 entity.shoot(player.getViewVector(1).x, player.getViewVector(1).y, player.getViewVector(1).z, 1, 1);
                 level.addFreshEntity(entity);
-                MagusNetwork.sendToClient(new FormActivatedPacket(form, entity.getId()), player);
-                Predicate<ServerPlayer> predicate = (serverPlayer) -> {
-                    return player.distanceToSqr(serverPlayer) < 2500 && !player.equals(serverPlayer);
-                };
-                for (ServerPlayer nearbyPlayer: level.getPlayers(predicate.and(LivingEntity::isAlive))) {
-                    MagusNetwork.sendToClient(new FormActivatedPacket(form, entity.getId()), nearbyPlayer);
-                }
+                FormActivatedPacket packet = new FormActivatedPacket(form, entity.getId());
+//                MagusNetwork.sendToClient(packet, player);
+//                Predicate<ServerPlayer> predicate = (serverPlayer) -> player.distanceToSqr(serverPlayer) < 2500 && !player.equals(serverPlayer);
+//                for (ServerPlayer nearbyPlayer: level.getPlayers(predicate.and(LivingEntity::isAlive))) {
+//                    MagusNetwork.sendToClient(packet, nearbyPlayer);
+//                }
+
+                MagusNetwork.CHANNEL.send(PacketDistributor.NEAR.with(
+                        () -> new PacketDistributor.TargetPoint(player.getX(), player.getY(), player.getZ(),
+                                500, level.dimension())), packet);
                 System.out.println("HANDLE SERVER PACKET ---> " + form);
             }
         });
