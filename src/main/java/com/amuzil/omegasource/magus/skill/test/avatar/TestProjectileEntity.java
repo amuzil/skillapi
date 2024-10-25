@@ -11,6 +11,7 @@ import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 
@@ -39,17 +40,28 @@ public class TestProjectileEntity extends AbstractArrow implements ItemSupplier 
     }
 
     protected void onHitEntity(EntityHitResult entityHitResult) {
-        super.onHitEntity(entityHitResult);
+//        super.onHitEntity(entityHitResult);
         Entity entity = entityHitResult.getEntity();
-        int i = entity instanceof Blaze ? 0 : 15; // Deal 15 damage
-        entity.hurt(this.damageSources().thrown(this, this.getOwner()), (float)i);
+        if (entity instanceof Blaze) {
+            if (this.getOwner() != null) {
+                this.shoot(entity.getViewVector(1).x, entity.getViewVector(1).y+0.5, entity.getViewVector(1).z, 0.75F, 1);
+            }
+        } else {
+            int i = 15; // Deal 15 damage
+            entity.hurt(this.damageSources().thrown(this, this.getOwner()), (float)i);
+        }
+    }
+
+    protected void onHitBlock(BlockHitResult blockHitResult) {
+//        super.onHitBlock(blockHitResult);
+        this.discard();
     }
 
     protected void onHit(HitResult hitResult) {
         super.onHit(hitResult);
         if (!this.level.isClientSide) {
             this.level.broadcastEntityEvent(this, (byte)3);
-            this.discard();
+//            this.discard();
         }
     }
 
