@@ -8,6 +8,8 @@ import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import com.amuzil.omegasource.magus.skill.util.capability.entity.Data;
+import com.amuzil.omegasource.magus.skill.util.capability.entity.Magi;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
@@ -25,10 +27,11 @@ public class ServerEvents {
     @SubscribeEvent
     public static void onEntityJoinLevel(EntityJoinLevelEvent event) {
 
-        if (!event.getLevel().isClientSide()) {
+        if (!event.getLevel().isClientSide() && event.getEntity() instanceof LivingEntity) {
             // TODO: Add a wrapper class for getting capabilities and data. Maybe SkillUser? MagusEntity?
-            Data capability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.LIVING_DATA);
-            if (capability != null && event.getEntity() instanceof Player) {
+
+            Magi magi = Magi.get((LivingEntity) event.getEntity());
+            if (magi != null && event.getEntity() instanceof Player) {
 
 
 
@@ -40,8 +43,8 @@ public class ServerEvents {
                                 ModifiersRegistry.DIRECTION.copy(), ModifiersRegistry.TARGET.copy())
                         .build();
                 //Resets the tree; for testing purposes.
-                if (capability.getTree() != null)
-                    capability.getTree().burn();
+                if (magi.getTree() != null)
+                    magi.getTree().burn();
                 // TODO: Need a way to convert forms into conditions
                 // Need to test out the condition tree. use left alt/arc > strike (left click).
                 // While this test code will directly use conditions, Skills will reference Forms

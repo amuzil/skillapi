@@ -15,6 +15,7 @@ import com.amuzil.omegasource.magus.skill.util.traits.DataTrait;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -49,6 +50,8 @@ public class LivingDataCapability {
         private final List<SkillCategory> categories = new ArrayList<>();
         private final List<Skill> skills = new ArrayList<>();
         private boolean isDirty;
+        // Instance of skill/magus supported entity, essentially.
+        private Magi magi = null;
 
         //Gets the tree from the event bus.
         private RadixTree tree;
@@ -58,8 +61,13 @@ public class LivingDataCapability {
             //TODO: Data generation methods for each skill
             fillCategories();
             fillSkills();
-
             markDirty();
+        }
+
+        public Magi getMagi(LivingEntity entity) {
+            if (magi == null)
+                magi = new Magi(this, entity);
+            return this.magi;
         }
 
         @Override

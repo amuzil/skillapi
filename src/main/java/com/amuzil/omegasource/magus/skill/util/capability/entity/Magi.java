@@ -12,6 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.FakePlayer;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -23,13 +24,16 @@ public class Magi {
     private final Data capabilityData;
     private List<SkillData> skillData;
     private List<SkillCategoryData> skillCategoryData;
+    private LivingEntity magi;
 
-    public Magi(Data capabilityData) {
+    public Magi(Data capabilityData, LivingEntity entity) {
         this.capabilityData = capabilityData;
+        this.magi = entity;
     }
 
+    @Nullable
     public static Magi get(LivingEntity entity) {
-        return new Magi(CapabilityHandler.getCapability(entity, CapabilityHandler.LIVING_DATA));
+        return ((LivingDataCapability.LivingDataCapabilityImp) (CapabilityHandler.getCapability(entity, CapabilityHandler.LIVING_DATA))).getMagi(entity);
     }
 
     public LivingDataCapability.LivingDataCapabilityImp getMagusData() {
@@ -72,11 +76,17 @@ public class Magi {
     // Called per tick
     public void onUpdate() {
 
+        if (getMagi().isOnGround()) {
+            System.out.println("Magi is on the ground.");
+        }
     }
 
     public void onDeath() {
 
     }
 
+    public LivingEntity getMagi() {
+        return this.magi;
+    }
 
 }
