@@ -27,6 +27,28 @@ public class EnergyTrait implements DataTrait {
         this.currentEnergy = maxEnergy;
     }
 
+    public void setCurrentEnergy(double currentEnergy) {
+        this.currentEnergy = currentEnergy;
+        markDirty();
+    }
+
+    public void changeEnergy(double changeAmount) {
+        setCurrentEnergy(currentEnergy + changeAmount);
+    }
+
+    public void setMaxEnergy(double maxEnergy) {
+        this.maxEnergy = maxEnergy;
+        markDirty();
+    }
+
+    public double getMaxEnergy() {
+        return this.maxEnergy;
+    }
+
+    public double getCurrentEnergy() {
+        return this.currentEnergy;
+    }
+
     @Override
     public String getName() {
         return name;
@@ -49,7 +71,11 @@ public class EnergyTrait implements DataTrait {
 
     @Override
     public CompoundTag serializeNBT() {
-        return null;
+        CompoundTag tag = new CompoundTag();
+        tag.putString("name", getName());
+        tag.putDouble("max_energy", maxEnergy);
+        tag.putDouble("current_energy", currentEnergy);
+        return tag;
     }
 
     @Override
