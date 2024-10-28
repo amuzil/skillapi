@@ -65,15 +65,14 @@ public class FormActivatedPacket implements MagusPacket {
         if (form.name().equals("force"))
             fx = blue_fire;
         if (fx != null) {
-            TestProjectileEntity entity = (TestProjectileEntity) player.level.getEntity(entityId);
-            EntityEffect entityEffect = new EntityEffect(fx, level, entity);
-            entityEffect.start();
+//            TestProjectileEntity entity = (TestProjectileEntity) player.level.getEntity(entityId);
+//            EntityEffect entityEffect = new EntityEffect(fx, level, entity);
+//            entityEffect.start();
             System.out.println("HANDLE CLIENT PACKET ---> " + form);
         }
     }
 
     // Server-side handler
-    @OnlyIn(Dist.DEDICATED_SERVER)
     public static void handleServerSide(Form form, ServerPlayer player) {
         // Perform server-side entity spawning and updating logic and fire Form Event here
         ServerLevel level = player.getLevel();
@@ -100,7 +99,7 @@ public class FormActivatedPacket implements MagusPacket {
             } else {
                 ServerPlayer player = ctx.get().getSender();
                 assert player != null;
-                DistExecutor.unsafeRunWhenOn(Dist.DEDICATED_SERVER, () -> () -> handleServerSide(form, player));
+                handleServerSide(form, player);
             }
         });
         return true;

@@ -1,6 +1,5 @@
 package com.amuzil.omegasource.magus.skill.test.avatar;
 
-import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.lowdragmc.photon.client.fx.EntityEffect;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
@@ -284,6 +283,7 @@ public class TestProjectileEntity extends Projectile implements ItemSupplier {
                 testProjectileEntity.discard();
             }
         }  else {
+            // TODO - Check if player entity has countered
             int i = 10; // Deal 10 damage
             entity.hurt(this.damageSources().thrown(this, this.getOwner()), (float)i);
             this.discard();
@@ -306,11 +306,6 @@ public class TestProjectileEntity extends Projectile implements ItemSupplier {
     private ParticleOptions getParticle() {
         return ParticleTypes.FLAME;
     }
-
-//    @Override
-//    protected ItemStack getPickupItem() {
-//        return PROJECTILE_ITEM;
-//    }
 
     @Override
     public ItemStack getItem() {
