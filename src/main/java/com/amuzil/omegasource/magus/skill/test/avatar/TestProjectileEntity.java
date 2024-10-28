@@ -42,7 +42,6 @@ public class TestProjectileEntity extends Projectile implements ItemSupplier {
 
     public TestProjectileEntity(EntityType<TestProjectileEntity> type, Level level) {
         super(type, level);
-        this.setNoGravity(true);
     }
 
     public TestProjectileEntity(double x, double y, double z, Level level) {
@@ -53,6 +52,7 @@ public class TestProjectileEntity extends Projectile implements ItemSupplier {
     public TestProjectileEntity(LivingEntity livingEntity, Level level) {
         this(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ(), level);
         this.setOwner(livingEntity);
+        this.setNoGravity(true);
     }
 
     public void projectileTick() {
