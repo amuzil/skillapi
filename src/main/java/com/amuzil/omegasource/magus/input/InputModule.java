@@ -194,5 +194,4 @@ public abstract class InputModule {
 
     public abstract boolean keyPressed(int key);
 
-
 }

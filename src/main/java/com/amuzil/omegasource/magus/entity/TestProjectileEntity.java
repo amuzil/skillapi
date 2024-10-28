@@ -1,4 +1,4 @@
-package com.amuzil.omegasource.magus.skill.test.avatar;
+package com.amuzil.omegasource.magus.entity;
 
 import com.lowdragmc.photon.client.fx.EntityEffect;
 import net.minecraft.core.BlockPos;
@@ -257,13 +257,14 @@ public class TestProjectileEntity extends Projectile implements ItemSupplier {
         }
     }
 
-    public void handleEntityEvent(byte data) {
-        if (data == 3) {
-            for(int i = 0; i < 8; ++i) {
-                this.level.addParticle(this.getParticle(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D);
-            }
-        }
-    }
+//    public void handleEntityEvent(byte data) {
+//        if (data == 3) {
+//            System.out.println("HANDLE ENTITY EVENT");
+//            for(int i = 0; i < 8; ++i) {
+//                this.level.addParticle(this.getParticle(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D);
+//            }
+//        }
+//    }
 
     protected void onHitEntity(EntityHitResult entityHitResult) {
         Entity entity = entityHitResult.getEntity();

@@ -4,7 +4,7 @@ import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.api.MagusPacket;
 import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.forms.Form;
-import com.amuzil.omegasource.magus.skill.test.avatar.TestProjectileEntity;
+import com.amuzil.omegasource.magus.entity.TestProjectileEntity;
 import com.lowdragmc.photon.client.fx.EntityEffect;
 import com.lowdragmc.photon.client.fx.FX;
 import net.minecraft.client.Minecraft;
@@ -65,9 +65,9 @@ public class FormActivatedPacket implements MagusPacket {
         if (form.name().equals("force"))
             fx = blue_fire;
         if (fx != null) {
-//            TestProjectileEntity entity = (TestProjectileEntity) player.level.getEntity(entityId);
-//            EntityEffect entityEffect = new EntityEffect(fx, level, entity);
-//            entityEffect.start();
+            TestProjectileEntity entity = (TestProjectileEntity) player.level.getEntity(entityId);
+            EntityEffect entityEffect = new EntityEffect(fx, level, entity);
+            entityEffect.start();
             System.out.println("HANDLE CLIENT PACKET ---> " + form);
         }
     }

@@ -1,4 +1,4 @@
-package com.amuzil.omegasource.magus.skill.test.avatar;
+package com.amuzil.omegasource.magus.entity;
 
 import com.amuzil.omegasource.magus.Magus;
 import net.minecraft.world.entity.EntityType;
