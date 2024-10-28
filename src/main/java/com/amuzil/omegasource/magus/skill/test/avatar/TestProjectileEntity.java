@@ -39,6 +39,7 @@ public class TestProjectileEntity extends Projectile implements ItemSupplier {
     private boolean leftOwner;
     private boolean hasBeenShot;
     private int life;
+    private int ttk = 100;
 
     public TestProjectileEntity(EntityType<TestProjectileEntity> type, Level level) {
         super(type, level);
@@ -50,7 +51,7 @@ public class TestProjectileEntity extends Projectile implements ItemSupplier {
         this.setPos(x, y, z);
     }
 
-    public TestProjectileEntity(LivingEntity livingEntity, Level level, Form form) {
+    public TestProjectileEntity(LivingEntity livingEntity, Level level) {
         this(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ(), level);
         this.setOwner(livingEntity);
     }
@@ -212,9 +213,13 @@ public class TestProjectileEntity extends Projectile implements ItemSupplier {
         }
     }
 
+    protected void setTimeToKill(int ticks) {
+        this.ttk = ticks;
+    }
+
     protected void tickDespawn() {
         ++this.life;
-        if (this.life >= 100) {
+        if (this.life >= ttk) {
 //            System.out.println("BYE BYE BBY");
             this.discard();
         }
@@ -267,13 +272,16 @@ public class TestProjectileEntity extends Projectile implements ItemSupplier {
             if (this.getOwner() != null) {
                 this.shoot(entity.getViewVector(1).x, entity.getViewVector(1).y+0.5, entity.getViewVector(1).z, 0.75F, 1);
             }
-        } else if (entity instanceof TestProjectileEntity) {
+        } else if (entity instanceof TestProjectileEntity testProjectileEntity) {
             if (this.getOwner() != null && this.level.isClientSide) {
-                EntityEffect entityEffect = new EntityEffect(orb_bloom, level, entity);
+                TestProjectileEntity collisionEntity = new TestProjectileEntity(this.getX(), this.getY(), this.getZ(), level);
+                collisionEntity.setTimeToKill(5);
+                level.addFreshEntity(collisionEntity);
+                EntityEffect entityEffect = new EntityEffect(orb_bloom, level, collisionEntity);
                 entityEffect.start();
                 System.out.println("SUCCESS COLLISION!!!");
-                this.discard(); // kys asap
-//                this.shoot(entity.getViewVector(1).x, entity.getViewVector(1).y+0.5, entity.getViewVector(1).z, 0.75F, 1);
+                this.discard();
+                testProjectileEntity.discard();
             }
         }  else {
             int i = 10; // Deal 10 damage

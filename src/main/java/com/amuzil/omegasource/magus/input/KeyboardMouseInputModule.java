@@ -11,10 +11,6 @@ import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
-import com.amuzil.omegasource.magus.skill.test.avatar.TestProjectileEntity;
-import com.lowdragmc.photon.client.fx.EntityEffect;
-import com.lowdragmc.photon.client.fx.FX;
-import com.lowdragmc.photon.client.fx.FXHelper;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -163,7 +159,7 @@ public class KeyboardMouseInputModule extends InputModule {
                             if (Minecraft.getInstance().getConnection() != null) {
                                 MagusNetwork.sendToServer(new FormActivatedPacket(activeForm.get(), 0));
                             }
-                            sendDebugMsg("Form Activated: " + lastActivatedForm.get().name());
+//                            sendDebugMsg("Form Activated: " + lastActivatedForm.get().name());
                         }
                     }
                     activeForm.set(Forms.NULL);

@@ -12,20 +12,15 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
-import org.apache.logging.log4j.core.jmx.Server;
 
 import java.util.Objects;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static com.amuzil.omegasource.magus.Magus.MOD_ID;
@@ -36,9 +31,9 @@ import static com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry.
 public class FormActivatedPacket implements MagusPacket {
 
     private final Form form;
-    private final int entityId;
+    private final int entityId; // Entity ID to send back to client for FX
 
-    public FormActivatedPacket(com.amuzil.omegasource.magus.skill.forms.Form form, int entityId) {
+    public FormActivatedPacket(Form form, int entityId) {
         this.form = Objects.requireNonNullElseGet(form, Form::new);
         this.entityId = entityId;
     }
@@ -57,7 +52,7 @@ public class FormActivatedPacket implements MagusPacket {
         return new FormActivatedPacket(form, entityId);
     }
 
-    // Client-side handler method
+    // Client-side handler
     @OnlyIn(Dist.CLIENT)
     private static void handleClientSide(Form form, int entityId) {
         // Perform client-side particle effect or other rendering logic here
@@ -77,29 +72,35 @@ public class FormActivatedPacket implements MagusPacket {
         }
     }
 
+    // Server-side handler
+    @OnlyIn(Dist.DEDICATED_SERVER)
+    public static void handleServerSide(Form form, ServerPlayer player) {
+        // Perform server-side entity spawning and updating logic and fire Form Event here
+        ServerLevel level = player.getLevel();
+        TestProjectileEntity entity = new TestProjectileEntity(player, level);
+        entity.shoot(player.getViewVector(1).x, player.getViewVector(1).y, player.getViewVector(1).z, 1, 1);
+        level.addFreshEntity(entity);
+        FormActivatedPacket packet = new FormActivatedPacket(form, entity.getId());
+
+//        Predicate<ServerPlayer> predicate = (serverPlayer) -> player.distanceToSqr(serverPlayer) < 2500;
+//        for (ServerPlayer nearbyPlayer: level.getPlayers(predicate.and(LivingEntity::isAlive))) {
+//            MagusNetwork.sendToClient(packet, nearbyPlayer);
+//        } // Keep this in case we want a more specific client packet distribution filter
+
+        MagusNetwork.CHANNEL.send(PacketDistributor.NEAR.with(
+                () -> new PacketDistributor.TargetPoint(player.getX(), player.getY(), player.getZ(),
+                        500, level.dimension())), packet);
+        System.out.println("HANDLE SERVER PACKET ---> " + form);
+    }
+
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             if (ctx.get().getDirection().getReceptionSide().isClient()) {
                 DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> handleClientSide(form, entityId));
             } else {
-                // Publish Form Event here
                 ServerPlayer player = ctx.get().getSender();
                 assert player != null;
-                ServerLevel level = player.getLevel();
-                TestProjectileEntity entity = new TestProjectileEntity(player, level, form);
-                entity.shoot(player.getViewVector(1).x, player.getViewVector(1).y, player.getViewVector(1).z, 1, 1);
-                level.addFreshEntity(entity);
-                FormActivatedPacket packet = new FormActivatedPacket(form, entity.getId());
-//                MagusNetwork.sendToClient(packet, player);
-//                Predicate<ServerPlayer> predicate = (serverPlayer) -> player.distanceToSqr(serverPlayer) < 2500 && !player.equals(serverPlayer);
-//                for (ServerPlayer nearbyPlayer: level.getPlayers(predicate.and(LivingEntity::isAlive))) {
-//                    MagusNetwork.sendToClient(packet, nearbyPlayer);
-//                }
-
-                MagusNetwork.CHANNEL.send(PacketDistributor.NEAR.with(
-                        () -> new PacketDistributor.TargetPoint(player.getX(), player.getY(), player.getZ(),
-                                500, level.dimension())), packet);
-                System.out.println("HANDLE SERVER PACKET ---> " + form);
+                DistExecutor.unsafeRunWhenOn(Dist.DEDICATED_SERVER, () -> () -> handleServerSide(form, player));
             }
         });
         return true;
