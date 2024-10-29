@@ -224,27 +224,9 @@ public class ElementCollision extends ElementProjectile {
 
     protected void onHitEntity(EntityHitResult entityHitResult) {
         Entity entity = entityHitResult.getEntity();
-        if (entity instanceof Blaze) {
-            if (this.getOwner() != null) {
-                this.shoot(entity.getViewVector(1).x, entity.getViewVector(1).y+0.5, entity.getViewVector(1).z, 0.75F, 1);
-            }
-        } else if (entity instanceof ElementCollision fireProjectileEntity) {
-            if (this.getOwner() != null && this.level.isClientSide) {
-                ElementCollision collisionEntity = new ElementCollision(this.getX(), this.getY(), this.getZ(), level);
-                collisionEntity.setTimeToKill(5);
-                level.addFreshEntity(collisionEntity);
-                EntityEffect entityEffect = new EntityEffect(orb_bloom, level, collisionEntity);
-                entityEffect.start();
-                System.out.println("SUCCESS COLLISION!!!");
-                this.discard();
-                fireProjectileEntity.discard();
-            }
-        }  else {
-            // TODO - Check if player entity has countered
-            int i = 10; // Deal 10 damage
-            entity.hurt(this.damageSources().thrown(this, this.getOwner()), (float)i);
-            this.discard();
-        }
+        int i = 5;
+        entity.hurt(this.damageSources().thrown(this, this.getOwner()), (float)i);
+        this.discard();
     }
 
     protected void onHitBlock(BlockHitResult blockHitResult) {
