@@ -1,6 +1,5 @@
 package com.amuzil.omegasource.magus.input;
 
-import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.client_executed.FormActivatedPacket;
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
@@ -14,9 +13,6 @@ import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -32,7 +28,6 @@ import java.util.function.Consumer;
 
 public class KeyboardMouseInputModule extends InputModule {
     private final Consumer<TickEvent.ClientTickEvent> tickEventConsumer;
-    private final Consumer<TickEvent.ServerTickEvent> tickServerEventConsumer;
     private final Consumer<InputEvent.Key> keyboardListener;
     private final Consumer<InputEvent.MouseButton> mouseListener;
     private final Consumer<InputEvent.MouseScrollingEvent> mouseScrollListener;
@@ -175,37 +170,6 @@ public class KeyboardMouseInputModule extends InputModule {
                     lastActivatedForm.set(Forms.NULL);
                     timeout.set(0);
                 }
-            }
-        };
-
-        this.tickServerEventConsumer = event -> {
-            // NOTE: This is strictly for testing and to be deleted later
-            if (c == 0) {
-                synchronized (activeForm.get()) {
-                    if (!activeForm.get().name().equals("null")) {
-                        ResourceLocation resource = null;
-                        if (activeForm.get().name().equals("strike"))
-                            resource = new ResourceLocation(Magus.MOD_ID, "fire_bloom");
-                        if (activeForm.get().name().equals("force"))
-                            resource = new ResourceLocation(Magus.MOD_ID, "blue_fire");
-                        ServerLevel level = event.getServer().getAllLevels().iterator().next();
-//                        System.out.println("LEVEL: " + level);
-                        if (!level.isClientSide && resource != null) {
-                            c = 5;
-                            Player player = Minecraft.getInstance().player;
-                            assert player != null;
-//                            TestProjectileEntity element = new TestProjectileEntity(player, level, activeForm.get());
-//                            element.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
-//                            element.shoot(player.getViewVector(1).x, player.getViewVector(1).y, player.getViewVector(1).z, 2, 1);
-//                            level.addFreshEntity(element);
-//                            FX fx = FXHelper.getFX(resource);
-//                            EntityEffect entityEffect = new EntityEffect(fx, level, element);
-//                            entityEffect.start();
-                        }
-                    }
-                }
-            } else {
-                c--;
             }
         };
     }
@@ -352,6 +316,5 @@ public class KeyboardMouseInputModule extends InputModule {
     public double getMouseScrollDelta() {
         return this.mouseScrollDelta;
     }
-
 
 }
