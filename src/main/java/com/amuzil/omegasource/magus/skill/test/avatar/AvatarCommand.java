@@ -55,8 +55,7 @@ public class AvatarCommand {
     }
 
     private static void createActivateFormCommand() {
-        var commandBuilder = builder.then(Commands.literal("activate"));
-        Registries.forms.forEach(form -> commandBuilder.then(Commands.literal("form")
+        Registries.forms.forEach(form -> builder.then(Commands.literal("form")
             .then(Commands.literal(form.name().toLowerCase())
                 .then(Commands.argument("target", EntityArgument.player())
                     .executes(c -> activateForm(
