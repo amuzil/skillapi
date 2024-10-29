@@ -70,16 +70,15 @@ public class FormActivatedPacket implements MagusPacket {
         // Perform server-side entity spawning and updating logic and fire Form Event here
         ServerLevel level = player.getLevel();
         // TODO - Create/perform certain entity updates based on form and element
+        //      - All Skills/techniques should be determined and handled here
         ElementProjectile entity = ElementProjectile.createElementEntity(form, element, player, level);
         entity.shoot(player.getViewVector(1).x, player.getViewVector(1).y, player.getViewVector(1).z, 1, 1);
         level.addFreshEntity(entity);
         FormActivatedPacket packet = new FormActivatedPacket(form, element, entity.getId());
-
 //        Predicate<ServerPlayer> predicate = (serverPlayer) -> player.distanceToSqr(serverPlayer) < 2500;
 //        for (ServerPlayer nearbyPlayer: level.getPlayers(predicate.and(LivingEntity::isAlive))) {
 //            MagusNetwork.sendToClient(packet, nearbyPlayer);
 //        } // Keep this in case we want a more specific client packet distribution filter
-
         MagusNetwork.CHANNEL.send(PacketDistributor.NEAR.with(
                 () -> new PacketDistributor.TargetPoint(player.getX(), player.getY(), player.getZ(),
                         500, level.dimension())), packet);
