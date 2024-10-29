@@ -6,7 +6,7 @@ import com.amuzil.omegasource.magus.network.packets.client_executed.FormActivate
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.radix.*;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
-import com.amuzil.omegasource.magus.skill.elements.Discipline;
+import com.amuzil.omegasource.magus.skill.elements.Element;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
@@ -57,7 +57,7 @@ public class KeyboardMouseInputModule extends InputModule {
     // forms are activated.
 
     public KeyboardMouseInputModule() {
-        formsTree.setDiscipline(activeDiscipline);
+        formsTree.setDiscipline(activeElement);
 
         this.ticksSinceActivated = new AtomicInteger(0);
         this.activeForm = new AtomicReference<>(Forms.NULL);
@@ -156,9 +156,8 @@ public class KeyboardMouseInputModule extends InputModule {
                     // Extra check for race conditions. Probably wont' help...
                     synchronized (lastActivatedForm.get()) {
                         if (!lastActivatedForm.get().name().equals("null")) {
-                            if (Minecraft.getInstance().getConnection() != null) {
-                                MagusNetwork.sendToServer(new FormActivatedPacket(activeForm.get(), 0));
-                            }
+                            if (Minecraft.getInstance().getConnection() != null)
+                                MagusNetwork.sendToServer(new FormActivatedPacket(activeForm.get(), activeElement, 0));
 //                            sendDebugMsg("Form Activated: " + lastActivatedForm.get().name());
                         }
                     }
@@ -211,9 +210,9 @@ public class KeyboardMouseInputModule extends InputModule {
         };
     }
 
-    public static void setActiveDiscipline(Discipline discipline) {
-        activeDiscipline = discipline;
-        formsTree.setDiscipline(discipline);
+    public static void setActiveDiscipline(Element element) {
+        activeElement = element;
+        formsTree.setDiscipline(element);
     }
 
     private void checkForForm() {

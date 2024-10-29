@@ -1,19 +1,17 @@
 package com.amuzil.omegasource.magus.network.packets.client_executed;
 
+import com.amuzil.omegasource.magus.entity.ElementProjectile;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.api.MagusPacket;
 import com.amuzil.omegasource.magus.registry.Registries;
+import com.amuzil.omegasource.magus.skill.elements.Element;
 import com.amuzil.omegasource.magus.skill.forms.Form;
-import com.amuzil.omegasource.magus.entity.TestProjectileEntity;
-import com.lowdragmc.photon.client.fx.EntityEffect;
-import com.lowdragmc.photon.client.fx.FX;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
@@ -24,32 +22,35 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import static com.amuzil.omegasource.magus.Magus.MOD_ID;
-import static com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry.blue_fire;
-import static com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry.fire_bloom;
 
 
 public class FormActivatedPacket implements MagusPacket {
 
     private final Form form;
+    private final Element element;
     private final int entityId; // Entity ID to send back to client for FX
 
-    public FormActivatedPacket(Form form, int entityId) {
+    public FormActivatedPacket(Form form, Element element, int entityId) {
         this.form = Objects.requireNonNullElseGet(form, Form::new);
+        this.element = element;
         this.entityId = entityId;
     }
 
     public void toBytes(FriendlyByteBuf buf) {
         if (form != null) {
             buf.writeUtf(form.name());
+            buf.writeUtf(element.name());
             buf.writeInt(entityId);
         }
     }
 
     public static FormActivatedPacket fromBytes(FriendlyByteBuf buf) {
-        String name = buf.readUtf();
+        String formName = buf.readUtf();
+        String elementName = buf.readUtf();
         int entityId = buf.readInt();
-        Form form = Registries.FORMS.get().getValue(new ResourceLocation(MOD_ID, name));
-        return new FormActivatedPacket(form, entityId);
+        Form form = Registries.FORMS.get().getValue(new ResourceLocation(MOD_ID, formName));
+        Element element = (Element) Registries.SKILL_CATEGORIES.get().getValue(new ResourceLocation(MOD_ID, elementName));
+        return new FormActivatedPacket(form, element, entityId);
     }
 
     // Client-side handler
@@ -58,28 +59,21 @@ public class FormActivatedPacket implements MagusPacket {
         // Perform client-side particle effect or other rendering logic here
         Player player = Minecraft.getInstance().player;
         assert player != null;
-        Level level = player.level;
-        FX fx = null;
-        if (form.name().equals("strike"))
-            fx = fire_bloom;
-        if (form.name().equals("force"))
-            fx = blue_fire;
-        if (fx != null) {
-            TestProjectileEntity entity = (TestProjectileEntity) player.level.getEntity(entityId);
-            EntityEffect entityEffect = new EntityEffect(fx, level, entity);
-            entityEffect.start();
-            System.out.println("HANDLE CLIENT PACKET ---> " + form);
-        }
+        ElementProjectile elementProjectile = (ElementProjectile) player.level.getEntity(entityId);
+        assert elementProjectile != null;
+        elementProjectile.startEffect(form, player);
+        System.out.println("HANDLE CLIENT PACKET ---> " + form);
     }
 
     // Server-side handler
-    public static void handleServerSide(Form form, ServerPlayer player) {
+    public static void handleServerSide(Form form, Element element, ServerPlayer player) {
         // Perform server-side entity spawning and updating logic and fire Form Event here
         ServerLevel level = player.getLevel();
-        TestProjectileEntity entity = new TestProjectileEntity(player, level);
+        // TODO - Create/perform certain entity updates based on form and element
+        ElementProjectile entity = ElementProjectile.createElementEntity(form, element, player, level);
         entity.shoot(player.getViewVector(1).x, player.getViewVector(1).y, player.getViewVector(1).z, 1, 1);
         level.addFreshEntity(entity);
-        FormActivatedPacket packet = new FormActivatedPacket(form, entity.getId());
+        FormActivatedPacket packet = new FormActivatedPacket(form, element, entity.getId());
 
 //        Predicate<ServerPlayer> predicate = (serverPlayer) -> player.distanceToSqr(serverPlayer) < 2500;
 //        for (ServerPlayer nearbyPlayer: level.getPlayers(predicate.and(LivingEntity::isAlive))) {
@@ -99,7 +93,7 @@ public class FormActivatedPacket implements MagusPacket {
             } else {
                 ServerPlayer player = ctx.get().getSender();
                 assert player != null;
-                handleServerSide(form, player);
+                handleServerSide(form, element, player);
             }
         });
         return true;

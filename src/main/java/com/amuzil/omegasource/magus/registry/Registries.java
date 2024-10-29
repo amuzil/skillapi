@@ -2,8 +2,8 @@ package com.amuzil.omegasource.magus.registry;
 
 import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.radix.Condition;
-import com.amuzil.omegasource.magus.skill.elements.Discipline;
-import com.amuzil.omegasource.magus.skill.elements.Disciplines;
+import com.amuzil.omegasource.magus.skill.elements.Element;
+import com.amuzil.omegasource.magus.skill.elements.Elements;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
@@ -91,9 +91,9 @@ public class Registries {
         conditions.add(registryCondition);
     }
 
-    public static void registerDiscipline(Discipline discipline) {
-        categories.add(discipline);
-        Disciplines.DISCIPLINES.add(discipline);
+    public static void registerDiscipline(Element element) {
+        categories.add(element);
+        Elements.ELEMENTS.add(element);
     }
 
 
@@ -149,6 +149,7 @@ public class Registries {
 
     @SubscribeEvent
     public static void gameRegistry(RegisterEvent event) {
+        Elements.init();
         Forms.init(); // Moved here so that forms registry gets populated
         /* Skill Categories. */
         if (event.getRegistryKey().equals(SKILL_CATEGORIES.get().getRegistryKey())) {
@@ -157,6 +158,8 @@ public class Registries {
 
 
             event.register(resKey, helper -> {
+                for (SkillCategory category : categories)
+                    registry.register(category.name(), category);
             });
         }
 

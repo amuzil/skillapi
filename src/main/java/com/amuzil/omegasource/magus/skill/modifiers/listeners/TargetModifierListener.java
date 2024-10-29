@@ -1,9 +1,8 @@
 package com.amuzil.omegasource.magus.skill.modifiers.listeners;
 
-import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.input.InputModule;
-import com.amuzil.omegasource.magus.skill.elements.Discipline;
-import com.amuzil.omegasource.magus.skill.elements.Disciplines;
+import com.amuzil.omegasource.magus.skill.elements.Element;
+import com.amuzil.omegasource.magus.skill.elements.Elements;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierListener;
 import com.amuzil.omegasource.magus.skill.modifiers.data.TargetModifierData;
@@ -29,7 +28,7 @@ import java.util.List;
 // TODO: Configure which key this listener uses
 public class TargetModifierListener extends ModifierListener<InputEvent.MouseButton> {
     private Vec3 lastTargetPosition;
-    private Discipline activeDiscipline;
+    private Element activeElement;
 
     public TargetModifierListener() {
         this.modifierData = new TargetModifierData();
@@ -37,14 +36,14 @@ public class TargetModifierListener extends ModifierListener<InputEvent.MouseBut
 
     @Override
     public void setupListener(CompoundTag compoundTag) {
-        this.activeDiscipline = Disciplines.fromName(compoundTag.getString("activeElement"));
+        this.activeElement = Elements.fromName(compoundTag.getString("activeElement"));
     }
 
     @Override
     public boolean shouldCollectModifierData(InputEvent.MouseButton event) {
 
         //TODO: Fix this
-        this.activeDiscipline = InputModule.getDiscipline();
+        this.activeElement = InputModule.getDiscipline();
         
         if(event instanceof InputEvent.MouseButton.Post && // prevents double activation(Pre- and Post-event firing)
                 event.getButton() == InputConstants.MOUSE_BUTTON_MIDDLE && event.getAction() == InputConstants.PRESS) {
@@ -54,7 +53,7 @@ public class TargetModifierListener extends ModifierListener<InputEvent.MouseBut
             Vec3 vector3d1 = mc.player.getViewVector(1.0F);
             double distance = 20; //todo max distance make this configurable
             Vec3 vector3d2 = vector3d.add(vector3d1.x * distance, vector3d1.y * distance, vector3d1.z * distance);
-            List<TagKey<Block>> bendableMaterials = BendingMaterialUtil.getBendableMaterialsForElement(activeDiscipline);
+            List<TagKey<Block>> bendableMaterials = BendingMaterialUtil.getBendableMaterialsForElement(activeElement);
             BlockHitResult hitresult = mc.player.level.clip(new ClipContext(vector3d, vector3d2, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, player));
             if (hitresult.getType() == HitResult.Type.BLOCK) {
                 BlockPos locationHit = hitresult.getBlockPos();

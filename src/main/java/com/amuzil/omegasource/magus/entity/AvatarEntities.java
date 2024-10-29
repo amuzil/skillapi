@@ -1,6 +1,11 @@
 package com.amuzil.omegasource.magus.entity;
 
 import com.amuzil.omegasource.magus.Magus;
+import com.amuzil.omegasource.magus.entity.collision.ElementCollision;
+import com.amuzil.omegasource.magus.entity.projectile.AirProjectile;
+import com.amuzil.omegasource.magus.entity.projectile.EarthProjectile;
+import com.amuzil.omegasource.magus.entity.projectile.FireProjectile;
+import com.amuzil.omegasource.magus.entity.projectile.WaterProjectile;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -13,9 +18,25 @@ public class AvatarEntities {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
             DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Magus.MOD_ID);
 
-    public static final RegistryObject<EntityType<TestProjectileEntity>> TEST_PROJECTILE =
-            ENTITY_TYPES.register("test_projectile", () -> EntityType.Builder.<TestProjectileEntity>of(TestProjectileEntity::new, MobCategory.MISC)
-                    .sized(0.5f, 0.5f).build("test_projectile"));
+    public static final RegistryObject<EntityType<AirProjectile>> AIR_PROJECTILE_ENTITY_TYPE =
+            ENTITY_TYPES.register("air_projectile", () -> EntityType.Builder.<AirProjectile>of(AirProjectile::new, MobCategory.MISC)
+                    .sized(0.5f, 0.5f).build("air_projectile"));
+
+    public static final RegistryObject<EntityType<WaterProjectile>> WATER_PROJECTILE_ENTITY_TYPE =
+            ENTITY_TYPES.register("water_projectile", () -> EntityType.Builder.<WaterProjectile>of(WaterProjectile::new, MobCategory.MISC)
+                    .sized(0.5f, 0.5f).build("water_projectile"));
+
+    public static final RegistryObject<EntityType<EarthProjectile>> EARTH_PROJECTILE_ENTITY_TYPE =
+            ENTITY_TYPES.register("earth_projectile", () -> EntityType.Builder.<EarthProjectile>of(EarthProjectile::new, MobCategory.MISC)
+                    .sized(0.5f, 0.5f).build("earth_projectile"));
+
+    public static final RegistryObject<EntityType<FireProjectile>> FIRE_PROJECTILE_ENTITY_TYPE =
+            ENTITY_TYPES.register("fire_projectile", () -> EntityType.Builder.<FireProjectile>of(FireProjectile::new, MobCategory.MISC)
+                    .sized(0.5f, 0.5f).build("fire_projectile"));
+
+    public static final RegistryObject<EntityType<ElementCollision>> COLLISION_ENTITY_TYPE =
+            ENTITY_TYPES.register("element_collision", () -> EntityType.Builder.<ElementCollision>of(ElementCollision::new, MobCategory.MISC)
+                    .sized(0.5f, 0.5f).build("element_collision"));
 
     public static void register(IEventBus eventBus) {
         ENTITY_TYPES.register(eventBus);

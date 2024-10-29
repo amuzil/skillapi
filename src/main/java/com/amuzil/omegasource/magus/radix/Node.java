@@ -3,8 +3,7 @@ package com.amuzil.omegasource.magus.radix;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.client_executed.RegisterModifierListenersPacket;
 import com.amuzil.omegasource.magus.network.packets.client_executed.UnregisterModifierListenersPacket;
-import com.amuzil.omegasource.magus.skill.elements.Discipline;
-import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
+import com.amuzil.omegasource.magus.skill.elements.Element;
 import com.amuzil.omegasource.magus.skill.modifiers.api.Modifier;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.mojang.datafixers.util.Pair;
@@ -128,11 +127,11 @@ public class Node {
         return modifiers;
     }
 
-    public void registerModifierListeners(Discipline activeDiscipline, ServerPlayer player) {
+    public void registerModifierListeners(Element activeElement, ServerPlayer player) {
         CompoundTag listenerInstanceData = new CompoundTag();
 
         //here we can send information to the client to help build the Modifier Listeners appropriately.
-        listenerInstanceData.putString("activeElement", activeDiscipline.name());
+        listenerInstanceData.putString("activeElement", activeElement.name());
 
         List<String> modifierTypes = new ArrayList<>();
         List<ModifierData> modifiers = getModifiers();

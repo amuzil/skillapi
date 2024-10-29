@@ -3,8 +3,7 @@ package com.amuzil.omegasource.magus.radix;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.server_executed.ConditionActivatedPacket;
 import com.amuzil.omegasource.magus.radix.condition.MultiClientCondition;
-import com.amuzil.omegasource.magus.skill.elements.Discipline;
-import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
+import com.amuzil.omegasource.magus.skill.elements.Element;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.data.MultiModifierData;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,7 +21,7 @@ public class RadixTree {
     private Node active;
     private Condition lastActivated = null;
     // Fire is a test
-    private Discipline activeDiscipline = null; // Disciplines.FIRE;
+    private Element activeElement = null; // Disciplines.FIRE;
     private ConditionPath path;
     private Entity owner;
 
@@ -224,7 +223,7 @@ public class RadixTree {
         }
 
         active = null;
-        activeDiscipline = null;
+        activeElement = null;
     }
 
     // ---------- Cali's RadixTree Impl ----------
@@ -234,8 +233,8 @@ public class RadixTree {
         path = new ConditionPath();
     }
 
-    public void setDiscipline(Discipline discipline) {
-        this.activeDiscipline = discipline;
+    public void setDiscipline(Element element) {
+        this.activeElement = element;
     }
 
     private void setActive(Node node) {
@@ -281,7 +280,7 @@ public class RadixTree {
 
 
             if (active.getModifiers().size() > 0 && owner instanceof ServerPlayer player)
-                active.registerModifierListeners(activeDiscipline, player);
+                active.registerModifierListeners(activeElement, player);
 
             if (active.onEnter() != null) {
                 active.onEnter().accept(this);
@@ -317,7 +316,7 @@ public class RadixTree {
     // TODO:
     // Rather than relying on the input module to send packets, handle everything in the condition runnables?
     public void moveDown(Condition executedCondition) {
-        if (activeDiscipline == null) {
+        if (activeElement == null) {
             LogManager.getLogger().info("NO ELEMENT SELECTED");
             return;
         }

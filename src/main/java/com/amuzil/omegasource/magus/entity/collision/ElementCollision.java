@@ -1,5 +1,7 @@
-package com.amuzil.omegasource.magus.entity;
+package com.amuzil.omegasource.magus.entity.collision;
 
+import com.amuzil.omegasource.magus.entity.AvatarEntities;
+import com.amuzil.omegasource.magus.entity.ElementProjectile;
 import com.lowdragmc.photon.client.fx.EntityEffect;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
@@ -13,14 +15,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Blaze;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ItemSupplier;
-import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -31,45 +29,31 @@ import java.util.function.Predicate;
 import static com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry.orb_bloom;
 
 
-public class TestProjectileEntity extends Projectile implements ItemSupplier {
-    public static final ItemStack PROJECTILE_ITEM = new ItemStack(Blocks.AIR);
-    private static final EntityDataAccessor<Byte> ID_FLAGS = SynchedEntityData.defineId(TestProjectileEntity.class, EntityDataSerializers.BYTE);
-    private static final EntityDataAccessor<Byte> PIERCE_LEVEL = SynchedEntityData.defineId(TestProjectileEntity.class, EntityDataSerializers.BYTE);
+public class ElementCollision extends ElementProjectile {
+    private static final EntityDataAccessor<Byte> ID_FLAGS = SynchedEntityData.defineId(ElementCollision.class, EntityDataSerializers.BYTE);
+    private static final EntityDataAccessor<Byte> PIERCE_LEVEL = SynchedEntityData.defineId(ElementCollision.class, EntityDataSerializers.BYTE);
     private boolean leftOwner;
     private boolean hasBeenShot;
     private int life;
-    private int ttk = 100;
+    private int ttk = 10;
 
-    public TestProjectileEntity(EntityType<TestProjectileEntity> type, Level level) {
+    public ElementCollision(EntityType<ElementCollision> type, Level level) {
         super(type, level);
     }
 
-    public TestProjectileEntity(double x, double y, double z, Level level) {
-        this(AvatarEntities.TEST_PROJECTILE.get(), level);
+    public ElementCollision(double x, double y, double z, Level level) {
+        this(AvatarEntities.COLLISION_ENTITY_TYPE.get(), level);
         this.setPos(x, y, z);
     }
 
-    public TestProjectileEntity(LivingEntity livingEntity, Level level) {
+    public ElementCollision(LivingEntity livingEntity, Level level) {
         this(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ(), level);
         this.setOwner(livingEntity);
         this.setNoGravity(true);
     }
 
-    public void projectileTick() {
-        if (!this.hasBeenShot) {
-            this.gameEvent(GameEvent.PROJECTILE_SHOOT, this.getOwner());
-            this.hasBeenShot = true;
-        }
-
-        if (!this.leftOwner) {
-            this.leftOwner = this.checkLeftOwner();
-        }
-
-        super.tick();
-    }
-
     public void tick() {
-        this.projectileTick();
+        super.tick();
         boolean flag = this.isNoPhysics();
         Vec3 deltaMovement = this.getDeltaMovement();
         if (this.xRotO == 0.0F && this.yRotO == 0.0F) {
@@ -212,7 +196,7 @@ public class TestProjectileEntity extends Projectile implements ItemSupplier {
         }
     }
 
-    protected void setTimeToKill(int ticks) {
+    public void setTimeToKill(int ticks) {
         this.ttk = ticks;
     }
 
@@ -225,28 +209,9 @@ public class TestProjectileEntity extends Projectile implements ItemSupplier {
     }
 
     @Override
-    public boolean isPickable() {
-        return true;
-    }
-
-    @Override
     protected void defineSynchedData() {
         this.entityData.define(ID_FLAGS, (byte)0);
         this.entityData.define(PIERCE_LEVEL, (byte)0);
-    }
-
-    private boolean checkLeftOwner() {
-        Entity owner = this.getOwner();
-        if (owner != null) {
-            for(Entity entity1 : this.level.getEntities(this, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), (entity) -> {
-                return !entity.isSpectator() && entity.isPickable();
-            })) {
-                if (entity1.getRootVehicle() == owner.getRootVehicle()) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     public boolean isNoPhysics() {
@@ -257,31 +222,22 @@ public class TestProjectileEntity extends Projectile implements ItemSupplier {
         }
     }
 
-//    public void handleEntityEvent(byte data) {
-//        if (data == 3) {
-//            System.out.println("HANDLE ENTITY EVENT");
-//            for(int i = 0; i < 8; ++i) {
-//                this.level.addParticle(this.getParticle(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D);
-//            }
-//        }
-//    }
-
     protected void onHitEntity(EntityHitResult entityHitResult) {
         Entity entity = entityHitResult.getEntity();
         if (entity instanceof Blaze) {
             if (this.getOwner() != null) {
                 this.shoot(entity.getViewVector(1).x, entity.getViewVector(1).y+0.5, entity.getViewVector(1).z, 0.75F, 1);
             }
-        } else if (entity instanceof TestProjectileEntity testProjectileEntity) {
+        } else if (entity instanceof ElementCollision fireProjectileEntity) {
             if (this.getOwner() != null && this.level.isClientSide) {
-                TestProjectileEntity collisionEntity = new TestProjectileEntity(this.getX(), this.getY(), this.getZ(), level);
+                ElementCollision collisionEntity = new ElementCollision(this.getX(), this.getY(), this.getZ(), level);
                 collisionEntity.setTimeToKill(5);
                 level.addFreshEntity(collisionEntity);
                 EntityEffect entityEffect = new EntityEffect(orb_bloom, level, collisionEntity);
                 entityEffect.start();
                 System.out.println("SUCCESS COLLISION!!!");
                 this.discard();
-                testProjectileEntity.discard();
+                fireProjectileEntity.discard();
             }
         }  else {
             // TODO - Check if player entity has countered
@@ -302,14 +258,5 @@ public class TestProjectileEntity extends Projectile implements ItemSupplier {
             this.level.broadcastEntityEvent(this, (byte)3);
 //            this.discard();
         }
-    }
-
-    private ParticleOptions getParticle() {
-        return ParticleTypes.FLAME;
-    }
-
-    @Override
-    public ItemStack getItem() {
-        return PROJECTILE_ITEM;
     }
 }
