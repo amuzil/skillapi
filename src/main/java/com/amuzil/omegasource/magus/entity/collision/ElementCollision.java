@@ -32,8 +32,6 @@ import static com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry.
 public class ElementCollision extends ElementProjectile {
     private static final EntityDataAccessor<Byte> ID_FLAGS = SynchedEntityData.defineId(ElementCollision.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Byte> PIERCE_LEVEL = SynchedEntityData.defineId(ElementCollision.class, EntityDataSerializers.BYTE);
-    private boolean leftOwner;
-    private boolean hasBeenShot;
     private int life;
     private int ttk = 10;
 
