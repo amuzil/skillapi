@@ -30,15 +30,13 @@ public class AvatarCommand {
     private static LiteralArgumentBuilder<CommandSourceStack> builder =  Commands.literal("avatar");
     // Class for registering the '/avatar' command
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        builder.then(
-            Commands.literal("tree")
-                .executes(c -> tree())
-                .then(Commands.literal("reset")
+        builder.then(Commands.literal("tree")
+            .then(Commands.literal("reset")
                     .executes(c -> reset()))
-        )
+        .executes(c -> tree()))
         .executes(c -> {
             // Default message when no options are provided.
-            InputModule.sendDebugMsg("Options: activate, tree, reset");
+            InputModule.sendDebugMsg("Options: activate, form, tree");
             return 1;
         });
 
