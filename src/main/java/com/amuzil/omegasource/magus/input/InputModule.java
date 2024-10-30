@@ -43,10 +43,6 @@ public abstract class InputModule {
     // Send a message to in-game chat
     public static void sendDebugMsg(String msg) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft == null) {
-            System.err.println("sendDebugMsg failed: Minecraft instance is null");
-            return;
-        }
         minecraft.execute(() -> {
             LocalPlayer player = minecraft.player;
             if (player != null) {
