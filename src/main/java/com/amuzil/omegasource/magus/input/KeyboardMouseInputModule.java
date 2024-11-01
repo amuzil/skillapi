@@ -44,7 +44,6 @@ public class KeyboardMouseInputModule extends InputModule {
     private boolean listen;
     // Used for modifier data
     private boolean checkForm = false;
-    private int c = 0;
 
     // module activating a form rather than relying on the raw input data for those forms.
     // This way, the trees for different complex methods (such as VR and multikey)
@@ -151,8 +150,9 @@ public class KeyboardMouseInputModule extends InputModule {
                     // Extra check for race conditions. Probably wont' help...
                     synchronized (lastActivatedForm.get()) {
                         if (!lastActivatedForm.get().name().equals("null")) {
-                            if (Minecraft.getInstance().getConnection() != null)
+                            if (Minecraft.getInstance().getConnection() != null) {
                                 MagusNetwork.sendToServer(new FormActivatedPacket(activeForm.get(), activeElement, 0));
+                            }
 //                            sendDebugMsg("Form Activated: " + lastActivatedForm.get().name());
                         }
                     }

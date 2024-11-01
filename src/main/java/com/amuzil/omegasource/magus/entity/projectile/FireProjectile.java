@@ -3,10 +3,9 @@ package com.amuzil.omegasource.magus.entity.projectile;
 import com.amuzil.omegasource.magus.entity.AvatarEntities;
 import com.amuzil.omegasource.magus.entity.ElementProjectile;
 import com.amuzil.omegasource.magus.entity.collision.ElementCollision;
+import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.lowdragmc.photon.client.fx.EntityEffect;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -16,6 +15,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Blaze;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Fireball;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -40,13 +40,14 @@ public class FireProjectile extends ElementProjectile {
         super(type, level);
     }
 
-    public FireProjectile(double x, double y, double z, Level level) {
+    public FireProjectile(double x, double y, double z, Level level, Form form) {
         this(AvatarEntities.FIRE_PROJECTILE_ENTITY_TYPE.get(), level);
         this.setPos(x, y, z);
+        this.form = form;
     }
 
-    public FireProjectile(LivingEntity livingEntity, Level level) {
-        this(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ(), level);
+    public FireProjectile(LivingEntity livingEntity, Level level, Form form) {
+        this(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ(), level, form);
         this.setOwner(livingEntity);
         this.setNoGravity(true);
     }
@@ -123,77 +124,94 @@ public class FireProjectile extends ElementProjectile {
             hitresult = null;
         }
         deltaMovement = this.getDeltaMovement();
-        double d5 = deltaMovement.x;
-        double d6 = deltaMovement.y;
-        double d1 = deltaMovement.z;
+        double x = deltaMovement.x;
+        double y = deltaMovement.y;
+        double z = deltaMovement.z;
 
-        double d7 = this.getX() + d5;
-        double d2 = this.getY() + d6;
-        double d3 = this.getZ() + d1;
+        double finalX = this.getX() + x;
+        double finalY = this.getY() + y;
+        double finalZ = this.getZ() + z;
         double d4 = deltaMovement.horizontalDistance();
         if (flag) {
-            this.setYRot((float)(Mth.atan2(-d5, -d1) * (double)(180F / (float)Math.PI)));
+            this.setYRot((float)(Mth.atan2(-x, -z) * (double)(180F / (float)Math.PI)));
         } else {
-            this.setYRot((float)(Mth.atan2(d5, d1) * (double)(180F / (float)Math.PI)));
+            this.setYRot((float)(Mth.atan2(x, z) * (double)(180F / (float)Math.PI)));
         }
 
-        this.setXRot((float)(Mth.atan2(d6, d4) * (double)(180F / (float)Math.PI)));
+        this.setXRot((float)(Mth.atan2(y, d4) * (double)(180F / (float)Math.PI)));
         this.setXRot(lerpRotation(this.xRotO, this.getXRot()));
         this.setYRot(lerpRotation(this.yRotO, this.getYRot()));
 
-        float f = 0.99F;
-        this.setDeltaMovement(deltaMovement.scale((double)f));
-        if (!this.isNoGravity() && !flag) {
+        float f = 0.49F; // Scale speed
+        this.setDeltaMovement(deltaMovement.scale(f));
+        if (!this.isNoGravity() && !flag) { // Apply gravity
             Vec3 vec34 = this.getDeltaMovement();
             this.setDeltaMovement(vec34.x, vec34.y - (double)0.05F, vec34.z);
         }
 
-        this.setPos(d7, d2, d3);
+        Entity owner = this.getOwner();
+        if (arcActive) {
+            if (owner != null) {
+                Vec3[] pose = new Vec3[]{owner.position(), this.getOwner().getLookAngle()};
+                pose[1] = pose[1].scale((1.5)).add((0), (this.getOwner().getEyeHeight()), (0));
+                Vec3 newPos = pose[1].add(pose[0]);
+//                System.out.println("pos: " + newPos);
+                this.setPos(newPos.x, newPos.y, newPos.z);
+            }
+        } else {
+            if (owner != null) {
+                Vec3 vec34 = this.getDeltaMovement();
+                Vec3 aim = this.getOwner().getLookAngle().multiply(.3, .3, .3);
+                this.setDeltaMovement(vec34.add(aim));
+            }
+            this.setPos(finalX, finalY, finalZ);
+        }
+
         this.checkInsideBlocks();
     }
 
-    @Nullable
-    protected EntityHitResult findHitEntity(Vec3 pos, Vec3 delta) {
-        return getEntityHitResult(this.level, this, pos, delta,
-                this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(2.0D),
-                this::canHitEntity, 0.3F);
-    }
+//    @Nullable
+//    protected EntityHitResult findHitEntity(Vec3 pos, Vec3 delta) {
+//        return getEntityHitResult(this.level, this, pos, delta,
+//                this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(2.0D),
+//                this::canHitEntity, 0.3F);
+//    }
 
-    @Nullable
-    public static EntityHitResult getEntityHitResult(Level level, Entity thisEntity, Vec3 pos, Vec3 delta, AABB thisAABB, Predicate<Entity> canBeHit, float scale) {
-        double maxDist = Double.MAX_VALUE;
-        Entity entity = null;
-
-        for(Entity otherEntity : level.getEntities(thisEntity, thisAABB, canBeHit)) {
-//            System.out.println("ENTITY NEARBY: " + otherEntity);
-            AABB aabb = otherEntity.getBoundingBox().inflate(scale);
-            Optional<Vec3> optional = aabb.clip(pos, delta);
-            if (optional.isPresent()) {
-                double dist = pos.distanceToSqr(optional.get());
-                if (dist < maxDist) {
-                    entity = otherEntity;
-                    maxDist = dist;
-                }
-            }
-        }
-
-        return entity == null ? null : new EntityHitResult(entity);
-    }
-
-    public boolean canHitEntity(Entity otherEntity) {
-        if (!otherEntity.canBeHitByProjectile()) {
-            return false;
-        } else {
-            Entity entity = this.getOwner();
-//            if (entity != null) {
-//                if (otherEntity instanceof TestProjectileEntity other) {
-//                    System.out.println("THIS OWNER: " + entity + " | " + !entity.isPassengerOfSameVehicle(otherEntity));
-//                    System.out.println("THAT OWNER: " + other.getOwner());
+//    @Nullable
+//    public static EntityHitResult getEntityHitResult(Level level, Entity thisEntity, Vec3 pos, Vec3 delta, AABB thisAABB, Predicate<Entity> canBeHit, float scale) {
+//        double maxDist = Double.MAX_VALUE;
+//        Entity entity = null;
+//
+//        for(Entity otherEntity : level.getEntities(thisEntity, thisAABB, canBeHit)) {
+////            System.out.println("ENTITY NEARBY: " + otherEntity);
+//            AABB aabb = otherEntity.getBoundingBox().inflate(scale);
+//            Optional<Vec3> optional = aabb.clip(pos, delta);
+//            if (optional.isPresent()) {
+//                double dist = pos.distanceToSqr(optional.get());
+//                if (dist < maxDist) {
+//                    entity = otherEntity;
+//                    maxDist = dist;
 //                }
 //            }
-            return entity == null || this.leftOwner || !entity.isPassengerOfSameVehicle(otherEntity);
-        }
-    }
+//        }
+//
+//        return entity == null ? null : new EntityHitResult(entity);
+//    }
+
+//    public boolean canHitEntity(Entity otherEntity) {
+//        if (!otherEntity.canBeHitByProjectile()) {
+//            return false;
+//        } else {
+//            Entity entity = this.getOwner();
+////            if (entity != null) {
+////                if (otherEntity instanceof TestProjectileEntity other) {
+////                    System.out.println("THIS OWNER: " + entity + " | " + !entity.isPassengerOfSameVehicle(otherEntity));
+////                    System.out.println("THAT OWNER: " + other.getOwner());
+////                }
+////            }
+//            return entity == null || this.leftOwner || !entity.isPassengerOfSameVehicle(otherEntity);
+//        }
+//    }
 
     public void setTimeToKill(int ticks) {
         this.ttk = ticks;
@@ -239,24 +257,42 @@ public class FireProjectile extends ElementProjectile {
         Entity entity = entityHitResult.getEntity();
         if (entity instanceof Blaze) {
             if (this.getOwner() != null) {
-                this.shoot(entity.getViewVector(1).x, entity.getViewVector(1).y+0.5, entity.getViewVector(1).z, 0.75F, 1);
+//                this.setNoGravity(false);
+                this.setOwner(entity);
+                this.shoot(entity.getViewVector(1).x, entity.getViewVector(1).y, entity.getViewVector(1).z, 0.75F, 1);
+                this.leftOwner = true;
             }
-        } else if (entity instanceof ElementProjectile elementProjectile) {
+        } else if (entity instanceof FireProjectile elementProjectile) {
             if (this.getOwner() != null && this.level.isClientSide) {
-                ElementCollision collisionEntity = new ElementCollision(this.getX(), this.getY(), this.getZ(), level);
-                collisionEntity.setTimeToKill(5);
-                level.addFreshEntity(collisionEntity);
-                EntityEffect entityEffect = new EntityEffect(orb_bloom, level, collisionEntity);
-                entityEffect.start();
-                System.out.println("SUCCESS COLLISION!!!");
-                this.discard();
-                elementProjectile.discard();
+//                System.out.println("this form: " + this.form + " | checkLeftOwner: " + this.checkLeftOwner());
+//                System.out.println("other form: " + elementProjectile.form + " | arcActive: " + elementProjectile.arcActive);
+                if (elementProjectile.arcActive && this.checkLeftOwner()) {
+                    this.setOwner(elementProjectile.getOwner()); // Give control to receiver
+                    this.setDeltaMovement(0,0,0); // Full stop
+                    this.arcActive = true; // Enable control
+                    this.setTimeToKill(500);
+                    System.out.println("SUCCESS ARC!!!");
+                } else {
+                    if (!this.getOwner().equals(elementProjectile.getOwner())) {
+                        ElementCollision collisionEntity = new ElementCollision(this.getX(), this.getY(), this.getZ(), level);
+                        collisionEntity.setTimeToKill(5);
+                        level.addFreshEntity(collisionEntity);
+                        EntityEffect entityEffect = new EntityEffect(orb_bloom, level, collisionEntity);
+                        entityEffect.start();
+                        this.discard();
+                        elementProjectile.discard();
+//                    System.out.println("SUCCESS COLLISION!!!");
+                    }
+                }
             }
-        }  else {
-            // TODO - Check if player entity has countered
+        } else if (entity instanceof Fireball fireBall) {
+            if (!this.getOwner().equals(fireBall.getOwner())) {
+                fireBall.discard();
+            }
+        } else {
             int i = 10; // Deal 10 damage
             entity.hurt(this.damageSources().thrown(this, this.getOwner()), (float)i);
-            this.discard();
+//            this.discard();
         }
     }
 

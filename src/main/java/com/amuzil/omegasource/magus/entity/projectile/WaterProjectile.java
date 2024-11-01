@@ -2,6 +2,8 @@ package com.amuzil.omegasource.magus.entity.projectile;
 
 import com.amuzil.omegasource.magus.entity.AvatarEntities;
 import com.amuzil.omegasource.magus.entity.ElementProjectile;
+import com.amuzil.omegasource.magus.entity.collision.ElementCollision;
+import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.lowdragmc.photon.client.fx.EntityEffect;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
@@ -39,13 +41,14 @@ public class WaterProjectile extends ElementProjectile {
         super(type, level);
     }
 
-    public WaterProjectile(double x, double y, double z, Level level) {
+    public WaterProjectile(double x, double y, double z, Level level, Form form) {
         this(AvatarEntities.WATER_PROJECTILE_ENTITY_TYPE.get(), level);
         this.setPos(x, y, z);
+//        this.form = form;
     }
 
-    public WaterProjectile(LivingEntity livingEntity, Level level) {
-        this(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ(), level);
+    public WaterProjectile(LivingEntity livingEntity, Level level, Form form) {
+        this(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ(), level, form);
         this.setOwner(livingEntity);
         this.setNoGravity(true);
     }
@@ -226,16 +229,16 @@ public class WaterProjectile extends ElementProjectile {
             if (this.getOwner() != null) {
                 this.shoot(entity.getViewVector(1).x, entity.getViewVector(1).y+0.5, entity.getViewVector(1).z, 0.75F, 1);
             }
-        } else if (entity instanceof WaterProjectile fireProjectileEntity) {
+        } else if (entity instanceof ElementProjectile elementProjectile) {
             if (this.getOwner() != null && this.level.isClientSide) {
-                WaterProjectile collisionEntity = new WaterProjectile(this.getX(), this.getY(), this.getZ(), level);
+                ElementCollision collisionEntity = new ElementCollision(this.getX(), this.getY(), this.getZ(), level);
                 collisionEntity.setTimeToKill(5);
                 level.addFreshEntity(collisionEntity);
                 EntityEffect entityEffect = new EntityEffect(orb_bloom, level, collisionEntity);
                 entityEffect.start();
                 System.out.println("SUCCESS COLLISION!!!");
                 this.discard();
-                fireProjectileEntity.discard();
+                elementProjectile.discard();
             }
         }  else {
             // TODO - Check if player entity has countered

@@ -1,5 +1,6 @@
 package com.amuzil.omegasource.magus.entity;
 
+import com.amuzil.omegasource.magus.entity.collision.ElementCollision;
 import com.amuzil.omegasource.magus.entity.projectile.AirProjectile;
 import com.amuzil.omegasource.magus.entity.projectile.EarthProjectile;
 import com.amuzil.omegasource.magus.entity.projectile.FireProjectile;
@@ -8,8 +9,7 @@ import com.amuzil.omegasource.magus.skill.elements.Element;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.lowdragmc.photon.client.fx.EntityEffect;
 import com.lowdragmc.photon.client.fx.FX;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -29,6 +29,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.*;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -43,20 +44,23 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
     private boolean hasBeenShot;
     private int life;
     private int ttk = 100;
+    public boolean arcActive = false;
+    public Form form;
 
     public ElementProjectile(EntityType<? extends ElementProjectile> type, Level level) {
         super(type, level);
     }
 
-    public ElementProjectile(EntityType<? extends ElementProjectile> entityType, double x, double y, double z, Level level) {
+    public ElementProjectile(EntityType<? extends ElementProjectile> entityType, double x, double y, double z, Level level, Form form) {
         this(entityType, level);
         this.setPos(x, y, z);
+        this.setNoGravity(true);
+        this.form = form;
     }
 
-    public ElementProjectile(EntityType<? extends ElementProjectile> entityType, LivingEntity livingEntity, Level level) {
-        this(entityType, livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ(), level);
+    public ElementProjectile(EntityType<? extends ElementProjectile> entityType, LivingEntity livingEntity, Level level, Form form) {
+        this(entityType, livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ(), level, form);
         this.setOwner(livingEntity);
-        this.setNoGravity(true);
     }
 
     public void tick() {
@@ -105,12 +109,13 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
             return false;
         } else {
             Entity entity = this.getOwner();
-//            if (entity != null) {
-//                if (otherEntity instanceof TestProjectileEntity other) {
-//                    System.out.println("THIS OWNER: " + entity + " | " + !entity.isPassengerOfSameVehicle(otherEntity));
-//                    System.out.println("THAT OWNER: " + other.getOwner());
-//                }
-//            }
+            if (entity != null) {
+                if (otherEntity instanceof ElementProjectile other) {
+//                    System.out.println("arcActive: " + other.arcActive);
+                    if (other.arcActive)
+                        return true;
+                }
+            }
             return entity == null || this.leftOwner || !entity.isPassengerOfSameVehicle(otherEntity);
         }
     }
@@ -124,6 +129,7 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
         if (this.life >= ttk) {
 //            System.out.println("BYE BYE BBY");
             this.discard();
+//            this.arcActive = false;
         }
     }
 
@@ -138,7 +144,7 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
         this.entityData.define(PIERCE_LEVEL, (byte)0);
     }
 
-    private boolean checkLeftOwner() {
+    public boolean checkLeftOwner() {
         Entity owner = this.getOwner();
         if (owner != null) {
             for(Entity entity1 : this.level.getEntities(this, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), (entity) -> {
@@ -177,7 +183,7 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
             }
         } else if (entity instanceof ElementProjectile testProjectileEntity) {
             if (this.getOwner() != null && this.level.isClientSide) {
-                ElementProjectile collisionEntity = new FireProjectile(this.getX(), this.getY(), this.getZ(), level);
+                ElementProjectile collisionEntity = new ElementCollision(this.getX(), this.getY(), this.getZ(), level);
                 collisionEntity.setTimeToKill(5);
                 level.addFreshEntity(collisionEntity);
                 EntityEffect entityEffect = new EntityEffect(orb_bloom, level, collisionEntity);
@@ -207,6 +213,16 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
         }
     }
 
+    public void arc(float scale, float offset) {
+        this.arcActive = true;
+        Entity owner = this.getOwner();
+        assert owner != null;
+        Vec3[] pose = new Vec3[]{owner.position(), this.getOwner().getLookAngle()};
+        pose[1] = pose[1].scale((scale)).add((0), (this.getOwner().getEyeHeight()), (0));
+        Vec3 newPos = pose[1].add(pose[0]);
+        this.setPos(newPos.x, newPos.y, newPos.z);
+    }
+
     @Override
     public ItemStack getItem() {
         return PROJECTILE_ITEM;
@@ -214,22 +230,35 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
 
     public static ElementProjectile createElementEntity(Form form, Element element, ServerPlayer player, ServerLevel level) {
         return switch (element.type()) {
-            case AIR -> new AirProjectile(player, level);
-            case WATER -> new WaterProjectile(player, level);
-            case EARTH -> new EarthProjectile(player, level);
-            case FIRE -> new FireProjectile(player, level);
+            case AIR -> new AirProjectile(player, level, form);
+            case WATER -> new WaterProjectile(player, level, form);
+            case EARTH -> new EarthProjectile(player, level, form);
+            case FIRE -> new FireProjectile(player, level, form);
         };
     }
 
     public void startEffect(Form form, Player player) {
+        this.form = form; // NOTE: Need this to ensure form is set client-side before onHit event
         FX fx = null;
         if (form.name().equals("strike"))
             fx = fire_bloom;
         if (form.name().equals("force"))
             fx = blue_fire;
+        if (form.name().equals("arc")) {
+            // TODO - Make perma fire and allow it to be shootable. Also stop catching fire from damaging receiver
+            //        Also allow user to curve shot projectiles.
+            fx = fire_bloom;
+            arcActive = true;
+        }
         if (fx != null) {
             EntityEffect entityEffect = new EntityEffect(fx, level, this);
             entityEffect.start();
         }
+    }
+
+    public static List<Entity> getNearbyEntities(Entity entity, double blocksRadius) {
+        AABB aabb = entity.getBoundingBox().expandTowards(entity.getDeltaMovement()).inflate(blocksRadius);
+        assert Minecraft.getInstance().level != null;
+        return Minecraft.getInstance().level.getEntities(entity, aabb).stream().toList();
     }
 }
