@@ -3,7 +3,12 @@ package com.amuzil.omegasource.magus.entity.projectile;
 import com.amuzil.omegasource.magus.entity.AvatarEntities;
 import com.amuzil.omegasource.magus.entity.ElementProjectile;
 import com.amuzil.omegasource.magus.entity.collision.ElementCollision;
+import com.amuzil.omegasource.magus.level.event.FormActivatedEvent;
+import com.amuzil.omegasource.magus.network.MagusNetwork;
+import com.amuzil.omegasource.magus.network.packets.client_executed.FormActivatedPacket;
+import com.amuzil.omegasource.magus.skill.elements.Elements;
 import com.amuzil.omegasource.magus.skill.forms.Form;
+import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.lowdragmc.photon.client.fx.EntityEffect;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -22,11 +27,16 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import static com.amuzil.omegasource.magus.Magus.MOD_ID;
+import static com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry.fire_bloom_perma;
 import static com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry.orb_bloom;
 
 
@@ -38,6 +48,7 @@ public class FireProjectile extends ElementProjectile {
 
     public FireProjectile(EntityType<FireProjectile> type, Level level) {
         super(type, level);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     public FireProjectile(double x, double y, double z, Level level, Form form) {
@@ -50,6 +61,14 @@ public class FireProjectile extends ElementProjectile {
         this(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ(), level, form);
         this.setOwner(livingEntity);
         this.setNoGravity(true);
+    }
+
+    @Override
+    public void remove(RemovalReason reason) {
+        super.remove(reason);
+
+        // Unregister from the event bus
+        MinecraftForge.EVENT_BUS.unregister(this);
     }
 
     public void tick() {
@@ -155,19 +174,31 @@ public class FireProjectile extends ElementProjectile {
                 Vec3[] pose = new Vec3[]{owner.position(), this.getOwner().getLookAngle()};
                 pose[1] = pose[1].scale((1.5)).add((0), (this.getOwner().getEyeHeight()), (0));
                 Vec3 newPos = pose[1].add(pose[0]);
-//                System.out.println("pos: " + newPos);
+                // Listen for FormActivatedEvent to determine whether to shoot this or not
                 this.setPos(newPos.x, newPos.y, newPos.z);
             }
         } else {
             if (owner != null) {
                 Vec3 vec34 = this.getDeltaMovement();
-                Vec3 aim = this.getOwner().getLookAngle().multiply(.3, .3, .3);
+                double rateOfControl = 0.4; // Control/curve the shot projectile
+                Vec3 aim = this.getOwner().getLookAngle().multiply(rateOfControl, rateOfControl, rateOfControl);
                 this.setDeltaMovement(vec34.add(aim));
             }
             this.setPos(finalX, finalY, finalZ);
         }
 
         this.checkInsideBlocks();
+    }
+
+    @SubscribeEvent
+    public void onFormEvent(FormActivatedEvent event) {
+        if (event.getForm().equals(Forms.STRIKE) && this.arcActive && !this.level.isClientSide()) {
+            System.out.println("FormActivatedEvent EVENT POSTED & RECEIVED!");
+            Entity entity = this.getOwner();
+            assert entity != null;
+            this.shoot(entity.getViewVector(1).x, entity.getViewVector(1).y, entity.getViewVector(1).z, 0.75F, 1);
+            this.discard();
+        }
     }
 
 //    @Nullable
@@ -214,13 +245,14 @@ public class FireProjectile extends ElementProjectile {
 //    }
 
     public void setTimeToKill(int ticks) {
+//        System.out.println("setTimeToKill isClientSide: " + this.level.isClientSide());
         this.ttk = ticks;
     }
 
     protected void tickDespawn() {
         ++this.life;
-        if (this.life >= ttk) {
-//            System.out.println("BYE BYE BBY");
+        if (this.life >= ttk && ttk != -1) {
+//            System.out.println("BYE BYE BBY " + life + " / " + ttk);
             this.discard();
         }
     }
@@ -269,8 +301,12 @@ public class FireProjectile extends ElementProjectile {
                 if (elementProjectile.arcActive && this.checkLeftOwner()) {
                     this.setOwner(elementProjectile.getOwner()); // Give control to receiver
                     this.setDeltaMovement(0,0,0); // Full stop
-                    this.arcActive = true; // Enable control
-                    this.setTimeToKill(500);
+                    this.arcActive = true; // Enable control of this shot projectile
+                    elementProjectile.setTimeToKill(1600);
+                    MagusNetwork.sendToServer(new FormActivatedPacket(Forms.ARC, Elements.FIRE, elementProjectile.getId()));
+                    System.out.println("onHitEntity isClientSide: " + this.level.isClientSide());
+                    EntityEffect entityEffect = new EntityEffect(fire_bloom_perma, level, elementProjectile);
+                    entityEffect.start();
                     System.out.println("SUCCESS ARC!!!");
                 } else {
                     if (!this.getOwner().equals(elementProjectile.getOwner())) {
@@ -281,7 +317,6 @@ public class FireProjectile extends ElementProjectile {
                         entityEffect.start();
                         this.discard();
                         elementProjectile.discard();
-//                    System.out.println("SUCCESS COLLISION!!!");
                     }
                 }
             }
@@ -290,8 +325,8 @@ public class FireProjectile extends ElementProjectile {
                 fireBall.discard();
             }
         } else {
-            int i = 10; // Deal 10 damage
-            entity.hurt(this.damageSources().thrown(this, this.getOwner()), (float)i);
+            float i = 4; // Deal 4 damage
+            entity.hurt(this.damageSources().thrown(this, this.getOwner()), i);
 //            this.discard();
         }
     }

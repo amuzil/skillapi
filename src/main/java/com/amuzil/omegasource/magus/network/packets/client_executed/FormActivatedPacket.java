@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.network.packets.client_executed;
 
 import com.amuzil.omegasource.magus.entity.ElementProjectile;
+import com.amuzil.omegasource.magus.level.event.FormActivatedEvent;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.api.MagusPacket;
 import com.amuzil.omegasource.magus.registry.Registries;
@@ -17,6 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
@@ -74,12 +76,21 @@ public class FormActivatedPacket implements MagusPacket {
     }
 
     // Server-side handler
-    public static void handleServerSide(Form form, Element element, ServerPlayer player) {
+    public static void handleServerSide(Form form, Element element, int entityId, ServerPlayer player) {
         // Perform server-side entity spawning and updating logic and fire Form Event here
+        MinecraftForge.EVENT_BUS.post(new FormActivatedEvent(form));
         ServerLevel level = player.getLevel();
         // TODO - Create/perform certain entity updates based on form and element
         //      - All Skills/techniques should be determined and handled here
-        ElementProjectile entity = ElementProjectile.createElementEntity(form, element, player, level);
+        ElementProjectile entity;
+        if (entityId != 0) {
+            entity = (ElementProjectile) player.level.getEntity(entityId);
+            assert entity != null;
+            entity.setTimeToKill(800);
+        } else {
+            entity = ElementProjectile.createElementEntity(form, element, player, level);
+        }
+        assert entity != null;
         if (form == Forms.ARC) {
             entity.arc(1.5f, 1);
         } else {
@@ -106,7 +117,7 @@ public class FormActivatedPacket implements MagusPacket {
             } else {
                 ServerPlayer player = ctx.get().getSender();
                 assert player != null;
-                handleServerSide(form, element, player);
+                handleServerSide(form, element, entityId, player);
             }
         });
         return true;

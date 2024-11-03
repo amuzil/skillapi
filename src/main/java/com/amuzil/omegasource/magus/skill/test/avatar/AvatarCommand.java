@@ -8,9 +8,7 @@ import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.elements.Element;
 import com.amuzil.omegasource.magus.skill.elements.Elements;
 import com.amuzil.omegasource.magus.skill.forms.Form;
-import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -83,7 +81,7 @@ public class AvatarCommand {
 
     private static int activateForm(String name, ServerPlayer player) {
         Form form =  Registries.FORMS.get().getValue(new ResourceLocation(MOD_ID, name));
-        FormActivatedPacket.handleServerSide(form, InputModule.activeElement, player);
+        FormActivatedPacket.handleServerSide(form, InputModule.activeElement, 0, player);
         return 1;
     }
 

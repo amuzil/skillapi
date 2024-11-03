@@ -119,6 +119,7 @@ public class ServerEvents {
             }
         } else {
             if (event.getEntity() instanceof Player) {
+                // TODO - Fix so that this doesn't run for every player on server
                 Magus.keyboardMouseInputModule.terminate();
                 Magus.mouseMotionModule.terminate();
                 InputModule.resetFormsTree();

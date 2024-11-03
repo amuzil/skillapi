@@ -237,6 +237,7 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
         };
     }
 
+    // Method to start initial visual effect
     public void startEffect(Form form, Player player) {
         this.form = form; // NOTE: Need this to ensure form is set client-side before onHit event
         FX fx = null;
@@ -246,8 +247,7 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
             fx = blue_fire;
         if (form.name().equals("arc")) {
             // TODO - Make perma fire and allow it to be shootable. Also stop catching fire from damaging receiver
-            //        Also allow user to curve shot projectiles.
-            fx = fire_bloom;
+            fx = null;
             arcActive = true;
         }
         if (fx != null) {
