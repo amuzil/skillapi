@@ -4,8 +4,7 @@ import com.amuzil.omegasource.magus.skill.util.traits.SkillTrait;
 import net.minecraft.nbt.CompoundTag;
 
 /**
- * Supports an R, G, and B value. Designed for 0 - 1D, but you can use an int if you divide
- * by 255D.
+ * Supports an R, G, and B value. Designed for 0 - 1D, but you can pass an int.
  */
 public class ColourTrait extends SkillTrait {
 

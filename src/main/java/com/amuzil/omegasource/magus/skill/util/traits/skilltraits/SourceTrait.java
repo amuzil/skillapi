@@ -2,7 +2,6 @@ package com.amuzil.omegasource.magus.skill.util.traits.skilltraits;
 
 import com.amuzil.omegasource.magus.skill.util.traits.SkillTrait;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -15,12 +14,12 @@ import net.minecraftforge.common.extensions.IForgeBlockState;
 public class SourceTrait extends SkillTrait {
 
     //TODO: Change this to an IForgeBlockState and make it support modded blocks. Right now it only supports vanilla.
-    private BlockState state;
+    private IForgeBlockState state;
     private BlockPos pos;
 
     //Note: If you want to know how long a usable blockstate has been selected, use another
     //TimedTrait.
-    public SourceTrait(String name, BlockState state, BlockPos pos) {
+    public SourceTrait(String name, IForgeBlockState state, BlockPos pos) {
         super(name);
         this.state = state;
         this.pos = pos;
@@ -29,7 +28,7 @@ public class SourceTrait extends SkillTrait {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = super.serializeNBT();
-        tag.putInt(getName() + " State", Block.getId(state));
+        tag.putInt(getName() + " State", Block.getId((BlockState) state));
         tag.putIntArray(getName() + " Pos", new int[] {
                 pos.getX(), pos.getY(), pos.getZ()
         });
@@ -55,7 +54,11 @@ public class SourceTrait extends SkillTrait {
     }
 
     public BlockState getState() {
-        return state;
+        return (BlockState) state;
+    }
+
+    public IForgeBlockState getForgeState() {
+        return this.state;
     }
 
     public BlockPos getPos() {

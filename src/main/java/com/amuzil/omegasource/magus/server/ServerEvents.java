@@ -11,6 +11,8 @@ import com.amuzil.omegasource.magus.skill.util.capability.entity.Data;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import com.amuzil.omegasource.magus.skill.util.capability.entity.Magi;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
@@ -28,22 +30,24 @@ public class ServerEvents {
     @SubscribeEvent
     public static void onEntityJoinLevel(EntityJoinLevelEvent event) {
 
-        if (!event.getLevel().isClientSide()) {
-            Data capability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.LIVING_DATA);
-            if (capability != null && event.getEntity() instanceof Player) {
+        if (!event.getLevel().isClientSide() && event.getEntity() instanceof LivingEntity) {
+            // TODO: Add a wrapper class for getting capabilities and data. Maybe SkillUser? MagusEntity?
+
+            Magi magi = Magi.get((LivingEntity) event.getEntity());
+            if (magi != null && event.getEntity() instanceof Player) {
 
 
 
                 // initialise the radix tree and set the player as an instance property for sending packets.
                 //todo this is temporary manual tree construction for testing purposes. the true tree will be
                 // generated at runtime based on available skills for the player/entity.
-//                Node secondNode = NodeBuilder.middle()
-//                        .addModifiers(ModifiersRegistry.FOCUS.copy(), ModifiersRegistry.MULTI.copy(),
-//                                ModifiersRegistry.DIRECTION.copy(), ModifiersRegistry.TARGET.copy())
-//                        .build();
-//                //Resets the tree; for testing purposes.
-//                if (capability.getTree() != null)
-//                    capability.getTree().burn();
+                Node secondNode = NodeBuilder.middle()
+                        .addModifiers(ModifiersRegistry.FOCUS.copy(), ModifiersRegistry.MULTI.copy(),
+                                ModifiersRegistry.DIRECTION.copy(), ModifiersRegistry.TARGET.copy())
+                        .build();
+                //Resets the tree; for testing purposes.
+                if (magi.getTree() != null)
+                    magi.getTree().burn();
                 // TODO: Need a way to convert forms into conditions
                 // Need to test out the condition tree. use left alt/arc > strike (left click).
                 // While this test code will directly use conditions, Skills will reference Forms
