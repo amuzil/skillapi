@@ -1,19 +1,18 @@
 package com.amuzil.omegasource.magus;
 
-import com.amuzil.omegasource.magus.input.*;
+import com.amuzil.omegasource.magus.entity.AvatarEntities;
+import com.amuzil.omegasource.magus.input.InputModule;
+import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
+import com.amuzil.omegasource.magus.input.MouseMotionModule;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
-import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.test.avatar.AvatarCommand;
-import com.amuzil.omegasource.magus.skill.test.avatar.AvatarEntities;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -47,11 +46,6 @@ public class Magus {
     public static InputModule mouseMotionModule;
 
     public Magus() {
-        // Register ourselves for server and other game events we are interested in
-        MinecraftForge.EVENT_BUS.register(this);
-        //Register the input modules
-        keyboardMouseInputModule = new KeyboardMouseInputModule();
-        mouseMotionModule = new MouseMotionModule();
         // Register capabilities
         FMLJavaModLoadingContext.get().getModEventBus().addListener(CapabilityHandler::registerCapabilities);
         // attach capabilities
@@ -65,6 +59,9 @@ public class Magus {
         // Register the doClientStuff method for mod loading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
 
+        // Register ourselves for server and other game events we are interested in
+        MinecraftForge.EVENT_BUS.register(this);
+
         // Register Testing Entities
         // NOTE: This is strictly for testing and to be deleted later
         AvatarEntities.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -75,13 +72,15 @@ public class Magus {
         Registries.init();
         CapabilityHandler.initialiseCaps();
         MagusNetwork.registerMessages();
-        Forms.init();
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
         // do something that can only be done on the client
-        //todo call this anytime the key mappings are updated
-        //Assign input data to forms
+        // Register the input modules
+        keyboardMouseInputModule = new KeyboardMouseInputModule();
+        mouseMotionModule = new MouseMotionModule();
+        // TODO - call this anytime the key mappings are updated
+        // Assign input data to forms
         FormDataRegistry.init();
         ModifiersRegistry.init();
     }
@@ -118,28 +117,13 @@ public class Magus {
             // Some client setup code
             LOGGER.info("HELLO FROM CLIENT SETUP");
 
-            KeyboardMouseInputModule.determineMotionKeys();
-            EntityRenderers.register(AvatarEntities.TEST_PROJECTILE.get(), ThrownItemRenderer::new);
+            InputModule.determineMotionKeys();
+            EntityRenderers.register(AvatarEntities.AIR_PROJECTILE_ENTITY_TYPE.get(), ThrownItemRenderer::new);
+            EntityRenderers.register(AvatarEntities.WATER_PROJECTILE_ENTITY_TYPE.get(), ThrownItemRenderer::new);
+            EntityRenderers.register(AvatarEntities.EARTH_PROJECTILE_ENTITY_TYPE.get(), ThrownItemRenderer::new);
+            EntityRenderers.register(AvatarEntities.FIRE_PROJECTILE_ENTITY_TYPE.get(), ThrownItemRenderer::new);
 
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }
-    }
-
-    // Send a message to in-game chat
-    public static void sendDebugMsg(String msg) {
-        Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft == null) {
-            System.err.println("sendDebugMsg failed: Minecraft instance is null");
-            return;
-        }
-        minecraft.execute(() -> {
-            LocalPlayer player = minecraft.player;
-            if (player != null) {
-                Component text = Component.literal(msg);
-                player.sendSystemMessage(text);
-            } else {
-                System.err.println("sendDebugMsg failed: player is null");
-            }
-        });
     }
 }

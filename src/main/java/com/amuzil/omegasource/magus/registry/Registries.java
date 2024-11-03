@@ -2,9 +2,10 @@ package com.amuzil.omegasource.magus.registry;
 
 import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.radix.Condition;
-import com.amuzil.omegasource.magus.skill.elements.Discipline;
-import com.amuzil.omegasource.magus.skill.elements.Disciplines;
+import com.amuzil.omegasource.magus.skill.elements.Element;
+import com.amuzil.omegasource.magus.skill.elements.Elements;
 import com.amuzil.omegasource.magus.skill.forms.Form;
+import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
 import com.amuzil.omegasource.magus.skill.skill.SkillActive;
 import com.amuzil.omegasource.magus.skill.skill.SkillCategory;
@@ -90,9 +91,9 @@ public class Registries {
         conditions.add(registryCondition);
     }
 
-    public static void registerDiscipline(Discipline discipline) {
-        categories.add(discipline);
-        Disciplines.DISCIPLINES.add(discipline);
+    public static void registerDiscipline(Element element) {
+        categories.add(element);
+        Elements.ELEMENTS.add(element);
     }
 
 
@@ -120,9 +121,9 @@ public class Registries {
         SKILLS = event.create(skills);
 
         //Forms
-        RegistryBuilder<Form> forms = new RegistryBuilder<>();
-        forms.setName(new ResourceLocation(Magus.MOD_ID, "forms"));
-        FORMS = event.create(forms);
+        RegistryBuilder<Form> formRegistryBuilder = new RegistryBuilder<>();
+        formRegistryBuilder.setName(new ResourceLocation(Magus.MOD_ID, "forms"));
+        FORMS = event.create(formRegistryBuilder);
 
         //Modifiers
     }
@@ -148,6 +149,8 @@ public class Registries {
 
     @SubscribeEvent
     public static void gameRegistry(RegisterEvent event) {
+        Elements.init();
+        Forms.init(); // Moved here so that forms registry gets populated
         /* Skill Categories. */
         if (event.getRegistryKey().equals(SKILL_CATEGORIES.get().getRegistryKey())) {
             IForgeRegistry<SkillCategory> registry = SKILL_CATEGORIES.get();
@@ -155,6 +158,8 @@ public class Registries {
 
 
             event.register(resKey, helper -> {
+                for (SkillCategory category : categories)
+                    registry.register(category.name(), category);
             });
         }
 
@@ -173,7 +178,6 @@ public class Registries {
         if (event.getRegistryKey().equals(FORMS.get().getRegistryKey())) {
             IForgeRegistry<Form> registry = FORMS.get();
             ResourceKey<Registry<Form>> resKey = registry.getRegistryKey();
-
 
             event.register(resKey, helper -> {
                 for (Form form : forms)

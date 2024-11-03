@@ -8,6 +8,9 @@ import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import com.amuzil.omegasource.magus.skill.util.capability.entity.Data;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import com.amuzil.omegasource.magus.skill.util.capability.entity.Magi;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -85,7 +88,7 @@ public class ServerEvents {
 //
 //                Condition arc2 = new FormCondition(Forms.ARC, -1, Magus.keyboardInputModule);
 //                arc2.register("ARC", () -> {
-//                    Magus.sendDebugMsg("ARC FORM TRIGGERED");
+//                    Magus.keyboardMouseInputModule.sendDebugMsg("ARC FORM TRIGGERED");
 //                }, () -> {});
 //
 //                System.out.println("Test RadixTree");
@@ -116,6 +119,7 @@ public class ServerEvents {
             }
         } else {
             if (event.getEntity() instanceof Player) {
+                // TODO - Fix so that this doesn't run for every player on server
                 Magus.keyboardMouseInputModule.terminate();
                 Magus.mouseMotionModule.terminate();
                 InputModule.resetFormsTree();
@@ -125,7 +129,7 @@ public class ServerEvents {
                 System.out.println("All RadixTree Branches:");
                 Magus.keyboardMouseInputModule.getFormsTree().printAllBranches();
                 Magus.keyboardMouseInputModule.init();
-                Magus.keyboardMouseInputModule.registerModifiers();
+//                Magus.keyboardMouseInputModule.registerModifiers();
                 Magus.mouseMotionModule.init();
             }
         }
@@ -133,10 +137,15 @@ public class ServerEvents {
 
     @SubscribeEvent
     public static void OnPlayerLeaveWorld(EntityLeaveLevelEvent event) {
-        if (event.getEntity() instanceof Player) {
-            Magus.keyboardMouseInputModule.getFormsTree().deactivateAllConditions();
-            Magus.keyboardMouseInputModule.terminate();
-            Magus.mouseMotionModule.terminate();
+        if (event.getEntity() instanceof ServerPlayer) {
+            // TODO - Causes whole server to crash when player leaves
+            //      java.lang.NullPointerException: Cannot invoke "com.amuzil.omegasource.magus.input.InputModule.getFormsTree()"
+            //      because "com.amuzil.omegasource.magus.Magus.keyboardMouseInputModule" is null
+            if (Magus.keyboardMouseInputModule != null) { // Temporary fix until we decide which side to make InputModules
+                Magus.keyboardMouseInputModule.getFormsTree().deactivateAllConditions();
+                Magus.keyboardMouseInputModule.terminate();
+                Magus.mouseMotionModule.terminate();
+            }
         }
     }
 }

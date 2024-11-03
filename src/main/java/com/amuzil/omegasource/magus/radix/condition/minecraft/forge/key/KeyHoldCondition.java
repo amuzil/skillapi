@@ -155,6 +155,11 @@ public class KeyHoldCondition extends Condition {
 
     @Override
     public String toString() {
-        return String.format("%s[ active=%b, key=%s, held=%d, d=%d, t=%d, r=%b ]", this.getClass().getSimpleName(), active, InputConstants.getKey(key, -1).getName().replace("key.", ""), currentHolding, duration, timeout, release);
+        String keyString = InputConstants.getKey(key, -1).getName().replace("key.", "");
+        if (keyString.equals("keyboard.0"))
+            keyString = "mouse.left";
+        if (keyString.equals("keyboard.1"))
+            keyString = "mouse.right";
+        return String.format("%s[ active=%b, key=%s, held=%d, d=%d, t=%d, r=%b ]", this.getClass().getSimpleName(), active, keyString, currentHolding, duration, timeout, release);
     }
 }
