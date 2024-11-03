@@ -4,6 +4,7 @@ import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.client_executed.FormActivatedPacket;
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.radix.*;
+import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.elements.Element;
 import com.amuzil.omegasource.magus.skill.forms.Form;
@@ -19,6 +20,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import org.apache.logging.log4j.LogManager;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -190,6 +192,18 @@ public class KeyboardMouseInputModule extends InputModule {
                     activeForm.set(FormDataRegistry.formsNamespace.get(recognized.hashCode()));
 //                System.out.println("RECOGNIZED FORM: " + activeForm.name() + " " + recognized);
 //                sendDebugMsg("RECOGNIZED FORM: " + activeForm.name());
+                } else { // Retry w/o movementConditions
+                    List<Condition> nonMovementConditions = new ArrayList<>();
+                    conditions.forEach(condition -> {
+                        if (condition instanceof KeyHoldCondition keyHoldCondition) {
+                            if (!getMovementKeys().containsValue(keyHoldCondition.getKey())) {
+                                nonMovementConditions.add(condition);
+                            }
+                        }
+                    });
+                    recognized = formsTree.search(nonMovementConditions);
+                    if (recognized != null)
+                        activeForm.set(FormDataRegistry.formsNamespace.get(recognized.hashCode()));
                 }
             }
         }
