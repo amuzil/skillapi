@@ -117,7 +117,7 @@ public class Magus {
             // Some client setup code
             LOGGER.info("HELLO FROM CLIENT SETUP");
 
-            KeyboardMouseInputModule.determineMotionKeys();
+            InputModule.determineMotionKeys();
             EntityRenderers.register(AvatarEntities.AIR_PROJECTILE_ENTITY_TYPE.get(), ThrownItemRenderer::new);
             EntityRenderers.register(AvatarEntities.WATER_PROJECTILE_ENTITY_TYPE.get(), ThrownItemRenderer::new);
             EntityRenderers.register(AvatarEntities.EARTH_PROJECTILE_ENTITY_TYPE.get(), ThrownItemRenderer::new);
