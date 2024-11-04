@@ -20,6 +20,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Blaze;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Fireball;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -43,8 +44,6 @@ import static com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry.
 public class FireProjectile extends ElementProjectile {
     private static final EntityDataAccessor<Byte> ID_FLAGS = SynchedEntityData.defineId(FireProjectile.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Byte> PIERCE_LEVEL = SynchedEntityData.defineId(FireProjectile.class, EntityDataSerializers.BYTE);
-    private int life;
-    private int ttk = 100;
 
     public FireProjectile(EntityType<FireProjectile> type, Level level) {
         super(type, level);
@@ -192,12 +191,17 @@ public class FireProjectile extends ElementProjectile {
 
     @SubscribeEvent
     public void onFormEvent(FormActivatedEvent event) {
-        if (event.getForm().equals(Forms.STRIKE) && this.arcActive && !this.level.isClientSide()) {
-            System.out.println("FormActivatedEvent EVENT POSTED & RECEIVED!");
-            Entity entity = this.getOwner();
-            assert entity != null;
-            this.shoot(entity.getViewVector(1).x, entity.getViewVector(1).y, entity.getViewVector(1).z, 0.75F, 1);
-            this.discard();
+        Entity owner = this.getOwner();
+        if (owner != null && event.getEntity().getId() == owner.getId()) {
+            if (event.getForm().equals(Forms.STRIKE) && this.arcActive) {
+                this.arcActive = false;
+                this.setTimeToKill(100);
+//                this.discard();
+                if (!this.level.isClientSide()) {
+                    this.shoot(owner.getViewVector(1).x, owner.getViewVector(1).y, owner.getViewVector(1).z, 0.75F, 1);
+                    System.out.println("FormActivatedEvent SERVER-SIDE!");
+                }
+            }
         }
     }
 
@@ -244,19 +248,6 @@ public class FireProjectile extends ElementProjectile {
 //        }
 //    }
 
-    public void setTimeToKill(int ticks) {
-//        System.out.println("setTimeToKill isClientSide: " + this.level.isClientSide());
-        this.ttk = ticks;
-    }
-
-    protected void tickDespawn() {
-        ++this.life;
-        if (this.life >= ttk && ttk != -1) {
-//            System.out.println("BYE BYE BBY " + life + " / " + ttk);
-            this.discard();
-        }
-    }
-
     @Override
     public boolean isPickable() {
         return true;
@@ -302,12 +293,12 @@ public class FireProjectile extends ElementProjectile {
                     this.setOwner(elementProjectile.getOwner()); // Give control to receiver
                     this.setDeltaMovement(0,0,0); // Full stop
                     this.arcActive = true; // Enable control of this shot projectile
-                    elementProjectile.setTimeToKill(1600);
-                    MagusNetwork.sendToServer(new FormActivatedPacket(Forms.ARC, Elements.FIRE, elementProjectile.getId()));
-                    System.out.println("onHitEntity isClientSide: " + this.level.isClientSide());
-                    EntityEffect entityEffect = new EntityEffect(fire_bloom_perma, level, elementProjectile);
-                    entityEffect.start();
-                    System.out.println("SUCCESS ARC!!!");
+                    MagusNetwork.sendToServer(new FormActivatedPacket(Forms.NULL, Elements.FIRE, this.getId()));
+                    this.discard();
+                    elementProjectile.discard();
+//                    System.out.println("THIS CLIENT-SIDE: " + this.ttk);
+//                    System.out.println("THAT CLIENT-SIDE: " + elementProjectile.ttk);
+//                    elementProjectile.discard();
                 } else {
                     if (!this.getOwner().equals(elementProjectile.getOwner())) {
                         ElementCollision collisionEntity = new ElementCollision(this.getX(), this.getY(), this.getZ(), level);
@@ -324,8 +315,12 @@ public class FireProjectile extends ElementProjectile {
             if (!this.getOwner().equals(fireBall.getOwner())) {
                 fireBall.discard();
             }
+        } else if (entity instanceof AbstractArrow arrow) {
+            if (!this.getOwner().equals(arrow.getOwner())) {
+                arrow.discard();
+            }
         } else {
-            float i = 4; // Deal 4 damage
+            float i = 10; // Deal 10 damage
             entity.hurt(this.damageSources().thrown(this, this.getOwner()), i);
 //            this.discard();
         }

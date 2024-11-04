@@ -78,20 +78,14 @@ public class FormActivatedPacket implements MagusPacket {
     // Server-side handler
     public static void handleServerSide(Form form, Element element, int entityId, ServerPlayer player) {
         // Perform server-side entity spawning and updating logic and fire Form Event here
-        MinecraftForge.EVENT_BUS.post(new FormActivatedEvent(form));
+        MinecraftForge.EVENT_BUS.post(new FormActivatedEvent(form, player));
         ServerLevel level = player.getLevel();
         // TODO - Create/perform certain entity updates based on form and element
         //      - All Skills/techniques should be determined and handled here
         ElementProjectile entity;
-        if (entityId != 0) {
-            entity = (ElementProjectile) player.level.getEntity(entityId);
-            assert entity != null;
-            entity.setTimeToKill(800);
-        } else {
-            entity = ElementProjectile.createElementEntity(form, element, player, level);
-        }
+        entity = ElementProjectile.createElementEntity(form, element, player, level);
         assert entity != null;
-        if (form == Forms.ARC) {
+        if (form == Forms.ARC || form == Forms.NULL) {
             entity.arc(1.5f, 1);
         } else {
             entity.shoot(player.getViewVector(1).x, player.getViewVector(1).y, player.getViewVector(1).z, 1, 1);

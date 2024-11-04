@@ -214,6 +214,7 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
 
     public void arc(float scale, float offset) {
         this.arcActive = true;
+        this.setTimeToKill(24000);
         Entity owner = this.getOwner();
         assert owner != null;
         Vec3[] pose = new Vec3[]{owner.position(), this.getOwner().getLookAngle()};
@@ -247,6 +248,11 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
         if (form.name().equals("arc")) {
             fx = null;
             arcActive = true;
+        }
+        if (form.name().equals("null")) {
+            fx = fire_bloom_perma;
+            arcActive = true;
+            this.setTimeToKill(24000);
         }
         if (fx != null) {
             EntityEffect entityEffect = new EntityEffect(fx, level, this);
