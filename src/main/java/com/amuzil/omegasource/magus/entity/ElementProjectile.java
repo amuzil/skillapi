@@ -125,11 +125,10 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
     }
 
     protected void tickDespawn() {
-        ++this.life;
-        if (this.life >= ttk) {
-//            System.out.println("BYE BYE BBY");
+        ++life;
+        if (life >= ttk) {
+//            System.out.println("BYE BYE BBY " + life + " / " + ttk);
             this.discard();
-//            this.arcActive = false;
         }
     }
 
@@ -242,11 +241,10 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
         this.form = form; // NOTE: Need this to ensure form is set client-side before onHit event
         FX fx = null;
         if (form.name().equals("strike"))
-            fx = fire_bloom;
+            fx = fire_bloom_perma;
         if (form.name().equals("force"))
-            fx = blue_fire;
+            fx = blue_fire_perma;
         if (form.name().equals("arc")) {
-            // TODO - Make perma fire and allow it to be shootable. Also stop catching fire from damaging receiver
             fx = null;
             arcActive = true;
         }

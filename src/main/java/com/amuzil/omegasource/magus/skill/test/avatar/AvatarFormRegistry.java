@@ -25,6 +25,7 @@ public class AvatarFormRegistry {
     public static FX fire_bloom = FXHelper.getFX(new ResourceLocation(Magus.MOD_ID, "fire_bloom"));
     public static FX fire_bloom_perma = FXHelper.getFX(new ResourceLocation(Magus.MOD_ID, "fire_bloom_perma"));
     public static FX blue_fire = FXHelper.getFX(new ResourceLocation(Magus.MOD_ID, "blue_fire"));
+    public static FX blue_fire_perma = FXHelper.getFX(new ResourceLocation(Magus.MOD_ID, "blue_fire_perma"));
     public static FX orb_bloom =FXHelper.getFX(new ResourceLocation(Magus.MOD_ID, "orb_bloom"));
 
     public static void registerForms() {
