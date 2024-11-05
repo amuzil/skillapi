@@ -7,11 +7,13 @@ import com.amuzil.omegasource.magus.skill.util.data.SkillCategoryData;
 import com.amuzil.omegasource.magus.skill.util.data.SkillData;
 import com.amuzil.omegasource.magus.skill.util.traits.DataTrait;
 import com.amuzil.omegasource.magus.skill.util.traits.SkillTrait;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.FakePlayer;
+import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
@@ -75,10 +77,6 @@ public class Magi {
 
     // Called per tick
     public void onUpdate() {
-
-        if (getMagi().isOnGround()) {
-            System.out.println("Magi is on the ground.");
-        }
     }
 
     public void onDeath() {
@@ -87,6 +85,14 @@ public class Magi {
 
     public LivingEntity getMagi() {
         return this.magi;
+    }
+
+    public CompoundTag serialiseNBT(CompoundTag tag) {
+        return tag;
+    }
+
+    public void deserialiseNBT(CompoundTag tag) {
+
     }
 
 }

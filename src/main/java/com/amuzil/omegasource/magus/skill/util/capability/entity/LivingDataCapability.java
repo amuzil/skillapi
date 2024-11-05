@@ -78,6 +78,10 @@ public class LivingDataCapability {
                     tag.put(trait.getName(), trait.serializeNBT());
                 }
             });
+//            if (magi != null && magi.isDirty()) {
+//                tag = magi.serialiseNBT(tag);
+//            }
+
             return tag;
         }
 
@@ -85,6 +89,7 @@ public class LivingDataCapability {
         public void deserializeNBT(CompoundTag nbt) {
             markClean();
             traits.forEach(trait -> trait.deserializeNBT((CompoundTag) nbt.get(trait.getName())));
+            magi.deserialiseNBT(nbt);
         }
 
         public void setTree(RadixTree tree) {

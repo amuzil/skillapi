@@ -119,6 +119,11 @@ public abstract class InputModule {
         return this.lastActivatedForm.get();
     }
 
+    // Should be overridden..
+    public Form getActiveForm() {
+        return this.lastActivatedForm.get();
+    }
+
     public List<Condition> getActiveConditions() {
         return activeConditions;
     }

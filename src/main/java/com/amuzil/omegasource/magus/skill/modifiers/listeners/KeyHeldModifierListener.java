@@ -17,15 +17,17 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
 public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
+    private final RadixTree.InputType type;
     private Consumer<TickEvent.ClientTickEvent> clientTickListener;
     private int currentHolding;
     private boolean isHeld = true;
     private boolean wasHeld = true;
-    private RadixTree.InputType type;
+    private List<Integer> activeKeyCodes;
 
     public KeyHeldModifierListener() {
         this(RadixTree.InputType.KEYBOARD_MOUSE);
@@ -34,6 +36,7 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
     public KeyHeldModifierListener(RadixTree.InputType type) {
         this.modifierData = new HeldModifierData();
         this.type = type;
+        this.activeKeyCodes = new LinkedList<>();
     }
 
     @Override
@@ -48,10 +51,8 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
         MinecraftForge.EVENT_BUS.unregister(clientTickListener);
     }
 
-    @Override
-    public void setupListener(CompoundTag compoundTag) {
-        Form formToModify = FormDataRegistry.getFormByName(compoundTag.getString("lastFormActivated"));
-        List<InputData> formInputs = FormDataRegistry.getInputsForForm(formToModify, type);
+    public List<Integer> getKeyCodes(Form form, RadixTree.InputType type) {
+        List<InputData> formInputs = FormDataRegistry.getInputsForForm(form, type);
 
         InputData lastInput = formInputs.get(formInputs.size() - 1);
         List<Integer> keyCodes = new ArrayList<>();
@@ -63,20 +64,28 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
         else if (lastInput instanceof MultiKeyInput) {
             for (KeyInput key : ((MultiKeyInput) lastInput).keys())
                 keyCodes.add(key.key().getValue());
-        }
-        else {
+        } else {
             // If it's registered to the keyboard mouse input module, it's going to be some variant
             // of KeyInput.
             keyCodes.add(((KeyInput) lastInput).key().getValue());
         }
+        return keyCodes;
+    }
 
-        InputModule  module = Magus.keyboardMouseInputModule;
+    public InputModule getTypedModule(RadixTree.InputType type) {
+        return Magus.keyboardMouseInputModule;
+    }
+
+    @Override
+    public void setupListener(CompoundTag compoundTag) {
+        // TODO: FIx this
+        InputModule module = Magus.keyboardMouseInputModule;
 
         this.clientTickListener = event -> {
             if (event.phase == TickEvent.ClientTickEvent.Phase.START) {
                 boolean pressed = true;
                 // If all requisite keys aren't pressed, don't iterate modifier data
-                for (int key : keyCodes) {
+                for (int key : activeKeyCodes) {
                     if (!module.keyPressed(key)) {
                         pressed = false;
                         break;
@@ -97,6 +106,13 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
 
     @Override
     public boolean shouldCollectModifierData(TickEvent event) {
+        InputModule module = getTypedModule(type);
+        if (module.getActiveForm() != null && !module.getActiveForm().name().equals(module.getLastActivatedForm().name())) {
+            activeKeyCodes = getKeyCodes(module.getActiveForm(), type);
+        }
+
+        if (activeKeyCodes.isEmpty()) return false;
+
         if (isHeld && currentHolding > 0) {
             return true;
         }

@@ -6,7 +6,6 @@ import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifier
 import com.amuzil.omegasource.magus.radix.*;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.elements.Discipline;
-import com.amuzil.omegasource.magus.skill.elements.Disciplines;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
@@ -47,9 +46,9 @@ public class KeyboardMouseInputModule extends InputModule {
     private final AtomicReference<Form> activeForm;
     private final AtomicInteger timeout;
     private final List<Integer> glfwKeysDown;
+    public int scrollTimeout = 0;
     private int ticksSinceModifiersSent = 0;
     private double mouseScrollDelta;
-    public int scrollTimeout = 0;
     private boolean listen;
     // Used for modifier data
     private boolean checkForm = false;
@@ -214,6 +213,11 @@ public class KeyboardMouseInputModule extends InputModule {
     public static void setActiveDiscipline(Discipline discipline) {
         activeDiscipline = discipline;
         formsTree.setDiscipline(discipline);
+    }
+
+    @Override
+    public Form getActiveForm() {
+        return this.activeForm.get();
     }
 
     private void checkForForm() {
