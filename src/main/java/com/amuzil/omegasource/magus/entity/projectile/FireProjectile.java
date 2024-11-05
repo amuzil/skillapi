@@ -194,7 +194,7 @@ public class FireProjectile extends ElementProjectile {
                 this.setTimeToKill(100);
                 if (!this.level.isClientSide()) {
                     this.shoot(owner.getViewVector(1).x, owner.getViewVector(1).y, owner.getViewVector(1).z, 0.75F, 1);
-//                    this.discard();
+                    this.discard();
                 }
             }
         }
