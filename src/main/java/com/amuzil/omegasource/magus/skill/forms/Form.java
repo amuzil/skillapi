@@ -8,6 +8,7 @@ import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Form {
     private final String name;
 

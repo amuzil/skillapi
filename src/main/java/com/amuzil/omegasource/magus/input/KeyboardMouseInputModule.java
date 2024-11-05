@@ -1,31 +1,26 @@
 package com.amuzil.omegasource.magus.input;
 
-import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
+import com.amuzil.omegasource.magus.network.packets.client_executed.FormActivatedPacket;
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.radix.*;
+import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
-import com.amuzil.omegasource.magus.skill.elements.Discipline;
+import com.amuzil.omegasource.magus.skill.elements.Element;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
-import com.amuzil.omegasource.magus.skill.test.avatar.TestProjectileEntity;
-import com.lowdragmc.photon.client.fx.EntityEffect;
-import com.lowdragmc.photon.client.fx.FX;
-import com.lowdragmc.photon.client.fx.FXHelper;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import org.apache.logging.log4j.LogManager;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,7 +30,6 @@ import java.util.function.Consumer;
 
 public class KeyboardMouseInputModule extends InputModule {
     private final Consumer<TickEvent.ClientTickEvent> tickEventConsumer;
-    private final Consumer<TickEvent.ServerTickEvent> tickServerEventConsumer;
     private final Consumer<InputEvent.Key> keyboardListener;
     private final Consumer<InputEvent.MouseButton> mouseListener;
     private final Consumer<InputEvent.MouseScrollingEvent> mouseScrollListener;
@@ -52,7 +46,6 @@ public class KeyboardMouseInputModule extends InputModule {
     private boolean listen;
     // Used for modifier data
     private boolean checkForm = false;
-    private int c = 0;
 
     // module activating a form rather than relying on the raw input data for those forms.
     // This way, the trees for different complex methods (such as VR and multikey)
@@ -60,7 +53,7 @@ public class KeyboardMouseInputModule extends InputModule {
     // forms are activated.
 
     public KeyboardMouseInputModule() {
-        formsTree.setDiscipline(activeDiscipline);
+        formsTree.setDiscipline(activeElement);
 
         this.ticksSinceActivated = new AtomicInteger(0);
         this.activeForm = new AtomicReference<>(Forms.NULL);
@@ -145,7 +138,7 @@ public class KeyboardMouseInputModule extends InputModule {
                 ticksSinceActivated.getAndIncrement();
                 if (ticksSinceActivated.get() >= tickActivationThreshold) {
                     // Always to send modifier data right when the form is activated
-                    sendModifierData();
+//                    sendModifierData();
 
 //                    if (lastActivatedForm != null && lastActivatedForm.name().equals(activeForm.name())) {
 //                        // Send modifier data of it being multi.
@@ -157,10 +150,14 @@ public class KeyboardMouseInputModule extends InputModule {
 
                     lastActivatedForm.set(activeForm.get());
                     // Extra check for race conditions. Probably wont' help...
-//                    synchronized (lastActivatedForm.get()) {
-//                        if (!lastActivatedForm.get().name().equals("null"))
-//                            Magus.sendDebugMsg("Form Activated: " + lastActivatedForm.get().name());
-//                    }
+                    synchronized (lastActivatedForm.get()) {
+                        if (!lastActivatedForm.get().name().equals("null")) {
+                            if (Minecraft.getInstance().getConnection() != null) {
+                                MagusNetwork.sendToServer(new FormActivatedPacket(activeForm.get(), activeElement, 0));
+                            }
+//                            sendDebugMsg("Form Activated: " + lastActivatedForm.get().name());
+                        }
+                    }
                     activeForm.set(Forms.NULL);
                     ticksSinceActivated.set(0);
                     timeout.set(0);
@@ -177,42 +174,11 @@ public class KeyboardMouseInputModule extends InputModule {
                 }
             }
         };
-
-        this.tickServerEventConsumer = event -> {
-            // NOTE: This is strictly for testing and to be deleted later
-            if (c == 0) {
-                synchronized (activeForm.get()) {
-                    if (!activeForm.get().name().equals("null")) {
-                        ResourceLocation resource = null;
-                        if (activeForm.get().name().equals("strike"))
-                            resource = new ResourceLocation(Magus.MOD_ID, "fire_bloom");
-                        if (activeForm.get().name().equals("force"))
-                            resource = new ResourceLocation(Magus.MOD_ID, "blue_fire");
-                        ServerLevel level = event.getServer().getAllLevels().iterator().next();
-                        System.out.println("LEVEL: " + level);
-                        if (!level.isClientSide && resource != null) {
-                            c = 20;
-                            Player player = Minecraft.getInstance().player;
-                            assert player != null;
-                            TestProjectileEntity element = new TestProjectileEntity(level, player);
-//                        element.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
-                            element.shoot(player.getViewVector(1).x, player.getViewVector(1).y, player.getViewVector(1).z, 2, 1);
-                            level.addFreshEntity(element);
-                            FX fx = FXHelper.getFX(resource);
-                            EntityEffect entityEffect = new EntityEffect(fx, level, element);
-                            entityEffect.start();
-                        }
-                    }
-                }
-            } else {
-                c--;
-            }
-        };
     }
 
-    public static void setActiveDiscipline(Discipline discipline) {
-        activeDiscipline = discipline;
-        formsTree.setDiscipline(discipline);
+    public static void setActiveDiscipline(Element element) {
+        activeElement = element;
+        formsTree.setDiscipline(element);
     }
 
     @Override
@@ -230,7 +196,19 @@ public class KeyboardMouseInputModule extends InputModule {
                 if (recognized != null) {
                     activeForm.set(FormDataRegistry.formsNamespace.get(recognized.hashCode()));
 //                System.out.println("RECOGNIZED FORM: " + activeForm.name() + " " + recognized);
-//                Magus.sendDebugMsg("RECOGNIZED FORM: " + activeForm.name());
+//                sendDebugMsg("RECOGNIZED FORM: " + activeForm.name());
+                } else { // Retry w/o movementConditions
+                    List<Condition> nonMovementConditions = new ArrayList<>();
+                    conditions.forEach(condition -> {
+                        if (condition instanceof KeyHoldCondition keyHoldCondition) {
+                            if (!getMovementKeys().containsValue(keyHoldCondition.getKey())) {
+                                nonMovementConditions.add(condition);
+                            }
+                        }
+                    });
+                    recognized = formsTree.search(nonMovementConditions);
+                    if (recognized != null)
+                        activeForm.set(FormDataRegistry.formsNamespace.get(recognized.hashCode()));
                 }
             }
         }
@@ -316,7 +294,6 @@ public class KeyboardMouseInputModule extends InputModule {
 
     @Override
     public void registerListeners() {
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ServerTickEvent.class, tickServerEventConsumer);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ClientTickEvent.class, tickEventConsumer);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.Key.class, keyboardListener);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.MouseButton.class, mouseListener);
@@ -358,6 +335,5 @@ public class KeyboardMouseInputModule extends InputModule {
     public double getMouseScrollDelta() {
         return this.mouseScrollDelta;
     }
-
 
 }

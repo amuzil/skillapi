@@ -1,5 +1,6 @@
 package com.amuzil.omegasource.magus.skill.test.avatar;
 
+import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.radix.builders.InputPathBuilder;
@@ -11,13 +12,21 @@ import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseDataBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseWheelInput;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
+import com.lowdragmc.photon.client.fx.FX;
+import com.lowdragmc.photon.client.fx.FXHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.LinkedList;
 import java.util.Map;
 
 
 public class AvatarFormRegistry {
+    public static FX fire_bloom = FXHelper.getFX(new ResourceLocation(Magus.MOD_ID, "fire_bloom"));
+    public static FX fire_bloom_perma = FXHelper.getFX(new ResourceLocation(Magus.MOD_ID, "fire_bloom_perma"));
+    public static FX blue_fire = FXHelper.getFX(new ResourceLocation(Magus.MOD_ID, "blue_fire"));
+    public static FX blue_fire_perma = FXHelper.getFX(new ResourceLocation(Magus.MOD_ID, "blue_fire_perma"));
+    public static FX orb_bloom =FXHelper.getFX(new ResourceLocation(Magus.MOD_ID, "orb_bloom"));
 
     public static void registerForms() {
         KeyInput left = KeyDataBuilder.createInput(Minecraft.getInstance().options.keyAttack.getKey(), 0);
