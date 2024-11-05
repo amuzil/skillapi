@@ -1,12 +1,8 @@
 package com.amuzil.omegasource.magus.skill.util.capability.entity;
 
 import com.amuzil.omegasource.magus.Magus;
-import com.amuzil.omegasource.magus.radix.Node;
-import com.amuzil.omegasource.magus.radix.NodeBuilder;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.registry.Registries;
-import com.amuzil.omegasource.magus.skill.forms.Forms;
-import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
 import com.amuzil.omegasource.magus.skill.skill.SkillCategory;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
@@ -72,15 +68,15 @@ public class LivingDataCapability {
 
         @Override
         public CompoundTag serializeNBT() {
-            CompoundTag tag = new CompoundTag();
+            CompoundTag tag;
+            if (magi != null && magi.isDirty()) {
+                tag = magi.serialiseNBT(new CompoundTag());
+            } else tag = new CompoundTag();
             traits.forEach(trait -> {
                 if (trait.isDirty() || isDirty()) {
                     tag.put(trait.getName(), trait.serializeNBT());
                 }
             });
-//            if (magi != null && magi.isDirty()) {
-//                tag = magi.serialiseNBT(tag);
-//            }
 
             return tag;
         }
@@ -89,16 +85,17 @@ public class LivingDataCapability {
         public void deserializeNBT(CompoundTag nbt) {
             markClean();
             traits.forEach(trait -> trait.deserializeNBT((CompoundTag) nbt.get(trait.getName())));
-            magi.deserialiseNBT(nbt);
+            if (magi != null)
+                magi.deserialiseNBT(nbt);
+        }
+
+        public RadixTree getTree() {
+            return tree;
         }
 
         public void setTree(RadixTree tree) {
             this.tree = tree;
             markDirty();
-        }
-
-        public RadixTree getTree() {
-            return tree;
         }
 
         public void fillTraits() {
@@ -177,10 +174,10 @@ public class LivingDataCapability {
 
     public static class LivingDataProvider implements ICapabilityProvider, ICapabilitySerializable<CompoundTag> {
 
+        private final LazyOptional<Data> instance = LazyOptional.of(LivingDataCapabilityImp::new);
+
         public static void init() {
         }
-
-        private final LazyOptional<Data> instance = LazyOptional.of(LivingDataCapabilityImp::new);
 
         @Override
         public CompoundTag serializeNBT() {

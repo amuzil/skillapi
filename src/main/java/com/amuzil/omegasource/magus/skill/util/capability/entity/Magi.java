@@ -35,13 +35,22 @@ public class Magi {
 
     @Nullable
     public static Magi get(LivingEntity entity) {
-        return ((LivingDataCapability.LivingDataCapabilityImp) (CapabilityHandler.getCapability(entity, CapabilityHandler.LIVING_DATA))).getMagi(entity);
+        LivingDataCapability.LivingDataCapabilityImp cap = ((LivingDataCapability.LivingDataCapabilityImp) (CapabilityHandler.getCapability(entity, CapabilityHandler.LIVING_DATA)));
+        if (cap == null) {
+            // Capability isn't ready yet.
+            return null;
+        }
+        return cap.getMagi(entity);
     }
 
     public LivingDataCapability.LivingDataCapabilityImp getMagusData() {
         return (LivingDataCapability.LivingDataCapabilityImp) capabilityData;
     }
 
+    // Need to sync this with given skills, traits, e.t.c
+    public boolean isDirty() {
+        return false;
+    }
     public RadixTree getTree() {
         return capabilityData.getTree();
     }

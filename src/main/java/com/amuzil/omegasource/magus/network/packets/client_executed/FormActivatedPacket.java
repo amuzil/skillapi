@@ -101,7 +101,7 @@ public class FormActivatedPacket implements MagusPacket {
         MagusNetwork.CHANNEL.send(PacketDistributor.NEAR.with(
                 () -> new PacketDistributor.TargetPoint(player.getX(), player.getY(), player.getZ(),
                         500, level.dimension())), packet);
-//        System.out.println("HANDLE SERVER PACKET ---> " + form);
+        System.out.println("HANDLE SERVER PACKET ---> " + form);
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {
