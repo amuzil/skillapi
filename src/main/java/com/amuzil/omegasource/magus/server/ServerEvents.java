@@ -129,7 +129,7 @@ public class ServerEvents {
                 System.out.println("All RadixTree Branches:");
                 Magus.keyboardMouseInputModule.getFormsTree().printAllBranches();
                 Magus.keyboardMouseInputModule.init();
-//                Magus.keyboardMouseInputModule.registerModifiers();
+                Magus.keyboardMouseInputModule.registerModifiers();
                 Magus.mouseMotionModule.init();
             }
         }
