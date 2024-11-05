@@ -111,7 +111,6 @@ public abstract class InputModule {
     public void registerModifierListener(ModifierListener listener, CompoundTag treeData) {
         listener.setupListener(treeData);
         listener.register(() -> {
-            LogManager.getLogger().info("QUEUEING MODIFIER DATA");
             queueModifierData(listener.getModifierData());
         });
 
@@ -132,7 +131,7 @@ public abstract class InputModule {
 
     public void resetLastActivated() {
         LogManager.getLogger().info("RESETTING LAST ACTIVATED FORM");
-        this.lastActivatedForm = null;
+        this.lastActivatedForm.set(Forms.NULL);
     }
 
     public Form getLastActivatedForm() {
