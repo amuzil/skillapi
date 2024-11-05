@@ -6,6 +6,7 @@ import com.amuzil.omegasource.magus.network.packets.client_executed.FormActivate
 import com.amuzil.omegasource.magus.network.packets.client_executed.RegisterModifierListenersPacket;
 import com.amuzil.omegasource.magus.network.packets.client_executed.SkillTriggeredPacket;
 import com.amuzil.omegasource.magus.network.packets.client_executed.UnregisterModifierListenersPacket;
+import com.amuzil.omegasource.magus.network.packets.server_executed.ElementActivatedPacket;
 import com.amuzil.omegasource.magus.network.packets.server_executed.ConditionActivatedPacket;
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.network.packets.server_executed.StartBendingPacket;
@@ -31,6 +32,12 @@ public class MagusNetwork {
     }
 
     public static void registerMessages() {
+        CHANNEL.messageBuilder(ElementActivatedPacket.class, nextID())
+                .encoder(ElementActivatedPacket::toBytes)
+                .decoder(ElementActivatedPacket::fromBytes)
+                .consumerMainThread(ElementActivatedPacket::handle)
+                .add();
+        
         CHANNEL.messageBuilder(FormActivatedPacket.class, nextID())
                 .encoder(FormActivatedPacket::toBytes)
                 .decoder(FormActivatedPacket::fromBytes)

@@ -32,6 +32,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import static com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry.orb_bloom;
+import static com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry.steam;
 
 
 public class FireProjectile extends ElementProjectile {
@@ -280,25 +281,37 @@ public class FireProjectile extends ElementProjectile {
                 this.shoot(entity.getViewVector(1).x, entity.getViewVector(1).y, entity.getViewVector(1).z, 0.75F, 1);
                 this.leftOwner = true;
             }
-        } else if (entity instanceof FireProjectile elementProjectile) {
+        } else if (entity instanceof FireProjectile fireProjectile) {
             if (this.getOwner() != null && this.level.isClientSide) {
-                if (elementProjectile.arcActive && !elementProjectile.hasElement && this.checkLeftOwner()) {
+                if (fireProjectile.arcActive && !fireProjectile.hasElement && this.checkLeftOwner()) {
 //                    this.setOwner(elementProjectile.getOwner()); // Give control to receiver
 //                    this.setDeltaMovement(0,0,0); // Full stop
 //                    this.arcActive = true; // Enable control of this shot projectile
                     this.discard();
-                    elementProjectile.hasElement = true;
-                    MagusNetwork.sendToServer(new FormActivatedPacket(Forms.NULL, Elements.FIRE, elementProjectile.getId()));
+                    fireProjectile.hasElement = true;
+                    MagusNetwork.sendToServer(new FormActivatedPacket(Forms.NULL, Elements.FIRE, fireProjectile.getId()));
                 } else {
-                    if (!this.getOwner().equals(elementProjectile.getOwner())) {
+                    if (!this.getOwner().equals(fireProjectile.getOwner())) {
                         ElementCollision collisionEntity = new ElementCollision(this.getX(), this.getY(), this.getZ(), level);
                         collisionEntity.setTimeToKill(5);
                         level.addFreshEntity(collisionEntity);
                         EntityEffect entityEffect = new EntityEffect(orb_bloom, level, collisionEntity);
                         entityEffect.start();
                         this.discard();
-                        elementProjectile.discard();
+                        fireProjectile.discard();
                     }
+                }
+            }
+        } else if (entity instanceof WaterProjectile waterProjectile) {
+            if (this.getOwner() != null && this.level.isClientSide) {
+                if (!this.getOwner().equals(waterProjectile.getOwner())) {
+                    ElementCollision collisionEntity = new ElementCollision(this.getX(), this.getY(), this.getZ(), level);
+                    collisionEntity.setTimeToKill(5);
+                    level.addFreshEntity(collisionEntity);
+                    EntityEffect entityEffect = new EntityEffect(steam, level, collisionEntity);
+                    entityEffect.start();
+                    this.discard();
+                    waterProjectile.discard();
                 }
             }
         } else if (entity instanceof Fireball fireBall) {
