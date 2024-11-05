@@ -16,5 +16,4 @@ public interface DataTrait extends INBTSerializable<CompoundTag> {
 
     boolean isDirty();
 
-
 }
