@@ -1,6 +1,5 @@
 package com.amuzil.omegasource.magus.skill.modifiers.api;
 
-import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import net.minecraft.nbt.CompoundTag;
 
 public abstract class BaseModifierData extends ModifierData {
