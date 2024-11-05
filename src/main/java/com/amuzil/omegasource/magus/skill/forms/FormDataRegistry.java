@@ -30,8 +30,10 @@ public class FormDataRegistry {
     }
 
     public static List<InputData> getInputsForForm(Form formToModify, RadixTree.InputType type) {
-        if (formsData != null)
-            return formsData.get(formToModify).getInputs(type);
+        InputModuleData inputModuleData = formsData.get(formToModify);
+        System.out.println("getInputsForForm: " + formToModify);
+        if (inputModuleData != null)
+            return inputModuleData.getInputs(type);
         return null;
     }
 

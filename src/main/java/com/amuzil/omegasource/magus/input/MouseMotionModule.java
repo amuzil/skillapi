@@ -91,7 +91,7 @@ public class MouseMotionModule extends InputModule {
     }
 
     private void sendModifierData() {
-        LogManager.getLogger().info("SENDING MODIFIER DATA");
+//        LogManager.getLogger().info("SENDING MODIFIER DATA");
         synchronized (modifierQueue) {
             MagusNetwork.sendToServer(new SendModifierDataPacket(modifierQueue.values().stream().toList()));
             ticksSinceModifiersSent = 0;

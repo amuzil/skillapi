@@ -215,9 +215,9 @@ public class KeyboardMouseInputModule extends InputModule {
     }
 
     private void sendModifierData() {
-        LogManager.getLogger().info("SENDING MODIFIER DATA");
-        System.out.println("Modifier Listener Size: " + modifierListeners.size());
-        System.out.println("Modifier Data Size: " + modifierQueue.size());
+//        LogManager.getLogger().info("SENDING MODIFIER DATA");
+//        System.out.println("Modifier Listener Size: " + modifierListeners.size());
+//        System.out.println("Modifier Data Size: " + modifierQueue.size());
         for (ModifierData modData : modifierQueue.values())
             modData.print();
 
