@@ -62,16 +62,13 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent.ClientTi
             if (lastInput instanceof ChainedKeyInput) {
                 for (KeyInput key : ((ChainedKeyInput) lastInput).last().keys())
                     keyCodes.add(key.key().getValue());
-            }
-            /// I need to fix multi :(
-            else if (lastInput instanceof MultiKeyInput) {
+            } else if (lastInput instanceof MultiKeyInput) {
                 for (KeyInput key : ((MultiKeyInput) lastInput).keys())
                     keyCodes.add(key.key().getValue());
             } else if (lastInput instanceof MouseWheelInput || lastInput instanceof MouseMotionInput) {
-                //
+                // Ignore these since they're not keys!
             } else {
-                // If it's registered to the keyboard mouse input module, it's going to be some variant
-                // of KeyInput.
+                // If it's registered to the keyboard mouse input module, it's going to be some variant of KeyInput.
                 keyCodes.add(((KeyInput) lastInput).key().getValue());
             }
         }
