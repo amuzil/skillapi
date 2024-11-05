@@ -3,7 +3,9 @@ package com.amuzil.omegasource.magus.skill.test.avatar;
 import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.input.InputModule;
 import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
+import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.client_executed.FormActivatedPacket;
+import com.amuzil.omegasource.magus.network.packets.server_executed.AvatarCommandPacket;
 import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.elements.Element;
 import com.amuzil.omegasource.magus.skill.elements.Elements;
@@ -18,6 +20,7 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.PacketDistributor;
 
 import java.util.Arrays;
 
@@ -81,13 +84,16 @@ public class AvatarCommand {
 
     private static int activateForm(String name, ServerPlayer player) {
         Form form =  Registries.FORMS.get().getValue(new ResourceLocation(MOD_ID, name));
-        FormActivatedPacket.handleServerSide(form, InputModule.activeElement, 0, player);
+        MagusNetwork.sendToServer(new FormActivatedPacket(form, InputModule.activeElement, 0));
+//        FormActivatedPacket.handleServerSide(form, InputModule.activeElement, 0, player);
         return 1;
     }
 
     private static int activateElement(CommandContext<CommandSourceStack> ctx, Element.Art art) throws CommandSyntaxException {
-        InputModule.setDiscipline(Elements.fromArt(art)); // TODO - Fix this bcus it's server side, specify client
+//        InputModule.setDiscipline(Elements.fromArt(art))
         ServerPlayer player = ctx.getSource().getPlayerOrException();
+        AvatarCommandPacket packet = new AvatarCommandPacket(art.name());
+        MagusNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
         player.sendSystemMessage(Component.literal("Bending set to " + art));
         return 1;
     }

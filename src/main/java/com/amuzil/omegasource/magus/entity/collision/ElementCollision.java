@@ -207,7 +207,6 @@ public class ElementCollision extends ElementProjectile {
     protected void tickDespawn() {
         ++this.life;
         if (this.life >= ttk) {
-            System.out.println("BYE BYE BBY");
             this.discard();
         }
     }
