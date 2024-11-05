@@ -3,11 +3,10 @@ package com.amuzil.omegasource.magus.entity.projectile;
 import com.amuzil.omegasource.magus.entity.AvatarEntities;
 import com.amuzil.omegasource.magus.entity.ElementProjectile;
 import com.amuzil.omegasource.magus.entity.collision.ElementCollision;
-import com.amuzil.omegasource.magus.skill.forms.Form;
+import com.amuzil.omegasource.magus.skill.elements.Element;
+import com.amuzil.omegasource.magus.skill.elements.Elements;
 import com.lowdragmc.photon.client.fx.EntityEffect;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -41,16 +40,20 @@ public class AirProjectile extends ElementProjectile {
         super(type, level);
     }
 
-    public AirProjectile(double x, double y, double z, Level level, Form form) {
+    public AirProjectile(double x, double y, double z, Level level) {
         this(AvatarEntities.AIR_PROJECTILE_ENTITY_TYPE.get(), level);
         this.setPos(x, y, z);
-//        this.form = form;
     }
 
-    public AirProjectile(LivingEntity livingEntity, Level level, Form form) {
-        this(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ(), level, form);
+    public AirProjectile(LivingEntity livingEntity, Level level) {
+        this(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ(), level);
         this.setOwner(livingEntity);
         this.setNoGravity(true);
+    }
+
+    @Override
+    public Element getElement() {
+        return Elements.AIR;
     }
 
     public void tick() {
@@ -241,8 +244,7 @@ public class AirProjectile extends ElementProjectile {
                 elementProjectile.discard();
             }
         }  else {
-            // TODO - Check if player entity has countered
-            int i = 10; // Deal 10 damage
+                        int i = 10; // Deal 10 damage
             entity.hurt(this.damageSources().thrown(this, this.getOwner()), (float)i);
             this.discard();
         }

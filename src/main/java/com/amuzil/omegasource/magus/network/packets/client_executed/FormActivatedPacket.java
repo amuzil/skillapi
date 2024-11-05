@@ -16,6 +16,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -27,6 +28,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import static com.amuzil.omegasource.magus.Magus.MOD_ID;
+import static com.amuzil.omegasource.magus.skill.forms.Forms.*;
 
 
 public class FormActivatedPacket implements MagusPacket {
@@ -72,7 +74,6 @@ public class FormActivatedPacket implements MagusPacket {
         */
         assert elementProjectile != null;
         elementProjectile.startEffect(form, player);
-//        System.out.println("HANDLE CLIENT PACKET ---> " + form);
     }
 
     // Server-side handler
@@ -83,14 +84,22 @@ public class FormActivatedPacket implements MagusPacket {
         // TODO - Create/perform certain entity updates based on form and element
         //      - All Skills/techniques should be determined and handled here
         ElementProjectile entity;
-        entity = ElementProjectile.createElementEntity(form, element, player, level);
-        assert entity != null;
-        if (form == Forms.ARC || form == Forms.NULL) {
-            entity.arc(1.5f, 1);
-        } else {
-            entity.shoot(player.getViewVector(1).x, player.getViewVector(1).y, player.getViewVector(1).z, 1, 1);
+        if (entityId != 0) { // Update existing entity
+            entity = (ElementProjectile) player.level.getEntity(entityId);
+        } else { // Create new entity
+            entity = ElementProjectile.createElementEntity(form, element, player, level);
         }
-        level.addFreshEntity(entity);
+        assert entity != null;
+        if (form.equals(ARC) || form.equals(NULL)) {
+            entity.control(1.5f, form);
+        } else if (form.equals(STRIKE) || form.equals(FORCE)) {
+            entity.shoot(player.getViewVector(1).x, player.getViewVector(1).y, player.getViewVector(1).z, 1, 1);
+        } else {
+//            System.out.println("Unhandled form: " + form);
+            return;
+        }
+        if (entityId == 0)
+            level.addFreshEntity(entity);
         FormActivatedPacket packet = new FormActivatedPacket(form, element, entity.getId());
 //        Predicate<ServerPlayer> predicate = (serverPlayer) -> player.distanceToSqr(serverPlayer) < 2500;
 //        for (ServerPlayer nearbyPlayer: level.getPlayers(predicate.and(LivingEntity::isAlive))) {
@@ -101,7 +110,6 @@ public class FormActivatedPacket implements MagusPacket {
         MagusNetwork.CHANNEL.send(PacketDistributor.NEAR.with(
                 () -> new PacketDistributor.TargetPoint(player.getX(), player.getY(), player.getZ(),
                         500, level.dimension())), packet);
-        System.out.println("HANDLE SERVER PACKET ---> " + form);
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {

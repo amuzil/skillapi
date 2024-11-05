@@ -11,15 +11,15 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = Magus.MOD_ID)
 public class MagusEvents {
 
-    @SubscribeEvent
-    public static void tickEvent(LivingEvent.LivingTickEvent event) {
-        if (event.getEntity() != null) {
-            Magi magi = Magi.get(event.getEntity());
-            if (magi != null) {
-                magi.onUpdate();
-            }
-        }
-    }
+//    @SubscribeEvent
+//    public static void tickEvent(LivingEvent.LivingTickEvent event) {
+//        if (event.getEntity() != null) {
+//            Magi magi = Magi.get(event.getEntity());
+//            if (magi != null) {
+//                magi.onUpdate();
+//            }
+//        }
+//    }
 
     @SubscribeEvent
     public static void deathEvent(LivingDeathEvent event) {

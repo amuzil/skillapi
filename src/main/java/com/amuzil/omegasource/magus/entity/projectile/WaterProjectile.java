@@ -3,11 +3,10 @@ package com.amuzil.omegasource.magus.entity.projectile;
 import com.amuzil.omegasource.magus.entity.AvatarEntities;
 import com.amuzil.omegasource.magus.entity.ElementProjectile;
 import com.amuzil.omegasource.magus.entity.collision.ElementCollision;
-import com.amuzil.omegasource.magus.skill.forms.Form;
+import com.amuzil.omegasource.magus.skill.elements.Element;
+import com.amuzil.omegasource.magus.skill.elements.Elements;
 import com.lowdragmc.photon.client.fx.EntityEffect;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -28,29 +27,31 @@ import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import static com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry.orb_bloom;
+import static com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry.steam;
 
 
 public class WaterProjectile extends ElementProjectile {
     private static final EntityDataAccessor<Byte> ID_FLAGS = SynchedEntityData.defineId(WaterProjectile.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Byte> PIERCE_LEVEL = SynchedEntityData.defineId(WaterProjectile.class, EntityDataSerializers.BYTE);
-    private int life;
-    private int ttk = 100;
 
     public WaterProjectile(EntityType<WaterProjectile> type, Level level) {
         super(type, level);
     }
 
-    public WaterProjectile(double x, double y, double z, Level level, Form form) {
+    public WaterProjectile(double x, double y, double z, Level level) {
         this(AvatarEntities.WATER_PROJECTILE_ENTITY_TYPE.get(), level);
         this.setPos(x, y, z);
-//        this.form = form;
     }
 
-    public WaterProjectile(LivingEntity livingEntity, Level level, Form form) {
-        this(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ(), level, form);
+    public WaterProjectile(LivingEntity livingEntity, Level level) {
+        this(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ(), level);
         this.setOwner(livingEntity);
         this.setNoGravity(true);
+    }
+
+    @Override
+    public Element getElement() {
+        return Elements.WATER;
     }
 
     public void tick() {
@@ -125,32 +126,49 @@ public class WaterProjectile extends ElementProjectile {
             hitresult = null;
         }
         deltaMovement = this.getDeltaMovement();
-        double d5 = deltaMovement.x;
-        double d6 = deltaMovement.y;
-        double d1 = deltaMovement.z;
+        double x = deltaMovement.x;
+        double y = deltaMovement.y;
+        double z = deltaMovement.z;
 
-        double d7 = this.getX() + d5;
-        double d2 = this.getY() + d6;
-        double d3 = this.getZ() + d1;
+        double finalX = this.getX() + x;
+        double finalY = this.getY() + y;
+        double finalZ = this.getZ() + z;
         double d4 = deltaMovement.horizontalDistance();
         if (flag) {
-            this.setYRot((float)(Mth.atan2(-d5, -d1) * (double)(180F / (float)Math.PI)));
+            this.setYRot((float)(Mth.atan2(-x, -z) * (double)(180F / (float)Math.PI)));
         } else {
-            this.setYRot((float)(Mth.atan2(d5, d1) * (double)(180F / (float)Math.PI)));
+            this.setYRot((float)(Mth.atan2(x, z) * (double)(180F / (float)Math.PI)));
         }
 
-        this.setXRot((float)(Mth.atan2(d6, d4) * (double)(180F / (float)Math.PI)));
+        this.setXRot((float)(Mth.atan2(y, d4) * (double)(180F / (float)Math.PI)));
         this.setXRot(lerpRotation(this.xRotO, this.getXRot()));
         this.setYRot(lerpRotation(this.yRotO, this.getYRot()));
 
-        float f = 0.99F;
-        this.setDeltaMovement(deltaMovement.scale((double)f));
-        if (!this.isNoGravity() && !flag) {
+        float f = 0.49F; // Scale speed
+        this.setDeltaMovement(deltaMovement.scale(f));
+        if (!this.isNoGravity() && !flag) { // Apply gravity
             Vec3 vec34 = this.getDeltaMovement();
             this.setDeltaMovement(vec34.x, vec34.y - (double)0.05F, vec34.z);
         }
 
-        this.setPos(d7, d2, d3);
+        Entity owner = this.getOwner();
+        if (arcActive) {
+            if (owner != null) {
+                Vec3[] pose = new Vec3[]{owner.position(), this.getOwner().getLookAngle()};
+                pose[1] = pose[1].scale((1.5)).add((0), (this.getOwner().getEyeHeight()), (0));
+                Vec3 newPos = pose[1].add(pose[0]);
+                this.setPos(newPos.x, newPos.y, newPos.z);
+            }
+        } else {
+            if (owner != null) {
+                Vec3 vec34 = this.getDeltaMovement();
+                double rateOfControl = 0.4; // Control/curve the shot projectile
+                Vec3 aim = this.getOwner().getLookAngle().multiply(rateOfControl, rateOfControl, rateOfControl);
+                this.setDeltaMovement(vec34.add(aim));
+            }
+            this.setPos(finalX, finalY, finalZ);
+        }
+
         this.checkInsideBlocks();
     }
 
@@ -197,18 +215,6 @@ public class WaterProjectile extends ElementProjectile {
         }
     }
 
-    public void setTimeToKill(int ticks) {
-        this.ttk = ticks;
-    }
-
-    protected void tickDespawn() {
-        ++this.life;
-        if (this.life >= ttk) {
-//            System.out.println("BYE BYE BBY");
-            this.discard();
-        }
-    }
-
     @Override
     protected void defineSynchedData() {
         this.entityData.define(ID_FLAGS, (byte)0);
@@ -226,24 +232,22 @@ public class WaterProjectile extends ElementProjectile {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         Entity entity = entityHitResult.getEntity();
         if (entity instanceof Blaze) {
-            if (this.getOwner() != null) {
-                this.shoot(entity.getViewVector(1).x, entity.getViewVector(1).y+0.5, entity.getViewVector(1).z, 0.75F, 1);
-            }
-        } else if (entity instanceof ElementProjectile elementProjectile) {
+            float i = 20; // Deal 20 damage
+            entity.hurt(this.damageSources().thrown(this, this.getOwner()), i);
+            this.discard();
+        } else if (entity instanceof FireProjectile fireProjectile) {
             if (this.getOwner() != null && this.level.isClientSide) {
                 ElementCollision collisionEntity = new ElementCollision(this.getX(), this.getY(), this.getZ(), level);
                 collisionEntity.setTimeToKill(5);
                 level.addFreshEntity(collisionEntity);
-                EntityEffect entityEffect = new EntityEffect(orb_bloom, level, collisionEntity);
+                EntityEffect entityEffect = new EntityEffect(steam, level, collisionEntity);
                 entityEffect.start();
-                System.out.println("SUCCESS COLLISION!!!");
                 this.discard();
-                elementProjectile.discard();
+                fireProjectile.discard();
             }
         }  else {
-            // TODO - Check if player entity has countered
-            int i = 10; // Deal 10 damage
-            entity.hurt(this.damageSources().thrown(this, this.getOwner()), (float)i);
+            float i = 10; // Deal 10 damage
+            entity.hurt(this.damageSources().thrown(this, this.getOwner()), i);
             this.discard();
         }
     }

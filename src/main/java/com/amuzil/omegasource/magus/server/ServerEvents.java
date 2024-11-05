@@ -41,15 +41,15 @@ public class ServerEvents {
                 // initialise the radix tree and set the player as an instance property for sending packets.
                 //todo this is temporary manual tree construction for testing purposes. the true tree will be
                 // generated at runtime based on available skills for the player/entity.
-                Node secondNode = NodeBuilder.middle()
-                        .addModifiers(ModifiersRegistry.FOCUS.copy(), ModifiersRegistry.MULTI.copy(),
-                                ModifiersRegistry.DIRECTION.copy(), ModifiersRegistry.TARGET.copy())
-                        .build();
-                //Resets the tree; for testing purposes.
-                if (magi.getTree() != null)
-                    magi.getTree().burn();
-                // TODO: Need a way to convert forms into conditions
-                // Need to test out the condition tree. use left alt/arc > strike (left click).
+                if (ModifiersRegistry.FOCUS != null) {
+                    Node secondNode = NodeBuilder.middle()
+                            .addModifiers(ModifiersRegistry.FOCUS.copy(), ModifiersRegistry.MULTI.copy(),
+                                    ModifiersRegistry.DIRECTION.copy(), ModifiersRegistry.TARGET.copy())
+                            .build();
+                    //Resets the tree; for testing purposes.
+                    if (magi.getTree() != null)
+                        magi.getTree().burn();
+                }
                 // While this test code will directly use conditions, Skills will reference Forms
                 // that get automatically turned into conditions.
 //                KeyInput initializer = KeyDataBuilder.createInput("key.keyboard.left.alt", 0, 0, 4);

@@ -86,7 +86,7 @@ public class AvatarCommand {
     }
 
     private static int activateElement(CommandContext<CommandSourceStack> ctx, Element.Art art) throws CommandSyntaxException {
-        InputModule.setDiscipline(Elements.fromArt(art));
+        InputModule.setDiscipline(Elements.fromArt(art)); // TODO - Fix this bcus it's server side, specify client
         ServerPlayer player = ctx.getSource().getPlayerOrException();
         player.sendSystemMessage(Component.literal("Bending set to " + art));
         return 1;

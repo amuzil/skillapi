@@ -2,6 +2,7 @@ package com.amuzil.omegasource.magus.entity.collision;
 
 import com.amuzil.omegasource.magus.entity.AvatarEntities;
 import com.amuzil.omegasource.magus.entity.ElementProjectile;
+import com.amuzil.omegasource.magus.skill.elements.Element;
 import com.lowdragmc.photon.client.fx.EntityEffect;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
@@ -48,6 +49,11 @@ public class ElementCollision extends ElementProjectile {
         this(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ(), level);
         this.setOwner(livingEntity);
         this.setNoGravity(true);
+    }
+
+    @Override
+    public Element getElement() {
+        return null;
     }
 
     public void tick() {
@@ -201,7 +207,7 @@ public class ElementCollision extends ElementProjectile {
     protected void tickDespawn() {
         ++this.life;
         if (this.life >= ttk) {
-//            System.out.println("BYE BYE BBY");
+            System.out.println("BYE BYE BBY");
             this.discard();
         }
     }

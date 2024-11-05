@@ -6,7 +6,9 @@ import com.amuzil.omegasource.magus.entity.projectile.EarthProjectile;
 import com.amuzil.omegasource.magus.entity.projectile.FireProjectile;
 import com.amuzil.omegasource.magus.entity.projectile.WaterProjectile;
 import com.amuzil.omegasource.magus.skill.elements.Element;
+import com.amuzil.omegasource.magus.skill.elements.Elements;
 import com.amuzil.omegasource.magus.skill.forms.Form;
+import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.lowdragmc.photon.client.fx.EntityEffect;
 import com.lowdragmc.photon.client.fx.FX;
 import net.minecraft.client.Minecraft;
@@ -41,10 +43,11 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
     private static final EntityDataAccessor<Byte> ID_FLAGS = SynchedEntityData.defineId(ElementProjectile.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Byte> PIERCE_LEVEL = SynchedEntityData.defineId(ElementProjectile.class, EntityDataSerializers.BYTE);
     protected boolean leftOwner;
-    private boolean hasBeenShot;
+    protected boolean hasBeenShot;
     private int life;
-    private int ttk = 100;
+    public int ttk = 100;
     public boolean arcActive = false;
+    public boolean hasElement = false;
     public Form form;
 
     public ElementProjectile(EntityType<? extends ElementProjectile> type, Level level) {
@@ -62,6 +65,8 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
         this(entityType, livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ(), level, form);
         this.setOwner(livingEntity);
     }
+
+    public abstract Element getElement();
 
     public void tick() {
         if (!this.hasBeenShot) {
@@ -192,8 +197,7 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
                 testProjectileEntity.discard();
             }
         }  else {
-            // TODO - Check if player entity has countered
-            int i = 10; // Deal 10 damage
+                        int i = 10; // Deal 10 damage
             entity.hurt(this.damageSources().thrown(this, this.getOwner()), (float)i);
             this.discard();
         }
@@ -212,13 +216,16 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
         }
     }
 
-    public void arc(float scale, float offset) {
+    public void control(float scale, Form form) {
         this.arcActive = true;
-        this.setTimeToKill(24000);
+        if (form == Forms.NULL) {
+            this.hasElement = true;
+            this.setTimeToKill(2400);
+        }
         Entity owner = this.getOwner();
         assert owner != null;
-        Vec3[] pose = new Vec3[]{owner.position(), this.getOwner().getLookAngle()};
-        pose[1] = pose[1].scale((scale)).add((0), (this.getOwner().getEyeHeight()), (0));
+        Vec3[] pose = new Vec3[]{owner.position(), owner.getLookAngle()};
+        pose[1] = pose[1].scale((scale)).add((0), (owner.getEyeHeight()), (0));
         Vec3 newPos = pose[1].add(pose[0]);
         this.setPos(newPos.x, newPos.y, newPos.z);
     }
@@ -230,10 +237,10 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
 
     public static ElementProjectile createElementEntity(Form form, Element element, ServerPlayer player, ServerLevel level) {
         return switch (element.type()) {
-            case AIR -> new AirProjectile(player, level, form);
-            case WATER -> new WaterProjectile(player, level, form);
-            case EARTH -> new EarthProjectile(player, level, form);
-            case FIRE -> new FireProjectile(player, level, form);
+            case AIR -> new AirProjectile(player, level);
+            case WATER -> new WaterProjectile(player, level);
+            case EARTH -> new EarthProjectile(player, level);
+            case FIRE -> new FireProjectile(player, level);
         };
     }
 
@@ -241,18 +248,40 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
     public void startEffect(Form form, Player player) {
         this.form = form; // NOTE: Need this to ensure form is set client-side before onHit event
         FX fx = null;
-        if (form.name().equals("strike"))
-            fx = fire_bloom_perma;
-        if (form.name().equals("force"))
-            fx = blue_fire_perma;
-        if (form.name().equals("arc")) {
-            fx = null;
-            arcActive = true;
-        }
-        if (form.name().equals("null")) {
-            fx = fire_bloom_perma;
-            arcActive = true;
-            this.setTimeToKill(24000);
+        if (getElement().equals(Elements.FIRE)) {
+            if (form.name().equals("strike"))
+                fx = fire_bloom_perma;
+            if (form.name().equals("force"))
+                fx = blue_fire_perma;
+            if (form.name().equals("arc")) {
+                fx = null;
+                arcActive = true;
+            }
+            if (form.name().equals("null")) {
+                fx = fire_bloom_perma;
+                arcActive = true;
+                hasElement = true;
+                this.setTimeToKill(2400);
+            }
+            if (form.name().equals("step"))
+                fx = blue_fire_perma;
+        } else if (getElement().equals(Elements.WATER)) {
+            if (form.name().equals("strike"))
+                fx = water;
+            if (form.name().equals("force"))
+                fx = water;
+            if (form.name().equals("arc")) {
+                fx = water;
+                arcActive = true;
+            }
+            if (form.name().equals("null")) {
+                fx = water;
+                arcActive = true;
+                hasElement = true;
+                this.setTimeToKill(2400);
+            }
+            if (form.name().equals("step"))
+                fx = blue_fire_perma;
         }
         if (fx != null) {
             EntityEffect entityEffect = new EntityEffect(fx, level, this);

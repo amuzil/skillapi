@@ -6,8 +6,8 @@ import com.amuzil.omegasource.magus.entity.collision.ElementCollision;
 import com.amuzil.omegasource.magus.level.event.FormActivatedEvent;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.client_executed.FormActivatedPacket;
+import com.amuzil.omegasource.magus.skill.elements.Element;
 import com.amuzil.omegasource.magus.skill.elements.Elements;
-import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.lowdragmc.photon.client.fx.EntityEffect;
 import net.minecraft.core.BlockPos;
@@ -30,14 +30,7 @@ import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
-import javax.annotation.Nullable;
-import java.util.Optional;
-import java.util.function.Predicate;
-
-import static com.amuzil.omegasource.magus.Magus.MOD_ID;
-import static com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry.fire_bloom_perma;
 import static com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry.orb_bloom;
 
 
@@ -50,16 +43,20 @@ public class FireProjectile extends ElementProjectile {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    public FireProjectile(double x, double y, double z, Level level, Form form) {
+    public FireProjectile(double x, double y, double z, Level level) {
         this(AvatarEntities.FIRE_PROJECTILE_ENTITY_TYPE.get(), level);
         this.setPos(x, y, z);
-        this.form = form;
     }
 
-    public FireProjectile(LivingEntity livingEntity, Level level, Form form) {
-        this(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ(), level, form);
+    public FireProjectile(LivingEntity livingEntity, Level level) {
+        this(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ(), level);
         this.setOwner(livingEntity);
         this.setNoGravity(true);
+    }
+
+    @Override
+    public Element getElement() {
+        return Elements.FIRE;
     }
 
     @Override
@@ -173,7 +170,6 @@ public class FireProjectile extends ElementProjectile {
                 Vec3[] pose = new Vec3[]{owner.position(), this.getOwner().getLookAngle()};
                 pose[1] = pose[1].scale((1.5)).add((0), (this.getOwner().getEyeHeight()), (0));
                 Vec3 newPos = pose[1].add(pose[0]);
-                // Listen for FormActivatedEvent to determine whether to shoot this or not
                 this.setPos(newPos.x, newPos.y, newPos.z);
             }
         } else {
@@ -193,13 +189,12 @@ public class FireProjectile extends ElementProjectile {
     public void onFormEvent(FormActivatedEvent event) {
         Entity owner = this.getOwner();
         if (owner != null && event.getEntity().getId() == owner.getId()) {
-            if (event.getForm().equals(Forms.STRIKE) && this.arcActive) {
+            if (event.getForm().equals(Forms.STRIKE) && this.arcActive && this.hasElement) {
                 this.arcActive = false;
                 this.setTimeToKill(100);
-//                this.discard();
                 if (!this.level.isClientSide()) {
                     this.shoot(owner.getViewVector(1).x, owner.getViewVector(1).y, owner.getViewVector(1).z, 0.75F, 1);
-                    System.out.println("FormActivatedEvent SERVER-SIDE!");
+//                    this.discard();
                 }
             }
         }
@@ -287,18 +282,13 @@ public class FireProjectile extends ElementProjectile {
             }
         } else if (entity instanceof FireProjectile elementProjectile) {
             if (this.getOwner() != null && this.level.isClientSide) {
-//                System.out.println("this form: " + this.form + " | checkLeftOwner: " + this.checkLeftOwner());
-//                System.out.println("other form: " + elementProjectile.form + " | arcActive: " + elementProjectile.arcActive);
-                if (elementProjectile.arcActive && this.checkLeftOwner()) {
-                    this.setOwner(elementProjectile.getOwner()); // Give control to receiver
-                    this.setDeltaMovement(0,0,0); // Full stop
-                    this.arcActive = true; // Enable control of this shot projectile
-                    MagusNetwork.sendToServer(new FormActivatedPacket(Forms.NULL, Elements.FIRE, this.getId()));
+                if (elementProjectile.arcActive && !elementProjectile.hasElement && this.checkLeftOwner()) {
+//                    this.setOwner(elementProjectile.getOwner()); // Give control to receiver
+//                    this.setDeltaMovement(0,0,0); // Full stop
+//                    this.arcActive = true; // Enable control of this shot projectile
                     this.discard();
-                    elementProjectile.discard();
-//                    System.out.println("THIS CLIENT-SIDE: " + this.ttk);
-//                    System.out.println("THAT CLIENT-SIDE: " + elementProjectile.ttk);
-//                    elementProjectile.discard();
+                    elementProjectile.hasElement = true;
+                    MagusNetwork.sendToServer(new FormActivatedPacket(Forms.NULL, Elements.FIRE, elementProjectile.getId()));
                 } else {
                     if (!this.getOwner().equals(elementProjectile.getOwner())) {
                         ElementCollision collisionEntity = new ElementCollision(this.getX(), this.getY(), this.getZ(), level);
