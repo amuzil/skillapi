@@ -7,7 +7,7 @@ public interface DataTrait extends INBTSerializable<CompoundTag> {
 
     String getName();
 
-    /* Remember to call these in *ever* setter you have for each trait! */
+    /* Remember to call these in *every* setter you have for each trait! */
     /* Methods for whether to save the data. */
     void markDirty();
 
