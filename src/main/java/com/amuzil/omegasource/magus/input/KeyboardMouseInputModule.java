@@ -183,7 +183,9 @@ public class KeyboardMouseInputModule extends InputModule {
 
     @Override
     public Form getActiveForm() {
-        return this.activeForm.get();
+        if (activeForm != null)
+            return this.activeForm.get();
+        return null;
     }
 
     private void checkForForm() {

@@ -22,15 +22,16 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.client.event.InputEvent;
 import org.apache.logging.log4j.LogManager;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 
 public abstract class InputModule {
-    public static Element activeElement = Elements.FIRE;
     protected static final List<Form> activeFormInputs = new ArrayList<>();
     protected static final Map<String, Integer> movementKeys = new HashMap<>();
+    public static Element activeElement = Elements.FIRE;
     protected static RadixTree formsTree = new RadixTree();
     protected static LinkedList<Form> activeForms = new LinkedList<>();
     protected final List<Condition> activeConditions = Collections.synchronizedList(new LinkedList<>());
@@ -135,8 +136,11 @@ public abstract class InputModule {
         this.lastActivatedForm = null;
     }
 
+    @Nullable
     public Form getLastActivatedForm() {
-        return this.lastActivatedForm.get();
+        if (lastActivatedForm != null)
+            return this.lastActivatedForm.get();
+        return null;
     }
 
     // Should be overridden..

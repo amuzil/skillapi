@@ -16,8 +16,8 @@ import java.util.Map;
 
 public class FormDataRegistry {
 
-    private static Map<Form, InputModuleData> formsData;
     public static HashMap<Integer, Form> formsNamespace;
+    private static Map<String, InputModuleData> formsData;
 
     //Remember to see #InputConstants for the key names.
     public static void init() {
@@ -31,7 +31,8 @@ public class FormDataRegistry {
 
     public static List<InputData> getInputsForForm(Form formToModify, RadixTree.InputType type) {
         if (formsData != null)
-            return formsData.get(formToModify).getInputs(type);
+            if (formsData.get(formToModify.name()) != null)
+                return formsData.get(formToModify.name()).getInputs(type);
         return null;
     }
 
@@ -41,7 +42,7 @@ public class FormDataRegistry {
         data.addTypeInputs(type, inputs);
         data.fillConditions(type);
         // This replaces the value, and since our InputModuleData automatically adds conditions and input data to itself when necessary...
-        formsData.put(form, data);
+        formsData.put(form.name(), data);
         formsNamespace.put(data.getConditions(type).hashCode(), form);
 
         // Need to pass this

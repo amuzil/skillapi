@@ -54,6 +54,10 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
     public List<Integer> getKeyCodes(Form form, RadixTree.InputType type) {
         List<InputData> formInputs = FormDataRegistry.getInputsForForm(form, type);
 
+        // Return an empty list
+        if (formInputs == null || formInputs.isEmpty())
+            return new LinkedList<>();
+
         InputData lastInput = formInputs.get(formInputs.size() - 1);
         List<Integer> keyCodes = new ArrayList<>();
         if (lastInput instanceof ChainedKeyInput) {
@@ -82,51 +86,56 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
         InputModule module = Magus.keyboardMouseInputModule;
 
         this.clientTickListener = event -> {
-            if (event.phase == TickEvent.ClientTickEvent.Phase.START) {
-                boolean pressed = true;
-                // If all requisite keys aren't pressed, don't iterate modifier data
-                for (int key : activeKeyCodes) {
-                    if (!module.keyPressed(key)) {
-                        pressed = false;
-                        break;
-                    }
-                }
-                if (pressed) {
-                    this.isHeld = true;
-                    this.currentHolding++;
-                } else {
-                    if (this.isHeld) {
-                        this.wasHeld = true;
-                        this.isHeld = false;
-                    }
-                }
-            }
+//            if (event.phase == TickEvent.ClientTickEvent.Phase.START) {
+//                boolean pressed = true;
+//                // If all requisite keys aren't pressed, don't iterate modifier data
+//                for (int key : activeKeyCodes) {
+//                    if (!module.keyPressed(key)) {
+//                        pressed = false;
+//                        break;
+//                    }
+//                }
+//                if (pressed) {
+//                    this.isHeld = true;
+//                    this.currentHolding++;
+//                } else {
+//                    if (this.isHeld) {
+//                        this.wasHeld = true;
+//                        this.isHeld = false;
+//                    }
+//                }
+//            }
         };
     }
 
+    public boolean formsNotNull(InputModule module) {
+        return module.getLastActivatedForm() != null && module.getActiveForm() != null;
+    }
     @Override
     public boolean shouldCollectModifierData(TickEvent event) {
-        InputModule module = getTypedModule(type);
-        if (module.getActiveForm() != null && !module.getActiveForm().name().equals(module.getLastActivatedForm().name())) {
-            activeKeyCodes = getKeyCodes(module.getActiveForm(), type);
-        }
-
-        if (activeKeyCodes.isEmpty()) return false;
-
-        if (isHeld && currentHolding > 0) {
-            return true;
-        }
-        //so that we send a packet to say we've stopped holding(for continuous cast ability support)
-        if (!this.isHeld && this.wasHeld) {
-            this.wasHeld = false;
-            Magus.keyboardMouseInputModule.resetLastActivated();
-            return true;
-        }
+//        InputModule module = getTypedModule(type);
+//        if (formsNotNull(module) && !module.getActiveForm().name().equals(module.getLastActivatedForm().name())) {
+//            activeKeyCodes = getKeyCodes(module.getActiveForm(), type);
+//        }
+//
+//        if (activeKeyCodes.isEmpty()) return false;
+//
+//        if (isHeld && currentHolding > 0) {
+//            return true;
+//        }
+//        //so that we send a packet to say we've stopped holding(for continuous cast ability support)
+//        if (!this.isHeld && this.wasHeld) {
+//            this.wasHeld = false;
+//            Magus.keyboardMouseInputModule.resetLastActivated();
+//            return true;
+//        }
         return false;
     }
 
     @Override
     public ModifierData collectModifierDataFromEvent(TickEvent event) {
+//        if (currentHolding > 0)
+//            System.out.println("Currently Held: " + currentHolding);
         HeldModifierData data = new HeldModifierData(currentHolding, isHeld);
         this.currentHolding = 0;
         return data;
@@ -136,4 +145,6 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent> {
     public KeyHeldModifierListener copy() {
         return new KeyHeldModifierListener();
     }
+
+
 }
