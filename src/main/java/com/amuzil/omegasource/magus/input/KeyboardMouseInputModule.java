@@ -44,9 +44,14 @@ public class KeyboardMouseInputModule extends InputModule {
     public int scrollTimeout = 0;
     private int ticksSinceModifiersSent = 0;
     private double mouseScrollDelta;
+    private int activationCounter = 0;
     private boolean listen;
     // Used for modifier data
     private boolean checkForm = false;
+
+    public int getActivationCounter() {
+        return this.activationCounter;
+    }
 
     public KeyboardMouseInputModule() {
         formsTree.setDiscipline(activeElement);
@@ -136,9 +141,11 @@ public class KeyboardMouseInputModule extends InputModule {
                     // Always to send modifier data right when the form is activated
 //                    sendModifierData();
 
-//                    if (lastActivatedForm != null && lastActivatedForm.name().equals(activeForm.name())) {
-//                        // Send modifier data of it being multi.
-//                    }
+                    if (lastActivatedForm != null && lastActivatedForm.get().name().equals(activeForm.get().name())) {
+                        // Send modifier data of it being multi.
+                        activationCounter++;
+                    }
+                    else  activationCounter = 0;
 //                    else {
 //                        // Send packet
 //                        MagusNetwork.sendToServer(new ConditionActivatedPacket(activeForm));
@@ -196,6 +203,7 @@ public class KeyboardMouseInputModule extends InputModule {
                     // Timed out enough where multi is no longer valid.
                     lastActivatedForm.set(Forms.NULL);
                     timeout.set(0);
+                    activationCounter = 0;
                 }
             }
         };

@@ -91,8 +91,8 @@ public class HeldModifierData extends BaseModifierData {
 
     @Override
     public void print() {
-        LogManager.getLogger().info("HeldModifierData duration: " + duration);
-        LogManager.getLogger().info("HeldModifierData currentlyHeld: " + currentlyHeld);
-        LogManager.getLogger().info("HeldModifierData formName: " + formName);
+//        LogManager.getLogger().info("HeldModifierData duration: " + duration);
+//        LogManager.getLogger().info("HeldModifierData currentlyHeld: " + currentlyHeld);
+//        LogManager.getLogger().info("HeldModifierData formName: " + formName);
     }
 }

@@ -8,14 +8,28 @@ import org.apache.logging.log4j.LogManager;
 public class MultiModifierData extends BaseModifierData {
 
     private int count;
+    private String formName;
 
     public MultiModifierData() {
-        this.count = 1;
+        this(1, "");
     }
 
     public MultiModifierData(int count) {
+        this(count, "");
+    }
+
+    public MultiModifierData(int count, String formName) {
         super();
         this.count = count;
+        this.formName = formName;
+    }
+
+    public String getFormName() {
+        return this.formName;
+    }
+
+    public int getCount() {
+        return this.count;
     }
 
     @Override
@@ -33,6 +47,7 @@ public class MultiModifierData extends BaseModifierData {
         CompoundTag compoundTag = super.serializeNBT();
 
         compoundTag.putInt("count", count);
+        compoundTag.putString("formName", formName);
 
         return compoundTag;
     }
@@ -45,6 +60,7 @@ public class MultiModifierData extends BaseModifierData {
     @Override
     public void deserializeNBT(CompoundTag compoundTag) {
         this.count = compoundTag.getInt("count");
+        this.formName = compoundTag.getString("formName");
     }
 
     //it is safe to cast at this point because the public add(ModifierData data) method encapsulates type-checking
@@ -57,6 +73,7 @@ public class MultiModifierData extends BaseModifierData {
     @Override
     public void reset() {
         this.count = 1;
+        this.formName = "";
     }
 
     @Override
