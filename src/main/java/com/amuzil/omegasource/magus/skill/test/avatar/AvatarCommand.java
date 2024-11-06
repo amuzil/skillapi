@@ -52,9 +52,9 @@ public class AvatarCommand {
                 builder.then(Commands.literal("activate")
                         .then(Commands.literal(elem.name().toLowerCase())
                                 .executes(c -> activateElement(c, elem, null))
-                        )
-                        .then(Commands.argument("target", EntityArgument.player())
-                                .executes(c -> activateElement(c, elem, EntityArgument.getPlayer(c, "target")))
+                                .then(Commands.argument("target", EntityArgument.player())
+                                        .executes(c -> activateElement(c, elem, EntityArgument.getPlayer(c, "target")))
+                                )
                         )
                 )
         );
