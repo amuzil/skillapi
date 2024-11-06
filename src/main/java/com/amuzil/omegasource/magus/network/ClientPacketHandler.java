@@ -16,7 +16,7 @@ public class ClientPacketHandler {
     public static boolean handlePacket(SkillTriggeredPacket packet, Supplier<NetworkEvent.Context> ctx) {
 
         ctx.get().enqueueWork(() -> {
-           //todo handle activating a skill on the clientside
+            //todo handle activating a skill on the clientside
         });
 
         return true;
@@ -27,7 +27,8 @@ public class ClientPacketHandler {
         ctx.get().enqueueWork(() -> {
             packet.modifierTypes.forEach(modifierType -> {
                 LogManager.getLogger().info("REGISTERING MODIFIER: " + modifierType);
-                Magus.keyboardMouseInputModule.registerModifierListener(ModifiersRegistry.fromName(modifierType).listener(), packet.treeData);
+                if (ModifiersRegistry.fromName(modifierType).listener() != null)
+                    Magus.keyboardMouseInputModule.registerModifierListener(ModifiersRegistry.fromName(modifierType).listener(), packet.treeData);
             });
         });
 

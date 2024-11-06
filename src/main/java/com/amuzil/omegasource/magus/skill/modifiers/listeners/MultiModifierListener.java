@@ -7,9 +7,12 @@ import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierListener;
 import com.amuzil.omegasource.magus.skill.modifiers.data.MultiModifierData;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 import org.apache.logging.log4j.LogManager;
 
+@OnlyIn(Dist.CLIENT)
 public class MultiModifierListener extends ModifierListener<TickEvent.ClientTickEvent> {
     private int activationCounter;
     private String formName;

@@ -19,6 +19,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
 import org.apache.logging.log4j.LogManager;
 
@@ -26,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // TODO: Configure which key this listener uses
+@OnlyIn(Dist.CLIENT)
 public class TargetModifierListener extends ModifierListener<InputEvent.MouseButton> {
     private Vec3 lastTargetPosition;
     private Element activeElement;

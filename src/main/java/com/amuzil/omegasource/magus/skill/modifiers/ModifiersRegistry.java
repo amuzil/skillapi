@@ -5,6 +5,8 @@ import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.data.*;
 import com.amuzil.omegasource.magus.skill.modifiers.listeners.*;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,27 +30,27 @@ public class ModifiersRegistry {
         modifierDataTypes = new HashMap<>();
 
         ModifierData heldModifierData = new HeldModifierData();
-        FOCUS = new Modifier(heldModifierData, new KeyHeldModifierListener());
+        FOCUS = new Modifier(heldModifierData, null);
         modifierDataTypes.put(heldModifierData.getName(), FOCUS);
 
         ModifierData multiModifierData = new MultiModifierData();
-        MULTI = new Modifier(multiModifierData, new MultiModifierListener());
+        MULTI = new Modifier(multiModifierData, null);
         modifierDataTypes.put(multiModifierData.getName(), MULTI);
 
         ModifierData directionModifierData = new DirectionModifierData();
-        DIRECTION = new Modifier(directionModifierData, new DirectionModifierListener());
+        DIRECTION = new Modifier(directionModifierData, null);
         modifierDataTypes.put(directionModifierData.getName(), DIRECTION);
 
         ModifierData targetModifierData = new TargetModifierData();
-        TARGET = new Modifier(targetModifierData, new TargetModifierListener());
+        TARGET = new Modifier(targetModifierData, null);
         modifierDataTypes.put(targetModifierData.getName(), TARGET);
 
         ModifierData gestureModifierData = new MouseGestureModifierData();
-        GESTURE = new Modifier(gestureModifierData, new MouseGestureModifierListener());
+        GESTURE = new Modifier(gestureModifierData, null);
         modifierDataTypes.put(gestureModifierData.getName(), GESTURE);
 
         ModifierData scrollModifierData = new MouseScrollModifierData();
-        CONTROL = new Modifier(scrollModifierData, new MouseScrollModifierListener());
+        CONTROL = new Modifier(scrollModifierData, null);
         modifierDataTypes.put(scrollModifierData.getName(), CONTROL);
     }
 
@@ -64,5 +66,16 @@ public class ModifiersRegistry {
 
     public static Modifier fromName(String name) {
         return modifierDataTypes.get(name).copy();
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void clientSetup() {
+        // Set up listeners that are marked as client-side only.
+        FOCUS.setListener(new KeyHeldModifierListener());
+        TARGET.setListener(new TargetModifierListener());
+        MULTI.setListener(new MultiModifierListener());
+        GESTURE.setListener(new MouseGestureModifierListener());
+        CONTROL.setListener(new MouseScrollModifierListener());
+        DIRECTION.setListener(new DirectionModifierListener());
     }
 }

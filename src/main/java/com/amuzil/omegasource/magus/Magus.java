@@ -72,6 +72,7 @@ public class Magus {
         Registries.init();
         CapabilityHandler.initialiseCaps();
         MagusNetwork.registerMessages();
+        ModifiersRegistry.init();
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
@@ -82,7 +83,7 @@ public class Magus {
         // TODO - call this anytime the key mappings are updated
         // Assign input data to forms
         FormDataRegistry.init();
-        ModifiersRegistry.init();
+        ModifiersRegistry.clientSetup();
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {}

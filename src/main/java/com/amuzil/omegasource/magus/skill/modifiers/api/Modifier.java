@@ -4,10 +4,15 @@ import net.minecraft.nbt.CompoundTag;
 
 public final class Modifier {
     private ModifierData data;
-    private final ModifierListener listener;
+    private ModifierListener listener;
 
     public Modifier(ModifierData data, ModifierListener listener) {
         this.data = data;
+        this.listener = listener;
+    }
+
+    // Used for sided setup
+    public void setListener(ModifierListener listener) {
         this.listener = listener;
     }
 
