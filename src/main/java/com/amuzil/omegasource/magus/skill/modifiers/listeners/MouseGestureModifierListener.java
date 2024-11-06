@@ -20,7 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class MouseGestureModifierListener extends ModifierListener<TickEvent> {
+public class MouseGestureModifierListener extends ModifierListener<TickEvent.ClientTickEvent> {
     private Consumer<TickEvent.ClientTickEvent> clientTickListener;
     public List<String> mouseGestures;
     public MouseVircle vircle;
@@ -71,7 +71,7 @@ public class MouseGestureModifierListener extends ModifierListener<TickEvent> {
     }
 
     @Override
-    public boolean shouldCollectModifierData(TickEvent event) {
+    public boolean shouldCollectModifierData(TickEvent.ClientTickEvent event) {
         if (!Magus.keyboardMouseInputModule.keyPressed(Minecraft.getInstance().options.keyShift.getKey().getValue())) {
             if (!mouseGestures.isEmpty()) {
                 mouseGestures.clear();
@@ -82,7 +82,7 @@ public class MouseGestureModifierListener extends ModifierListener<TickEvent> {
     }
 
     @Override
-    public ModifierData collectModifierDataFromEvent(TickEvent event) {
+    public ModifierData collectModifierDataFromEvent(TickEvent.ClientTickEvent event) {
         MouseGestureModifierData data = new MouseGestureModifierData(mouseGestures);
         this.mouseGestures = new ArrayList<>();
         return data;
