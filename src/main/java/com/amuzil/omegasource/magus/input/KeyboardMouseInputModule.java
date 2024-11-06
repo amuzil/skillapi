@@ -47,7 +47,6 @@ public class KeyboardMouseInputModule extends InputModule {
     private boolean listen;
     // Used for modifier data
     private boolean checkForm = false;
-    private boolean formChanged = false;
 
     public KeyboardMouseInputModule() {
         formsTree.setDiscipline(activeElement);
@@ -134,7 +133,6 @@ public class KeyboardMouseInputModule extends InputModule {
             if (activeForm.get() != null && !activeForm.get().name().equals("null")) {
                 ticksSinceActivated.getAndIncrement();
                 if (ticksSinceActivated.get() >= tickActivationThreshold) {
-                    formChanged = true;
                     // Always to send modifier data right when the form is activated
 //                    sendModifierData();
 
@@ -194,7 +192,6 @@ public class KeyboardMouseInputModule extends InputModule {
             } else {
                 timeout.getAndIncrement();
                 if (timeout.get() > tickTimeoutThreshold) {
-                    formChanged = false;
                     resetTreeConditions();
                     // Timed out enough where multi is no longer valid.
                     lastActivatedForm.set(Forms.NULL);
@@ -236,10 +233,6 @@ public class KeyboardMouseInputModule extends InputModule {
         formsTree.setDiscipline(element);
     }
 
-    public boolean formChanged() {
-        return this.formChanged;
-    }
-
     @Override
     public Form getActiveForm() {
         if (activeForm != null) return this.activeForm.get();
@@ -255,7 +248,6 @@ public class KeyboardMouseInputModule extends InputModule {
 //            System.out.println("recognized: " + recognized);
                 if (recognized != null) {
                     activeForm.set(FormDataRegistry.formsNamespace.get(recognized.hashCode()));
-//                    formChanged = true;
 
 //                System.out.println("RECOGNIZED FORM: " + activeForm.name() + " " + recognized);
 //                sendDebugMsg("RECOGNIZED FORM: " + activeForm.name());
@@ -271,7 +263,6 @@ public class KeyboardMouseInputModule extends InputModule {
                     recognized = formsTree.search(nonMovementConditions);
                     if (recognized != null) {
                         activeForm.set(FormDataRegistry.formsNamespace.get(recognized.hashCode()));
-//                        formChanged = true;
                     }
                 }
             }
@@ -292,7 +283,6 @@ public class KeyboardMouseInputModule extends InputModule {
             }
             ticksSinceModifiersSent = 0;
             modifierQueue.clear();
-            formChanged = false;
         }
     }
 
