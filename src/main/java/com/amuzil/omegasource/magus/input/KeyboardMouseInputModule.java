@@ -11,6 +11,7 @@ import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
+import com.amuzil.omegasource.magus.skill.modifiers.data.HeldModifierData;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -35,7 +36,7 @@ public class KeyboardMouseInputModule extends InputModule {
     private final Consumer<InputEvent.MouseScrollingEvent> mouseScrollListener;
     private final int tickActivationThreshold = 5;
     private final int tickTimeoutThreshold = 15;
-    private final int modifierTickThreshold = 5;
+    private final int modifierTickThreshold = 3;
     private final AtomicInteger ticksSinceActivated;
     private final AtomicReference<Form> activeForm;
     private final AtomicInteger timeout;
@@ -46,6 +47,11 @@ public class KeyboardMouseInputModule extends InputModule {
     private boolean listen;
     // Used for modifier data
     private boolean checkForm = false;
+    private boolean formChanged = false;
+
+    public boolean formChanged() {
+        return this.formChanged;
+    }
 
     // module activating a form rather than relying on the raw input data for those forms.
     // This way, the trees for different complex methods (such as VR and multikey)
@@ -131,7 +137,7 @@ public class KeyboardMouseInputModule extends InputModule {
             }
 
             // Check every couple of ticks
-            if (timeout.get() % 5 == 0) checkForForm();
+            if (timeout.get() % 3 == 0) checkForForm();
 
 
             if (activeForm.get() != null && !activeForm.get().name().equals("null")) {
@@ -158,10 +164,29 @@ public class KeyboardMouseInputModule extends InputModule {
 //                            sendDebugMsg("Form Activated: " + lastActivatedForm.get().name());
                         }
                     }
-                    activeForm.set(Forms.NULL);
-                    ticksSinceActivated.set(0);
-                    timeout.set(0);
-                    resetTreeConditions();
+
+                    // Need an if statement to check whether key held modifier is increasing
+                    if (modifierQueue.get("HeldModifier") != null) {
+                        LogManager.getLogger().debug("Found Held Modifier Data.");
+                        HeldModifierData data = (HeldModifierData) modifierQueue.get("HeldModifier");
+                        if (!data.held()) {
+                            activeForm.set(Forms.NULL);
+                            ticksSinceActivated.set(0);
+                            timeout.set(0);
+                            resetTreeConditions();
+                        }
+                        else {
+                            LogManager.getLogger().debug("Modifier Held Down.");
+                            // Don't reset the currently active form
+                            ticksSinceActivated.set(0);
+                            timeout.set(0);
+                        }
+                    } else {
+                        activeForm.set(Forms.NULL);
+                        ticksSinceActivated.set(0);
+                        timeout.set(0);
+                        resetTreeConditions();
+                    }
                 }
 
             } else {
@@ -197,6 +222,8 @@ public class KeyboardMouseInputModule extends InputModule {
 //            System.out.println("recognized: " + recognized);
                 if (recognized != null) {
                     activeForm.set(FormDataRegistry.formsNamespace.get(recognized.hashCode()));
+                    formChanged = true;
+
 //                System.out.println("RECOGNIZED FORM: " + activeForm.name() + " " + recognized);
 //                sendDebugMsg("RECOGNIZED FORM: " + activeForm.name());
                 } else { // Retry w/o movementConditions
@@ -209,11 +236,14 @@ public class KeyboardMouseInputModule extends InputModule {
                         }
                     });
                     recognized = formsTree.search(nonMovementConditions);
-                    if (recognized != null)
+                    if (recognized != null) {
                         activeForm.set(FormDataRegistry.formsNamespace.get(recognized.hashCode()));
+                        formChanged = true;
+                    }
                 }
             }
         }
+        formChanged = false;
     }
 
     private void sendModifierData() {

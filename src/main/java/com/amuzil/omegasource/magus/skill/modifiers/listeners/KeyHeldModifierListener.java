@@ -2,6 +2,7 @@ package com.amuzil.omegasource.magus.skill.modifiers.listeners;
 
 import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.input.InputModule;
+import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
 import com.amuzil.omegasource.magus.skill.conditionals.key.ChainedKeyInput;
@@ -115,14 +116,16 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent.ClientTi
     @Override
     public boolean shouldCollectModifierData(TickEvent.ClientTickEvent event) {
         InputModule module = getTypedModule(type);
-        if (module.getActiveForm() != null && (module.getLastActivatedForm() == null ||
-                !module.getActiveForm().name().equals(module.getLastActivatedForm().name()))) {
-            activeKeyCodes = getKeyCodes(module.getActiveForm(), type);
+        if (((KeyboardMouseInputModule) module).formChanged()) {
+            if (module.getActiveForm() != null && (module.getLastActivatedForm() == null ||
+                    !module.getActiveForm().name().equals(module.getLastActivatedForm().name()))) {
+                activeKeyCodes = getKeyCodes(module.getActiveForm(), type);
+            }
         }
 
         if (activeKeyCodes.isEmpty()) return false;
 
-        if (isHeld && currentHolding > 0 && currentHolding % 3 == 0) {
+        if (isHeld && currentHolding > 0) {
             return true;
         }
         //so that we send a packet to say we've stopped holding(for continuous cast ability support)
@@ -132,7 +135,7 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent.ClientTi
             // Forcibly collects data jic
 //            Magus.keyboardMouseInputModule.queueModifierData(collectModifierDataFromEvent(event));
 //            Magus.keyboardMouseInputModule.resetLastActivated();
-            return true;
+            return false;
         }
         return false;
     }

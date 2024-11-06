@@ -21,6 +21,10 @@ public class HeldModifierData extends BaseModifierData {
         this.currentlyHeld = currentlyHeld;
     }
 
+    public boolean held() {
+        return this.currentlyHeld;
+    }
+
     @Override
     public String getName() {
         return "HeldModifier";
