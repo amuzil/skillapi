@@ -6,11 +6,16 @@ import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifier
 import com.amuzil.omegasource.magus.radix.*;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
+import com.amuzil.omegasource.magus.skill.conditionals.key.ChainedKeyInput;
+import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
+import com.amuzil.omegasource.magus.skill.conditionals.key.MultiKeyInput;
+import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseMotionInput;
+import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseWheelInput;
 import com.amuzil.omegasource.magus.skill.elements.Element;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
-import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
+import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.modifiers.data.HeldModifierData;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
@@ -51,6 +56,28 @@ public class KeyboardMouseInputModule extends InputModule {
 
     public boolean formChanged() {
         return this.formChanged;
+    }
+
+    public List<Integer> getKeyCodes(Form form, RadixTree.InputType type) {
+        List<InputData> formInputs = FormDataRegistry.getInputsForForm(form, type);
+        List<Integer> keyCodes = new ArrayList<>();
+
+        if (formInputs != null) {
+            InputData lastInput = formInputs.get(formInputs.size() - 1);
+            if (lastInput instanceof ChainedKeyInput) {
+                for (KeyInput key : ((ChainedKeyInput) lastInput).last().keys())
+                    keyCodes.add(key.key().getValue());
+            } else if (lastInput instanceof MultiKeyInput) {
+                for (KeyInput key : ((MultiKeyInput) lastInput).keys())
+                    keyCodes.add(key.key().getValue());
+            } else if (lastInput instanceof MouseWheelInput || lastInput instanceof MouseMotionInput) {
+                // Ignore these since they're not keys!
+            } else {
+                // If it's registered to the keyboard mouse input module, it's going to be some variant of KeyInput.
+                keyCodes.add(((KeyInput) lastInput).key().getValue());
+            }
+        }
+        return keyCodes;
     }
 
     // module activating a form rather than relying on the raw input data for those forms.
@@ -143,7 +170,7 @@ public class KeyboardMouseInputModule extends InputModule {
             if (activeForm.get() != null && !activeForm.get().name().equals("null")) {
                 ticksSinceActivated.getAndIncrement();
                 if (ticksSinceActivated.get() >= tickActivationThreshold) {
-                    formChanged = false;
+                    formChanged = true;
                     // Always to send modifier data right when the form is activated
 //                    sendModifierData();
 
@@ -156,21 +183,32 @@ public class KeyboardMouseInputModule extends InputModule {
 //                    }
 
                     lastActivatedForm.set(activeForm.get());
+//                    sendModifierData();
                     // Extra check for race conditions. Probably wont' help...
                     synchronized (lastActivatedForm.get()) {
                         if (!lastActivatedForm.get().name().equals("null")) {
                             if (Minecraft.getInstance().getConnection() != null) {
                                 MagusNetwork.sendToServer(new FormActivatedPacket(activeForm.get(), activeElement, 0));
                             }
-//                            sendDebugMsg("Form Activated: " + lastActivatedForm.get().name());
+                            sendDebugMsg("Form Activated: " + lastActivatedForm.get().name());
                         }
                     }
 
+                    List<Integer> keyCodes = getKeyCodes(activeForm.get(), RadixTree.InputType.KEYBOARD_MOUSE);
                     // Need an if statement to check whether key held modifier is increasing
-                    if (modifierQueue.get("HeldModifier") != null) {
-                        LogManager.getLogger().debug("Found Held Modifier Data.");
-                        HeldModifierData data = (HeldModifierData) modifierQueue.get("HeldModifier");
-                        if (!data.held()) {
+                    if (!keyCodes.isEmpty()) {
+                        boolean pressed = true;
+                        // If all requisite keys aren't pressed, don't iterate modifier data
+                        for (int key : keyCodes) {
+                            if (!keyPressed(key)) {
+
+                                pressed = false;
+                                break;
+                            }
+                        }
+//                        LogManager.getLogger().debug("Found Held Modifier Data.");
+//                        HeldModifierData data = (HeldModifierData) modifierQueue.get("HeldModifier");
+                        if (!pressed) {
                             activeForm.set(Forms.NULL);
                             ticksSinceActivated.set(0);
                             timeout.set(0);
@@ -224,7 +262,7 @@ public class KeyboardMouseInputModule extends InputModule {
 //            System.out.println("recognized: " + recognized);
                 if (recognized != null) {
                     activeForm.set(FormDataRegistry.formsNamespace.get(recognized.hashCode()));
-                    formChanged = true;
+//                    formChanged = true;
 
 //                System.out.println("RECOGNIZED FORM: " + activeForm.name() + " " + recognized);
 //                sendDebugMsg("RECOGNIZED FORM: " + activeForm.name());
@@ -240,7 +278,7 @@ public class KeyboardMouseInputModule extends InputModule {
                     recognized = formsTree.search(nonMovementConditions);
                     if (recognized != null) {
                         activeForm.set(FormDataRegistry.formsNamespace.get(recognized.hashCode()));
-                        formChanged = true;
+//                        formChanged = true;
                     }
                 }
             }
@@ -261,6 +299,7 @@ public class KeyboardMouseInputModule extends InputModule {
             }
             ticksSinceModifiersSent = 0;
             modifierQueue.clear();
+            formChanged = false;
         }
     }
 
