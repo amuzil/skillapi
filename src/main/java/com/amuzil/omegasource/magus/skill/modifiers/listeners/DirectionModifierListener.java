@@ -61,8 +61,7 @@ public class DirectionModifierListener extends ModifierListener<LivingEvent.Livi
         Vec3 back = new Vec3(-faceDirection.x, faceDirection.y, -faceDirection.z).normalize();
         Vec3 right = new Vec3(-faceDirection.z, faceDirection.y, faceDirection.x).normalize();
         Vec3 left = new Vec3(faceDirection.z, faceDirection.y, -faceDirection.x).normalize();
-        System.out.println(front);
-        System.out.println(movementDirection);
+
         if (movementDirection.y() >= 1.0D) {
             direction = "up";
         } else if (movementDirection.y() <= -1.0D) {
