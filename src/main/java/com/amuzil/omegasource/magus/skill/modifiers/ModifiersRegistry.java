@@ -25,6 +25,7 @@ public class ModifiersRegistry {
 
     public static Modifier CONTROL;
 
+    // Change s.t listeners are referenced on correct sides (client or server), and rest of it is referenced on both
     public static void init() {
         modifierDataTypes = new HashMap<>();
 
@@ -32,9 +33,9 @@ public class ModifiersRegistry {
         FOCUS = new Modifier(heldModifierData, new KeyHeldModifierListener());
         modifierDataTypes.put(heldModifierData.getName(), FOCUS);
 
-        ModifierData multiModifierData = new MultiModifierData();
-        MULTI = new Modifier(multiModifierData, null);
-        modifierDataTypes.put(multiModifierData.getName(), MULTI);
+//        ModifierData multiModifierData = new MultiModifierData();
+//        MULTI = new Modifier(multiModifierData, null);
+//        modifierDataTypes.put(multiModifierData.getName(), MULTI);
 
         ModifierData directionModifierData = new DirectionModifierData();
         DIRECTION = new Modifier(directionModifierData, new DirectionModifierListener());
