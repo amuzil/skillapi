@@ -17,6 +17,7 @@ import com.amuzil.omegasource.magus.skill.modifiers.data.HeldModifierData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -94,7 +95,11 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent.ClientTi
                         break;
                     }
                 }
+                if (activeKeyCodes.isEmpty())
+                    pressed = false;
+
                 if (pressed) {
+                    LogManager.getLogger().debug("KEY HELD FOR: " + currentHolding);
                     this.isHeld = true;
                     this.currentHolding++;
                 } else {
@@ -110,19 +115,23 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent.ClientTi
     @Override
     public boolean shouldCollectModifierData(TickEvent.ClientTickEvent event) {
         InputModule module = getTypedModule(type);
-        if (module.getActiveForm() != null && !module.getActiveForm().name().equals(module.getLastActivatedForm().name())) {
+        if (module.getActiveForm() != null && (module.getLastActivatedForm() == null ||
+                !module.getActiveForm().name().equals(module.getLastActivatedForm().name()))) {
             activeKeyCodes = getKeyCodes(module.getActiveForm(), type);
         }
 
         if (activeKeyCodes.isEmpty()) return false;
 
-        if (isHeld && currentHolding > 0) {
+        if (isHeld && currentHolding > 0 && currentHolding % 3 == 0) {
             return true;
         }
         //so that we send a packet to say we've stopped holding(for continuous cast ability support)
         if (!this.isHeld && this.wasHeld) {
             this.wasHeld = false;
-            Magus.keyboardMouseInputModule.resetLastActivated();
+            this.currentHolding = 0;
+            // Forcibly collects data jic
+//            Magus.keyboardMouseInputModule.queueModifierData(collectModifierDataFromEvent(event));
+//            Magus.keyboardMouseInputModule.resetLastActivated();
             return true;
         }
         return false;
@@ -130,8 +139,8 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent.ClientTi
 
     @Override
     public ModifierData collectModifierDataFromEvent(TickEvent.ClientTickEvent event) {
+        LogManager.getLogger().debug("Collected Held Data at: " + currentHolding);
         HeldModifierData data = new HeldModifierData(currentHolding, isHeld);
-        this.currentHolding = 0;
         return data;
     }
 
