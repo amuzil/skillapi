@@ -5,6 +5,7 @@ import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import net.minecraft.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
 
+
 public class HeldModifierData extends BaseModifierData {
 
     private int duration;

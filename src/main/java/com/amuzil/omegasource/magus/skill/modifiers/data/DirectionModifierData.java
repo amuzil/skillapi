@@ -13,15 +13,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 public class DirectionModifierData extends BaseModifierData {
 
-    private List<Direction> directions;
+    private List<String> directions;
 
     public DirectionModifierData() {
         this.directions = new ArrayList<>();
     }
 
-    public DirectionModifierData(List<Direction> directions) {
+    public DirectionModifierData(List<String> directions) {
         this.directions = directions;
     }
 
@@ -35,7 +36,7 @@ public class DirectionModifierData extends BaseModifierData {
         CompoundTag compoundTag = super.serializeNBT();
         ListTag listTag = new ListTag();
 
-        this.directions.forEach(direction -> listTag.add(StringTag.valueOf(direction.name())));
+        this.directions.forEach(direction -> listTag.add(StringTag.valueOf(direction)));
         compoundTag.put("directions", listTag);
 
         return compoundTag;
@@ -51,7 +52,7 @@ public class DirectionModifierData extends BaseModifierData {
         this.directions = new ArrayList<>();
 
         ListTag listTag = (ListTag) compoundTag.get("directions");
-        listTag.forEach(tag -> this.directions.add(Direction.byName(tag.getAsString())));
+        listTag.forEach(tag -> this.directions.add(tag.getAsString()));
     }
 
     //it is safe to cast at this point because the public add(ModifierData data) method encapsulates type-checking
@@ -68,7 +69,7 @@ public class DirectionModifierData extends BaseModifierData {
 
     @Override
     public void print() {
-        LogManager.getLogger().info("MultiModifierData directions: " + this.directions.size());
+        LogManager.getLogger().info("MultiModifierData directions: " + this.directions);
 //        LogManager.getLogger().info("MultiModifierData directions: \n" + this.directions.stream().map(direction -> direction.name()).collect(Collectors.joining(",\n")));
     }
 }
