@@ -1,20 +1,18 @@
 package com.amuzil.omegasource.magus.skill.modifiers.listeners;
 
-import com.amuzil.omegasource.magus.skill.conditionals.mouse.MousePointInput;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierListener;
 import com.amuzil.omegasource.magus.skill.modifiers.data.DirectionModifierData;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingEvent;
-import org.apache.logging.log4j.LogManager;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import static com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseMotionInput.getAngle2D;
+
 
 public class DirectionModifierListener extends ModifierListener<LivingEvent.LivingTickEvent> {
     private final double motionThreshold = 0.08d;
