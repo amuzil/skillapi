@@ -4,24 +4,14 @@ import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.input.InputModule;
 import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.radix.RadixTree;
-import com.amuzil.omegasource.magus.skill.conditionals.InputData;
-import com.amuzil.omegasource.magus.skill.conditionals.key.ChainedKeyInput;
-import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
-import com.amuzil.omegasource.magus.skill.conditionals.key.MultiKeyInput;
-import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseMotionInput;
-import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseWheelInput;
-import com.amuzil.omegasource.magus.skill.forms.Form;
-import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierListener;
 import com.amuzil.omegasource.magus.skill.modifiers.data.HeldModifierData;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import org.apache.logging.log4j.LogManager;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -76,9 +66,6 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent.ClientTi
                 // If all requisite keys aren't pressed, don't iterate modifier data
                 for (int key : activeKeyCodes) {
                     if (!module.keyPressed(key)) {
-                        if (formName.equals("step")) {
-                            LogManager.getLogger().debug("Key: " + key);
-                        }
                         pressed = false;
                         break;
                     }
@@ -103,14 +90,14 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent.ClientTi
     @Override
     public boolean shouldCollectModifierData(TickEvent.ClientTickEvent event) {
         InputModule module = getTypedModule(type);
-//        if (((KeyboardMouseInputModule) module).formChanged()) {
-            if (module.getActiveForm() != null && !module.getActiveForm().name().equals("null")) {
-                formName = module.getActiveForm().name();
+        if (module.getActiveForm() != null && !module.getActiveForm().name().equals("null")) {
+            formName = module.getActiveForm().name();
+            if (!KeyboardMouseInputModule.getKeyCodes(module.getActiveForm(), type).isEmpty()) {
                 activeKeyCodes = KeyboardMouseInputModule.getKeyCodes(module.getActiveForm(), type);
                 if (module.getLastActivatedForm() != null && !formName.equals(module.getLastActivatedForm().name())) {
                     currentHolding = 0;
                 }
-//            }
+            }
         }
 
         if (activeKeyCodes.isEmpty()) return false;

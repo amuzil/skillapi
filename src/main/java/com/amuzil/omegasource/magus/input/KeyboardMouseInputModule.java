@@ -1,22 +1,17 @@
 package com.amuzil.omegasource.magus.input;
 
+import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.client_executed.FormActivatedPacket;
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
 import com.amuzil.omegasource.magus.radix.*;
+import com.amuzil.omegasource.magus.radix.condition.MultiClientCondition;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.key.KeyHoldCondition;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
-import com.amuzil.omegasource.magus.skill.conditionals.key.ChainedKeyInput;
-import com.amuzil.omegasource.magus.skill.conditionals.key.KeyInput;
-import com.amuzil.omegasource.magus.skill.conditionals.key.MultiKeyInput;
-import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseMotionInput;
-import com.amuzil.omegasource.magus.skill.conditionals.mouse.MouseWheelInput;
 import com.amuzil.omegasource.magus.skill.elements.Element;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
-import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
-import com.amuzil.omegasource.magus.skill.modifiers.data.HeldModifierData;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -53,37 +48,6 @@ public class KeyboardMouseInputModule extends InputModule {
     // Used for modifier data
     private boolean checkForm = false;
     private boolean formChanged = false;
-
-    public boolean formChanged() {
-        return this.formChanged;
-    }
-
-    public static List<Integer> getKeyCodes(Form form, RadixTree.InputType type) {
-        List<InputData> formInputs = FormDataRegistry.getInputsForForm(form, type);
-        List<Integer> keyCodes = new ArrayList<>();
-
-        if (formInputs != null) {
-            InputData lastInput = formInputs.get(formInputs.size() - 1);
-            if (lastInput instanceof ChainedKeyInput) {
-                for (KeyInput key : ((ChainedKeyInput) lastInput).last().keys())
-                    keyCodes.add(key.key().getValue());
-            } else if (lastInput instanceof MultiKeyInput) {
-                for (KeyInput key : ((MultiKeyInput) lastInput).keys())
-                    keyCodes.add(key.key().getValue());
-            } else if (lastInput instanceof MouseWheelInput || lastInput instanceof MouseMotionInput) {
-                // Ignore these since they're not keys!
-            } else {
-                // If it's registered to the keyboard mouse input module, it's going to be some variant of KeyInput.
-                keyCodes.add(((KeyInput) lastInput).key().getValue());
-            }
-        }
-        return keyCodes;
-    }
-
-    // module activating a form rather than relying on the raw input data for those forms.
-    // This way, the trees for different complex methods (such as VR and multikey)
-    // remain functionally the same, they just check different input modules for whether the same
-    // forms are activated.
 
     public KeyboardMouseInputModule() {
         formsTree.setDiscipline(activeElement);
@@ -213,8 +177,7 @@ public class KeyboardMouseInputModule extends InputModule {
                             ticksSinceActivated.set(0);
                             timeout.set(0);
                             resetTreeConditions();
-                        }
-                        else {
+                        } else {
                             LogManager.getLogger().debug("Modifier Held Down.");
                             // Don't reset the currently active form
                             ticksSinceActivated.set(0);
@@ -241,15 +204,45 @@ public class KeyboardMouseInputModule extends InputModule {
         };
     }
 
+    public static List<Integer> getKeyCodes(Form form, RadixTree.InputType type) {
+        // Creates a copy
+        List<Condition> active = Magus.keyboardMouseInputModule.activeConditions.stream().toList();
+
+        List<Integer> keyCodes = new ArrayList<>();
+
+        if (!active.isEmpty()) {
+            Condition last = active.get(active.size() - 1);
+            if (last instanceof MultiClientCondition) {
+                for (Condition cond : ((MultiClientCondition) last).getSubConditions()) {
+                    if (cond instanceof KeyHoldCondition) {
+                        keyCodes.add(((KeyHoldCondition) cond).getKey());
+                    }
+                }
+            }
+            if (last instanceof KeyHoldCondition) {
+                keyCodes.add(((KeyHoldCondition) last).getKey());
+            }
+        }
+        return keyCodes;
+    }
+
+    // module activating a form rather than relying on the raw input data for those forms.
+    // This way, the trees for different complex methods (such as VR and multikey)
+    // remain functionally the same, they just check different input modules for whether the same
+    // forms are activated.
+
     public static void setActiveDiscipline(Element element) {
         activeElement = element;
         formsTree.setDiscipline(element);
     }
 
+    public boolean formChanged() {
+        return this.formChanged;
+    }
+
     @Override
     public Form getActiveForm() {
-        if (activeForm != null)
-            return this.activeForm.get();
+        if (activeForm != null) return this.activeForm.get();
         return null;
     }
 
