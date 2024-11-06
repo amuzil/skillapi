@@ -31,6 +31,7 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent.ClientTi
     private int currentHolding;
     private boolean isHeld = true;
     private boolean wasHeld = true;
+    private String formName;
     private List<Integer> activeKeyCodes;
 
     public KeyHeldModifierListener() {
@@ -41,6 +42,7 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent.ClientTi
         this.modifierData = new HeldModifierData();
         this.type = type;
         this.activeKeyCodes = new LinkedList<>();
+        this.formName = "";
     }
 
     @Override
@@ -88,6 +90,7 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent.ClientTi
 
         this.clientTickListener = event -> {
             if (event.phase == TickEvent.ClientTickEvent.Phase.START) {
+
                 boolean pressed = true;
                 // If all requisite keys aren't pressed, don't iterate modifier data
                 for (int key : activeKeyCodes) {
@@ -116,11 +119,16 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent.ClientTi
     @Override
     public boolean shouldCollectModifierData(TickEvent.ClientTickEvent event) {
         InputModule module = getTypedModule(type);
-        if (((KeyboardMouseInputModule) module).formChanged()) {
-            if (module.getActiveForm() != null && (module.getLastActivatedForm() == null ||
-                    !module.getActiveForm().name().equals(module.getLastActivatedForm().name()))) {
+//        if (((KeyboardMouseInputModule) module).formChanged()) {
+            if (module.getActiveForm() != null) {
+                formName = module.getActiveForm().name();
                 activeKeyCodes = getKeyCodes(module.getActiveForm(), type);
-            }
+                if (module.getLastActivatedForm() != null && !formName.equals(module.getLastActivatedForm().name())) {
+
+//                    LogManager.getLogger().info("New Form Activated in Key Held.");
+                    currentHolding = 0;
+                }
+//            }
         }
 
         if (activeKeyCodes.isEmpty()) return false;
@@ -143,7 +151,7 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent.ClientTi
     @Override
     public ModifierData collectModifierDataFromEvent(TickEvent.ClientTickEvent event) {
         LogManager.getLogger().debug("Collected Held Data at: " + currentHolding);
-        HeldModifierData data = new HeldModifierData(currentHolding, isHeld);
+        HeldModifierData data = new HeldModifierData(currentHolding, isHeld, formName);
         return data;
     }
 

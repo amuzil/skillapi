@@ -9,6 +9,7 @@ public class HeldModifierData extends BaseModifierData {
 
     private int duration;
     private boolean currentlyHeld;
+    private String formName;
 
     public HeldModifierData() {
         this.duration = 0;
@@ -19,10 +20,26 @@ public class HeldModifierData extends BaseModifierData {
         super();
         this.duration = duration;
         this.currentlyHeld = currentlyHeld;
+        this.formName = "";
+    }
+
+    public HeldModifierData(int duration, boolean currentlyHeld, String formName) {
+        super();
+        this.duration = duration;
+        this.currentlyHeld = currentlyHeld;
+        this.formName = formName;
+    }
+
+    public void setFormName(String name) {
+        this.formName = name;
     }
 
     public boolean held() {
         return this.currentlyHeld;
+    }
+
+    public String getFormName() {
+        return this.formName;
     }
 
     @Override
@@ -36,6 +53,7 @@ public class HeldModifierData extends BaseModifierData {
 
         compoundTag.putInt("duration", duration);
         compoundTag.putBoolean("currentlyHeld", currentlyHeld);
+        compoundTag.putString("formName", formName);
 
         return compoundTag;
     }
@@ -49,13 +67,15 @@ public class HeldModifierData extends BaseModifierData {
     public void deserializeNBT(CompoundTag compoundTag) {
         this.duration = compoundTag.getInt("duration");
         this.currentlyHeld = compoundTag.getBoolean("currentlyHeld");
+        this.formName = compoundTag.getString("formName");
     }
 
     //it is safe to cast at this point because the public add(ModifierData data) method encapsulates type-checking
     @Override
     protected void mergeFields(ModifierData modifierData) {
         HeldModifierData heldModifierData = (HeldModifierData) modifierData;
-        if(this.currentlyHeld) {
+        // Checks to make sure forms are consistent
+        if (this.currentlyHeld && heldModifierData.getFormName().equals(getFormName())) {
             this.duration = this.duration + heldModifierData.duration;
             this.currentlyHeld = heldModifierData.currentlyHeld;
         }
@@ -65,11 +85,13 @@ public class HeldModifierData extends BaseModifierData {
     public void reset() {
         this.duration = 0;
         this.currentlyHeld = true;
+        this.formName = "";
     }
 
     @Override
     public void print() {
         LogManager.getLogger().info("HeldModifierData duration: " + duration);
         LogManager.getLogger().info("HeldModifierData currentlyHeld: " + currentlyHeld);
+        LogManager.getLogger().info("HeldModifierData formName: " + formName);
     }
 }
