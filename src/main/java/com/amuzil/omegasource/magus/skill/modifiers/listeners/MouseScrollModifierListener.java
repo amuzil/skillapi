@@ -6,8 +6,11 @@ import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierListener;
 import com.amuzil.omegasource.magus.skill.modifiers.data.MouseScrollModifierData;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 
+@OnlyIn(Dist.CLIENT)
 public class MouseScrollModifierListener extends ModifierListener<TickEvent.ClientTickEvent> {
     private float totalScrollDelta = 0;
     KeyboardMouseInputModule inputModule = (KeyboardMouseInputModule) Magus.keyboardMouseInputModule;

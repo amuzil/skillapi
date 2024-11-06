@@ -1,10 +1,10 @@
 package com.amuzil.omegasource.magus.skill.modifiers.data;
 
-import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.amuzil.omegasource.magus.skill.modifiers.api.BaseModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
-import com.amuzil.omegasource.magus.skill.modifiers.listeners.MouseScrollModifierListener;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.LogManager;
 
 public class MouseScrollModifierData extends BaseModifierData {
@@ -27,8 +27,7 @@ public class MouseScrollModifierData extends BaseModifierData {
 
     @Override
     public void print() {
-        if (totalScrollDelta != 0)
-            LogManager.getLogger().info("Total Mouse Scroll Delta: " + totalScrollDelta);
+        if (totalScrollDelta != 0) LogManager.getLogger().info("Total Mouse Scroll Delta: " + totalScrollDelta);
     }
 
     @Override
@@ -54,7 +53,7 @@ public class MouseScrollModifierData extends BaseModifierData {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = super.serializeNBT();
-        tag.putFloat("total_scroll_delta",  totalScrollDelta);
+        tag.putFloat("total_scroll_delta", totalScrollDelta);
         return tag;
     }
 }

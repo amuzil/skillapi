@@ -2,11 +2,9 @@ package com.amuzil.omegasource.magus.skill.modifiers.listeners;
 
 import com.amuzil.omegasource.magus.input.InputModule;
 import com.amuzil.omegasource.magus.skill.elements.Element;
-import com.amuzil.omegasource.magus.skill.elements.Elements;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierListener;
 import com.amuzil.omegasource.magus.skill.modifiers.data.TargetModifierData;
-import com.amuzil.omegasource.magus.skill.util.bending.BendingMaterialUtil;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;

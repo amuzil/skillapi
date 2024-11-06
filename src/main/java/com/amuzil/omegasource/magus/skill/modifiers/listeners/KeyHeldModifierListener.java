@@ -8,6 +8,8 @@ import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierListener;
 import com.amuzil.omegasource.magus.skill.modifiers.data.HeldModifierData;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import org.apache.logging.log4j.LogManager;
@@ -16,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
+@OnlyIn(Dist.CLIENT)
 public class KeyHeldModifierListener extends ModifierListener<TickEvent.ClientTickEvent> {
     private final RadixTree.InputType type;
     private Consumer<TickEvent.ClientTickEvent> clientTickListener;

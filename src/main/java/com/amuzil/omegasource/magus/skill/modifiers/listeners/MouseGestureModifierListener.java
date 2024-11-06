@@ -11,6 +11,8 @@ import com.amuzil.omegasource.magus.skill.modifiers.data.MouseGestureModifierDat
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 
@@ -20,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
+@OnlyIn(Dist.CLIENT)
 public class MouseGestureModifierListener extends ModifierListener<TickEvent.ClientTickEvent> {
     private Consumer<TickEvent.ClientTickEvent> clientTickListener;
     public List<String> mouseGestures;
