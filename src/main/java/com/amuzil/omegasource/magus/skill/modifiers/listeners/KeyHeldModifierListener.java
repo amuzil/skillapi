@@ -103,7 +103,6 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent.ClientTi
                     pressed = false;
 
                 if (pressed) {
-                    LogManager.getLogger().debug("KEY HELD FOR: " + currentHolding);
                     this.isHeld = true;
                     this.currentHolding++;
                 } else {
@@ -124,8 +123,6 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent.ClientTi
                 formName = module.getActiveForm().name();
                 activeKeyCodes = getKeyCodes(module.getActiveForm(), type);
                 if (module.getLastActivatedForm() != null && !formName.equals(module.getLastActivatedForm().name())) {
-
-//                    LogManager.getLogger().info("New Form Activated in Key Held.");
                     currentHolding = 0;
                 }
             }
@@ -140,6 +137,7 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent.ClientTi
         if (!this.isHeld && this.wasHeld) {
             this.wasHeld = false;
             this.currentHolding = 0;
+            LogManager.getLogger().debug("Form Name: " + module.getActiveForm().name());
             // Forcibly collects data jic
 //            Magus.keyboardMouseInputModule.queueModifierData(collectModifierDataFromEvent(event));
 //            Magus.keyboardMouseInputModule.resetLastActivated();
