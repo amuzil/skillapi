@@ -3,7 +3,9 @@ package com.amuzil.omegasource.magus.skill.test.avatar;
 import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.input.InputModule;
 import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
+import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.client_executed.FormActivatedPacket;
+import com.amuzil.omegasource.magus.network.packets.server_executed.ElementActivatedPacket;
 import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.elements.Element;
 import com.amuzil.omegasource.magus.skill.elements.Elements;
@@ -18,6 +20,8 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.PacketDistributor;
+import org.apache.logging.log4j.core.jmx.Server;
 
 import java.util.Arrays;
 
@@ -31,7 +35,7 @@ public class AvatarCommand {
         builder.then(Commands.literal("tree")
             .then(Commands.literal("reset")
                     .executes(c -> reset()))
-        .executes(c -> tree()))
+            .executes(c -> tree()))
         .executes(c -> {
             // Default message when no options are provided.
             InputModule.sendDebugMsg("Options: activate, form, tree");
@@ -46,7 +50,13 @@ public class AvatarCommand {
     private static void createActivateArtCommand() {
         Arrays.stream(Element.Art.values()).toList().forEach(elem ->
                 builder.then(Commands.literal("activate")
-                        .then(Commands.literal(elem.name().toLowerCase()).executes(c -> activateElement(c, elem))))
+                        .then(Commands.literal(elem.name().toLowerCase())
+                                .executes(c -> activateElement(c, elem, null))
+                        )
+                        .then(Commands.argument("target", EntityArgument.player())
+                                .executes(c -> activateElement(c, elem, EntityArgument.getPlayer(c, "target")))
+                        )
+                )
         );
     }
 
@@ -85,9 +95,13 @@ public class AvatarCommand {
         return 1;
     }
 
-    private static int activateElement(CommandContext<CommandSourceStack> ctx, Element.Art art) throws CommandSyntaxException {
-        InputModule.setDiscipline(Elements.fromArt(art)); // TODO - Fix this bcus it's server side, specify client
-        ServerPlayer player = ctx.getSource().getPlayerOrException();
+    private static int activateElement(CommandContext<CommandSourceStack> ctx, Element.Art art, ServerPlayer player) throws CommandSyntaxException {
+//        InputModule.setDiscipline(Elements.fromArt(art))
+        if (player == null)
+            player = ctx.getSource().getPlayerOrException();
+        ElementActivatedPacket packet = new ElementActivatedPacket(Elements.fromArt(art), player.getId());
+        ServerPlayer finalPlayer = player;
+        MagusNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> finalPlayer), packet);
         player.sendSystemMessage(Component.literal("Bending set to " + art));
         return 1;
     }

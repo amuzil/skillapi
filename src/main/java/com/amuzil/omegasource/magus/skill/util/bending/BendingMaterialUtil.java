@@ -15,6 +15,7 @@ public class BendingMaterialUtil {
     public static final TagKey<Block> WATERBENDING_MATERIAL = BlockTags.create(new ResourceLocation(Magus.MOD_ID, "waterbending_material"));
     public static final TagKey<Block> EARTHBENDING_MATERIAL = BlockTags.create(new ResourceLocation(Magus.MOD_ID, "earthbending_material"));
     public static final TagKey<Block> FIREBENDING_MATERIAL = BlockTags.create(new ResourceLocation(Magus.MOD_ID, "firebending_material"));
+
     public static List<TagKey<Block>> getBendableMaterialsForElement(Element element) {
         List<TagKey<Block>> toReturn = new ArrayList<>();
 

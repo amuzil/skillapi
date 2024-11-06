@@ -77,6 +77,7 @@ public class MouseGestureModifierData extends BaseModifierData {
 
     @Override
     public void print() {
-        LogManager.getLogger().info("GestureModifier mouseGestures: " + mouseGestures);
+        if (!mouseGestures.isEmpty())
+            LogManager.getLogger().info("GestureModifier mouseGestures: " + mouseGestures);
     }
 }

@@ -95,8 +95,8 @@ public class FormActivatedPacket implements MagusPacket {
         } else if (form.equals(STRIKE) || form.equals(FORCE)) {
             entity.shoot(player.getViewVector(1).x, player.getViewVector(1).y, player.getViewVector(1).z, 1, 1);
         } else {
-//            System.out.println("Unhandled form: " + form);
-            return;
+            entity.discard();
+            return; // Unhandled Form - Discard and print no effects
         }
         if (entityId == 0)
             level.addFreshEntity(entity);

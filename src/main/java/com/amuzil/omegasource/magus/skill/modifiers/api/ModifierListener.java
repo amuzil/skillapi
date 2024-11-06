@@ -33,7 +33,6 @@ public abstract class ModifierListener<T extends Event> implements Consumer<T> {
     public void accept(T event) {
         if(shouldCollectModifierData(event)) {
             this.modifierData = collectModifierDataFromEvent(event);
-
             onSuccess.run();
         }
     }

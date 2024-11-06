@@ -27,7 +27,8 @@ public class MouseScrollModifierData extends BaseModifierData {
 
     @Override
     public void print() {
-        LogManager.getLogger().info("Total Mouse Scroll Delta: " + totalScrollDelta);
+        if (totalScrollDelta != 0)
+            LogManager.getLogger().info("Total Mouse Scroll Delta: " + totalScrollDelta);
     }
 
     @Override

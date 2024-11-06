@@ -217,14 +217,16 @@ public class KeyboardMouseInputModule extends InputModule {
     }
 
     private void sendModifierData() {
-        LogManager.getLogger().info("SENDING MODIFIER DATA");
-        System.out.println("Modifier Listener Size: " + modifierListeners.size());
-        System.out.println("Modifier Data Size: " + modifierQueue.size());
-        for (ModifierData modData : modifierQueue.values())
-            modData.print();
+//        LogManager.getLogger().info("SENDING MODIFIER DATA");
+//        System.out.println("Modifier Listener Size: " + modifierListeners.size());
+//        System.out.println("Modifier Data Size: " + modifierQueue.size());
+//        for (ModifierData modData : modifierQueue.values())
+//            modData.print();
 
         synchronized (modifierQueue) {
-            MagusNetwork.sendToServer(new SendModifierDataPacket(modifierQueue.values().stream().toList()));
+            if (Minecraft.getInstance().getConnection() != null) {
+                MagusNetwork.sendToServer(new SendModifierDataPacket(modifierQueue.values().stream().toList()));
+            }
             ticksSinceModifiersSent = 0;
             modifierQueue.clear();
         }

@@ -31,8 +31,12 @@ public class FormDataRegistry {
 
     public static List<InputData> getInputsForForm(Form formToModify, RadixTree.InputType type) {
         if (formsData != null)
-            if (formsData.get(formToModify.name()) != null)
-                return formsData.get(formToModify.name()).getInputs(type);
+            if (formsData.get(formToModify.name()) != null) {
+                InputModuleData inputModuleData = formsData.get(formToModify.name());
+                // Should not collect modifier data for Forms.NULL
+                if (inputModuleData != null)
+                    return inputModuleData.getInputs(type);
+            }
         return null;
     }
 
