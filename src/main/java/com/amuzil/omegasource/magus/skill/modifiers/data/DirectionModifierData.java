@@ -69,7 +69,7 @@ public class DirectionModifierData extends BaseModifierData {
 
     @Override
     public void print() {
-        LogManager.getLogger().info("MultiModifierData directions: " + this.directions);
+        LogManager.getLogger().info("DirectionModifierData directions: " + this.directions);
 //        LogManager.getLogger().info("MultiModifierData directions: \n" + this.directions.stream().map(direction -> direction.name()).collect(Collectors.joining(",\n")));
     }
 }

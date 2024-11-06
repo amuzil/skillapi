@@ -31,13 +31,10 @@ public class DirectionModifierListener extends ModifierListener<LivingEvent.Livi
     @Override
     public boolean shouldCollectModifierData(LivingEvent.LivingTickEvent event) {
         if(!(event.getEntity() instanceof Player)) return false;
-        if((event.getEntity().getDeltaMovement().length() > motionThreshold)) {
-            System.out.println(getDirection(event.getEntity().getLookAngle(), event.getEntity().getDeltaMovement().normalize()));
-//            LogManager.getLogger().info("MOVE MOTION: " + event.getEntity().getDeltaMovement().length());
-//            LogManager.getLogger().info(event.getEntity().getDeltaMovement());
-            return true;
-        }
-        return false;
+        //            System.out.println(getDirection(event.getEntity().getLookAngle(), event.getEntity().getDeltaMovement().normalize()));
+        //            LogManager.getLogger().info("MOVE MOTION: " + event.getEntity().getDeltaMovement().length());
+        //            LogManager.getLogger().info(event.getEntity().getDeltaMovement());
+        return event.getEntity().getDeltaMovement().length() > motionThreshold;
     }
 
     @Override
