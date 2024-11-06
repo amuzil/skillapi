@@ -119,7 +119,7 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent.ClientTi
     @Override
     public boolean shouldCollectModifierData(TickEvent.ClientTickEvent event) {
         InputModule module = getTypedModule(type);
-//        if (((KeyboardMouseInputModule) module).formChanged()) {
+        if (((KeyboardMouseInputModule) module).formChanged()) {
             if (module.getActiveForm() != null) {
                 formName = module.getActiveForm().name();
                 activeKeyCodes = getKeyCodes(module.getActiveForm(), type);
@@ -128,7 +128,7 @@ public class KeyHeldModifierListener extends ModifierListener<TickEvent.ClientTi
 //                    LogManager.getLogger().info("New Form Activated in Key Held.");
                     currentHolding = 0;
                 }
-//            }
+            }
         }
 
         if (activeKeyCodes.isEmpty()) return false;

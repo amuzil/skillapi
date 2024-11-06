@@ -143,6 +143,7 @@ public class KeyboardMouseInputModule extends InputModule {
             if (activeForm.get() != null && !activeForm.get().name().equals("null")) {
                 ticksSinceActivated.getAndIncrement();
                 if (ticksSinceActivated.get() >= tickActivationThreshold) {
+                    formChanged = false;
                     // Always to send modifier data right when the form is activated
 //                    sendModifierData();
 
@@ -192,6 +193,7 @@ public class KeyboardMouseInputModule extends InputModule {
             } else {
                 timeout.getAndIncrement();
                 if (timeout.get() > tickTimeoutThreshold) {
+                    formChanged = false;
                     resetTreeConditions();
                     // Timed out enough where multi is no longer valid.
                     lastActivatedForm.set(Forms.NULL);
@@ -243,7 +245,7 @@ public class KeyboardMouseInputModule extends InputModule {
                 }
             }
         }
-        formChanged = false;
+
     }
 
     private void sendModifierData() {
