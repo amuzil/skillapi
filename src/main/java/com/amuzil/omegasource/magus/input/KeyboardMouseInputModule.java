@@ -58,7 +58,7 @@ public class KeyboardMouseInputModule extends InputModule {
         return this.formChanged;
     }
 
-    public List<Integer> getKeyCodes(Form form, RadixTree.InputType type) {
+    public static List<Integer> getKeyCodes(Form form, RadixTree.InputType type) {
         List<InputData> formInputs = FormDataRegistry.getInputsForForm(form, type);
         List<Integer> keyCodes = new ArrayList<>();
 
@@ -152,7 +152,7 @@ public class KeyboardMouseInputModule extends InputModule {
                 this.resetScrolling = true;
             }
 
-            if (ticksSinceModifiersSent > modifierTickThreshold && !modifierQueue.isEmpty()) {
+            if (ticksSinceModifiersSent % modifierTickThreshold == 0 && !modifierQueue.isEmpty()) {
                 sendModifierData();
             }
 
