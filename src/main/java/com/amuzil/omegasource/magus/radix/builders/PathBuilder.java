@@ -7,6 +7,7 @@ import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 // Creates a path for a given object. Designed for things which directly require raw input.
@@ -17,9 +18,22 @@ import java.util.List;
  */
 public class PathBuilder {
     public static PathBuilder instance;
+    private List<ConditionPath> paths;
     private ConditionPath path;
     // Todo: Change this to input type? Skills should use the activation type, forms input type?
     private RadixTree.ActivationType type;
+
+    public PathBuilder finalisePath(ConditionPath path) {
+        this.paths.add(path);
+        return this;
+    }
+
+    public PathBuilder finalisePath() {
+        this.paths.add(path);
+        // Reset condition path
+        this.path = new ConditionPath();
+        return this;
+    }
 
     protected static void addSteps(ConditionPath path, Condition... conditions) {
         List<ModifierData> emptyData = new ArrayList<>();
@@ -46,9 +60,9 @@ public class PathBuilder {
         return this;
     }
 
-    public HashMap<RadixTree.ActivationType, ConditionPath> build() {
-        HashMap<RadixTree.ActivationType, ConditionPath> finalPath = new HashMap<>();
-        finalPath.put(type, path);
+    public HashMap<RadixTree.ActivationType, List<ConditionPath>> build() {
+        HashMap<RadixTree.ActivationType, List<ConditionPath>> finalPath = new HashMap<>();
+        finalPath.put(type, paths);
         reset();
         return finalPath;
     }
@@ -56,5 +70,30 @@ public class PathBuilder {
     public void reset() {
         this.type = null;
         this.path = null;
+        this.paths.clear();
+    }
+
+    public static void mergePath(HashMap<RadixTree.ActivationType, List<ConditionPath>> firstPath, HashMap<RadixTree.ActivationType, List<ConditionPath>> secondPath) {
+        boolean containsKey = false;
+        for (RadixTree.ActivationType type : secondPath.keySet()) {
+            if (firstPath.containsKey(type))
+                containsKey = true;
+        }
+
+        // Hard case
+        if (containsKey) {
+            for (RadixTree.ActivationType type : secondPath.keySet()) {
+                if (firstPath.containsKey(type)) {
+                    List<ConditionPath> paths = secondPath.get(type);
+                    List<ConditionPath> basePaths = firstPath.get(type);
+                    basePaths.addAll(paths);
+                    firstPath.put(type, basePaths);
+                }
+            }
+        }
+        // Easy case
+        else {
+            firstPath.putAll(secondPath);
+        }
     }
 }

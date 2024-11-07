@@ -6,7 +6,7 @@ import com.amuzil.omegasource.magus.radix.condition.input.FormActivatedCondition
 import com.amuzil.omegasource.magus.skill.forms.Form;
 
 public class SkillPathBuilder extends PathBuilder {
-    public Condition toCondition(Form form) {
+    public static Condition toCondition(Form form) {
         return new FormActivatedCondition(FormActivatedEvent.class, form);
     }
 }
