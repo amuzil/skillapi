@@ -9,6 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -19,6 +20,8 @@ import java.util.stream.Collectors;
 public class SkillData implements DataTrait {
 
     List<SkillTrait> skillTraits;
+    // Types should not need serialisation as they do not change
+    List<Skill.SkillType> skillTypes;
     //The reason we're using a resource location and not the actual Skill object is because
     //it's much easier to serialise a String and then get a skill from it.
     ResourceLocation skillId;
@@ -26,9 +29,21 @@ public class SkillData implements DataTrait {
 
     public SkillData(ResourceLocation skillId) {
         this.skillId = skillId;
-        this.skillTraits = getSkill().getTraits();
+        this.skillTraits = new LinkedList<>();
     }
 
+    public void addSkillTraits(SkillTrait... traits) {
+        this.skillTraits.addAll(List.of(traits));
+    }
+
+    public void addSkillTraits(List<SkillTrait> traits) {
+        this.skillTraits.addAll(traits);
+    }
+
+
+    public List<Skill.SkillType> getSkillTypes() {
+        return this.skillTypes;
+    }
 
     public SkillData(Skill skill) {
         this(skill.getId());

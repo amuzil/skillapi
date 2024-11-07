@@ -1,7 +1,11 @@
 package com.amuzil.omegasource.magus.skill.skill;
 
+import com.amuzil.omegasource.magus.radix.ConditionPath;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import net.minecraft.world.entity.LivingEntity;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Name WIP.
@@ -15,6 +19,11 @@ import net.minecraft.world.entity.LivingEntity;
 public class SkillStance extends Skill {
     public SkillStance(String name, SkillCategory category) {
         super(name, category);
+    }
+
+    @Override
+    public HashMap<RadixTree.ActivationType, List<ConditionPath>> getActivationPaths() {
+        return null;
     }
 
     @Override

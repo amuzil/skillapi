@@ -1,16 +1,16 @@
 package com.amuzil.omegasource.magus.skill.skill;
 
 import com.amuzil.omegasource.magus.Magus;
+import com.amuzil.omegasource.magus.radix.ConditionPath;
 import com.amuzil.omegasource.magus.radix.RadixTree;
-import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.event.SkillTickEvent;
+import com.amuzil.omegasource.magus.skill.util.data.SkillData;
 import com.amuzil.omegasource.magus.skill.util.traits.SkillTrait;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.EventBus;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -19,8 +19,7 @@ import java.util.List;
 public abstract class Skill {
     private ResourceLocation id;
     private SkillCategory category;
-    private List<SkillTrait> traits;
-    private List<SkillType> types;
+    private SkillData skillData;
     private RadixTree requirements;
 
     public Skill(String modID, String name, SkillCategory category) {
@@ -46,11 +45,11 @@ public abstract class Skill {
     }
 
     public List<SkillTrait> getTraits() {
-        return this.traits;
+        return this.skillData.getSkillTraits();
     }
 
     public List<SkillType> getTypes() {
-        return types;
+        return this.skillData.getSkillTypes();
     }
 
     public void tick(LivingEntity entity, RadixTree tree) {
@@ -79,6 +78,7 @@ public abstract class Skill {
     }
 
 
+    public abstract HashMap<RadixTree.ActivationType, List<ConditionPath>> getActivationPaths();
 
     public abstract boolean shouldStart(LivingEntity entity, RadixTree tree);
 

@@ -34,6 +34,12 @@ public class RadixTree {
         this(new Node(false));
     }
 
+    public static void registerConditions(List<Condition> conditions) {
+        for (Condition condition : conditions) {
+            condition.register();
+        }
+    }
+
     public Node getRoot() {
         return root;
     }
@@ -46,12 +52,6 @@ public class RadixTree {
             }
         }
         return NO_MISMATCH;
-    }
-
-    public static void registerConditions(List<Condition> conditions) {
-        for (Condition condition : conditions) {
-            condition.register();
-        }
     }
 
     public void activateAllConditions() {
@@ -126,7 +126,7 @@ public class RadixTree {
 
     private List<Condition> prioritizeConditions(List<Condition> conditions) {
         List<Condition> prioritizedConditions = new ArrayList<>();
-        for (Condition condition: conditions) {
+        for (Condition condition : conditions) {
             if (condition instanceof MultiClientCondition) {
                 prioritizedConditions.add(condition);
                 break;
@@ -206,8 +206,7 @@ public class RadixTree {
             if (branch == null) return null;
 
             List<Condition> currSubCondition = conditions.subList(currIndex, conditions.size());
-            if (!Condition.startsWith(currSubCondition, branch.path.conditions))
-                return null; // uses equals
+            if (!Condition.startsWith(currSubCondition, branch.path.conditions)) return null; // uses equals
 
             currIndex += branch.path.conditions.size();
             current = branch.next;
@@ -235,6 +234,11 @@ public class RadixTree {
 
     public void setDiscipline(Element element) {
         this.activeElement = element;
+    }
+
+
+    public Node getActive() {
+        return active;
     }
 
     private void setActive(Node node) {
@@ -387,5 +391,9 @@ public class RadixTree {
     // Used for VR, multikey, and hotkey activation types.
     public enum InputType {
         KEYBOARD_MOUSE, MOUSE_MOTION, VR
+    }
+
+    public ConditionPath getPath() {
+        return this.path;
     }
 }
