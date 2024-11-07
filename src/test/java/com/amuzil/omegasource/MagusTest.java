@@ -1,5 +1,6 @@
 package com.amuzil.omegasource;
 
+import com.amuzil.omegasource.magus.Magus;
 import com.lowdragmc.photon.client.fx.FX;
 import com.lowdragmc.photon.client.fx.FXHelper;
 import net.minecraft.resources.ResourceLocation;
@@ -14,7 +15,7 @@ public class MagusTest {
 //        System.out.println("Executing Test...");
 //        ResourceLocation resource; FX fx;
 //
-//        resource = new ResourceLocation("magus", "blue_fire");
+//        resource = new ResourceLocation(Magus.MOD_ID, "blue_fire");
 //        fx = FXHelper.getFX(resource);
 //        System.out.println("resource: " + resource.getNamespace());
 //        System.out.println("resource: " + resource.getPath());

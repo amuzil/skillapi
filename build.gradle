@@ -129,7 +129,6 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'junit:junit:4.13.1'
 
     // Specify the version of Minecraft to use.
     // Any artifact can be supplied so long as it has a "userdev" classifier artifact and is a compatible patcher artifact.
@@ -139,7 +138,7 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     implementation fg.deobf("com.lowdragmc.photon:photon-forge-1.19.4:1.0.5") { transitive = false }
     implementation fg.deobf("com.lowdragmc.ldlib:ldlib-forge-1.19.4:1.0.14.a") { transitive = false }
-    testImplementation(platform('org.junit:junit-bom:5.9.1'))
+    testImplementation(platform('org.junit:junit-bom:5.10.3'))
     testImplementation('org.junit.jupiter:junit-jupiter')
     // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
@@ -216,6 +215,7 @@ publishing {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
+
 
 test {
     useJUnitPlatform()
