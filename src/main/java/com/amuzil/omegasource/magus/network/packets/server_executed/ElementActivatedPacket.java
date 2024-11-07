@@ -57,7 +57,7 @@ public class ElementActivatedPacket implements MagusPacket {
     // Server-side handler
     public static void handleServerSide(Element element, int entityId, ServerPlayer serverPlayer) {
         // Update player's active element server-side
-        ServerLevel level = serverPlayer.getLevel();
+        ServerLevel level = serverPlayer.serverLevel();
         ElementActivatedPacket packet = new ElementActivatedPacket(element, entityId);
         Entity entity = level.getEntity(entityId); // Retrieve the entity from the world by its ID
         if (entity instanceof ServerPlayer player) { // Check if the entity is a ServerPlayer

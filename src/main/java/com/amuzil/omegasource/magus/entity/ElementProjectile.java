@@ -83,7 +83,7 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
 
     @Nullable
     protected EntityHitResult findHitEntity(Vec3 pos, Vec3 delta) {
-        return getEntityHitResult(this.level, this, pos, delta,
+        return getEntityHitResult(this.level(), this, pos, delta,
                 this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(2.0D),
                 this::canHitEntity, 0.3F);
     }
@@ -151,7 +151,7 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
     public boolean checkLeftOwner() {
         Entity owner = this.getOwner();
         if (owner != null) {
-            for(Entity entity1 : this.level.getEntities(this, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), (entity) -> {
+            for(Entity entity1 : this.level().getEntities(this, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), (entity) -> {
                 return !entity.isSpectator() && entity.isPickable();
             })) {
                 if (entity1.getRootVehicle() == owner.getRootVehicle()) {
@@ -163,7 +163,7 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
     }
 
     public boolean isNoPhysics() {
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             return this.noPhysics;
         } else {
             return (this.entityData.get(ID_FLAGS) & 2) != 0;
@@ -174,34 +174,12 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
 //        if (data == 3) {
 //            System.out.println("HANDLE ENTITY EVENT");
 //            for(int i = 0; i < 8; ++i) {
-//                this.level.addParticle(this.getParticle(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D);
+//                this.level().addParticle(this.getParticle(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D);
 //            }
 //        }
 //    }
 
-    protected void onHitEntity(EntityHitResult entityHitResult) {
-        Entity entity = entityHitResult.getEntity();
-        if (entity instanceof Blaze) {
-            if (this.getOwner() != null) {
-                this.shoot(entity.getViewVector(1).x, entity.getViewVector(1).y+0.5, entity.getViewVector(1).z, 0.75F, 1);
-            }
-        } else if (entity instanceof ElementProjectile testProjectileEntity) {
-            if (this.getOwner() != null && this.level.isClientSide) {
-                ElementProjectile collisionEntity = new ElementCollision(this.getX(), this.getY(), this.getZ(), level);
-                collisionEntity.setTimeToKill(5);
-                level.addFreshEntity(collisionEntity);
-                EntityEffect entityEffect = new EntityEffect(orb_bloom, level, collisionEntity);
-                entityEffect.start();
-                System.out.println("SUCCESS COLLISION!!!");
-                this.discard();
-                testProjectileEntity.discard();
-            }
-        }  else {
-                        int i = 10; // Deal 10 damage
-            entity.hurt(this.damageSources().thrown(this, this.getOwner()), (float)i);
-            this.discard();
-        }
-    }
+    protected abstract void onHitEntity(EntityHitResult entityHitResult);
 
     protected void onHitBlock(BlockHitResult blockHitResult) {
 //        super.onHitBlock(blockHitResult);
@@ -210,8 +188,8 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
 
     protected void onHit(HitResult hitResult) {
         super.onHit(hitResult);
-        if (!this.level.isClientSide) {
-            this.level.broadcastEntityEvent(this, (byte)3);
+        if (!this.level().isClientSide) {
+            this.level().broadcastEntityEvent(this, (byte)3);
 //            this.discard();
         }
     }
@@ -284,7 +262,7 @@ public abstract class ElementProjectile extends Projectile implements ItemSuppli
                 fx = blue_fire_perma;
         }
         if (fx != null) {
-            EntityEffect entityEffect = new EntityEffect(fx, level, this);
+            EntityEffect entityEffect = new EntityEffect(fx, this.level(), this);
             entityEffect.start();
         }
     }

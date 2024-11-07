@@ -67,9 +67,9 @@ public class WaterProjectile extends ElementProjectile {
         }
 
         BlockPos blockpos = this.blockPosition();
-        BlockState blockstate = this.level.getBlockState(blockpos);
+        BlockState blockstate = this.level().getBlockState(blockpos);
         if (!blockstate.isAir() && !flag) {
-            VoxelShape voxelshape = blockstate.getCollisionShape(this.level, blockpos);
+            VoxelShape voxelshape = blockstate.getCollisionShape(this.level(), blockpos);
             if (!voxelshape.isEmpty()) {
                 Vec3 vec31 = this.position();
 
@@ -87,13 +87,13 @@ public class WaterProjectile extends ElementProjectile {
 
         Vec3 pos = this.position();
         Vec3 delta = pos.add(deltaMovement);
-        HitResult hitresult = this.level.clip(new ClipContext(pos, delta, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+        HitResult hitresult = this.level().clip(new ClipContext(pos, delta, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
         if (hitresult.getType() != HitResult.Type.MISS) {
             delta = hitresult.getLocation();
         }
 
         while(!this.isRemoved()) {
-            if (!this.level.isClientSide) {
+            if (!this.level().isClientSide) {
                 this.tickDespawn();
             }
             EntityHitResult entityhitresult = this.findHitEntity(pos, delta);
@@ -174,7 +174,7 @@ public class WaterProjectile extends ElementProjectile {
 
     @Nullable
     protected EntityHitResult findHitEntity(Vec3 pos, Vec3 delta) {
-        return getEntityHitResult(this.level, this, pos, delta,
+        return getEntityHitResult(this.level(), this, pos, delta,
                 this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(2.0D),
                 this::canHitEntity, 0.3F);
     }
@@ -222,7 +222,7 @@ public class WaterProjectile extends ElementProjectile {
     }
 
     public boolean isNoPhysics() {
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             return this.noPhysics;
         } else {
             return (this.entityData.get(ID_FLAGS) & 2) != 0;
@@ -236,11 +236,11 @@ public class WaterProjectile extends ElementProjectile {
             entity.hurt(this.damageSources().thrown(this, this.getOwner()), i);
             this.discard();
         } else if (entity instanceof FireProjectile fireProjectile) {
-            if (this.getOwner() != null && this.level.isClientSide) {
-                ElementCollision collisionEntity = new ElementCollision(this.getX(), this.getY(), this.getZ(), level);
+            if (this.getOwner() != null && this.level().isClientSide) {
+                ElementCollision collisionEntity = new ElementCollision(this.getX(), this.getY(), this.getZ(), this.level());
                 collisionEntity.setTimeToKill(5);
-                level.addFreshEntity(collisionEntity);
-                EntityEffect entityEffect = new EntityEffect(steam, level, collisionEntity);
+                this.level().addFreshEntity(collisionEntity);
+                EntityEffect entityEffect = new EntityEffect(steam, this.level(), collisionEntity);
                 entityEffect.start();
                 this.discard();
                 fireProjectile.discard();
@@ -259,8 +259,8 @@ public class WaterProjectile extends ElementProjectile {
 
     protected void onHit(HitResult hitResult) {
         super.onHit(hitResult);
-        if (!this.level.isClientSide) {
-            this.level.broadcastEntityEvent(this, (byte)3);
+        if (!this.level().isClientSide) {
+            this.level().broadcastEntityEvent(this, (byte)3);
 //            this.discard();
         }
     }

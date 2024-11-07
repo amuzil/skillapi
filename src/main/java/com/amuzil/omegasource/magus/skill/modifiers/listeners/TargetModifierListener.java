@@ -54,13 +54,13 @@ public class TargetModifierListener extends ModifierListener<InputEvent.MouseBut
             double distance = 20; //todo max distance make this configurable
             Vec3 vector3d2 = vector3d.add(vector3d1.x * distance, vector3d1.y * distance, vector3d1.z * distance);
             List<TagKey<Block>> bendableMaterials = new ArrayList<>();//BendingMaterialUtil.getBendableMaterialsForElement(activeElement);
-            BlockHitResult hitresult = mc.player.level.clip(new ClipContext(vector3d, vector3d2, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, player));
+            BlockHitResult hitresult = mc.player.level().clip(new ClipContext(vector3d, vector3d2, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, player));
             if (hitresult.getType() == HitResult.Type.BLOCK) {
                 BlockPos locationHit = hitresult.getBlockPos();
                 LogManager.getLogger().info("Position: " + locationHit);
-                BlockState hitBlockState = player.level.getBlockState(new BlockPos(locationHit));
+                BlockState hitBlockState = player.level().getBlockState(new BlockPos(locationHit));
                 if(bendableMaterials.size() == 0 || bendableMaterials.stream().anyMatch(hitBlockState::is)) {
-                    LogManager.getLogger().info("Blockstate: " + player.level.getBlockState(new BlockPos(locationHit)));
+                    LogManager.getLogger().info("Blockstate: " + player.level().getBlockState(new BlockPos(locationHit)));
                     lastTargetPosition = new Vec3(locationHit.getX(), locationHit.getY(), locationHit.getZ());
                 }
             }

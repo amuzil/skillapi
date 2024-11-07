@@ -66,7 +66,7 @@ public class FormActivatedPacket implements MagusPacket {
         // Perform client-side particle effect or other rendering logic here
         Player player = Minecraft.getInstance().player;
         assert player != null;
-        ElementProjectile elementProjectile = (ElementProjectile) player.level.getEntity(entityId);
+        ElementProjectile elementProjectile = (ElementProjectile) player.level().getEntity(entityId);
         /**
           NOTE: Need to ensure ElementProjectile's extra constructor args are set client-side.
           @see ElementProjectile#ElementProjectile(EntityType, Level) This gets called first and server-side only.
@@ -80,12 +80,12 @@ public class FormActivatedPacket implements MagusPacket {
     public static void handleServerSide(Form form, Element element, int entityId, ServerPlayer player) {
         // Perform server-side entity spawning and updating logic and fire Form Event here
         MinecraftForge.EVENT_BUS.post(new FormActivatedEvent(form, player));
-        ServerLevel level = player.getLevel();
+        ServerLevel level = player.serverLevel();
         // TODO - Create/perform certain entity updates based on form and element
         //      - All Skills/techniques should be determined and handled here
         ElementProjectile entity;
         if (entityId != 0) { // Update existing entity
-            entity = (ElementProjectile) player.level.getEntity(entityId);
+            entity = (ElementProjectile) player.level().getEntity(entityId);
         } else { // Create new entity
             entity = ElementProjectile.createElementEntity(form, element, player, level);
         }
