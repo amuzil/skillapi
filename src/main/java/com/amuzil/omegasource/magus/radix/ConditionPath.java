@@ -59,6 +59,7 @@ public class ConditionPath implements INBTSerializable<CompoundTag> {
 
             modifierData.forEach(modifierDataInstance -> modifierDataListTag.add(modifierDataInstance.serializeNBT()));
 
+            // Have to fix this...
             pairTag.putString("condition", activeCondition.toString());
             pairTag.put("modifiers", modifierDataListTag);
             listOfPairsTag.add(i, pairTag);
@@ -92,9 +93,24 @@ public class ConditionPath implements INBTSerializable<CompoundTag> {
     }
 
     @Override
+    public int hashCode() {
+        int hash = 0;
+        for (Condition cond : conditions) {
+            hash += cond.hashCode();
+        }
+        // Hashing involves size of the list, and then an arbitrarily large prime number; e.g 29.
+        hash = hash % (conditions.size() * 29);
+        return hash;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         // This needs to be overridden to *ignore* modifiers. It needs to only check that each condition in each path matches
         // (using custom defined hashcodes/equals method for each).
-        return super.equals(obj);
+        if (!(obj instanceof ConditionPath))
+            return false;
+
+        return hashCode() == obj.hashCode() && conditions.size() == ((ConditionPath) obj).conditions.size()
+                && activationPath.size() == conditions.size();
     }
 }
