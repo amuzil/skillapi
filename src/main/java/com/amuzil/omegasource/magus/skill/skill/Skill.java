@@ -28,6 +28,7 @@ public abstract class Skill {
     // How the skill was activated. Useful if you want different methods to influence the skill in different ways.
     // For complex, game-design move combinations, see ModifierData for how to alter your skills.
     protected RadixTree.ActivationType activatedType;
+    protected SkillState state;
 
     public Skill(String modID, String name, SkillCategory category) {
         this(new ResourceLocation(modID, name), category);
@@ -35,6 +36,7 @@ public abstract class Skill {
 
     public Skill(String name, SkillCategory category) {
         this(Magus.MOD_ID, name, category);
+        this.state = SkillState.START;
     }
 
     public Skill(ResourceLocation id, SkillCategory category) {
@@ -89,31 +91,31 @@ public abstract class Skill {
     // Fix this because this will not work lmao
     public void tick(LivingEntity entity, RadixTree tree) {
         //Run this asynchronously
-        if (!shouldStart(entity, tree)) return;
+
 
         // Remember, for some reason post only returns true upon the event being cancelled. Blame Forge.
-        if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Start(entity, tree, this))) return;
 
-        start(entity, tree);
 
-        while (shouldRun(entity, tree)) {
-            if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Run(entity, tree, this))) break;
-            run(entity, tree);
+        if (shouldStart(entity, tree)) {
+            if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Start(entity, tree, this))) return;
+            start(entity, tree);
+        } else return;
+
+
+        if (shouldRun(entity, tree)) {
+            if (!MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Run(entity, tree, this))) run(entity, tree);
 
             if (shouldStop(entity, tree)) {
-                if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Stop(entity, tree, this))) break;
-
-                stop(entity, tree);
+                if (!MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Stop(entity, tree, this))) stop(entity, tree);
             }
         }
     }
 
-
     public List<Condition> getMultikeyConditions() {
-        if (!getActivationTypes().contains(RadixTree.ActivationType.MULTIKEY))
-            return new ArrayList<>();
+        if (!getActivationTypes().contains(RadixTree.ActivationType.MULTIKEY)) return new ArrayList<>();
         return getActivationPaths().getOrDefault(RadixTree.ActivationType.MULTIKEY, new LinkedList<>()).get(0).conditions;
     }
+
     public abstract HashMap<RadixTree.ActivationType, List<ConditionPath>> getActivationPaths();
 
     public abstract boolean shouldStart(LivingEntity entity, RadixTree tree);
@@ -127,6 +129,14 @@ public abstract class Skill {
     public abstract void run(LivingEntity entity, RadixTree tree);
 
     public abstract void stop(LivingEntity entity, RadixTree tree);
+
+    // Resets the skill and any necessary skill data; should be called upon stopping execution.
+    public abstract void reset(LivingEntity entity, RadixTree tree);
+
+
+    protected enum SkillState {
+        START, RUN, STOP
+    }
 
     /**
      * Different skill types. A skill can be multiple of one type.

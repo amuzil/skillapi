@@ -43,32 +43,32 @@ public class SkillActive extends Skill {
 
         // Finds the highest priority type that is valid, and goes with that.
         this.activatedType = currentType;
-        return canStart;
+        return canStart && state == SkillState.START;
     }
 
     @Override
     public boolean shouldRun(LivingEntity entity, RadixTree tree) {
-        return false;
+        return state == SkillState.RUN;
     }
 
     @Override
     public boolean shouldStop(LivingEntity entity, RadixTree tree) {
-        return false;
+        return state == SkillState.STOP;
     }
 
     @Override
     public void start(LivingEntity entity, RadixTree tree) {
-
+        this.state = SkillState.RUN;
     }
 
     @Override
     public void run(LivingEntity entity, RadixTree tree) {
-
+        this.state = SkillState.STOP;
     }
 
     @Override
     public void stop(LivingEntity entity, RadixTree tree) {
-
+        this.state = SkillState.START;
     }
 
     //Need to account for the different types as worked out by Maht and I (FavouriteDragon).
