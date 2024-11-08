@@ -1,6 +1,5 @@
 package com.amuzil.omegasource.magus.skill.skill;
 
-import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.ConditionPath;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,6 +23,9 @@ public class SkillActive extends Skill {
     public boolean shouldStart(LivingEntity entity, RadixTree tree) {
         boolean canStart = false;
         RadixTree.ActivationType currentType = null, prevType = null;
+        if (getActivationPaths() == null || tree == null || tree.getPath() == null)
+            return false;
+
         // Initialise paths here, to reduce memory consumption
         HashMap<RadixTree.ActivationType, List<ConditionPath>> paths = getActivationPaths();
         for (RadixTree.ActivationType type : getActivationTypes()) {

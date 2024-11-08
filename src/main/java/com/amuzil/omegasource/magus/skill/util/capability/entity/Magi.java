@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.skill.util.capability.entity;
 
 import com.amuzil.omegasource.magus.radix.RadixTree;
+import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import com.amuzil.omegasource.magus.skill.util.data.SkillCategoryData;
@@ -81,6 +82,12 @@ public class Magi {
 
     // Called per tick
     public void onUpdate() {
+        List<Skill> skills = Registries.getSkills();
+        for (Skill skill : skills) {
+            if (getSkillData(skill).canUse()) {
+                skill.tick(getMagi(), getTree());
+            }
+        }
     }
 
     public void onDeath() {

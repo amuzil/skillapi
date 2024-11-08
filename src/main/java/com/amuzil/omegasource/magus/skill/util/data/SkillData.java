@@ -3,7 +3,6 @@ package com.amuzil.omegasource.magus.skill.util.data;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.amuzil.omegasource.magus.registry.Registries;
-import com.amuzil.omegasource.magus.skill.conditionals.ConditionEnums;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
 import com.amuzil.omegasource.magus.skill.util.traits.DataTrait;
 import com.amuzil.omegasource.magus.skill.util.traits.SkillTrait;
@@ -28,12 +27,27 @@ public class SkillData implements DataTrait {
     //The reason we're using a resource location and not the actual Skill object is because
     //it's much easier to serialise a String and then get a skill from it.
     ResourceLocation skillId;
+    private boolean canUse;
     private boolean isDirty = false;
 
     public SkillData(ResourceLocation skillId) {
         this.skillId = skillId;
         this.skillTraits = new LinkedList<>();
         this.activationTypes = new LinkedList<>();
+        this.canUse = false;
+    }
+
+    public SkillData(Skill skill) {
+        this(skill.getId());
+    }
+
+    public void setCanUse(boolean canUse) {
+        this.canUse = canUse;
+        markDirty();
+    }
+
+    public boolean canUse() {
+        return this.canUse;
     }
 
     public List<RadixTree.ActivationType> getActivationTypes() {
@@ -43,9 +57,7 @@ public class SkillData implements DataTrait {
     public void addActivationType(RadixTree.ActivationType type) {
         if (!this.activationTypes.contains(type))
             this.activationTypes.add(type);
-    }
-    public SkillData(Skill skill) {
-        this(skill.getId());
+        markDirty();
     }
 
     public void addSkillTraits(SkillTrait... traits) {

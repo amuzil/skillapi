@@ -390,7 +390,7 @@ public class RadixTree {
     public enum ActivationType {
         MENU(0), HOTKEY(1), MULTIKEY(2), VR(3);
 
-        int priority;
+        final int priority;
 
         ActivationType(int priority) {
             this.priority = priority;

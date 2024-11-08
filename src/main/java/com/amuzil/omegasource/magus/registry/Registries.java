@@ -28,21 +28,18 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber(modid = Magus.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Registries {
 
+    // SKILLS
+    // this is a placeholder skill for testing purposes.
+    public static final Skill FIREBALL = new SkillActive("fireball", null);
     public static Supplier<IForgeRegistry<DataTrait>> DATA_TRAITS;
     public static Supplier<IForgeRegistry<SkillCategory>> SKILL_CATEGORIES;
     public static Supplier<IForgeRegistry<Skill>> SKILLS;
     public static Supplier<IForgeRegistry<Form>> FORMS;
-
-
     public static List<DataTrait> traits = new ArrayList<>();
     public static List<SkillCategory> categories = new ArrayList<>();
     public static List<Skill> skills = new ArrayList<>();
     public static List<Form> forms = new ArrayList<>();
     public static List<Condition> conditions = new ArrayList<>();
-
-    // SKILLS
-    // this is a placeholder skill for testing purposes.
-    public static final Skill FIREBALL = new SkillActive("fireball", null);
 
     public static void init() {
     }
@@ -69,6 +66,10 @@ public class Registries {
 
     public static void registerSkills(List<Skill> registrySkills) {
         skills.addAll(registrySkills);
+    }
+
+    public static List<Skill> getSkills() {
+        return skills;
     }
 
     public static void registerSkill(Skill registrySkill) {
@@ -129,23 +130,6 @@ public class Registries {
     }
 
     //What to do in the case of missing registry entries for each type of registry.
-
-    @Mod.EventBusSubscriber(modid = Magus.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-    public static class ForgeRegistries {
-        @SubscribeEvent
-        public static void onMissing(MissingMappingsEvent event) {
-            //Data Traits
-
-            //Skill Categories
-
-            //Skills
-
-            //Forms
-
-            //Modifiers
-        }
-    }
-
 
     @SubscribeEvent
     public static void gameRegistry(RegisterEvent event) {
@@ -209,14 +193,12 @@ public class Registries {
      * @param event  Registry event.
      * @param modID  ModID.
      */
-    public static void registerTraitsFromSkills(List<Skill> skills, RegisterEvent event,
-                                                String modID) {
+    public static void registerTraitsFromSkills(List<Skill> skills, RegisterEvent event, String modID) {
         ResourceKey<Registry<DataTrait>> key = DATA_TRAITS.get().getRegistryKey();
         IForgeRegistry<DataTrait> registry = DATA_TRAITS.get();
         for (Skill skill : skills)
             for (SkillTrait trait : skill.getTraits())
-                event.register(key, helper ->
-                        registry.register(new ResourceLocation(modID) + trait.getName(), trait));
+                event.register(key, helper -> registry.register(new ResourceLocation(modID) + trait.getName(), trait));
 
     }
 
@@ -232,8 +214,23 @@ public class Registries {
         IForgeRegistry<DataTrait> registry = DATA_TRAITS.get();
         for (Skill skill : skills)
             for (SkillTrait trait : skill.getTraits())
-                event.register(key, helper ->
-                        registry.register(trait.getName(), trait));
+                event.register(key, helper -> registry.register(trait.getName(), trait));
 
+    }
+
+    @Mod.EventBusSubscriber(modid = Magus.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+    public static class ForgeRegistries {
+        @SubscribeEvent
+        public static void onMissing(MissingMappingsEvent event) {
+            //Data Traits
+
+            //Skill Categories
+
+            //Skills
+
+            //Forms
+
+            //Modifiers
+        }
     }
 }
