@@ -22,7 +22,7 @@ public class Magi {
     private final Data capabilityData;
     private List<SkillData> skillData;
     private List<SkillCategoryData> skillCategoryData;
-    private LivingEntity magi;
+    private final LivingEntity magi;
 
     public Magi(Data capabilityData, LivingEntity entity) {
         this.capabilityData = capabilityData;
@@ -39,6 +39,10 @@ public class Magi {
         return cap.getMagi(entity);
     }
 
+    public static boolean isEntitySupported(Entity entity) {
+        return entity instanceof LivingEntity;
+    }
+
     public LivingDataCapability.LivingDataCapabilityImp getMagusData() {
         return (LivingDataCapability.LivingDataCapabilityImp) capabilityData;
     }
@@ -47,6 +51,7 @@ public class Magi {
     public boolean isDirty() {
         return false;
     }
+
     public RadixTree getTree() {
         return capabilityData.getTree();
     }
@@ -60,10 +65,6 @@ public class Magi {
         // then get the list of its traits.
         // Empty for now...
         return getSkillData(skill).getSkillTraits();
-    }
-
-    public static boolean isEntitySupported(Entity entity) {
-        return entity instanceof LivingEntity;
     }
 
     // Returns appropriate SkillData from a list of SkillData

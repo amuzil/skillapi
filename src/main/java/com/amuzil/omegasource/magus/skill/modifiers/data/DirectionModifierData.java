@@ -2,16 +2,13 @@ package com.amuzil.omegasource.magus.skill.modifiers.data;
 
 import com.amuzil.omegasource.magus.skill.modifiers.api.BaseModifierData;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class DirectionModifierData extends BaseModifierData {

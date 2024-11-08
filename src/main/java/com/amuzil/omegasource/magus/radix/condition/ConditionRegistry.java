@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
 
-public class ConditionRegistry {
+public class    ConditionRegistry {
 
     // Id, Condition. Stuff is put into this map when registering.
     private static final HashMap<Integer, Condition> conditions = new HashMap<>();

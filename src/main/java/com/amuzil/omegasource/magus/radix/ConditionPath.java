@@ -8,32 +8,52 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class ConditionPath implements INBTSerializable<CompoundTag> {
 
-    public LinkedList<Pair<Condition, List<ModifierData>>> activationPath;
+    public HashMap<Condition, List<ModifierData>> activationPath;
     public List<Condition> conditions;
+    private boolean isDirty;
 
     public ConditionPath() {
-        activationPath = new LinkedList<>();
+        activationPath = new HashMap<>();
         conditions = new LinkedList<>();
+        markDirty();
     }
 
     public ConditionPath(List<Condition> activatedConditions) {
         conditions = activatedConditions;
-        activationPath = new LinkedList<>();
+        activationPath = new HashMap<>();
         List<ModifierData> emptyModifier = new ArrayList<>();
         for (Condition activatedCondition : activatedConditions) {
-            activationPath.add(Pair.of(activatedCondition, emptyModifier));
+            activationPath.put(activatedCondition, emptyModifier);
         }
+        markDirty();
+    }
+
+    public void markDirty() {
+        this.isDirty = true;
+    }
+
+    public void markClean() {
+        this.isDirty = false;
+    }
+
+    public boolean isDirty() {
+        return this.isDirty;
     }
 
     public void addStep(Condition activatedCondition, List<ModifierData> modifierData) {
         conditions.add(activatedCondition);
-        activationPath.add(Pair.of(activatedCondition, modifierData));
+        activationPath.put(activatedCondition, modifierData);
+        markDirty();
+    }
+
+    // Remember that modifier data goes up to the currently active node. So, a lot of Effects
+    // will only check their first condition for the right modifier data.
+    public List<ModifierData> getModifiers(Condition condition) {
+        return activationPath.getOrDefault(condition, new ArrayList<>());
     }
 
     @Override
@@ -48,10 +68,10 @@ public class ConditionPath implements INBTSerializable<CompoundTag> {
         ListTag listOfPairsTag = new ListTag();
 
         CompoundTag pairTag;
-        for (int i = 0; i < activationPath.size(); i++) {
-            Pair<Condition, List<ModifierData>> conditionListPair = activationPath.get(i);
-            Condition activeCondition = conditionListPair.first;
-            List<ModifierData> modifierData = conditionListPair.second;
+        int i = 0;
+        for (Map.Entry<Condition, List<ModifierData>> pathEntry : activationPath.entrySet()) {
+            Condition activeCondition = pathEntry.getKey();
+            List<ModifierData> modifierData = pathEntry.getValue();
 
             pairTag = new CompoundTag();
             ListTag modifierDataListTag = new ListTag();
@@ -62,6 +82,7 @@ public class ConditionPath implements INBTSerializable<CompoundTag> {
             pairTag.putInt("condition", ConditionRegistry.getID(activeCondition));
             pairTag.put("modifiers", modifierDataListTag);
             listOfPairsTag.add(i, pairTag);
+            i++;
         }
 
         compoundTag.put("activationPath", listOfPairsTag);
@@ -72,9 +93,8 @@ public class ConditionPath implements INBTSerializable<CompoundTag> {
     @Override
     public void deserializeNBT(CompoundTag compoundTag) {
         ListTag listOfPairsTag = (ListTag) compoundTag.get("activationPath");
-        activationPath = new LinkedList<>();
-        if (listOfPairsTag == null)
-            return;
+        activationPath = new HashMap<>();
+        if (listOfPairsTag == null) return;
         listOfPairsTag.forEach(pairTag -> {
             // Need to figure out how to convert this into conditions.
             // Going to go over capability data to check for every active listener and use those in the path.
@@ -88,10 +108,10 @@ public class ConditionPath implements INBTSerializable<CompoundTag> {
                 if (modifiersListTag != null)
                     modifiersListTag.forEach(tag -> modifierData.add(ModifiersRegistry.fromCompoundTag(compoundTag)));
 
-                stepPair = Pair.of(condition, modifierData);
-                activationPath.add(stepPair);
+                activationPath.put(condition, modifierData);
             }
         });
+        markClean();
     }
 
     @Override
@@ -109,10 +129,8 @@ public class ConditionPath implements INBTSerializable<CompoundTag> {
     public boolean equals(Object obj) {
         // This needs to be overridden to *ignore* modifiers. It needs to only check that each condition in each path matches
         // (using custom defined hashcodes/equals method for each).
-        if (!(obj instanceof ConditionPath))
-            return false;
+        if (!(obj instanceof ConditionPath)) return false;
 
-        return hashCode() == obj.hashCode() && conditions.size() == ((ConditionPath) obj).conditions.size()
-                && activationPath.size() == conditions.size();
+        return hashCode() == obj.hashCode() && conditions.size() == ((ConditionPath) obj).conditions.size() && activationPath.size() == conditions.size();
     }
 }

@@ -5,7 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 
 /**
  * The most generic trait of all time. Works for:
- * -Fire time, charging, lifetime, potion duration, e.t.c.
+ * Fire time, charging, lifetime, potion duration, e.t.c.
  */
 public class TimedTrait extends SkillTrait {
     private int time;

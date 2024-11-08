@@ -29,12 +29,15 @@ public class SkillActive extends Skill {
         // Initialise paths here, to reduce memory consumption
         HashMap<RadixTree.ActivationType, List<ConditionPath>> paths = getActivationPaths();
         for (RadixTree.ActivationType type : getActivationTypes()) {
-            if (paths.get(type).contains(tree.getPath())) {
-                canStart = true;
-                currentType = type;
-                if (prevType != null && prevType.priority() > currentType.priority()) {
-                    currentType = prevType;
-                } else prevType = currentType;
+            // Needs to be changed to a search
+            for (ConditionPath conditions : paths.get(type)) {
+                if (tree.search(conditions.conditions) != null) {
+                    canStart = true;
+                    currentType = type;
+                    if (prevType != null && prevType.priority() > currentType.priority()) {
+                        currentType = prevType;
+                    } else prevType = currentType;
+                }
             }
         }
 

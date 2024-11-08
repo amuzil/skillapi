@@ -21,9 +21,7 @@ import java.util.stream.Collectors;
 public class SkillData implements DataTrait {
 
     List<SkillTrait> skillTraits;
-    List<RadixTree.ActivationType> activationTypes;
     // Types should not need serialisation as they do not change
-    List<Skill.SkillType> skillTypes;
     //The reason we're using a resource location and not the actual Skill object is because
     //it's much easier to serialise a String and then get a skill from it.
     ResourceLocation skillId;
@@ -33,8 +31,9 @@ public class SkillData implements DataTrait {
     public SkillData(ResourceLocation skillId) {
         this.skillId = skillId;
         this.skillTraits = new LinkedList<>();
-        this.activationTypes = new LinkedList<>();
         this.canUse = false;
+
+        skillTraits = getSkill().getTraits();
     }
 
     public SkillData(Skill skill) {
@@ -51,25 +50,12 @@ public class SkillData implements DataTrait {
     }
 
     public List<RadixTree.ActivationType> getActivationTypes() {
-        return this.activationTypes;
+        return this.getSkill().getActivationTypes();
     }
 
-    public void addActivationType(RadixTree.ActivationType type) {
-        if (!this.activationTypes.contains(type))
-            this.activationTypes.add(type);
-        markDirty();
-    }
-
-    public void addSkillTraits(SkillTrait... traits) {
-        this.skillTraits.addAll(List.of(traits));
-    }
-
-    public void addSkillTraits(List<SkillTrait> traits) {
-        this.skillTraits.addAll(traits);
-    }
 
     public List<Skill.SkillType> getSkillTypes() {
-        return this.skillTypes;
+        return this.getSkill().getTypes();
     }
 
     @Override
