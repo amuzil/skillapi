@@ -382,18 +382,28 @@ public class RadixTree {
         this.owner = entity;
     }
 
+    public ConditionPath getPath() {
+        return this.path;
+    }
+
     // Menu = radial menu or a HUD. Other activation types are self-explanatory.
     public enum ActivationType {
-        MULTIKEY, MENU, HOTKEY, VR
+        MENU(0), HOTKEY(1), MULTIKEY(2), VR(3);
+
+        int priority;
+
+        ActivationType(int priority) {
+            this.priority = priority;
+        }
+
+        public int priority() {
+            return this.priority;
+        }
     }
 
     // Essentially which input module to use.
     // Used for VR, multikey, and hotkey activation types.
     public enum InputType {
         KEYBOARD_MOUSE, MOUSE_MOTION, VR
-    }
-
-    public ConditionPath getPath() {
-        return this.path;
     }
 }

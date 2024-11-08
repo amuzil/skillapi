@@ -17,8 +17,11 @@ import java.util.List;
  * Basic skill class. All other skills extend this.
  */
 public abstract class Skill {
-    private ResourceLocation id;
-    private SkillCategory category;
+    private final ResourceLocation id;
+    private final SkillCategory category;
+    // How the skill was activated. Useful if you want different methods to influence the skill in different ways.
+    // For complex, game-design move combinations, see ModifierData for how to alter your skills.
+    protected RadixTree.ActivationType activatedType;
     private SkillData skillData;
     private RadixTree requirements;
 
@@ -33,6 +36,20 @@ public abstract class Skill {
     public Skill(ResourceLocation id, SkillCategory category) {
         this.id = id;
         this.category = category;
+        // Menu is default
+        this.activatedType = RadixTree.ActivationType.MENU;
+    }
+
+    public RadixTree.ActivationType getActivatedType() {
+        return this.activatedType;
+    }
+
+    public List<RadixTree.ActivationType> getActivationTypes() {
+        return this.skillData.getActivationTypes();
+    }
+
+    public void addActivationType(RadixTree.ActivationType type) {
+        this.skillData.addActivationType(type);
     }
 
 
@@ -54,24 +71,20 @@ public abstract class Skill {
 
     public void tick(LivingEntity entity, RadixTree tree) {
         //Run this asynchronously
-        if (!shouldStart(entity, tree))
-            return;
+        if (!shouldStart(entity, tree)) return;
 
         //Remember, for some reason post only returns true upon the event being cancelled. Blame Forge.
-        if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Start(entity, tree, this)))
-            return;
+        if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Start(entity, tree, this))) return;
 
         start(entity, tree);
 
         while (shouldRun(entity, tree)) {
             if (shouldStop(entity, tree)) {
-                if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Stop(entity, tree, this)))
-                    break;
+                if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Stop(entity, tree, this))) break;
 
                 stop(entity, tree);
             } else {
-                if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Run(entity, tree, this)))
-                    break;
+                if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Run(entity, tree, this))) break;
                 run(entity, tree);
             }
         }
@@ -96,13 +109,6 @@ public abstract class Skill {
      * Different skill types. A skill can be multiple of one type.
      */
     public enum SkillType {
-        OFFENSIVE,
-        DEFENSIVE,
-        MOBILITY,
-        BUFF,
-        UTILITY,
-        RANGED,
-        MELEE,
-        CONSTRUCT
+        OFFENSIVE, DEFENSIVE, MOBILITY, BUFF, UTILITY, RANGED, MELEE, CONSTRUCT
     }
 }

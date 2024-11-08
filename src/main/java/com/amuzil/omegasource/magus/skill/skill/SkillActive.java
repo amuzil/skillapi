@@ -21,7 +21,21 @@ public class SkillActive extends Skill {
 
     @Override
     public boolean shouldStart(LivingEntity entity, RadixTree tree) {
-        return false;
+        boolean canStart = false;
+        RadixTree.ActivationType currentType = null, prevType = null;
+        for (RadixTree.ActivationType type : getActivationTypes()) {
+            if (getActivationPaths().get(type).contains(tree.getPath())) {
+                canStart = true;
+                currentType = type;
+                if (prevType != null && prevType.priority() > currentType.priority()) {
+                    currentType = prevType;
+                } else prevType = currentType;
+            }
+        }
+        
+        // Finds the highest priority type that is valid, and goes with that.
+        this.activatedType = currentType;
+        return canStart;
     }
 
     @Override

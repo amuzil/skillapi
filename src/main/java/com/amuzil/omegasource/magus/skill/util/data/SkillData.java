@@ -1,7 +1,9 @@
 package com.amuzil.omegasource.magus.skill.util.data;
 
+import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.amuzil.omegasource.magus.registry.Registries;
+import com.amuzil.omegasource.magus.skill.conditionals.ConditionEnums;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
 import com.amuzil.omegasource.magus.skill.util.traits.DataTrait;
 import com.amuzil.omegasource.magus.skill.util.traits.SkillTrait;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 public class SkillData implements DataTrait {
 
     List<SkillTrait> skillTraits;
+    List<RadixTree.ActivationType> activationTypes;
     // Types should not need serialisation as they do not change
     List<Skill.SkillType> skillTypes;
     //The reason we're using a resource location and not the actual Skill object is because
@@ -30,6 +33,19 @@ public class SkillData implements DataTrait {
     public SkillData(ResourceLocation skillId) {
         this.skillId = skillId;
         this.skillTraits = new LinkedList<>();
+        this.activationTypes = new LinkedList<>();
+    }
+
+    public List<RadixTree.ActivationType> getActivationTypes() {
+        return this.activationTypes;
+    }
+
+    public void addActivationType(RadixTree.ActivationType type) {
+        if (!this.activationTypes.contains(type))
+            this.activationTypes.add(type);
+    }
+    public SkillData(Skill skill) {
+        this(skill.getId());
     }
 
     public void addSkillTraits(SkillTrait... traits) {
@@ -40,13 +56,8 @@ public class SkillData implements DataTrait {
         this.skillTraits.addAll(traits);
     }
 
-
     public List<Skill.SkillType> getSkillTypes() {
         return this.skillTypes;
-    }
-
-    public SkillData(Skill skill) {
-        this(skill.getId());
     }
 
     @Override
@@ -80,8 +91,7 @@ public class SkillData implements DataTrait {
         CompoundTag tag = new CompoundTag();
         tag.putString("Skill ID", skillId.toString());
         skillTraits.forEach(skillTrait -> {
-            if (skillTrait.isDirty())
-                tag.put(skillTrait.getName() + "Trait", skillTrait.serializeNBT());
+            if (skillTrait.isDirty()) tag.put(skillTrait.getName() + "Trait", skillTrait.serializeNBT());
         });
         return tag;
     }
@@ -91,11 +101,9 @@ public class SkillData implements DataTrait {
         markClean();
         try {
             skillId = ResourceLocation.tryParse(nbt.getString("Skill ID"));
-            skillTraits.forEach(skillTrait -> skillTrait.deserializeNBT
-                    ((CompoundTag) Objects.requireNonNull(nbt.get(skillTrait.getName() + "Trait"))));
+            skillTraits.forEach(skillTrait -> skillTrait.deserializeNBT((CompoundTag) Objects.requireNonNull(nbt.get(skillTrait.getName() + "Trait"))));
         } catch (NullPointerException e) {
-            RadixUtil.getLogger().error("Something has gone seriously wrong:" +
-                    "A skill trait hasn't been carried over from the registry.");
+            RadixUtil.getLogger().error("Something has gone seriously wrong:" + "A skill trait hasn't been carried over from the registry.");
             e.printStackTrace();
         }
     }
@@ -114,15 +122,13 @@ public class SkillData implements DataTrait {
     }
 
     public List<SkillTrait> getFilteredTraits(Predicate<? super SkillTrait> filter) {
-        return getSkillTraits().stream().filter(filter)
-                .collect(Collectors.toList());
+        return getSkillTraits().stream().filter(filter).collect(Collectors.toList());
     }
 
     @Nullable
     public SkillTrait getTrait(String name) {
         for (SkillTrait trait : getSkillTraits())
-            if (trait.getName().equals(name))
-                return trait;
+            if (trait.getName().equals(name)) return trait;
 
         return null;
     }

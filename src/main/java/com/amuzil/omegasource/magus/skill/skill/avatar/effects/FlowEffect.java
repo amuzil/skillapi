@@ -15,6 +15,7 @@ public class FlowEffect extends EffectSkill {
 
     public FlowEffect(String name, SkillCategory category) {
         super(name, category);
+        addActivationType(RadixTree.ActivationType.MULTIKEY);
     }
 
     @Override
