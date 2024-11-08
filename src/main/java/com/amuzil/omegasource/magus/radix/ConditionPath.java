@@ -90,4 +90,11 @@ public class ConditionPath implements INBTSerializable<CompoundTag> {
             }
         });
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        // This needs to be overridden to *ignore* modifiers. It needs to only check that each condition in each path matches
+        // (using custom defined hashcodes/equals method for each).
+        return super.equals(obj);
+    }
 }
