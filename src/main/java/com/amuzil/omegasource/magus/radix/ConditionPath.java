@@ -1,7 +1,6 @@
 package com.amuzil.omegasource.magus.radix;
 
-import com.amuzil.omegasource.magus.skill.forms.Form;
-import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
+import com.amuzil.omegasource.magus.radix.condition.ConditionRegistry;
 import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 import com.ibm.icu.impl.Pair;
@@ -27,7 +26,7 @@ public class ConditionPath implements INBTSerializable<CompoundTag> {
         conditions = activatedConditions;
         activationPath = new LinkedList<>();
         List<ModifierData> emptyModifier = new ArrayList<>();
-        for (Condition activatedCondition: activatedConditions) {
+        for (Condition activatedCondition : activatedConditions) {
             activationPath.add(Pair.of(activatedCondition, emptyModifier));
         }
     }
@@ -60,7 +59,7 @@ public class ConditionPath implements INBTSerializable<CompoundTag> {
             modifierData.forEach(modifierDataInstance -> modifierDataListTag.add(modifierDataInstance.serializeNBT()));
 
             // Have to fix this...
-            pairTag.putString("condition", activeCondition.toString());
+            pairTag.putInt("condition", ConditionRegistry.getID(activeCondition));
             pairTag.put("modifiers", modifierDataListTag);
             listOfPairsTag.add(i, pairTag);
         }
@@ -72,22 +71,25 @@ public class ConditionPath implements INBTSerializable<CompoundTag> {
 
     @Override
     public void deserializeNBT(CompoundTag compoundTag) {
-        ListTag listOfPairsTag = (ListTag)compoundTag.get("activationPath");
+        ListTag listOfPairsTag = (ListTag) compoundTag.get("activationPath");
         activationPath = new LinkedList<>();
+        if (listOfPairsTag == null)
+            return;
         listOfPairsTag.forEach(pairTag -> {
             // Need to figure out how to convert this into conditions.
             // Going to go over capability data to check for every active listener and use those in the path.
-            if(pairTag instanceof CompoundTag pairTagCompound) {
-                Pair<Form, List<ModifierData>> stepPair;
-                Form formActivated = FormDataRegistry.getFormByName(pairTagCompound.getString("form"));
-                ListTag modifiersListTag = (ListTag)pairTagCompound.get("modifiers");
+            if (pairTag instanceof CompoundTag pairTagCompound) {
+                Pair<Condition, List<ModifierData>> stepPair;
+                Condition condition = ConditionRegistry.getCondition(((CompoundTag) pairTag).getInt("condition"));
+                ListTag modifiersListTag = (ListTag) pairTagCompound.get("modifiers");
 
                 List<ModifierData> modifierData = new ArrayList<>();
+                // Only add modifier data if it's not null
+                if (modifiersListTag != null)
+                    modifiersListTag.forEach(tag -> modifierData.add(ModifiersRegistry.fromCompoundTag(compoundTag)));
 
-                modifiersListTag.forEach(tag -> modifierData.add(ModifiersRegistry.fromCompoundTag(compoundTag)));
-
-                stepPair = Pair.of(formActivated, modifierData);
-//                activationPath.add(stepPair);
+                stepPair = Pair.of(condition, modifierData);
+                activationPath.add(stepPair);
             }
         });
     }
