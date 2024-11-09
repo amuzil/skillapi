@@ -71,6 +71,11 @@ public class SkillActive extends Skill {
         this.state = SkillState.START;
     }
 
+    @Override
+    public void reset(LivingEntity entity, RadixTree tree) {
+
+    }
+
     //Need to account for the different types as worked out by Maht and I (FavouriteDragon).
     public boolean execute() {
         return false;

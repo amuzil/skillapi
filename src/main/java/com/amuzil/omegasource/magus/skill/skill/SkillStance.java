@@ -55,4 +55,9 @@ public class SkillStance extends Skill {
     public void stop(LivingEntity entity, RadixTree tree) {
 
     }
+
+    @Override
+    public void reset(LivingEntity entity, RadixTree tree) {
+        
+    }
 }
