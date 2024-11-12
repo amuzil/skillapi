@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.input;
 
 import com.amuzil.omegasource.magus.Magus;
+import com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry;
 import net.minecraft.client.KeyMapping;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
@@ -27,6 +28,7 @@ public class KeyBindings {
         if (press.getKey() == keyToggleTree.getKey().getValue()) {
             if (press.getAction() == GLFW.GLFW_RELEASE) {
                 Magus.keyboardMouseInputModule.toggleListeners();
+                AvatarFormRegistry.reloadFX();
             }
         }
     }
