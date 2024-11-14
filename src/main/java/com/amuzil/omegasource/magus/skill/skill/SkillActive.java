@@ -2,6 +2,8 @@ package com.amuzil.omegasource.magus.skill.skill;
 
 import com.amuzil.omegasource.magus.radix.ConditionPath;
 import com.amuzil.omegasource.magus.radix.RadixTree;
+import com.amuzil.omegasource.magus.skill.util.capability.entity.Magi;
+import com.amuzil.omegasource.magus.skill.util.data.SkillData;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.util.HashMap;
@@ -26,6 +28,8 @@ public class SkillActive extends Skill {
         if (getActivationPaths() == null || tree == null || tree.getPath() == null)
             return false;
 
+
+
         // Initialise paths here, to reduce memory consumption
         HashMap<RadixTree.ActivationType, List<ConditionPath>> paths = getActivationPaths();
         for (RadixTree.ActivationType type : getActivationTypes()) {
@@ -41,34 +45,57 @@ public class SkillActive extends Skill {
             }
         }
 
+        Magi magi = Magi.get(entity);
+        if (magi != null) {
+            canStart &= magi.getSkillData(this).getState() == SkillState.START;
+        }
+        else canStart = false;
+
         // Finds the highest priority type that is valid, and goes with that.
         this.activatedType = currentType;
-        return canStart && state == SkillState.START;
+        return canStart;
     }
 
     @Override
     public boolean shouldRun(LivingEntity entity, RadixTree tree) {
-        return state == SkillState.RUN;
+        SkillData data;
+        Magi magi = Magi.get(entity);
+        if (magi != null) {
+            data = magi.getSkillData(this);
+            return data.getState() == SkillState.RUN;
+        }
+        return false;
     }
 
     @Override
     public boolean shouldStop(LivingEntity entity, RadixTree tree) {
-        return state == SkillState.STOP;
+        SkillData data;
+        Magi magi = Magi.get(entity);
+        if (magi != null) {
+            data = magi.getSkillData(this);
+            return data.getState() == SkillState.STOP;
+        }
+        return false;
     }
 
     @Override
     public void start(LivingEntity entity, RadixTree tree) {
-        this.state = SkillState.RUN;
+        SkillData data;
+        Magi magi = Magi.get(entity);
+        if (magi != null) {
+            data = magi.getSkillData(this);
+            data.setState(SkillState.RUN);
+        }
     }
 
     @Override
     public void run(LivingEntity entity, RadixTree tree) {
-        this.state = SkillState.STOP;
+
     }
 
     @Override
     public void stop(LivingEntity entity, RadixTree tree) {
-        this.state = SkillState.START;
+
     }
 
     @Override

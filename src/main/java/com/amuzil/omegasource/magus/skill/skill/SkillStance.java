@@ -58,6 +58,6 @@ public class SkillStance extends Skill {
 
     @Override
     public void reset(LivingEntity entity, RadixTree tree) {
-        
+
     }
 }

@@ -28,7 +28,6 @@ public abstract class Skill {
     // How the skill was activated. Useful if you want different methods to influence the skill in different ways.
     // For complex, game-design move combinations, see ModifierData for how to alter your skills.
     protected RadixTree.ActivationType activatedType;
-    protected SkillState state;
 
     public Skill(String modID, String name, SkillCategory category) {
         this(new ResourceLocation(modID, name), category);
@@ -36,7 +35,6 @@ public abstract class Skill {
 
     public Skill(String name, SkillCategory category) {
         this(Magus.MOD_ID, name, category);
-        this.state = SkillState.START;
     }
 
     public Skill(ResourceLocation id, SkillCategory category) {
@@ -134,7 +132,7 @@ public abstract class Skill {
     public abstract void reset(LivingEntity entity, RadixTree tree);
 
 
-    protected enum SkillState {
+    public enum SkillState {
         START, RUN, STOP
     }
 
