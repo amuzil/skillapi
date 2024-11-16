@@ -1,6 +1,7 @@
 package com.amuzil.omegasource.magus.skill.util.capability.entity;
 
 import com.amuzil.omegasource.magus.radix.RadixTree;
+import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
@@ -34,6 +35,9 @@ public class Magi {
         this.skillData = new ArrayList<>();
         for (Skill skill : Registries.skills)
             skillData.add(new SkillData(skill));
+
+        // Testing...
+        skillData.forEach(skillData1 -> skillData1.setCanUse(true));
     }
 
     @Nullable
@@ -92,6 +96,7 @@ public class Magi {
     public void onUpdate() {
         List<Skill> skills = Registries.getSkills();
         for (Skill skill : skills) {
+            RadixUtil.getLogger().debug(skill);
             if (getSkillData(skill).canUse()) {
                 skill.tick(getMagi(), getTree());
             }

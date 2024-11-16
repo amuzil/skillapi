@@ -70,7 +70,7 @@ public class LivingDataCapability {
         public CompoundTag serializeNBT() {
             CompoundTag tag;
             if (magi != null && magi.isDirty()) {
-                tag = magi.serialiseNBT(new CompoundTag());
+                tag = magi.serialiseNBT();
             } else tag = new CompoundTag();
             traits.forEach(trait -> {
                 if (trait.isDirty() || isDirty()) {
