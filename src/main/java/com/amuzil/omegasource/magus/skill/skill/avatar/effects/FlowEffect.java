@@ -3,6 +3,7 @@ package com.amuzil.omegasource.magus.skill.skill.avatar.effects;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.ConditionPath;
 import com.amuzil.omegasource.magus.radix.RadixTree;
+import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.amuzil.omegasource.magus.radix.builders.SkillPathBuilder;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
@@ -54,5 +55,7 @@ public class FlowEffect extends EffectSkill {
     public void run(LivingEntity entity, RadixTree tree) {
         // adjust player prepared chi (getModifierData())
         super.run(entity, tree);
+        RadixUtil.getLogger().debug("Current skill: " + this);
+        RadixUtil.getLogger().debug("Current player: " + entity);
     }
 }

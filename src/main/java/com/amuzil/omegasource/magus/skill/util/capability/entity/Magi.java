@@ -12,21 +12,28 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Magi {
 
 
     private final Data capabilityData;
+    private final LivingEntity magi;
     private List<SkillData> skillData;
     private List<SkillCategoryData> skillCategoryData;
-    private final LivingEntity magi;
 
     public Magi(Data capabilityData, LivingEntity entity) {
         this.capabilityData = capabilityData;
         this.magi = entity;
+
+        // Initialise skilldata.
+        this.skillData = new ArrayList<>();
+        for (Skill skill : Registries.skills)
+            skillData.add(new SkillData(skill));
     }
 
     @Nullable
@@ -99,12 +106,21 @@ public class Magi {
         return this.magi;
     }
 
-    public CompoundTag serialiseNBT(CompoundTag tag) {
+    public CompoundTag serialiseNBT() {
+        CompoundTag tag = new CompoundTag();
+        if (isDirty()) {
+            // TODO: Figure out if I need to use the returned tags from each of these values....
+            skillCategoryData.forEach(SkillCategoryData::serializeNBT);
+            skillData.forEach(SkillData::serializeNBT);
+            tag = capabilityData.serializeNBT();
+        }
         return tag;
     }
 
     public void deserialiseNBT(CompoundTag tag) {
-
+        skillCategoryData.forEach(skillCategoryData1 -> skillCategoryData1.deserializeNBT(tag));
+        skillData.forEach(skillData1 -> skillData1.deserializeNBT(tag));
+        capabilityData.deserializeNBT(tag);
     }
 
 }

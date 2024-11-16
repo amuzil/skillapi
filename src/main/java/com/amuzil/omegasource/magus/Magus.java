@@ -8,6 +8,7 @@ import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.forms.FormDataRegistry;
 import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
+import com.amuzil.omegasource.magus.skill.skill.Skills;
 import com.amuzil.omegasource.magus.skill.test.avatar.AvatarCommand;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import net.minecraft.client.Minecraft;
@@ -73,6 +74,7 @@ public class Magus {
         CapabilityHandler.initialiseCaps();
         MagusNetwork.registerMessages();
         ModifiersRegistry.init();
+        Skills.registerSkills();
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {

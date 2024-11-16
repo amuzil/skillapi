@@ -35,7 +35,8 @@ public class SkillData implements DataTrait {
         this.canUse = false;
 
         this.state = Skill.SkillState.START;
-        skillTraits = getSkill().getTraits();
+        if (getSkill() != null)
+            skillTraits = getSkill().getTraits();
     }
 
     public SkillData(Skill skill) {
@@ -55,6 +56,7 @@ public class SkillData implements DataTrait {
         this.state = state;
         markDirty();
     }
+
     public boolean canUse() {
         return this.canUse;
     }
@@ -118,6 +120,8 @@ public class SkillData implements DataTrait {
 
 
     public List<SkillTrait> getSkillTraits() {
+        if (skillTraits == null || skillTraits.isEmpty())
+            skillTraits = getSkill().getTraits();
         return skillTraits;
     }
 

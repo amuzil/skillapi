@@ -16,24 +16,10 @@ public class EffectSkill extends SkillActive {
     }
 
 
-    @Override
-    public boolean shouldStart(LivingEntity entity, RadixTree tree) {
-        return false;
-    }
-
-    @Override
-    public boolean shouldRun(LivingEntity entity, RadixTree tree) {
-        return false;
-    }
-
-    @Override
-    public boolean shouldStop(LivingEntity entity, RadixTree tree) {
-        return false;
-    }
 
     @Override
     public void start(LivingEntity entity, RadixTree tree) {
-
+        super.start(entity, tree);
     }
 
     @Override
