@@ -37,6 +37,19 @@ public class FlowEffect extends EffectSkill {
     }
 
     @Override
+    public boolean shouldStart(LivingEntity entity, RadixTree tree) {
+        RadixUtil.getLogger().debug(tree);
+        RadixUtil.getLogger().debug(super.shouldStart(entity, tree));
+        RadixUtil.getLogger().debug(getActivationPaths());
+        return super.shouldStart(entity, tree);
+    }
+
+    @Override
+    public boolean shouldStop(LivingEntity entity, RadixTree tree) {
+        return super.shouldStop(entity, tree);
+    }
+
+    @Override
     public void start(LivingEntity entity, RadixTree tree) {
         // In case of avatar, we only care about initial path.
         List<Condition> conditions = getMultikeyConditions();
