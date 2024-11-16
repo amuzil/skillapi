@@ -24,9 +24,13 @@ public class ConditionPath implements INBTSerializable<CompoundTag> {
 
     public ConditionPath(List<Condition> activatedConditions) {
         conditions = activatedConditions;
+        if (conditions == null)
+            conditions = new LinkedList<>();
+
         activationPath = new HashMap<>();
         List<ModifierData> emptyModifier = new ArrayList<>();
-        for (Condition activatedCondition : activatedConditions) {
+        
+        for (Condition activatedCondition : conditions) {
             activationPath.put(activatedCondition, emptyModifier);
         }
         markDirty();
@@ -45,9 +49,11 @@ public class ConditionPath implements INBTSerializable<CompoundTag> {
     }
 
     public void addStep(Condition activatedCondition, List<ModifierData> modifierData) {
-        conditions.add(activatedCondition);
-        activationPath.put(activatedCondition, modifierData);
-        markDirty();
+        if (activatedCondition != null) {
+            conditions.add(activatedCondition);
+            activationPath.put(activatedCondition, modifierData);
+            markDirty();
+        }
     }
 
     // Remember that modifier data goes up to the currently active node. So, a lot of Effects
