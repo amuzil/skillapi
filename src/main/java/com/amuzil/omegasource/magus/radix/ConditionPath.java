@@ -23,13 +23,11 @@ public class ConditionPath implements INBTSerializable<CompoundTag> {
     }
 
     public ConditionPath(List<Condition> activatedConditions) {
-        conditions = activatedConditions;
-        if (conditions == null)
-            conditions = new LinkedList<>();
-
+        conditions = new LinkedList<>(activatedConditions);
         activationPath = new HashMap<>();
+
         List<ModifierData> emptyModifier = new ArrayList<>();
-        
+
         for (Condition activatedCondition : conditions) {
             activationPath.put(activatedCondition, emptyModifier);
         }
@@ -49,7 +47,7 @@ public class ConditionPath implements INBTSerializable<CompoundTag> {
     }
 
     public void addStep(Condition activatedCondition, List<ModifierData> modifierData) {
-        if (activatedCondition != null) {
+        if (activatedCondition != null && conditions != null) {
             conditions.add(activatedCondition);
             activationPath.put(activatedCondition, modifierData);
             markDirty();

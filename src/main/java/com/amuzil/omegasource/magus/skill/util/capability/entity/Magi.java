@@ -13,6 +13,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.Nullable;
 
@@ -94,11 +95,13 @@ public class Magi {
 
     // Called per tick
     public void onUpdate() {
-        List<Skill> skills = Registries.getSkills();
-        for (Skill skill : skills) {
+        if (getMagi() instanceof Player) {
+            List<Skill> skills = Registries.getSkills();
+            for (Skill skill : skills) {
 //            RadixUtil.getLogger().debug(skill);
-            if (getSkillData(skill).canUse()) {
-                skill.tick(getMagi(), getTree());
+                if (getSkillData(skill).canUse()) {
+                    skill.tick(getMagi(), getTree());
+                }
             }
         }
     }

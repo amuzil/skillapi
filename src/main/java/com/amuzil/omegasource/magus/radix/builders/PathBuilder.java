@@ -64,13 +64,13 @@ public class PathBuilder {
 
     public PathBuilder finalisePath(ConditionPath path) {
         if (paths == null)
-            paths = new LinkedList<>();
+            this.paths = new LinkedList<>();
         this.paths.add(path);
         return this;
     }
 
     public PathBuilder finalisePath() {
-        this.paths.add(path);
+        finalisePath(path);
         // Reset condition path
         this.path = new ConditionPath();
         return this;
