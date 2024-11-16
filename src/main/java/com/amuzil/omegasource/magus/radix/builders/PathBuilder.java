@@ -3,6 +3,7 @@ package com.amuzil.omegasource.magus.radix.builders;
 import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.ConditionPath;
 import com.amuzil.omegasource.magus.radix.RadixTree;
+import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class PathBuilder {
         if (path == null)
             path = new ConditionPath(List.of(conditions));
         for (Condition condition : conditions) {
+            RadixUtil.getLogger().debug(condition);
             path.addStep(condition, emptyData);
         }
     }

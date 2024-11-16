@@ -38,9 +38,9 @@ public class FlowEffect extends EffectSkill {
 
     @Override
     public boolean shouldStart(LivingEntity entity, RadixTree tree) {
-        RadixUtil.getLogger().debug(tree);
-        RadixUtil.getLogger().debug(super.shouldStart(entity, tree));
-        RadixUtil.getLogger().debug(getActivationPaths());
+//        RadixUtil.getLogger().debug(tree);
+//        RadixUtil.getLogger().debug(super.shouldStart(entity, tree));
+//        RadixUtil.getLogger().debug(getActivationPaths());
         return super.shouldStart(entity, tree);
     }
 
