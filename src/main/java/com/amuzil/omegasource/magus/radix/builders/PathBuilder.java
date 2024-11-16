@@ -23,18 +23,6 @@ public class PathBuilder {
     // Todo: Change this to input type? Skills should use the activation type, forms input type?
     private RadixTree.ActivationType type;
 
-    public PathBuilder finalisePath(ConditionPath path) {
-        this.paths.add(path);
-        return this;
-    }
-
-    public PathBuilder finalisePath() {
-        this.paths.add(path);
-        // Reset condition path
-        this.path = new ConditionPath();
-        return this;
-    }
-
     protected static void addSteps(ConditionPath path, Condition... conditions) {
         List<ModifierData> emptyData = new ArrayList<>();
         if (path == null)
@@ -48,29 +36,6 @@ public class PathBuilder {
         if (instance == null) instance = new PathBuilder();
         instance.reset();
         return instance;
-    }
-
-    public PathBuilder path(Condition... conditions) {
-        addSteps(path, conditions);
-        return this;
-    }
-
-    public PathBuilder type(RadixTree.ActivationType type) {
-        this.type = type;
-        return this;
-    }
-
-    public HashMap<RadixTree.ActivationType, List<ConditionPath>> build() {
-        HashMap<RadixTree.ActivationType, List<ConditionPath>> finalPath = new HashMap<>();
-        finalPath.put(type, paths);
-        reset();
-        return finalPath;
-    }
-
-    public void reset() {
-        this.type = null;
-        this.path = null;
-        this.paths.clear();
     }
 
     public static void mergePath(HashMap<RadixTree.ActivationType, List<ConditionPath>> firstPath, HashMap<RadixTree.ActivationType, List<ConditionPath>> secondPath) {
@@ -95,5 +60,43 @@ public class PathBuilder {
         else {
             firstPath.putAll(secondPath);
         }
+    }
+
+    public PathBuilder finalisePath(ConditionPath path) {
+        if (paths == null)
+            paths = new LinkedList<>();
+        this.paths.add(path);
+        return this;
+    }
+
+    public PathBuilder finalisePath() {
+        this.paths.add(path);
+        // Reset condition path
+        this.path = new ConditionPath();
+        return this;
+    }
+
+    public PathBuilder path(Condition... conditions) {
+        addSteps(path, conditions);
+        return this;
+    }
+
+    public PathBuilder type(RadixTree.ActivationType type) {
+        this.type = type;
+        return this;
+    }
+
+    public HashMap<RadixTree.ActivationType, List<ConditionPath>> build() {
+        HashMap<RadixTree.ActivationType, List<ConditionPath>> finalPath = new HashMap<>();
+        finalPath.put(type, paths);
+        reset();
+        return finalPath;
+    }
+
+    public void reset() {
+        this.type = null;
+        this.path = null;
+        if (paths != null)
+            this.paths.clear();
     }
 }

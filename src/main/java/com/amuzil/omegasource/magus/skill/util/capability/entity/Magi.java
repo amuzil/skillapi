@@ -96,7 +96,7 @@ public class Magi {
     public void onUpdate() {
         List<Skill> skills = Registries.getSkills();
         for (Skill skill : skills) {
-            RadixUtil.getLogger().debug(skill);
+//            RadixUtil.getLogger().debug(skill);
             if (getSkillData(skill).canUse()) {
                 skill.tick(getMagi(), getTree());
             }
