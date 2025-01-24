@@ -1,6 +1,5 @@
 package com.amuzil.omegasource.magus.skill.util.capability.entity;
 
-import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
@@ -16,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Magi {
@@ -23,6 +23,7 @@ public class Magi {
     private final LivingEntity magi;
     private List<SkillData> skillData;
     private List<SkillCategoryData> skillCategoryData;
+    private HashMap<String, SkillExecuteController> skillStatuses = new HashMap<>();
 
     public Magi(Data capabilityData, LivingEntity entity) {
         this.capabilityData = capabilityData;
@@ -118,6 +119,43 @@ public class Magi {
     public void deserialiseNBT(CompoundTag tag) {
         skillCategoryData.forEach(catData -> catData.deserializeNBT(tag.getCompound(catData.getName())));
         skillData.forEach(sData -> sData.deserializeNBT(tag.getCompound(sData.getName())));
+    }
+
+
+    public static class SkillExecuteController {
+        private boolean shouldStart;
+        private boolean shouldRun;
+        private boolean shouldStop;
+
+        public SkillExecuteController() {
+            this.shouldStart = false;
+            this.shouldRun = false;
+            this.shouldStop = false;
+        }
+
+        public boolean shouldStart() {
+            return this.shouldStart;
+        }
+
+        public boolean shouldRun() {
+            return this.shouldRun;
+        }
+
+        public boolean shouldStop() {
+            return this.shouldStop;
+        }
+
+        public void setStart(boolean start) {
+            this.shouldStart = start;
+        }
+
+        public void setRun(boolean run) {
+            this.shouldRun = run;
+        }
+
+        public void setStop(boolean stop) {
+            this.shouldStop = stop;
+        }
     }
 
 }
