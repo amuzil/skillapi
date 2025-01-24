@@ -1,7 +1,6 @@
 package com.amuzil.omegasource.magus.skill.util.capability.entity;
 
 import com.amuzil.omegasource.magus.Magus;
-import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
 import com.amuzil.omegasource.magus.skill.skill.SkillCategory;
@@ -49,9 +48,6 @@ public class LivingDataCapability {
         // Instance of skill/magus supported entity, essentially.
         private Magi magi = null;
 
-        //Gets the tree from the event bus.
-        private RadixTree tree;
-
         public LivingDataCapabilityImp() {
             fillTraits();
             //TODO: Data generation methods for each skill
@@ -87,15 +83,6 @@ public class LivingDataCapability {
             traits.forEach(trait -> trait.deserializeNBT((CompoundTag) nbt.get(trait.getName())));
             if (magi != null)
                 magi.deserialiseNBT(nbt);
-        }
-
-        public RadixTree getTree() {
-            return tree;
-        }
-
-        public void setTree(RadixTree tree) {
-            this.tree = tree;
-            markDirty();
         }
 
         public void fillTraits() {

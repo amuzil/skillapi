@@ -38,7 +38,7 @@ public class ConditionActivatedPacket implements MagusPacket {
         ctx.get().enqueueWork(() -> {
             Player player = ctx.get().getSender();
             // Intentional crashing because I want to know why my packet isn't being received correctly...
-            CapabilityHandler.getCapability(player, CapabilityHandler.LIVING_DATA).getTree().moveDown(condition);
+//            CapabilityHandler.getCapability(player, CapabilityHandler.LIVING_DATA).getTree().moveDown(condition);
         });
         return true;
     }

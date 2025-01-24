@@ -74,7 +74,7 @@ public class PathBuilder {
     public PathBuilder finalisePath() {
         finalisePath(path);
         // Reset condition path
-        this.path = new ConditionPath();
+//        this.path = new ConditionPath();
         return this;
     }
 
@@ -91,7 +91,8 @@ public class PathBuilder {
     public HashMap<RadixTree.ActivationType, List<ConditionPath>> build() {
         HashMap<RadixTree.ActivationType, List<ConditionPath>> finalPath = new HashMap<>();
         finalPath.put(type, paths);
-        reset();
+        RadixUtil.getLogger().debug(finalPath);
+//        reset();
         return finalPath;
     }
 

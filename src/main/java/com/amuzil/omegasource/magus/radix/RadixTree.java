@@ -23,7 +23,9 @@ public class RadixTree {
     // Fire is a test
     private Element activeElement = null; // Disciplines.FIRE;
     private ConditionPath path;
-    private Entity owner;
+
+    // TODO: Comment this out, perform entity related logic in bending context
+//    private Entity owner;
 
     public RadixTree(Node root) {
         this.root = root;
@@ -82,6 +84,7 @@ public class RadixTree {
         deactivateAllConditions();
         for (Condition condition : root.getImmediateBranches())
             condition.register();
+        setActive(root);
     }
 
     // Helpful method to debug and to see all the conditions
@@ -137,7 +140,7 @@ public class RadixTree {
 
     // Add conditions to RadixTree - O(n)
     public void insert(List<Condition> conditions) {
-        Node current = root;
+        Node current = active;
         int currIndex = 0;
 
         while (currIndex < conditions.size()) {
@@ -197,7 +200,7 @@ public class RadixTree {
     public List<Condition> search(List<Condition> conditions) {
         conditions = prioritizeConditions(conditions);
         List<Condition> ret = null;
-        Node current = root;
+        Node current = active;
         int currIndex = 0;
         while (currIndex < conditions.size()) {
             Condition currentCondition = conditions.get(currIndex);
@@ -253,10 +256,16 @@ public class RadixTree {
         if (active != null && active == root) {
             Condition currentCondition = active.terminateCondition();
             if (currentCondition != null) {
+                Runnable success = currentCondition.onSuccess;
+                Runnable failure = currentCondition.onFailure;
                 currentCondition.register(currentCondition.name(), () -> {
-                    currentCondition.onSuccess.run();
+                    if (success != null)
+                        success.run();
                     currentCondition.unregister();
-                }, currentCondition.onFailure);
+                }, () -> {
+                    if (failure != null)
+                        failure.run();
+                });
                 currentCondition.register();
             }
 
@@ -283,8 +292,8 @@ public class RadixTree {
             }
 
 
-            if (active.getModifiers().size() > 0 && owner instanceof ServerPlayer player)
-                active.registerModifierListeners(activeElement, player);
+//            if (active.getModifiers().size() > 0 && owner instanceof ServerPlayer player)
+//                active.registerModifierListeners(activeElement, player);
 
             if (active.onEnter() != null) {
                 active.onEnter().accept(this);
@@ -345,11 +354,11 @@ public class RadixTree {
         }
         this.lastActivated = executedCondition;
 
-        if (active.getModifiers().size() > 0 && owner instanceof ServerPlayer player) {
-            active.unregisterModifierListeners(player);
-            //todo remove this its just for testing
-            active.getModifiers().forEach(modifier -> modifier.print());
-        }
+//        if (active.getModifiers().size() > 0 && owner instanceof ServerPlayer player) {
+//            active.unregisterModifierListeners(player);
+//            //todo remove this its just for testing
+//            active.getModifiers().forEach(modifier -> modifier.print());
+//        }
 
         if (active.children().size() == 0) return;
 
@@ -379,7 +388,7 @@ public class RadixTree {
     }
 
     public void setOwner(Entity entity) {
-        this.owner = entity;
+//        this.owner = entity;
     }
 
     public ConditionPath getPath() {

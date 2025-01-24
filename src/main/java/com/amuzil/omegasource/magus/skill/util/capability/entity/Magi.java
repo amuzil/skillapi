@@ -1,7 +1,6 @@
 package com.amuzil.omegasource.magus.skill.util.capability.entity;
 
 import com.amuzil.omegasource.magus.radix.RadixTree;
-import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
@@ -14,15 +13,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Magi {
-
-
     private final Data capabilityData;
     private final LivingEntity magi;
     private List<SkillData> skillData;
@@ -63,11 +59,6 @@ public class Magi {
     public boolean isDirty() {
         return false;
     }
-
-    public RadixTree getTree() {
-        return capabilityData.getTree();
-    }
-
     public List<DataTrait> getTraits() {
         return getMagusData().getTraits();
     }
@@ -100,7 +91,7 @@ public class Magi {
             for (Skill skill : skills) {
 //            RadixUtil.getLogger().debug(skill);
                 if (getSkillData(skill).canUse()) {
-                    skill.tick(getMagi(), getTree());
+//                    skill.tick(getMagi(), getTree());
                 }
             }
         }
@@ -118,17 +109,15 @@ public class Magi {
         CompoundTag tag = new CompoundTag();
         if (isDirty()) {
             // TODO: Figure out if I need to use the returned tags from each of these values....
-            skillCategoryData.forEach(SkillCategoryData::serializeNBT);
-            skillData.forEach(SkillData::serializeNBT);
-            tag = capabilityData.serializeNBT();
+            skillCategoryData.forEach(catData -> tag.put(catData.getName(), catData.serializeNBT()));
+            skillData.forEach(sData -> tag.put(sData.getName(), sData.serializeNBT()));
         }
         return tag;
     }
 
     public void deserialiseNBT(CompoundTag tag) {
-        skillCategoryData.forEach(skillCategoryData1 -> skillCategoryData1.deserializeNBT(tag));
-        skillData.forEach(skillData1 -> skillData1.deserializeNBT(tag));
-        capabilityData.deserializeNBT(tag);
+        skillCategoryData.forEach(catData -> catData.deserializeNBT(tag.getCompound(catData.getName())));
+        skillData.forEach(sData -> sData.deserializeNBT(tag.getCompound(sData.getName())));
     }
 
 }

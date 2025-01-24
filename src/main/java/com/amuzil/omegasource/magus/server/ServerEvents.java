@@ -47,8 +47,8 @@ public class ServerEvents {
                                     ModifiersRegistry.DIRECTION.copy(), ModifiersRegistry.TARGET.copy())
                             .build();
                     //Resets the tree; for testing purposes.
-                    if (magi.getTree() != null)
-                        magi.getTree().burn();
+//                    if (magi.getTree() != null)
+//                        magi.getTree().burn();
                 }
                 // While this test code will directly use conditions, Skills will reference Forms
                 // that get automatically turned into conditions.

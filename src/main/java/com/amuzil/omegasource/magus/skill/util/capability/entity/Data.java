@@ -1,8 +1,6 @@
 package com.amuzil.omegasource.magus.skill.util.capability.entity;
 
-import com.amuzil.omegasource.magus.radix.RadixTree;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 import net.minecraftforge.common.util.INBTSerializable;
 
 /**
@@ -20,8 +18,4 @@ public interface Data extends INBTSerializable<CompoundTag> {
     void markClean();
 
     boolean isDirty();
-
-    RadixTree getTree();
-
-    void setTree(RadixTree tree);
 }

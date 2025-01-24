@@ -28,6 +28,7 @@ public abstract class Skill {
     // How the skill was activated. Useful if you want different methods to influence the skill in different ways.
     // For complex, game-design move combinations, see ModifierData for how to alter your skills.
     protected RadixTree.ActivationType activatedType;
+    private boolean shouldStart, shouldRun, shouldStop;
 
     public Skill(String modID, String name, SkillCategory category) {
         this(new ResourceLocation(modID, name), category);
@@ -95,16 +96,19 @@ public abstract class Skill {
 
 
         if (shouldStart(entity, tree)) {
-            if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Start(entity, tree, this))) return;
+            if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Start(entity, tree, this)))
+                return;
             start(entity, tree);
         } else return;
 
 
         if (shouldRun(entity, tree)) {
-            if (!MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Run(entity, tree, this))) run(entity, tree);
+            if (!MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Run(entity, tree, this)))
+                run(entity, tree);
 
             if (shouldStop(entity, tree)) {
-                if (!MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Stop(entity, tree, this))) stop(entity, tree);
+                if (!MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Stop(entity, tree, this)))
+                    stop(entity, tree);
             }
         }
     }
