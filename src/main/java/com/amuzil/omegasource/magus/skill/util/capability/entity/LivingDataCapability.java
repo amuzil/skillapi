@@ -57,8 +57,10 @@ public class LivingDataCapability {
         }
 
         public Magi getMagi(LivingEntity entity) {
-            if (magi == null)
+            if (magi == null) {
+                fillTraits();
                 magi = new Magi(this, entity);
+            }
             return this.magi;
         }
 

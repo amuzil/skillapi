@@ -12,6 +12,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.common.util.INBTSerializable;
+import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -21,6 +23,8 @@ import java.util.List;
 public class Magi {
     private final Data capabilityData;
     private final LivingEntity magi;
+
+    // These are magi specific traits.
     private List<SkillData> skillData;
     private List<SkillCategoryData> skillCategoryData;
     private HashMap<String, SkillExecuteController> skillStatuses = new HashMap<>();
@@ -106,6 +110,8 @@ public class Magi {
         return this.magi;
     }
 
+    // We don't serialise `traits`, because those are serialised in the cap itself.
+    // Wrapper allows us to access.
     public CompoundTag serialiseNBT() {
         CompoundTag tag = new CompoundTag();
         if (isDirty()) {
@@ -122,7 +128,8 @@ public class Magi {
     }
 
 
-    public static class SkillExecuteController {
+    public static class SkillExecuteController implements Data {
+        private boolean dirty;
         private boolean shouldStart;
         private boolean shouldRun;
         private boolean shouldStop;
@@ -131,6 +138,7 @@ public class Magi {
             this.shouldStart = false;
             this.shouldRun = false;
             this.shouldStop = false;
+            this.dirty = false;
         }
 
         public boolean shouldStart() {
@@ -155,6 +163,34 @@ public class Magi {
 
         public void setStop(boolean stop) {
             this.shouldStop = stop;
+        }
+
+        @Override
+        public void markDirty() {
+            this.dirty = true;
+        }
+
+        @Override
+        public void markClean() {
+            this.dirty = false;
+        }
+
+        @Override
+        public boolean isDirty() {
+            return this.dirty;
+        }
+
+        @Override
+        public CompoundTag serializeNBT() {
+            CompoundTag tag = new CompoundTag();
+            tag.putBoolean("start", shouldStart);
+            
+            return null;
+        }
+
+        @Override
+        public void deserializeNBT(CompoundTag nbt) {
+
         }
     }
 
