@@ -27,7 +27,11 @@ public class Magi {
     // These are magi specific traits.
     private List<SkillData> skillData;
     private List<SkillCategoryData> skillCategoryData;
-    private HashMap<String, SkillExecuteController> skillStatuses = new HashMap<>();
+
+    // Change this to use an int - 0 for should start, 1 for should run, 2 for should stop,
+    // -1 for default/idle. If I need multiple states, then use bits; 000 for idle, and then
+    // 1xx is should start, x1x is should run, xx1 is should stop
+    private HashMap<String, Integer> skillStatuses = new HashMap<>();
 
     public Magi(Data capabilityData, LivingEntity entity) {
         this.capabilityData = capabilityData;
@@ -125,73 +129,6 @@ public class Magi {
     public void deserialiseNBT(CompoundTag tag) {
         skillCategoryData.forEach(catData -> catData.deserializeNBT(tag.getCompound(catData.getName())));
         skillData.forEach(sData -> sData.deserializeNBT(tag.getCompound(sData.getName())));
-    }
-
-
-    public static class SkillExecuteController implements Data {
-        private boolean dirty;
-        private boolean shouldStart;
-        private boolean shouldRun;
-        private boolean shouldStop;
-
-        public SkillExecuteController() {
-            this.shouldStart = false;
-            this.shouldRun = false;
-            this.shouldStop = false;
-            this.dirty = false;
-        }
-
-        public boolean shouldStart() {
-            return this.shouldStart;
-        }
-
-        public boolean shouldRun() {
-            return this.shouldRun;
-        }
-
-        public boolean shouldStop() {
-            return this.shouldStop;
-        }
-
-        public void setStart(boolean start) {
-            this.shouldStart = start;
-        }
-
-        public void setRun(boolean run) {
-            this.shouldRun = run;
-        }
-
-        public void setStop(boolean stop) {
-            this.shouldStop = stop;
-        }
-
-        @Override
-        public void markDirty() {
-            this.dirty = true;
-        }
-
-        @Override
-        public void markClean() {
-            this.dirty = false;
-        }
-
-        @Override
-        public boolean isDirty() {
-            return this.dirty;
-        }
-
-        @Override
-        public CompoundTag serializeNBT() {
-            CompoundTag tag = new CompoundTag();
-            tag.putBoolean("start", shouldStart);
-            
-            return null;
-        }
-
-        @Override
-        public void deserializeNBT(CompoundTag nbt) {
-
-        }
     }
 
 }
