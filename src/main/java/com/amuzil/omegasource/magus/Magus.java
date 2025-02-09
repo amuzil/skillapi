@@ -1,8 +1,9 @@
 package com.amuzil.omegasource.magus;
 
 import com.amuzil.omegasource.magus.entity.AvatarEntities;
+import com.amuzil.omegasource.magus.input.DefaultInputModule;
 import com.amuzil.omegasource.magus.input.InputModule;
-import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
+//import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.input.MouseMotionModule;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.registry.Registries;
@@ -43,9 +44,9 @@ public class Magus {
     public static final Logger LOGGER = LogManager.getLogger();
 
     //todo: move these to a better place
-    public static InputModule keyboardMouseInputModule;
-    public static InputModule mouseMotionModule;
-
+//    public static InputModule keyboardMouseInputModule;
+//    public static InputModule mouseMotionModule;
+    public static DefaultInputModule inputModule;
     public Magus() {
         // Register capabilities
         FMLJavaModLoadingContext.get().getModEventBus().addListener(CapabilityHandler::registerCapabilities);
@@ -80,8 +81,9 @@ public class Magus {
     private void doClientStuff(final FMLClientSetupEvent event) {
         // do something that can only be done on the client
         // Register the input modules
-        keyboardMouseInputModule = new KeyboardMouseInputModule();
-        mouseMotionModule = new MouseMotionModule();
+//        keyboardMouseInputModule = new KeyboardMouseInputModule();
+//        mouseMotionModule = new MouseMotionModule();
+        inputModule = new DefaultInputModule();
         // TODO - call this anytime the key mappings are updated
         // Assign input data to forms
         FormDataRegistry.init();

@@ -6,6 +6,8 @@ import com.amuzil.omegasource.magus.network.packets.client_executed.FormActivate
 import com.amuzil.omegasource.magus.network.packets.client_executed.RegisterModifierListenersPacket;
 import com.amuzil.omegasource.magus.network.packets.client_executed.SkillTriggeredPacket;
 import com.amuzil.omegasource.magus.network.packets.client_executed.UnregisterModifierListenersPacket;
+import com.amuzil.omegasource.magus.network.packets.forms.ExecuteFormPacket;
+import com.amuzil.omegasource.magus.network.packets.forms.ReleaseFormPacket;
 import com.amuzil.omegasource.magus.network.packets.server_executed.ElementActivatedPacket;
 import com.amuzil.omegasource.magus.network.packets.server_executed.ConditionActivatedPacket;
 import com.amuzil.omegasource.magus.network.packets.server_executed.SendModifierDataPacket;
@@ -79,6 +81,18 @@ public class MagusNetwork {
                 .decoder(UnregisterModifierListenersPacket::fromBytes)
                 .consumerMainThread(UnregisterModifierListenersPacket::handle)
                 .add();
+
+        CHANNEL.messageBuilder(ExecuteFormPacket.class, nextID())
+                .encoder(ExecuteFormPacket::toBytes)
+                .decoder(ExecuteFormPacket::fromBytes)
+                .consumerMainThread(ExecuteFormPacket::handle)
+                .add();
+
+        CHANNEL.messageBuilder(ReleaseFormPacket.class, nextID())
+                .encoder(ReleaseFormPacket::toBytes)
+                .decoder(ReleaseFormPacket::fromBytes)
+                .consumerMainThread(ReleaseFormPacket::handle)
+                .add();
     }
 
 
@@ -86,7 +100,7 @@ public class MagusNetwork {
         CHANNEL.sendTo(packet, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 
-    public static void  sendToServer(MagusPacket packet) {
+    public static void sendToServer(MagusPacket packet) {
         CHANNEL.sendToServer(packet);
     }
 }

@@ -90,14 +90,14 @@ public class FormActivatedPacket implements MagusPacket {
             entity = ElementProjectile.createElementEntity(form, element, player, level);
         }
         assert entity != null;
-        if (form.equals(ARC) || form.equals(NULL)) {
-            entity.control(1.5f, form);
-        } else if (form.equals(STRIKE) || form.equals(FORCE)) {
-            entity.shoot(player.getViewVector(1).x, player.getViewVector(1).y, player.getViewVector(1).z, 1, 1);
-        } else {
-            entity.discard();
-            return; // Unhandled Form - Discard and print no effects
-        }
+//        if (form.equals(ARC) || form.equals(NULL)) {
+//            entity.control(1.5f, form);
+//        } else if (form.equals(STRIKE) || form.equals(FORCE)) {
+//            entity.shoot(player.getViewVector(1).x, player.getViewVector(1).y, player.getViewVector(1).z, 1, 1);
+//        } else {
+//            entity.discard();
+//            return; // Unhandled Form - Discard and print no effects
+//        }
         if (entityId == 0)
             level.addFreshEntity(entity);
         FormActivatedPacket packet = new FormActivatedPacket(form, element, entity.getId());

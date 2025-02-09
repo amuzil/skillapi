@@ -1,7 +1,7 @@
 package com.amuzil.omegasource.magus.skill.test.avatar;
 
 import com.amuzil.omegasource.magus.Magus;
-import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
+//import com.amuzil.omegasource.magus.input.KeyboardMouseInputModule;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.radix.builders.InputPathBuilder;
 import com.amuzil.omegasource.magus.skill.conditionals.InputData;
@@ -43,11 +43,11 @@ public class AvatarFormRegistry {
         //  make them Effects using the Force Form, Direction modifier & Target Modifier
 
         /* Mouse Button Forms */
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE, RadixTree.InputType.KEYBOARD_MOUSE);
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE, RadixTree.InputType.KEYBOARD_MOUSE);
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(KeyDataBuilder.createMultiInput(left, right)), Forms.BURST, RadixTree.InputType.KEYBOARD_MOUSE);
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(forwards), Forms.EXPAND, RadixTree.InputType.KEYBOARD_MOUSE);
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(back), Forms.COMPRESS, RadixTree.InputType.KEYBOARD_MOUSE);
+//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(left), Forms.STRIKE, RadixTree.InputType.KEYBOARD_MOUSE);
+//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(right), Forms.FORCE, RadixTree.InputType.KEYBOARD_MOUSE);
+//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(KeyDataBuilder.createMultiInput(left, right)), Forms.BURST, RadixTree.InputType.KEYBOARD_MOUSE);
+//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(forwards), Forms.EXPAND, RadixTree.InputType.KEYBOARD_MOUSE);
+//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(back), Forms.COMPRESS, RadixTree.InputType.KEYBOARD_MOUSE);
 
         /* Mouse Motion Forms */
         // TODO: Figure out a way to pass a condition that specifies when to track data for this Form and other mouse motion Forms.
@@ -58,8 +58,8 @@ public class AvatarFormRegistry {
         // Forms.LOWER; Slower mouse motion down.
 
         /* Keyboard Forms */
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(initializer), Forms.ARC, RadixTree.InputType.KEYBOARD_MOUSE);
-        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak), Forms.BREATHE, RadixTree.InputType.KEYBOARD_MOUSE);
+//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(initializer), Forms.ARC, RadixTree.InputType.KEYBOARD_MOUSE);
+//        FormDataRegistry.registerForm(InputDataBuilder.toInputs(sneak), Forms.BREATHE, RadixTree.InputType.KEYBOARD_MOUSE);
         // Forms.SPIN; Clockwise or anticlockwise cardinal directions. (WDSA or WASD).
 
 //        FormDataRegistry.registerForm(Forms.PUSH);
@@ -74,19 +74,19 @@ public class AvatarFormRegistry {
         // Motion! 7 different movement options.
         // Left, right, up, down, jump, sneak, sprint.
         LinkedList<InputData> inputs = new LinkedList<>();
-        for (Map.Entry<String, Integer> key : KeyboardMouseInputModule.getMovementKeys().entrySet()) {
-            inputs.clear();
-
-            KeyInput first, second;
-
-            // key.right is 68
-            first = KeyDataBuilder.createInput(key.getValue(), true, 0);
-            // Has to be a relatively quick input.
-            second = KeyDataBuilder.createInput(key.getValue(), 0, 15);
-            inputs.add(first);
-            inputs.add(second);
-            FormDataRegistry.registerForm(inputs, Forms.STEP, RadixTree.InputType.KEYBOARD_MOUSE);
-        }
+//        for (Map.Entry<String, Integer> key : KeyboardMouseInputModule.getMovementKeys().entrySet()) {
+//            inputs.clear();
+//
+//            KeyInput first, second;
+//
+//            // key.right is 68
+//            first = KeyDataBuilder.createInput(key.getValue(), true, 0);
+//            // Has to be a relatively quick input.
+//            second = KeyDataBuilder.createInput(key.getValue(), 0, 15);
+//            inputs.add(first);
+//            inputs.add(second);
+//            FormDataRegistry.registerForm(inputs, Forms.STEP, RadixTree.InputType.KEYBOARD_MOUSE);
+//        }
 
         /* Combination Forms */
         // Forms.COMPRESS; Shift and mouse wheel maybe?
