@@ -145,6 +145,7 @@ public class ServerEvents {
             //      because "com.amuzil.omegasource.magus.Magus.keyboardMouseInputModule" is null
             if (Magus.keyboardMouseInputModule != null) { // Temporary fix until we decide which side to make InputModules
                 Magus.keyboardMouseInputModule.getFormsTree().deactivateAllConditions();
+                Magus.inputModule.terminate();
                 Magus.keyboardMouseInputModule.terminate();
                 Magus.mouseMotionModule.terminate();
             }
