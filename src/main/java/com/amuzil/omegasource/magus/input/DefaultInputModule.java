@@ -14,11 +14,11 @@ public class DefaultInputModule {
     private final Consumer<InputEvent.Key> keyboardListener;
     private final Consumer<InputEvent.MouseButton> mouseListener;
 
-    private boolean IsHoldingShift = false;
-    private boolean IsHoldingControl = false;
-    private boolean IsHoldingAlt = false;
-    private Form CurrentForm = null;
-    private boolean IsBending = true; // todo toggle system
+    private boolean isHoldingShift = false;
+    private boolean isHoldingControl = false;
+    private boolean isHoldingAt = false;
+    private Form currentForm = null;
+    private boolean isBending = true; // todo toggle system
 
     public DefaultInputModule() {
         this.keyboardListener = keyboardEvent -> {
@@ -29,17 +29,17 @@ public class DefaultInputModule {
             switch (keyboardEvent.getAction()) {
                 case InputConstants.PRESS -> {
                     switch(keyPressed) {
-                        case InputConstants.KEY_LSHIFT -> IsHoldingShift = true;
-                        case InputConstants.KEY_LCONTROL -> IsHoldingControl = true;
-                        case InputConstants.KEY_LALT -> IsHoldingAlt = true;
+                        case InputConstants.KEY_LSHIFT -> isHoldingShift = true;
+                        case InputConstants.KEY_LCONTROL -> isHoldingControl = true;
+                        case InputConstants.KEY_LALT -> isHoldingAt = true;
                         default -> CheckFormsExecute(keyPressed);
                     }
                 }
                 case InputConstants.RELEASE -> {
                     switch(keyPressed) {
-                        case InputConstants.KEY_LSHIFT -> IsHoldingShift = false;
-                        case InputConstants.KEY_LCONTROL -> IsHoldingControl = false;
-                        case InputConstants.KEY_LALT -> IsHoldingAlt = false;
+                        case InputConstants.KEY_LSHIFT -> isHoldingShift = false;
+                        case InputConstants.KEY_LCONTROL -> isHoldingControl = false;
+                        case InputConstants.KEY_LALT -> isHoldingAt = false;
                         default -> CheckFormsRelease(keyPressed);
                     }
                 }
@@ -64,14 +64,14 @@ public class DefaultInputModule {
     }
 
     private void CheckFormsExecute(int keyPressed) {
-        if(IsBending && CurrentForm == null) {
-            if(!(IsHoldingShift || IsHoldingAlt || IsHoldingControl)) {
+        if(isBending && currentForm == null) {
+            if(!(isHoldingShift || isHoldingAt || isHoldingControl)) {
                 switch(keyPressed) {
                     case InputConstants.MOUSE_BUTTON_LEFT -> ExecuteForm(Forms.STRIKE);
                     case InputConstants.MOUSE_BUTTON_RIGHT -> ExecuteForm(Forms.BLOCK);
                 }
             }
-            else if(IsHoldingShift) {
+            else if(isHoldingShift) {
                 switch(keyPressed) {
                     case InputConstants.KEY_W -> ExecuteForm(Forms.PUSH);
                     case InputConstants.KEY_S -> ExecuteForm(Forms.PULL);
@@ -105,16 +105,16 @@ public class DefaultInputModule {
         MagusNetwork.sendToServer(new ExecuteFormPacket(form));
         
         // track current form executing
-        CurrentForm = form;
+        currentForm = form;
     }
 
     private void ReleaseForm(Form form) {
-        if(CurrentForm.name().equals(form.name())) {
+        if(currentForm.name().equals(form.name())) {
             // send form release packet
-            MagusNetwork.sendToServer(new ReleaseFormPacket(CurrentForm));
+            MagusNetwork.sendToServer(new ReleaseFormPacket(currentForm));
 
             // reset current form executing
-            CurrentForm = null;
+            currentForm = null;
         }
     }
 }
