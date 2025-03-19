@@ -4,7 +4,6 @@ import com.amuzil.omegasource.magus.radix.ConditionPath;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import net.minecraft.world.entity.LivingEntity;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -22,7 +21,7 @@ public class SkillStance extends Skill {
     }
 
     @Override
-    public HashMap<RadixTree.ActivationType, List<ConditionPath>> getActivationPaths() {
+    public List<ConditionPath> getActivationPaths() {
         return null;
     }
 

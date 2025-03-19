@@ -6,7 +6,6 @@ import com.amuzil.omegasource.magus.skill.util.capability.entity.Magi;
 import com.amuzil.omegasource.magus.skill.util.data.SkillData;
 import net.minecraft.world.entity.LivingEntity;
 
-import java.util.HashMap;
 import java.util.List;
 
 public class SkillActive extends Skill {
@@ -16,7 +15,7 @@ public class SkillActive extends Skill {
     }
 
     @Override
-    public HashMap<RadixTree.ActivationType, List<ConditionPath>> getActivationPaths() {
+    public List<ConditionPath> getActivationPaths() {
         return null;
     }
 
@@ -31,10 +30,10 @@ public class SkillActive extends Skill {
 
 
         // Initialise paths here, to reduce memory consumption
-        HashMap<RadixTree.ActivationType, List<ConditionPath>> paths = getActivationPaths();
+        List<ConditionPath> paths = getActivationPaths();
         for (RadixTree.ActivationType type : getActivationTypes()) {
             // Needs to be changed to a search
-            for (ConditionPath conditions : paths.get(type)) {
+            for (ConditionPath conditions : paths) {
                 if (tree.search(conditions.conditions) != null) {
                     canStart = true;
                     currentType = type;
@@ -79,7 +78,7 @@ public class SkillActive extends Skill {
     }
 
     @Override
-    public void start(LivingEntity entity, RadixTree tree) {
+    public void start(LivingEntity entity) {
         SkillData data;
         Magi magi = Magi.get(entity);
         if (magi != null) {
@@ -89,12 +88,12 @@ public class SkillActive extends Skill {
     }
 
     @Override
-    public void run(LivingEntity entity, RadixTree tree) {
+    public void run(LivingEntity entity) {
 
     }
 
     @Override
-    public void stop(LivingEntity entity, RadixTree tree) {
+    public void stop(LivingEntity entity) {
 
     }
 
@@ -107,4 +106,6 @@ public class SkillActive extends Skill {
     public boolean execute() {
         return false;
     }
+
+
 }

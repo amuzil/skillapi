@@ -15,8 +15,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.INBTSerializable;
-import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -148,4 +146,8 @@ public class Magi {
         getTree().resetTree();
     }
 
+
+    // adding data
+    // fire force
+    //
 }

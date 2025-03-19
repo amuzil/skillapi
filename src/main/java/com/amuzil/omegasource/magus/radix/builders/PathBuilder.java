@@ -22,7 +22,6 @@ public class PathBuilder {
     private List<ConditionPath> paths;
     private ConditionPath path;
     // Todo: Change this to input type? Skills should use the activation type, forms input type?
-    private RadixTree.ActivationType type;
 
     protected static void addSteps(ConditionPath path, Condition... conditions) {
         List<ModifierData> emptyData = new ArrayList<>();
@@ -38,30 +37,6 @@ public class PathBuilder {
         if (instance == null) instance = new PathBuilder();
         instance.reset();
         return instance;
-    }
-
-    public static void mergePath(HashMap<RadixTree.ActivationType, List<ConditionPath>> firstPath, HashMap<RadixTree.ActivationType, List<ConditionPath>> secondPath) {
-        boolean containsKey = false;
-        for (RadixTree.ActivationType type : secondPath.keySet()) {
-            if (firstPath.containsKey(type))
-                containsKey = true;
-        }
-
-        // Hard case
-        if (containsKey) {
-            for (RadixTree.ActivationType type : secondPath.keySet()) {
-                if (firstPath.containsKey(type)) {
-                    List<ConditionPath> paths = secondPath.get(type);
-                    List<ConditionPath> basePaths = firstPath.get(type);
-                    basePaths.addAll(paths);
-                    firstPath.put(type, basePaths);
-                }
-            }
-        }
-        // Easy case
-        else {
-            firstPath.putAll(secondPath);
-        }
     }
 
     public PathBuilder finalisePath(ConditionPath path) {
@@ -83,21 +58,14 @@ public class PathBuilder {
         return this;
     }
 
-    public PathBuilder type(RadixTree.ActivationType type) {
-        this.type = type;
-        return this;
-    }
-
-    public HashMap<RadixTree.ActivationType, List<ConditionPath>> build() {
-        HashMap<RadixTree.ActivationType, List<ConditionPath>> finalPath = new HashMap<>();
-        finalPath.put(type, paths);
+    public List<ConditionPath> build() {
+        List<ConditionPath> finalPath = new ArrayList<>();
+        finalPath.addAll(paths);
         RadixUtil.getLogger().debug(finalPath);
-//        reset();
         return finalPath;
     }
 
     public void reset() {
-        this.type = null;
         this.path = null;
         if (paths != null)
             this.paths.clear();

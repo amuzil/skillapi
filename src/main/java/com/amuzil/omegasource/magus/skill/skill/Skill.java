@@ -1,7 +1,6 @@
 package com.amuzil.omegasource.magus.skill.skill;
 
 import com.amuzil.omegasource.magus.Magus;
-import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.ConditionPath;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.skill.event.SkillTickEvent;
@@ -11,8 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.common.MinecraftForge;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -95,26 +92,21 @@ public abstract class Skill {
         if (shouldStart(entity, tree)) {
             if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Start(entity, tree, this)))
                 return;
-            start(entity, tree);
+            start(entity);
         } else return;
 
         if (shouldRun(entity, tree)) {
             if (!MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Run(entity, tree, this)))
-                run(entity, tree);
+                run(entity);
 
             if (shouldStop(entity, tree)) {
                 if (!MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Stop(entity, tree, this)))
-                    stop(entity, tree);
+                    stop(entity);
             }
         }
     }
 
-    public List<Condition> getMultikeyConditions() {
-        if (!getActivationTypes().contains(RadixTree.ActivationType.MULTIKEY)) return new ArrayList<>();
-        return getActivationPaths().getOrDefault(RadixTree.ActivationType.MULTIKEY, new LinkedList<>()).get(0).conditions;
-    }
-
-    public abstract HashMap<RadixTree.ActivationType, List<ConditionPath>> getActivationPaths();
+    public abstract List<ConditionPath> getActivationPaths();
 
     public abstract boolean shouldStart(LivingEntity entity, RadixTree tree);
 
@@ -122,11 +114,11 @@ public abstract class Skill {
 
     public abstract boolean shouldStop(LivingEntity entity, RadixTree tree);
 
-    public abstract void start(LivingEntity entity, RadixTree tree);
+    public abstract void start(LivingEntity entity);
 
-    public abstract void run(LivingEntity entity, RadixTree tree);
+    public abstract void run(LivingEntity entity);
 
-    public abstract void stop(LivingEntity entity, RadixTree tree);
+    public abstract void stop(LivingEntity entity);
 
     // Resets the skill and any necessary skill data; should be called upon stopping execution.
     public abstract void reset(LivingEntity entity, RadixTree tree);
