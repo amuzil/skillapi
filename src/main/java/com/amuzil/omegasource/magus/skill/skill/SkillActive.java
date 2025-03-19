@@ -15,40 +15,41 @@ public class SkillActive extends Skill {
     }
 
     @Override
-    public List<ConditionPath> getActivationPaths() {
+    public List<ConditionPath> getStartPaths() {
         return null;
     }
 
+    @Override
+    public List<ConditionPath> getRunPaths() {
+        return List.of();
+    }
+
+    @Override
+    public List<ConditionPath> getStopPaths() {
+        return List.of();
+    }
 
     @Override
     public boolean shouldStart(LivingEntity entity, RadixTree tree) {
         boolean canStart = false;
-        RadixTree.ActivationType currentType = null, prevType = null;
-        if (getActivationPaths() == null || tree == null || tree.getPath() == null)
+        RadixTree.ActivationType currentType = null;
+        if (getStopPaths() == null || tree == null || tree.getPath() == null)
             return false;
 
 
-
         // Initialise paths here, to reduce memory consumption
-        List<ConditionPath> paths = getActivationPaths();
-        for (RadixTree.ActivationType type : getActivationTypes()) {
-            // Needs to be changed to a search
-            for (ConditionPath conditions : paths) {
-                if (tree.search(conditions.conditions) != null) {
-                    canStart = true;
-                    currentType = type;
-                    if (prevType != null && prevType.priority() > currentType.priority()) {
-                        currentType = prevType;
-                    } else prevType = currentType;
-                }
+        List<ConditionPath> paths = getStartPaths();
+        // Needs to be changed to a search
+        for (ConditionPath conditions : paths) {
+            if (tree.search(conditions.conditions) != null) {
+                canStart = true;
             }
         }
 
         Magi magi = Magi.get(entity);
         if (magi != null) {
             canStart &= magi.getSkillData(this).getState() == SkillState.START;
-        }
-        else canStart = false;
+        } else canStart = false;
 
         // Finds the highest priority type that is valid, and goes with that.
         this.activatedType = currentType;

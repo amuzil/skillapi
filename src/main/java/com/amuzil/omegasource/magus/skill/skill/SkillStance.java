@@ -41,17 +41,17 @@ public class SkillStance extends Skill {
     }
 
     @Override
-    public void start(LivingEntity entity, RadixTree tree) {
+    public void start(LivingEntity entity) {
 
     }
 
     @Override
-    public void run(LivingEntity entity, RadixTree tree) {
+    public void run(LivingEntity entity) {
 
     }
 
     @Override
-    public void stop(LivingEntity entity, RadixTree tree) {
+    public void stop(LivingEntity entity) {
 
     }
 

@@ -90,23 +90,29 @@ public abstract class Skill {
 
         // Remember, for some reason post only returns true upon the event being cancelled. Blame Forge.
         if (shouldStart(entity, tree)) {
-            if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Start(entity, tree, this)))
-                return;
+            if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Start(entity, tree, this))) return;
             start(entity);
+            tree.resetTree();
         } else return;
 
         if (shouldRun(entity, tree)) {
-            if (!MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Run(entity, tree, this)))
-                run(entity);
+            if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Run(entity, tree, this))) return;
+            run(entity);
 
-            if (shouldStop(entity, tree)) {
-                if (!MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Stop(entity, tree, this)))
-                    stop(entity);
-            }
+        }
+
+        if (shouldStop(entity, tree)) {
+            if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Stop(entity, tree, this))) return;
+            stop(entity);
         }
     }
 
-    public abstract List<ConditionPath> getActivationPaths();
+
+    public abstract List<ConditionPath> getStartPaths();
+
+    public abstract List<ConditionPath> getRunPaths();
+
+    public abstract List<ConditionPath> getStopPaths();
 
     public abstract boolean shouldStart(LivingEntity entity, RadixTree tree);
 
