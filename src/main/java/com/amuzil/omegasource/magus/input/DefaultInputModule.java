@@ -109,7 +109,7 @@ public class DefaultInputModule {
     }
 
     private void ReleaseForm(Form form) {
-        if(CurrentForm.name() == form.name()) {
+        if(CurrentForm.name().equals(form.name())) {
             // send form release packet
             MagusNetwork.sendToServer(new ReleaseFormPacket(CurrentForm));
 
