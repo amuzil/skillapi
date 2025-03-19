@@ -71,7 +71,7 @@ public class DefaultInputModule {
     }
 
     private void CheckFormsExecute(int keyPressed) {
-        if(isBending && currentForm == null) {
+        if(isBending && currentForm == Forms.NULL) {
             if(!(isHoldingShift || isHoldingAlt || isHoldingControl)) {
                 switch(keyPressed) {
                     case InputConstants.MOUSE_BUTTON_LEFT -> ExecuteForm(Forms.STRIKE);
