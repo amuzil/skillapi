@@ -6,10 +6,13 @@ import com.amuzil.omegasource.magus.radix.condition.input.FormActivatedCondition
 import com.amuzil.omegasource.magus.skill.forms.Form;
 
 public class SkillPathBuilder extends PathBuilder {
-    public static Condition toCondition(Form form) {
-        // TODO:
-        //  Change to Executed and Release events, have a boolean here to determine that then create the event
-        //  that relies on Aidan's packets
-        return new FormActivatedCondition(FormActivatedEvent.class, form);
+    /**
+     *
+     * @param form
+     * @param release true = on release, false = on press
+     * @return
+     */
+    public static Condition toCondition(Form form, boolean release) {
+        return new FormActivatedCondition(FormActivatedEvent.class, form, release);
     }
 }

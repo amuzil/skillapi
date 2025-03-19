@@ -28,6 +28,11 @@ public class FormActivatedCondition extends EventCondition<FormActivatedEvent> {
         this(eventType, formActivatedEvent -> formActivatedEvent.getForm().name().equals(form.name()), form, new LinkedList<>());
     }
 
+    public FormActivatedCondition(Class<FormActivatedEvent> eventType, Form form, boolean released) {
+        this(eventType, formActivatedEvent -> formActivatedEvent.getForm().name().equals(form.name()) && formActivatedEvent.released() == released,
+                form, new LinkedList<>());
+    }
+
     public FormActivatedCondition(Class<FormActivatedEvent> eventType, Form form, List<ModifierData> data) {
         this(eventType, formActivatedEvent -> formActivatedEvent.getForm().name().equals(form.name()), form, data);
     }
