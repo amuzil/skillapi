@@ -8,7 +8,6 @@ import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 
 import java.util.Collections;
@@ -111,6 +110,7 @@ public class DefaultInputModule {
         // send form execute packet
         MagusNetwork.sendToServer(new ExecuteFormPacket(form));
         activeForms.add(form);
+        System.out.println("activeForms Path:" + activeForms);
         // track current form executing
         currentForm = form;
     }
@@ -133,5 +133,10 @@ public class DefaultInputModule {
     public void unRegisterInputs() {
         MinecraftForge.EVENT_BUS.unregister(keyboardListener);
         MinecraftForge.EVENT_BUS.unregister(mouseListener);
+    }
+
+    public void terminate() {
+        unRegisterInputs();
+        activeForms.clear();
     }
 }
