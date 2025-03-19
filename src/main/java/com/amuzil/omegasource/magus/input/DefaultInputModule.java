@@ -16,7 +16,7 @@ public class DefaultInputModule {
 
     private boolean isHoldingShift = false;
     private boolean isHoldingControl = false;
-    private boolean isHoldingAt = false;
+    private boolean isHoldingAlt = false;
     private Form currentForm = null;
     private boolean isBending = true; // todo toggle system
 
@@ -31,7 +31,7 @@ public class DefaultInputModule {
                     switch(keyPressed) {
                         case InputConstants.KEY_LSHIFT -> isHoldingShift = true;
                         case InputConstants.KEY_LCONTROL -> isHoldingControl = true;
-                        case InputConstants.KEY_LALT -> isHoldingAt = true;
+                        case InputConstants.KEY_LALT -> isHoldingAlt = true;
                         default -> CheckFormsExecute(keyPressed);
                     }
                 }
@@ -39,7 +39,7 @@ public class DefaultInputModule {
                     switch(keyPressed) {
                         case InputConstants.KEY_LSHIFT -> isHoldingShift = false;
                         case InputConstants.KEY_LCONTROL -> isHoldingControl = false;
-                        case InputConstants.KEY_LALT -> isHoldingAt = false;
+                        case InputConstants.KEY_LALT -> isHoldingAlt = false;
                         default -> CheckFormsRelease(keyPressed);
                     }
                 }
@@ -65,7 +65,7 @@ public class DefaultInputModule {
 
     private void CheckFormsExecute(int keyPressed) {
         if(isBending && currentForm == null) {
-            if(!(isHoldingShift || isHoldingAt || isHoldingControl)) {
+            if(!(isHoldingShift || isHoldingAlt || isHoldingControl)) {
                 switch(keyPressed) {
                     case InputConstants.MOUSE_BUTTON_LEFT -> ExecuteForm(Forms.STRIKE);
                     case InputConstants.MOUSE_BUTTON_RIGHT -> ExecuteForm(Forms.BLOCK);
