@@ -1,5 +1,6 @@
 package com.amuzil.omegasource.magus.skill.util.capability.entity;
 
+import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
@@ -12,6 +13,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.INBTSerializable;
 import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.Nullable;
@@ -23,6 +26,9 @@ import java.util.List;
 public class Magi {
     private final Data capabilityData;
     private final LivingEntity magi;
+
+    @OnlyIn(Dist.DEDICATED_SERVER)
+    private RadixTree activationTree;
 
     // These are magi specific traits.
     private List<SkillData> skillData;
@@ -98,9 +104,10 @@ public class Magi {
         if (getMagi() instanceof Player) {
             List<Skill> skills = Registries.getSkills();
             for (Skill skill : skills) {
-//            RadixUtil.getLogger().debug(skill);
                 if (getSkillData(skill).canUse()) {
-//                    skill.tick(getMagi(), getTree());
+                    // TODO: Make sure this works; blame Aidan if something needs to be client-side
+                    if (!getMagi().level().isClientSide)
+                        skill.tick(getMagi(), activationTree);
                 }
             }
         }
@@ -129,6 +136,16 @@ public class Magi {
     public void deserialiseNBT(CompoundTag tag) {
         skillCategoryData.forEach(catData -> catData.deserializeNBT(tag.getCompound(catData.getName())));
         skillData.forEach(sData -> sData.deserializeNBT(tag.getCompound(sData.getName())));
+    }
+
+    @OnlyIn(Dist.DEDICATED_SERVER)
+    public RadixTree getTree() {
+        return activationTree;
+    }
+
+    @OnlyIn(Dist.DEDICATED_SERVER)
+    public void resetTree() {
+        getTree().resetTree();
     }
 
 }

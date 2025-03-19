@@ -91,16 +91,12 @@ public abstract class Skill {
     public void tick(LivingEntity entity, RadixTree tree) {
         //Run this asynchronously
 
-
         // Remember, for some reason post only returns true upon the event being cancelled. Blame Forge.
-
-
         if (shouldStart(entity, tree)) {
             if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Start(entity, tree, this)))
                 return;
             start(entity, tree);
         } else return;
-
 
         if (shouldRun(entity, tree)) {
             if (!MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Run(entity, tree, this)))
