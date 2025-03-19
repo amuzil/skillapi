@@ -60,22 +60,7 @@ public class FormActivatedPacket implements MagusPacket {
         return new FormActivatedPacket(form, element, entityId);
     }
 
-    // Client-side handler
-    @OnlyIn(Dist.CLIENT)
-    private static void handleClientSide(Form form, int entityId) {
-        // Perform client-side particle effect or other rendering logic here
-        Player player = Minecraft.getInstance().player;
-        assert player != null;
-        ElementProjectile elementProjectile = (ElementProjectile) player.level().getEntity(entityId);
-        /**
-          NOTE: Need to ensure ElementProjectile's extra constructor args are set client-side.
-          @see ElementProjectile#ElementProjectile(EntityType, Level) This gets called first and server-side only.
-          Can't change this default constructor because it's needed to register entities. Add/use any extra args to Packet.
-        */
-        assert elementProjectile != null;
-        elementProjectile.startEffect(form, player);
-    }
-
+    @OnlyIn(Dist.DEDICATED_SERVER)
     // Server-side handler
     public static void handleServerSide(Form form, Element element, int entityId, ServerPlayer player) {
         // Perform server-side entity spawning and updating logic and fire Form Event here
@@ -106,11 +91,31 @@ public class FormActivatedPacket implements MagusPacket {
 //            MagusNetwork.sendToClient(packet, nearbyPlayer);
 //        } // Keep this in case we want a more specific client packet distribution filter
 
-        // Distribute packet to clients within 500 blocks
+
+        /** Distribute packet to clients within 500 blocks | CLIENT **/
         MagusNetwork.CHANNEL.send(PacketDistributor.NEAR.with(
                 () -> new PacketDistributor.TargetPoint(player.getX(), player.getY(), player.getZ(),
                         500, level.dimension())), packet);
     }
+
+
+    // Client-side handler
+    @OnlyIn(Dist.CLIENT)
+    private static void handleClientSide(Form form, int entityId) {
+        // Perform client-side particle effect or other rendering logic here
+        Player player = Minecraft.getInstance().player;
+        assert player != null;
+        ElementProjectile elementProjectile = (ElementProjectile) player.level().getEntity(entityId);
+        /**
+         NOTE: Need to ensure ElementProjectile's extra constructor args are set client-side.
+         @see ElementProjectile#ElementProjectile(EntityType, Level) This gets called first and server-side only.
+         Can't change this default constructor because it's needed to register entities. Add/use any extra args to Packet.
+         */
+        assert elementProjectile != null;
+        elementProjectile.startEffect(form, player);
+    }
+
+
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
