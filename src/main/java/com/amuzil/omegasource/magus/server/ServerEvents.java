@@ -124,13 +124,15 @@ public class ServerEvents {
                 Magus.mouseMotionModule.terminate();
                 InputModule.resetFormsTree();
                 AvatarFormRegistry.registerForms();
+                System.out.println("DefaultInputModule Initiated!!!");
+                Magus.inputModule.registerListeners();
 //                System.out.println("All RadixTree Forms Conditions:");
 //                Magus.keyboardInputModule.getFormsTree().printAllConditions();
                 System.out.println("All RadixTree Branches:");
-                Magus.keyboardMouseInputModule.getFormsTree().printAllBranches();
-                Magus.keyboardMouseInputModule.init();
-                Magus.keyboardMouseInputModule.registerModifiers();
-                Magus.mouseMotionModule.init();
+//                Magus.keyboardMouseInputModule.getFormsTree().printAllBranches();
+//                Magus.keyboardMouseInputModule.init();
+//                Magus.keyboardMouseInputModule.registerModifiers();
+//                Magus.mouseMotionModule.init();
             }
         }
     }

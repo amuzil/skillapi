@@ -21,8 +21,18 @@ public class SkillStance extends Skill {
     }
 
     @Override
-    public List<ConditionPath> getActivationPaths() {
-        return null;
+    public List<ConditionPath> getStartPaths() {
+        return List.of();
+    }
+
+    @Override
+    public List<ConditionPath> getRunPaths() {
+        return List.of();
+    }
+
+    @Override
+    public List<ConditionPath> getStopPaths() {
+        return List.of();
     }
 
     @Override

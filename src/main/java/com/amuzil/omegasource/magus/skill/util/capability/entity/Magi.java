@@ -25,7 +25,7 @@ public class Magi {
     private final Data capabilityData;
     private final LivingEntity magi;
 
-    @OnlyIn(Dist.DEDICATED_SERVER)
+//    @OnlyIn(Dist.DEDICATED_SERVER) // Prevents runClient from RUNNING
     private RadixTree activationTree;
 
     // These are magi specific traits.
@@ -136,15 +136,15 @@ public class Magi {
         skillData.forEach(sData -> sData.deserializeNBT(tag.getCompound(sData.getName())));
     }
 
-    @OnlyIn(Dist.DEDICATED_SERVER)
-    public RadixTree getTree() {
-        return activationTree;
-    }
+//    @OnlyIn(Dist.DEDICATED_SERVER)
+//    public RadixTree getTree() {
+//        return activationTree;
+//    }
 
-    @OnlyIn(Dist.DEDICATED_SERVER)
-    public void resetTree() {
-        getTree().resetTree();
-    }
+//    @OnlyIn(Dist.DEDICATED_SERVER)
+//    public void resetTree() {
+//        getTree().resetTree();
+//    }
 
 
     // adding data

@@ -7,7 +7,13 @@ import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class DefaultInputModule {
@@ -17,8 +23,9 @@ public class DefaultInputModule {
     private boolean isHoldingShift = false;
     private boolean isHoldingControl = false;
     private boolean isHoldingAlt = false;
-    private Form currentForm = null;
+    private Form currentForm = Forms.NULL;
     private boolean isBending = true; // todo toggle system
+    protected final List<Form> activeForms = Collections.synchronizedList(new LinkedList<>());
 
     public DefaultInputModule() {
         this.keyboardListener = keyboardEvent -> {
@@ -103,18 +110,28 @@ public class DefaultInputModule {
     private void ExecuteForm(Form form) {
         // send form execute packet
         MagusNetwork.sendToServer(new ExecuteFormPacket(form));
-        
+        activeForms.add(form);
         // track current form executing
         currentForm = form;
     }
 
     private void ReleaseForm(Form form) {
-        if(currentForm.name().equals(form.name())) {
+        if(currentForm != null && currentForm != Forms.NULL && currentForm.name().equals(form.name())) {
             // send form release packet
             MagusNetwork.sendToServer(new ReleaseFormPacket(currentForm));
-
+            activeForms.remove(form);
             // reset current form executing
-            currentForm = null;
+            currentForm = Forms.NULL;
         }
+    }
+
+    public void registerListeners() {
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.Key.class, keyboardListener);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.MouseButton.class, mouseListener);
+    }
+
+    public void unRegisterInputs() {
+        MinecraftForge.EVENT_BUS.unregister(keyboardListener);
+        MinecraftForge.EVENT_BUS.unregister(mouseListener);
     }
 }

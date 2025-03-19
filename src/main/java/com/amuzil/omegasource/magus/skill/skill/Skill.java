@@ -56,10 +56,6 @@ public abstract class Skill {
         this.skillTypes.add(type);
     }
 
-    public RadixTree.ActivationType getActivatedType() {
-        return this.activatedType;
-    }
-
     public List<RadixTree.ActivationType> getActivationTypes() {
         return this.activationTypes;
     }

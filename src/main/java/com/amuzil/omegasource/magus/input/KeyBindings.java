@@ -26,7 +26,7 @@ public class KeyBindings {
     public static void keyBindPress(InputEvent.Key press) {
         if (press.getKey() == keyToggleTree.getKey().getValue()) {
             if (press.getAction() == GLFW.GLFW_RELEASE) {
-                Magus.keyboardMouseInputModule.toggleListeners();
+//                Magus.keyboardMouseInputModule.toggleListeners();
                 AvatarFormRegistry.reloadFX();
             }
         }

@@ -19,18 +19,6 @@ public class FlowEffect extends EffectSkill {
     }
 
     @Override
-    public List<ConditionPath> getActivationPaths() {
-        // We're only testing multikey right now. Otherwise, we'd need to build for every distinct type.
-        return SkillPathBuilder.getInstance()
-                // Constructs  path based on given Forms/Conditions
-                .path(SkillPathBuilder.toCondition(Forms.STRIKE, false))
-                // Adds the path to the finalised ConditionPath list
-                .finalisePath()
-                // Builds it
-                .build();
-    }
-
-    @Override
     public boolean shouldStart(LivingEntity entity, RadixTree tree) {
 //        RadixUtil.getLogger().debug(tree);
 //        RadixUtil.getLogger().debug(super.shouldStart(entity, tree));
