@@ -4,7 +4,10 @@ import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.ConditionPath;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.radix.RadixUtil;
+import com.amuzil.omegasource.magus.radix.condition.input.FormActivatedCondition;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,17 +21,16 @@ import java.util.List;
  * If using raw input, use InputPathBuilder instead.
  */
 public class PathBuilder {
+    private static final Logger log = LoggerFactory.getLogger(PathBuilder.class);
     public static PathBuilder instance;
     private List<ConditionPath> paths;
     private ConditionPath path;
     // Todo: Change this to input type? Skills should use the activation type, forms input type?
 
-    protected static void addSteps(ConditionPath path, Condition... conditions) {
+    protected void addSteps(Condition... conditions) {
         List<ModifierData> emptyData = new ArrayList<>();
-        if (path == null)
-            path = new ConditionPath(List.of(conditions));
+        path = new ConditionPath(new LinkedList<>());
         for (Condition condition : conditions) {
-            RadixUtil.getLogger().debug(condition);
             path.addStep(condition, emptyData);
         }
     }
@@ -48,20 +50,16 @@ public class PathBuilder {
 
     public PathBuilder finalisePath() {
         finalisePath(path);
-        // Reset condition path
-//        this.path = new ConditionPath();
         return this;
     }
 
     public PathBuilder path(Condition... conditions) {
-        addSteps(path, conditions);
+        addSteps(conditions);
         return this;
     }
 
     public List<ConditionPath> build() {
-        List<ConditionPath> finalPath = new ArrayList<>();
-        finalPath.addAll(paths);
-        RadixUtil.getLogger().debug(finalPath);
+        List<ConditionPath> finalPath = new ArrayList<>(paths);
         return finalPath;
     }
 

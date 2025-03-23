@@ -9,6 +9,7 @@ import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
 import com.amuzil.omegasource.magus.skill.skill.SkillActive;
 import com.amuzil.omegasource.magus.skill.skill.SkillCategory;
+import com.amuzil.omegasource.magus.skill.skill.avatar.effects.FlowEffect;
 import com.amuzil.omegasource.magus.skill.util.traits.DataTrait;
 import com.amuzil.omegasource.magus.skill.util.traits.SkillTrait;
 import net.minecraft.core.Registry;
@@ -30,7 +31,7 @@ public class Registries {
 
     // SKILLS
     // this is a placeholder skill for testing purposes.
-    public static final Skill FIREBALL = new SkillActive("fireball", null);
+    public static final Skill FIREBALL = new FlowEffect("fireball", null);
     public static Supplier<IForgeRegistry<DataTrait>> DATA_TRAITS;
     public static Supplier<IForgeRegistry<SkillCategory>> SKILL_CATEGORIES;
     public static Supplier<IForgeRegistry<Skill>> SKILLS;

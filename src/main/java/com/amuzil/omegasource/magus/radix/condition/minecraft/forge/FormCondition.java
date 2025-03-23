@@ -1,26 +1,33 @@
 package com.amuzil.omegasource.magus.radix.condition.minecraft.forge;
 
+import com.amuzil.omegasource.magus.level.event.FormActivatedEvent;
 import com.amuzil.omegasource.magus.radix.Condition;
+import com.amuzil.omegasource.magus.skill.forms.Form;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 
-public class EventCondition<E extends Event> extends Condition {
-    private final Consumer<E> listener;
-    private final Class<E> eventType;
 
-    public EventCondition(Class<E> eventType, Function<E, Boolean> condition) {
-        this.eventType = eventType;
-        this.listener = event -> {
-            if (condition.apply(event)) {
-                this.onSuccess.run();
-            } else {
-                this.onFailure.run();
-            }
+public class FormCondition extends Condition {
+    private final Consumer<FormActivatedEvent> listener;
+    private Form form;
+    private boolean active;
+
+    public FormCondition() {
+        listener = event -> {
+            form = event.getForm();
+            active = !event.released();
+            onSuccess.run();
         };
+    }
+
+    public Form form() {
+        return form;
+    }
+
+    public boolean active() {
+        return active;
     }
 
     @Override
@@ -33,7 +40,7 @@ public class EventCondition<E extends Event> extends Condition {
     public void register() {
         super.register();
         //This is required because a class type check isn't built-in, for some reason.
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, eventType, listener);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, listener);
     }
 
     @Override
@@ -44,6 +51,6 @@ public class EventCondition<E extends Event> extends Condition {
 
     @Override
     public String name() {
-        return "event_trigger";
+        return "FormCondition";
     }
 }

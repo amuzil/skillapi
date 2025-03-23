@@ -4,12 +4,11 @@ import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.input.InputModule;
 import com.amuzil.omegasource.magus.radix.Node;
 import com.amuzil.omegasource.magus.radix.NodeBuilder;
+import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.FormCondition;
+import com.amuzil.omegasource.magus.registry.Registries;
+import com.amuzil.omegasource.magus.skill.forms.ActiveForm;
 import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry;
-import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
-import com.amuzil.omegasource.magus.skill.util.capability.entity.Data;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import com.amuzil.omegasource.magus.skill.util.capability.entity.Magi;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,6 +22,7 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber
 public class ServerEvents {
+    static FormCondition formCondition = new FormCondition();
 
     @SubscribeEvent
     public static void worldStart(LevelEvent event) {}
@@ -124,11 +124,24 @@ public class ServerEvents {
                 Magus.mouseMotionModule.terminate();
                 InputModule.resetFormsTree();
                 AvatarFormRegistry.registerForms();
-                System.out.println("DefaultInputModule Initiated!!!");
+                Magi magi = Magi.get((LivingEntity) event.getEntity());
+                if (magi != null) {
+                    formCondition.register("formCondition", () -> {
+                        ActiveForm activeForm = new ActiveForm(formCondition.form(), formCondition.active());
+                        if (formCondition.active()) {
+                            magi.activeForms.add(activeForm);
+                        } else {
+                            magi.activeForms.remove(activeForm);
+                        }
+                        Magus.LOGGER.info("activeForms: {}", magi.activeForms);
+                    }, () -> {});
+                }
+
                 Magus.inputModule.registerListeners();
+                System.out.println("DefaultInputModule Initiated!!!");
 //                System.out.println("All RadixTree Forms Conditions:");
 //                Magus.keyboardInputModule.getFormsTree().printAllConditions();
-                System.out.println("All RadixTree Branches:");
+//                System.out.println("All RadixTree Branches:");
 //                Magus.keyboardMouseInputModule.getFormsTree().printAllBranches();
 //                Magus.keyboardMouseInputModule.init();
 //                Magus.keyboardMouseInputModule.registerModifiers();
@@ -148,6 +161,7 @@ public class ServerEvents {
                 Magus.inputModule.terminate();
                 Magus.keyboardMouseInputModule.terminate();
                 Magus.mouseMotionModule.terminate();
+                formCondition.unregister();
             }
         }
     }
