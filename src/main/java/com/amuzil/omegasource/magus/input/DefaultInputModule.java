@@ -137,7 +137,7 @@ public class DefaultInputModule {
     private void ReleaseForm(Form form) {
         if (currentForm != null && currentForm != Forms.NULL && currentForm.name().equals(form.name())) {
             // send form release packet
-            MagusNetwork.sendToServer(new ReleaseFormPacket(currentForm));
+            MagusNetwork.sendToServer(new ReleaseFormPacket(form));
             activeForms.remove(form);
             // reset current form executing
             currentForm = Forms.NULL;
@@ -167,6 +167,7 @@ public class DefaultInputModule {
     public void terminate() {
         unRegisterListeners();
         activeForms.clear();
+        glfwKeysDown.clear();
     }
 
     public void toggleListeners() {

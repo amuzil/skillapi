@@ -11,6 +11,7 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
+
 public class ReleaseFormPacket implements MagusPacket {
     public Form form;
 
@@ -22,7 +23,7 @@ public class ReleaseFormPacket implements MagusPacket {
         ctx.get().enqueueWork(() -> {
             // Work that needs to be thread-safe (most work)
             ServerPlayer sender = ctx.get().getSender(); // the client that sent this packet
-            Magus.LOGGER.debug("Form releasing: " + msg.form.name());
+            Magus.LOGGER.debug("Form releasing: {}", msg.form.name());
             // Do stuff
             MinecraftForge.EVENT_BUS.post(new FormActivatedEvent(msg.form, sender, true));
         });
