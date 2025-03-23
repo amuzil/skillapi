@@ -31,16 +31,17 @@ public class Magi {
     // These are magi specific traits.
     private List<SkillData> skillData;
     private List<SkillCategoryData> skillCategoryData;
+    public LinkedList<ActiveForm> activeForms;
 
     // Change this to use an int - 0 for should start, 1 for should run, 2 for should stop,
     // -1 for default/idle. If I need multiple states, then use bits; 000 for idle, and then
     // 1xx is should start, x1x is should run, xx1 is should stop
     private HashMap<String, Integer> skillStatuses = new HashMap<>();
-    public LinkedList<ActiveForm> activeForms = new LinkedList<>();
 
     public Magi(Data capabilityData, LivingEntity entity) {
         this.capabilityData = capabilityData;
         this.magi = entity;
+        this.activeForms = new LinkedList<>();
 
         // Initialise skilldata.
         this.skillData = new ArrayList<>();

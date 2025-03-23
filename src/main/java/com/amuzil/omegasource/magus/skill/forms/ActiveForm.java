@@ -5,6 +5,9 @@ import com.amuzil.omegasource.magus.registry.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.Objects;
+
+
 public class ActiveForm {
     private Form form;
     private boolean active;
@@ -32,6 +35,22 @@ public class ActiveForm {
     public void deserializeNBT(CompoundTag compoundTag) {
         form = Registries.FORMS.get().getValue(ResourceLocation.tryParse(compoundTag.getString("Form")));
         active = compoundTag.getBoolean("Active");
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(form);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (!(obj instanceof ActiveForm other)) {
+            return false;
+        } else {
+            return form.name().equals(other.form.name());
+        }
     }
 
     @Override
