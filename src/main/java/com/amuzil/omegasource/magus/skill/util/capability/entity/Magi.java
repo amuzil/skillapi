@@ -2,6 +2,7 @@ package com.amuzil.omegasource.magus.skill.util.capability.entity;
 
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.registry.Registries;
+import com.amuzil.omegasource.magus.skill.forms.ActiveForm;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
 import com.amuzil.omegasource.magus.skill.util.capability.CapabilityHandler;
 import com.amuzil.omegasource.magus.skill.util.data.SkillCategoryData;
@@ -13,12 +14,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Magi {
@@ -36,6 +36,7 @@ public class Magi {
     // -1 for default/idle. If I need multiple states, then use bits; 000 for idle, and then
     // 1xx is should start, x1x is should run, xx1 is should stop
     private HashMap<String, Integer> skillStatuses = new HashMap<>();
+    public LinkedList<ActiveForm> activeForms = new LinkedList<>();
 
     public Magi(Data capabilityData, LivingEntity entity) {
         this.capabilityData = capabilityData;
@@ -72,6 +73,7 @@ public class Magi {
     public boolean isDirty() {
         return false;
     }
+
     public List<DataTrait> getTraits() {
         return getMagusData().getTraits();
     }
@@ -125,6 +127,7 @@ public class Magi {
         CompoundTag tag = new CompoundTag();
         if (isDirty()) {
             // TODO: Figure out if I need to use the returned tags from each of these values....
+            activeForms.forEach(activeForm -> tag.put(activeForm.form().name(), activeForm.serializeNBT()));
             skillCategoryData.forEach(catData -> tag.put(catData.getName(), catData.serializeNBT()));
             skillData.forEach(sData -> tag.put(sData.getName(), sData.serializeNBT()));
         }
@@ -132,6 +135,7 @@ public class Magi {
     }
 
     public void deserialiseNBT(CompoundTag tag) {
+        activeForms.forEach(activeForm -> activeForm.deserializeNBT(tag.getCompound(activeForm.form().name())));
         skillCategoryData.forEach(catData -> catData.deserializeNBT(tag.getCompound(catData.getName())));
         skillData.forEach(sData -> sData.deserializeNBT(tag.getCompound(sData.getName())));
     }
