@@ -1,5 +1,6 @@
 package com.amuzil.omegasource.magus.skill.skill.avatar.effects;
 
+import com.amuzil.omegasource.magus.radix.Condition;
 import com.amuzil.omegasource.magus.radix.ConditionPath;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.radix.RadixUtil;
@@ -22,7 +23,10 @@ public class FlowEffect extends EffectSkill {
     public boolean shouldStart(LivingEntity entity, RadixTree tree) {
 //        RadixUtil.getLogger().debug(tree);
 //        RadixUtil.getLogger().debug(super.shouldStart(entity, tree));
-//        RadixUtil.getLogger().debug(getActivationPaths());
+//        RadixUtil.getLogger().debug(getStartPaths());
+        for (ConditionPath path : getStartPaths()) {
+            RadixUtil.getLogger().debug("Path: " + path.conditions.size());
+        }
         return super.shouldStart(entity, tree);
     }
 
@@ -37,7 +41,7 @@ public class FlowEffect extends EffectSkill {
         // List<Condition> conditions = getMultikeyConditions();
         // List<ModifierData> data = tree.getPath().getModifiers(conditions.get(0));
 
-
+        RadixUtil.getLogger().debug("Success!");
 
         super.start(entity);
     }
@@ -54,5 +58,15 @@ public class FlowEffect extends EffectSkill {
         super.run(entity);
         RadixUtil.getLogger().debug("Current skill: " + this);
         RadixUtil.getLogger().debug("Current player: " + entity);
+    }
+
+    @Override
+    public List<ConditionPath> getStartPaths() {
+        return SkillPathBuilder.getInstance()
+                // Constructs  path based on given Forms/Conditions
+                .path(SkillPathBuilder.toCondition(Forms.PULL, false))
+//                .path(SkillPathBuilder.toCondition(Forms.STRIKE, false))
+                .finalisePath()
+                .build();
     }
 }

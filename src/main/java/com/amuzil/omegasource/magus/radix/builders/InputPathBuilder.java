@@ -27,7 +27,7 @@ public class InputPathBuilder {
     }
 
     public InputPathBuilder path(Condition... conditions) {
-        PathBuilder.addSteps(path, conditions);
+//        PathBuilder.addSteps(conditions);
         return this;
     }
 
