@@ -6,6 +6,8 @@ import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.radix.RadixUtil;
 import com.amuzil.omegasource.magus.radix.condition.input.FormActivatedCondition;
 import com.amuzil.omegasource.magus.skill.modifiers.api.ModifierData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +21,7 @@ import java.util.List;
  * If using raw input, use InputPathBuilder instead.
  */
 public class PathBuilder {
+    private static final Logger log = LoggerFactory.getLogger(PathBuilder.class);
     public static PathBuilder instance;
     private List<ConditionPath> paths;
     private ConditionPath path;
@@ -26,7 +29,7 @@ public class PathBuilder {
 
     protected void addSteps(Condition... conditions) {
         List<ModifierData> emptyData = new ArrayList<>();
-        path = new ConditionPath(List.of(conditions));
+        path = new ConditionPath(new LinkedList<>());
         for (Condition condition : conditions) {
             path.addStep(condition, emptyData);
         }

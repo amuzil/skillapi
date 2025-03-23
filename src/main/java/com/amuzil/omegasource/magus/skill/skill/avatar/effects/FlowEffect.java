@@ -24,9 +24,6 @@ public class FlowEffect extends EffectSkill {
 //        RadixUtil.getLogger().debug(tree);
 //        RadixUtil.getLogger().debug(super.shouldStart(entity, tree));
 //        RadixUtil.getLogger().debug(getStartPaths());
-        for (ConditionPath path : getStartPaths()) {
-            RadixUtil.getLogger().debug("Path: " + path.conditions.size());
-        }
         return super.shouldStart(entity, tree);
     }
 
