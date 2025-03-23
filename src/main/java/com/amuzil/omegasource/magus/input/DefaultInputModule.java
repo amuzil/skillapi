@@ -109,7 +109,7 @@ public class DefaultInputModule {
         // send form execute packet
         MagusNetwork.sendToServer(new ExecuteFormPacket(form));
         activeForms.add(form);
-        System.out.println("activeForms Path:" + activeForms);
+//        System.out.println("activeForms Path:" + activeForms);
         // track current form executing
         currentForm = form;
     }
