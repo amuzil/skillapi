@@ -136,7 +136,6 @@ public class DefaultInputModule {
 
     public void terminate() {
         unRegisterListeners();
-        glfwKeysDown.clear();
         activeForms.clear();
     }
 
