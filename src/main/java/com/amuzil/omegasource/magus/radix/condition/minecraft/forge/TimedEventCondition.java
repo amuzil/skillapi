@@ -44,7 +44,7 @@ public class TimedEventCondition<E extends Event> extends Condition {
     @Override
     public void register() {
         super.register();
-        //This is required because a class type check isn't inbuilt, for some reason.
+        //This is required because a class type check isn't built-in, for some reason.
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false,
                 eventType, listener);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false,
