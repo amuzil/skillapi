@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
+
 public class DefaultInputModule {
     private final Consumer<InputEvent.Key> keyboardListener;
     private final Consumer<InputEvent.MouseButton> mouseListener;
@@ -23,7 +24,7 @@ public class DefaultInputModule {
     private boolean isHoldingControl = false;
     private boolean isHoldingAlt = false;
     private Form currentForm = Forms.NULL;
-    private boolean isBending = true; // todo toggle system
+    private boolean isBending = true;
     protected final List<Form> activeForms = Collections.synchronizedList(new LinkedList<>());
 
     public DefaultInputModule() {
@@ -76,9 +77,8 @@ public class DefaultInputModule {
                     case InputConstants.MOUSE_BUTTON_LEFT -> ExecuteForm(Forms.STRIKE);
                     case InputConstants.MOUSE_BUTTON_RIGHT -> ExecuteForm(Forms.BLOCK);
                 }
-            }
-            else if(isHoldingShift) {
-                switch(keyPressed) {
+            } else if (isHoldingShift) {
+                switch (keyPressed) {
                     case InputConstants.KEY_W -> ExecuteForm(Forms.PUSH);
                     case InputConstants.KEY_S -> ExecuteForm(Forms.PULL);
                     case InputConstants.KEY_A -> ExecuteForm(Forms.LEFT);
@@ -92,7 +92,7 @@ public class DefaultInputModule {
     }
 
     private void CheckFormsRelease(int keyPressed) {
-        switch(keyPressed) {
+        switch (keyPressed) {
             case InputConstants.MOUSE_BUTTON_LEFT -> ReleaseForm(Forms.STRIKE);
             case InputConstants.MOUSE_BUTTON_RIGHT -> ReleaseForm(Forms.BLOCK);
             case InputConstants.KEY_W -> ReleaseForm(Forms.PUSH);
@@ -103,7 +103,6 @@ public class DefaultInputModule {
             case InputConstants.KEY_E -> ReleaseForm(Forms.RAISE);
             case InputConstants.KEY_R -> ReleaseForm(Forms.ROTATE);
         }
-
     }
 
     private void ExecuteForm(Form form) {
@@ -116,7 +115,7 @@ public class DefaultInputModule {
     }
 
     private void ReleaseForm(Form form) {
-        if(currentForm != null && currentForm != Forms.NULL && currentForm.name().equals(form.name())) {
+        if (currentForm != null && currentForm != Forms.NULL && currentForm.name().equals(form.name())) {
             // send form release packet
             MagusNetwork.sendToServer(new ReleaseFormPacket(currentForm));
             activeForms.remove(form);
@@ -130,13 +129,26 @@ public class DefaultInputModule {
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.MouseButton.class, mouseListener);
     }
 
-    public void unRegisterInputs() {
+    public void unRegisterListeners() {
         MinecraftForge.EVENT_BUS.unregister(keyboardListener);
         MinecraftForge.EVENT_BUS.unregister(mouseListener);
     }
 
     public void terminate() {
-        unRegisterInputs();
+        unRegisterListeners();
+        glfwKeysDown.clear();
         activeForms.clear();
+    }
+
+    public void toggleListeners() {
+        if (!isBending) {
+            registerListeners();
+            isBending = true;
+            System.out.println("Enabled!");
+        } else {
+            terminate();
+            isBending = false;
+            System.out.println("Disabled!");
+        }
     }
 }
