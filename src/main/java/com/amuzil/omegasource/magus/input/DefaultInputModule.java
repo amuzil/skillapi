@@ -1,16 +1,20 @@
 package com.amuzil.omegasource.magus.input;
 
+import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.network.MagusNetwork;
 import com.amuzil.omegasource.magus.network.packets.forms.ExecuteFormPacket;
 import com.amuzil.omegasource.magus.network.packets.forms.ReleaseFormPacket;
 import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -19,6 +23,7 @@ import java.util.function.Consumer;
 public class DefaultInputModule {
     private final Consumer<InputEvent.Key> keyboardListener;
     private final Consumer<InputEvent.MouseButton> mouseListener;
+    private final Consumer<TickEvent.ClientTickEvent> tickEventConsumer;
 
     private boolean isHoldingShift = false;
     private boolean isHoldingControl = false;
@@ -26,6 +31,7 @@ public class DefaultInputModule {
     private Form currentForm = Forms.NULL;
     private boolean isBending = true;
     protected final List<Form> activeForms = Collections.synchronizedList(new LinkedList<>());
+    private final HashMap<Integer, Integer> glfwKeysDown = new HashMap<>();
 
     public DefaultInputModule() {
         this.keyboardListener = keyboardEvent -> {
@@ -35,15 +41,18 @@ public class DefaultInputModule {
 
             switch (keyboardEvent.getAction()) {
                 case InputConstants.PRESS -> {
-                    switch(keyPressed) {
+                    if (!glfwKeysDown.containsValue(keyPressed)) {
+                        glfwKeysDown.put(keyPressed, 0);
+                    }
+                    switch (keyPressed) {
                         case InputConstants.KEY_LSHIFT -> isHoldingShift = true;
                         case InputConstants.KEY_LCONTROL -> isHoldingControl = true;
                         case InputConstants.KEY_LALT -> isHoldingAlt = true;
-                        default -> CheckFormsExecute(keyPressed);
                     }
                 }
                 case InputConstants.RELEASE -> {
-                    switch(keyPressed) {
+                    glfwKeysDown.remove(keyPressed);
+                    switch (keyPressed) {
                         case InputConstants.KEY_LSHIFT -> isHoldingShift = false;
                         case InputConstants.KEY_LCONTROL -> isHoldingControl = false;
                         case InputConstants.KEY_LALT -> isHoldingAlt = false;
@@ -57,23 +66,34 @@ public class DefaultInputModule {
             int keyPressed = mouseEvent.getButton();
             switch (mouseEvent.getAction()) {
                 case InputConstants.PRESS -> {
-                    switch(keyPressed) {
-                        default -> CheckFormsExecute(keyPressed);
+                    if (!glfwKeysDown.containsValue(keyPressed)) {
+                        glfwKeysDown.put(keyPressed, 0);
                     }
                 }
                 case InputConstants.RELEASE -> {
-                    switch(keyPressed) {
-                        default -> CheckFormsRelease(keyPressed);
-                    }
+                    glfwKeysDown.remove(keyPressed);
+                    CheckFormsRelease(keyPressed);
                 }
+            }
+        };
+
+        this.tickEventConsumer = tickEvent -> {
+            if (tickEvent.phase == TickEvent.ClientTickEvent.Phase.START && Minecraft.getInstance().getOverlay() == null) {
+                glfwKeysDown.forEach((key, ticks) -> {
+//                    System.out.println(Magus.inputModule.keyPressed(key) + " | " + ticks);
+                    if (ticks == 0) {
+                        CheckFormsExecute(key);
+                    }
+                    glfwKeysDown.put(key, ticks+1);
+                });
             }
         };
     }
 
     private void CheckFormsExecute(int keyPressed) {
-        if(isBending) {
-            if(!(isHoldingShift || isHoldingAlt || isHoldingControl)) {
-                switch(keyPressed) {
+        if (isBending) {
+            if (!(isHoldingShift || isHoldingAlt || isHoldingControl)) {
+                switch (keyPressed) {
                     case InputConstants.MOUSE_BUTTON_LEFT -> ExecuteForm(Forms.STRIKE);
                     case InputConstants.MOUSE_BUTTON_RIGHT -> ExecuteForm(Forms.BLOCK);
                 }
@@ -124,14 +144,24 @@ public class DefaultInputModule {
         }
     }
 
+    public boolean keyPressed(int key) {
+        return glfwKeysDown.containsValue(key);
+    }
+
+    public Integer keyPressedTicks(int key) {
+        return glfwKeysDown.getOrDefault(key, 0);
+    }
+
     public void registerListeners() {
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.Key.class, keyboardListener);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, InputEvent.MouseButton.class, mouseListener);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ClientTickEvent.class, tickEventConsumer);
     }
 
     public void unRegisterListeners() {
         MinecraftForge.EVENT_BUS.unregister(keyboardListener);
         MinecraftForge.EVENT_BUS.unregister(mouseListener);
+        MinecraftForge.EVENT_BUS.unregister(tickEventConsumer);
     }
 
     public void terminate() {
