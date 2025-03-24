@@ -7,6 +7,7 @@ import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.amuzil.omegasource.magus.skill.util.capability.entity.Magi;
 import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -35,44 +36,48 @@ public class DefaultInputModule {
 
     public DefaultInputModule() {
         this.keyboardListener = keyboardEvent -> {
-            int keyPressed = keyboardEvent.getKey();
+            int key = keyboardEvent.getKey();
             // NOTE: Minecraft's InputEvent.Key can only listen to the action InputConstants.REPEAT of one key at a time
             // tldr: it only fires the repeat event for the last key
 
             switch (keyboardEvent.getAction()) {
                 case InputConstants.PRESS -> {
-                    if (!glfwKeysDown.containsValue(keyPressed)) {
-                        glfwKeysDown.put(keyPressed, 0);
+                    if (!keyPressed(key)) {
+                        glfwKeysDown.put(key, 0);
                     }
-                    switch (keyPressed) {
+                    switch (key) {
                         case InputConstants.KEY_LSHIFT -> isHoldingShift = true;
                         case InputConstants.KEY_LCONTROL -> isHoldingControl = true;
                         case InputConstants.KEY_LALT -> isHoldingAlt = true;
                     }
                 }
                 case InputConstants.RELEASE -> {
-                    glfwKeysDown.remove(keyPressed);
-                    switch (keyPressed) {
-                        case InputConstants.KEY_LSHIFT -> isHoldingShift = false;
-                        case InputConstants.KEY_LCONTROL -> isHoldingControl = false;
-                        case InputConstants.KEY_LALT -> isHoldingAlt = false;
-                        default -> CheckFormsRelease(keyPressed);
+                    if (keyPressed(key)) {
+                        glfwKeysDown.remove(key);
+                        switch (key) {
+                            case InputConstants.KEY_LSHIFT -> isHoldingShift = false;
+                            case InputConstants.KEY_LCONTROL -> isHoldingControl = false;
+                            case InputConstants.KEY_LALT -> isHoldingAlt = false;
+                            default -> CheckFormsRelease(key);
+                        }
                     }
                 }
             }
         };
 
         this.mouseListener = mouseEvent -> {
-            int keyPressed = mouseEvent.getButton();
+            int key = mouseEvent.getButton();
             switch (mouseEvent.getAction()) {
                 case InputConstants.PRESS -> {
-                    if (!glfwKeysDown.containsValue(keyPressed)) {
-                        glfwKeysDown.put(keyPressed, 0);
+                    if (!keyPressed(key)) {
+                        glfwKeysDown.put(key, 0);
                     }
                 }
                 case InputConstants.RELEASE -> {
-                    glfwKeysDown.remove(keyPressed);
-                    CheckFormsRelease(keyPressed);
+                    if (keyPressed(key)) {
+                        glfwKeysDown.remove(key);
+                        CheckFormsRelease(key);
+                    }
                 }
             }
         };
@@ -80,7 +85,6 @@ public class DefaultInputModule {
         this.tickEventConsumer = tickEvent -> {
             if (tickEvent.phase == TickEvent.ClientTickEvent.Phase.START && Minecraft.getInstance().getOverlay() == null) {
                 glfwKeysDown.forEach((key, ticks) -> {
-//                    System.out.println(Magus.inputModule.keyPressed(key) + " | " + ticks);
                     if (ticks == 0) {
                         CheckFormsExecute(key);
                     }
@@ -90,15 +94,15 @@ public class DefaultInputModule {
         };
     }
 
-    private void CheckFormsExecute(int keyPressed) {
+    private void CheckFormsExecute(int key) {
         if (isBending) {
             if (!(isHoldingShift || isHoldingAlt || isHoldingControl)) {
-                switch (keyPressed) {
+                switch (key) {
                     case InputConstants.MOUSE_BUTTON_LEFT -> ExecuteForm(Forms.STRIKE);
                     case InputConstants.MOUSE_BUTTON_RIGHT -> ExecuteForm(Forms.BLOCK);
                 }
             } else if (isHoldingShift) {
-                switch (keyPressed) {
+                switch (key) {
                     case InputConstants.KEY_W -> ExecuteForm(Forms.PUSH);
                     case InputConstants.KEY_S -> ExecuteForm(Forms.PULL);
                     case InputConstants.KEY_A -> ExecuteForm(Forms.LEFT);
@@ -111,8 +115,8 @@ public class DefaultInputModule {
         }
     }
 
-    private void CheckFormsRelease(int keyPressed) {
-        switch (keyPressed) {
+    private void CheckFormsRelease(int key) {
+        switch (key) {
             case InputConstants.MOUSE_BUTTON_LEFT -> ReleaseForm(Forms.STRIKE);
             case InputConstants.MOUSE_BUTTON_RIGHT -> ReleaseForm(Forms.BLOCK);
             case InputConstants.KEY_W -> ReleaseForm(Forms.PUSH);
@@ -129,23 +133,20 @@ public class DefaultInputModule {
         // send form execute packet
         MagusNetwork.sendToServer(new ExecuteFormPacket(form));
         activeForms.add(form);
-//        System.out.println("activeForms Path:" + activeForms);
         // track current form executing
         currentForm = form;
     }
 
     private void ReleaseForm(Form form) {
-        if (currentForm != null && currentForm != Forms.NULL && currentForm.name().equals(form.name())) {
-            // send form release packet
-            MagusNetwork.sendToServer(new ReleaseFormPacket(form));
-            activeForms.remove(form);
-            // reset current form executing
-            currentForm = Forms.NULL;
-        }
+        // send form release packet
+        MagusNetwork.sendToServer(new ReleaseFormPacket(form));
+        activeForms.remove(form);
+        // reset current form executing
+        currentForm = Forms.NULL;
     }
 
     public boolean keyPressed(int key) {
-        return glfwKeysDown.containsValue(key);
+        return glfwKeysDown.containsKey(key);
     }
 
     public Integer keyPressedTicks(int key) {
