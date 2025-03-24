@@ -4,6 +4,7 @@ import com.amuzil.omegasource.magus.Magus;
 import com.amuzil.omegasource.magus.radix.ConditionPath;
 import com.amuzil.omegasource.magus.radix.RadixTree;
 import com.amuzil.omegasource.magus.skill.event.SkillTickEvent;
+import com.amuzil.omegasource.magus.skill.forms.ActiveForm;
 import com.amuzil.omegasource.magus.skill.util.traits.SkillTrait;
 import com.amuzil.omegasource.magus.skill.util.traits.skilltraits.UseTrait;
 import net.minecraft.resources.ResourceLocation;
@@ -81,24 +82,24 @@ public abstract class Skill {
     }
 
     // Fix this because this will not work lmao
-    public void tick(LivingEntity entity, RadixTree tree) {
+    public void tick(LivingEntity entity, LinkedList<ActiveForm> formPath) {
         //Run this asynchronously
 
         // Remember, for some reason post only returns true upon the event being cancelled. Blame Forge.
-        if (shouldStart(entity, tree)) {
-            if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Start(entity, tree, this))) return;
+        if (shouldStart(entity, formPath)) {
+            if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Start(entity, formPath, this))) return;
             start(entity);
-            tree.resetTree();
+            formPath.clear();
         } else return;
 
-        if (shouldRun(entity, tree)) {
-            if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Run(entity, tree, this))) return;
+        if (shouldRun(entity, formPath)) {
+            if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Run(entity, formPath, this))) return;
             run(entity);
 
         }
 
-        if (shouldStop(entity, tree)) {
-            if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Stop(entity, tree, this))) return;
+        if (shouldStop(entity, formPath)) {
+            if (MinecraftForge.EVENT_BUS.post(new SkillTickEvent.Stop(entity, formPath, this))) return;
             stop(entity);
         }
     }
@@ -110,11 +111,11 @@ public abstract class Skill {
 
     public abstract List<ConditionPath> getStopPaths();
 
-    public abstract boolean shouldStart(LivingEntity entity, RadixTree tree);
+    public abstract boolean shouldStart(LivingEntity entity, List<ActiveForm> formPath);
 
-    public abstract boolean shouldRun(LivingEntity entity, RadixTree tree);
+    public abstract boolean shouldRun(LivingEntity entity, List<ActiveForm> formPath);
 
-    public abstract boolean shouldStop(LivingEntity entity, RadixTree tree);
+    public abstract boolean shouldStop(LivingEntity entity, List<ActiveForm> formPath);
 
     public abstract void start(LivingEntity entity);
 
@@ -123,7 +124,7 @@ public abstract class Skill {
     public abstract void stop(LivingEntity entity);
 
     // Resets the skill and any necessary skill data; should be called upon stopping execution.
-    public abstract void reset(LivingEntity entity, RadixTree tree);
+    public abstract void reset(LivingEntity entity, List<ActiveForm> formPath);
 
 
     public enum SkillState {

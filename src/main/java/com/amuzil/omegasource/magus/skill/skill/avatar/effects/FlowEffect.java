@@ -61,7 +61,7 @@ public class FlowEffect extends EffectSkill {
     public List<ConditionPath> getStartPaths() {
         return SkillPathBuilder.getInstance()
                 // Constructs  path based on given Forms/Conditions
-                .path(SkillPathBuilder.toCondition(Forms.PULL, false))
+                .path(SkillPathBuilder.toCondition(Forms.PULL, true))
 //                .path(SkillPathBuilder.toCondition(Forms.STRIKE, false))
                 .finalisePath()
                 .build();

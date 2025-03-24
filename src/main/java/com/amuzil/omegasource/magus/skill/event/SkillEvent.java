@@ -1,19 +1,22 @@
 package com.amuzil.omegasource.magus.skill.event;
 
 import com.amuzil.omegasource.magus.radix.RadixTree;
+import com.amuzil.omegasource.magus.skill.forms.ActiveForm;
 import com.amuzil.omegasource.magus.skill.skill.Skill;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingEvent;
 
+import java.util.List;
+
 public class SkillEvent extends LivingEvent {
 
     private Skill skill;
-    private RadixTree tree;
+    private List<ActiveForm> formPath;
 
-    public SkillEvent(LivingEntity entity, RadixTree tree, Skill skill) {
+    public SkillEvent(LivingEntity entity, List<ActiveForm> formPath, Skill skill) {
         super(entity);
         this.skill = skill;
-        this.tree = tree;
+        this.formPath = formPath;
     }
 
     @Override
@@ -25,7 +28,7 @@ public class SkillEvent extends LivingEvent {
         return skill;
     }
 
-    public RadixTree getTree() {
-        return tree;
+    public List<ActiveForm>  getFormPath() {
+        return formPath;
     }
 }
