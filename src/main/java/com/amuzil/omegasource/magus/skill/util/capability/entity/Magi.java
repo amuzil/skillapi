@@ -31,7 +31,9 @@ public class Magi {
     // These are magi specific traits.
     private List<SkillData> skillData;
     private List<SkillCategoryData> skillCategoryData;
+    public LinkedList<ActiveForm> simpleForms;
     public LinkedList<ActiveForm> activeForms;
+    private Skill currentlySelected;
 
     // Change this to use an int - 0 for should start, 1 for should run, 2 for should stop,
     // -1 for default/idle. If I need multiple states, then use bits; 000 for idle, and then
@@ -41,7 +43,7 @@ public class Magi {
     public Magi(Data capabilityData, LivingEntity entity) {
         this.capabilityData = capabilityData;
         this.magi = entity;
-        this.activeForms = new LinkedList<>();
+        this.simpleForms = new LinkedList<>();
 
         // Initialise skilldata.
         this.skillData = new ArrayList<>();
@@ -108,7 +110,7 @@ public class Magi {
                 if (getSkillData(skill).canUse()) {
                     // TODO: Make sure this works; blame Aidan if something needs to be client-side
                     if (!getMagi().level().isClientSide)
-                        skill.tick(getMagi(), activationTree);
+                        skill.tick(getMagi(), simpleForms);
                 }
             }
         }
@@ -128,7 +130,7 @@ public class Magi {
         CompoundTag tag = new CompoundTag();
         if (isDirty()) {
             // TODO: Figure out if I need to use the returned tags from each of these values....
-            activeForms.forEach(activeForm -> tag.put(activeForm.form().name(), activeForm.serializeNBT()));
+            simpleForms.forEach(activeForm -> tag.put(activeForm.form().name(), activeForm.serializeNBT()));
             skillCategoryData.forEach(catData -> tag.put(catData.getName(), catData.serializeNBT()));
             skillData.forEach(sData -> tag.put(sData.getName(), sData.serializeNBT()));
         }
@@ -136,7 +138,7 @@ public class Magi {
     }
 
     public void deserialiseNBT(CompoundTag tag) {
-        activeForms.forEach(activeForm -> activeForm.deserializeNBT(tag.getCompound(activeForm.form().name())));
+        simpleForms.forEach(activeForm -> activeForm.deserializeNBT(tag.getCompound(activeForm.form().name())));
         skillCategoryData.forEach(catData -> catData.deserializeNBT(tag.getCompound(catData.getName())));
         skillData.forEach(sData -> sData.deserializeNBT(tag.getCompound(sData.getName())));
     }

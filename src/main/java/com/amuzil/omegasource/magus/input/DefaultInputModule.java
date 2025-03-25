@@ -7,7 +7,6 @@ import com.amuzil.omegasource.magus.skill.forms.Form;
 import com.amuzil.omegasource.magus.skill.forms.Forms;
 import com.amuzil.omegasource.magus.skill.util.capability.entity.Magi;
 import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -171,7 +170,7 @@ public class DefaultInputModule {
         glfwKeysDown.clear();
         Magi magi = Magi.get(Minecraft.getInstance().player);
         assert magi != null;
-        magi.activeForms.clear();
+        magi.simpleForms.clear();
     }
 
     public void toggleListeners() {

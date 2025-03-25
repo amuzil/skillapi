@@ -5,7 +5,6 @@ import com.amuzil.omegasource.magus.input.InputModule;
 import com.amuzil.omegasource.magus.radix.Node;
 import com.amuzil.omegasource.magus.radix.NodeBuilder;
 import com.amuzil.omegasource.magus.radix.condition.minecraft.forge.FormCondition;
-import com.amuzil.omegasource.magus.registry.Registries;
 import com.amuzil.omegasource.magus.skill.forms.ActiveForm;
 import com.amuzil.omegasource.magus.skill.modifiers.ModifiersRegistry;
 import com.amuzil.omegasource.magus.skill.test.avatar.AvatarFormRegistry;
@@ -129,11 +128,11 @@ public class ServerEvents {
                     formCondition.register("formCondition", () -> {
                         ActiveForm activeForm = new ActiveForm(formCondition.form(), formCondition.active());
                         if (formCondition.active()) {
-                            magi.activeForms.add(activeForm);
+                            magi.simpleForms.add(activeForm);
                         } else {
-                            magi.activeForms.remove(activeForm);
+                            magi.simpleForms.remove(activeForm);
                         }
-                        Magus.LOGGER.info("activeForms: {}", magi.activeForms);
+                        Magus.LOGGER.info("activeForms: {}", magi.simpleForms);
                     }, () -> {});
                 }
 
