@@ -1,0 +1,72 @@
+package com.amuzil.omegasource.magus.skill.skill;
+
+import com.amuzil.omegasource.magus.radix.ConditionPath;
+import com.amuzil.omegasource.magus.radix.RadixTree;
+import net.minecraft.world.entity.LivingEntity;
+
+import java.util.List;
+
+/**
+ * Name WIP.
+ * Functions as a "stance" skill, as described in Avatar's documentation, design, and outline.
+ * Stance skills are in between active and passive skills. You have to activate them, but rather than
+ * producing a direct effect, they invoke a passive effect upon the player.
+ * The idea is to have a cycle method or something similar to rotate through unlocked stances.
+ * Stance skills could range from Sun stance firebending, to give access to new combos,
+ * to different types of martial arts in a martial arts mod. E.g variations on karate.
+ */
+public class SkillStance extends Skill {
+    public SkillStance(String name, SkillCategory category) {
+        super(name, category);
+    }
+
+    @Override
+    public List<ConditionPath> getStartPaths() {
+        return List.of();
+    }
+
+    @Override
+    public List<ConditionPath> getRunPaths() {
+        return List.of();
+    }
+
+    @Override
+    public List<ConditionPath> getStopPaths() {
+        return List.of();
+    }
+
+    @Override
+    public boolean shouldStart(LivingEntity entity, RadixTree tree) {
+        return false;
+    }
+
+    @Override
+    public boolean shouldRun(LivingEntity entity, RadixTree tree) {
+        return false;
+    }
+
+    @Override
+    public boolean shouldStop(LivingEntity entity, RadixTree tree) {
+        return false;
+    }
+
+    @Override
+    public void start(LivingEntity entity) {
+
+    }
+
+    @Override
+    public void run(LivingEntity entity) {
+
+    }
+
+    @Override
+    public void stop(LivingEntity entity) {
+
+    }
+
+    @Override
+    public void reset(LivingEntity entity, RadixTree tree) {
+
+    }
+}
